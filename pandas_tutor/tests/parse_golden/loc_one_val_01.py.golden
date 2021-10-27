@@ -1,0 +1,94 @@
+{
+  "type": "Module",
+  "name": null,
+  "start": {
+    "line": 0,
+    "ch": 0
+  },
+  "end": {
+    "line": 10,
+    "ch": 0
+  },
+  "children": [
+    {
+      "type": "Assign",
+      "name": null,
+      "start": {
+        "line": 2,
+        "ch": 0
+      },
+      "end": {
+        "line": 7,
+        "ch": 59
+      },
+      "children": [
+        {
+          "type": "Name",
+          "name": "pd",
+          "start": {
+            "line": 2,
+            "ch": 5
+          },
+          "end": {
+            "line": 2,
+            "ch": 7
+          },
+          "children": []
+        },
+        {
+          "type": "Call",
+          "name": "DataFrame",
+          "start": {
+            "line": 2,
+            "ch": 5
+          },
+          "end": {
+            "line": 7,
+            "ch": 59
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "type": "Expr",
+      "name": null,
+      "start": {
+        "line": 9,
+        "ch": 0
+      },
+      "end": {
+        "line": 9,
+        "ch": 17
+      },
+      "children": [
+        {
+          "type": "Name",
+          "name": "df",
+          "start": {
+            "line": 9,
+            "ch": 0
+          },
+          "end": {
+            "line": 9,
+            "ch": 2
+          },
+          "children": []
+        },
+        {
+          "type": "Subscript",
+          "name": "loc",
+          "start": {
+            "line": 9,
+            "ch": 0
+          },
+          "end": {
+            "line": 9,
+            "ch": 17
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}

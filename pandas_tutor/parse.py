@@ -28,16 +28,6 @@ def parse(code, as_json=False):
     return (sam.root if not as_json else json.dumps(sam.root, indent=2))
 
 
-def log_nodes(code):
-    print(code)
-    print('\n-----\n')
-    tree = cst.parse_module(code)
-    with_meta = cstm.MetadataWrapper(tree)
-    sam = LoggingVisitor()
-    _ = with_meta.visit(sam)
-    return
-
-
 def Position(pos: cstm.CodePosition):
     line = pos.line
     column = pos.column
@@ -96,8 +86,20 @@ class NodePositions(m.MatcherDecoratableVisitor):
         current['children'] = list(reversed(current['children']))
         self.stack.pop()
 
+    # Assign appears instead of Expr when the code looks like df = ...
+    def visit_Assign(self, node):
+        current = self.stack[-1]
+        child = self.make_node(type='Assign', node=node)
+        current['children'].append(child)
+        self.stack.append(child)
+
+    def leave_Assign(self, node):
+        current = self.stack[-1]
+        current['children'] = list(reversed(current['children']))
+        self.stack.pop()
+
     # matches df.f() to get df but not df.f().g()
-    @m.call_if_inside(m.Call(func=m.Attribute(value=m.Name())))
+    @m.call_if_inside(m.Attribute(value=m.Name()))
     @m.visit(m.Attribute())
     def visit_first_attribute_of_chain(self, node):
         current = self.stack[-1]
@@ -184,14 +186,29 @@ class LoggingVisitor(cst.CSTVisitor):
 
 
 test = '''
-(df
- .sort_values('Name')
- .groupby('Sex')
- .loc[:, 'Count']
- .mean()
-)
+import pandas as pd
+
+df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),
+                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),
+                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),
+                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),
+                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],
+                  columns=['Name', 'Sex', 'Count', 'Year'])
+
+df.loc[1, 'Name']
 '''.strip()
+
+
+def log_test():
+    print(test)
+    print('\n-----\n')
+    tree = cst.parse_module(test)
+    with_meta = cstm.MetadataWrapper(tree)
+    sam = LoggingVisitor()
+    _ = with_meta.visit(sam)
+    return
+
 
 if __name__ == "__main__":
     print(parse(test, as_json=True))
-    # log_nodes(test)
+    # log_test()
