@@ -23,6 +23,19 @@
       },
       "children": [
         {
+          "type": "Name",
+          "name": "df",
+          "start": {
+            "line": 0,
+            "ch": 1
+          },
+          "end": {
+            "line": 0,
+            "ch": 3
+          },
+          "children": []
+        },
+        {
           "type": "Call",
           "name": "sort_values",
           "start": {

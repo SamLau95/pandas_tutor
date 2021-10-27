@@ -96,6 +96,15 @@ class NodePositions(m.MatcherDecoratableVisitor):
         current['children'] = list(reversed(current['children']))
         self.stack.pop()
 
+    # matches df.f() to get df but not df.f().g()
+    @m.call_if_inside(m.Call(func=m.Attribute(value=m.Name())))
+    @m.visit(m.Attribute())
+    def visit_first_attribute_of_chain(self, node):
+        current = self.stack[-1]
+        name = node.value.value
+        child = self.make_node(type='Name', name=name, node=node.value)
+        current['children'].append(child)
+
     # Attribute function calls, like pd.melt(df)
     # won't match square(2)
     def visit_Call(self, node):
