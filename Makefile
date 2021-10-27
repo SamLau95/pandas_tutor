@@ -9,6 +9,9 @@ test: ## Runs tests
 run_parse: ## Runs parse.py
 	@python -m pandas_tutor.parse
 
+typecheck: ## Type checks everything
+	mypy pandas_tutor
+
 # OLD STUFF FROM ANOTHER REPO
 build: ## Builds extension
 	jlpm run build

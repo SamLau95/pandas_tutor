@@ -13,38 +13,40 @@ in a chain. it doesn't seem to be the default as this pytutor link shows:
 https://pythontutor.com/visualize.html#code=s%20%3D%20'hello%20world%20!!%20'%0Atest%20%3D%20s.strip%28%29.replace%28'%20',%20'!'%29.split%28'!'%29%0Aprint%28test%29&cumulative=false&curInstr=2&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false
 '''
 
+# For forward type references: https://stackoverflow.com/a/33533514
+from __future__ import annotations
+
 import json
+import typing
+
 import libcst as cst
-import libcst.metadata as cstm
 import libcst.matchers as m
+import libcst.metadata as cstm
 
 
-def parse(code, as_json=False):
+class Position(typing.TypedDict):
+    line: int
+    ch: int
+
+
+class Node(typing.TypedDict):
+    type: str
+    name: typing.Optional[str]
+    start: Position
+    end: Position
+    children: typing.List[Node]  # type: ignore
+
+
+def parse(code: str) -> Node:
     tree = cst.parse_module(code)
     with_meta = cstm.MetadataWrapper(tree)
     sam = NodePositions()
     _ = with_meta.visit(sam)
-
-    return (sam.root if not as_json else json.dumps(sam.root, indent=2))
-
-
-def Position(pos: cstm.CodePosition):
-    line = pos.line
-    column = pos.column
-    return {
-        'line': line - 1,  # subtract 1 to match CodeMirror
-        'ch': column  # ch to match CodeMirror
-    }
+    return sam.root
 
 
-def Node(type, name, start: cstm.CodeRange, end: cstm.CodeRange):
-    return {
-        'type': type,
-        'name': name,
-        'start': Position(start),
-        'end': Position(end),
-        'children': [],
-    }
+def parse_as_json(code: str) -> str:
+    return json.dumps(parse(code), indent=2)
 
 
 # Assignments also attach the assign target so we know what to display when
@@ -126,15 +128,20 @@ class NodePositions(m.MatcherDecoratableVisitor):
         child = self.make_node(type='Subscript', name=name, node=node)
         current['children'].append(child)
 
-    def positions(self, node):
-        meta = self.get_metadata(cstm.PositionProvider, node)
-        return meta.start, meta.end
+    def make_positions(self, node) -> typing.Tuple[Position, Position]:
+        meta: cstm.CodeRange = self.get_metadata(cstm.PositionProvider, node)
+
+        # subtract 1 from line to match CodeMirror (0-indexed)
+        return (
+            Position(line=meta.start.line - 1, ch=meta.start.column),
+            Position(line=meta.end.line - 1, ch=meta.end.column),
+        )
 
     def make_node(self, type=None, name=None, node=None):
         assert type is not None
         assert node is not None
-        start, end = self.positions(node)
-        return Node(type, name, start, end)
+        start, end = self.make_positions(node)
+        return Node(type=type, name=name, start=start, end=end, children=[])
 
 
 # For debugging; it just logs the nodes it visits
@@ -210,5 +217,5 @@ def log_test():
 
 
 if __name__ == "__main__":
-    print(parse(test, as_json=True))
+    print(parse_as_json(test))
     # log_test()
