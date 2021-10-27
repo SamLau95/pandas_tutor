@@ -1,6 +1,6 @@
 (df
  .sort_values('Name')
  .groupby('Sex')
- ['Count']
+ .loc[:, 'Count']
  .mean()
 )

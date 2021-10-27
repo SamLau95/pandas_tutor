@@ -178,7 +178,7 @@ test = '''
 (df
  .sort_values('Name')
  .groupby('Sex')
- .loc['Count']
+ .loc[:, 'Count']
  .mean()
 )
 '''.strip()
