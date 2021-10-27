@@ -1,5 +1,7 @@
 .PHONY: help build clean
 
+CONTENT = pandas_tutor
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -12,12 +14,13 @@ run_parse: ## Runs parse.py
 typecheck: ## Type checks everything
 	mypy pandas_tutor
 
+watch: ## reruns typecheck and tests on file change
+	@echo Watching content/ch for changes...
+	fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} $(MAKE) typecheck test
+
 # OLD STUFF FROM ANOTHER REPO
 build: ## Builds extension
 	jlpm run build
-
-watch: ## Watches TS code
-	jlpm run watch
 
 test_lab: ## Starts lab server in test book folder
 	cd codebook/test_book && jupyter lab
