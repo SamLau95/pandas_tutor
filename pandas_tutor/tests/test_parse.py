@@ -26,10 +26,8 @@ def make_test_case(test_name):
     return test
 
 
-if __name__ == "__main__":
-    for test_name in golden.iterdir():
-        if test_name.suffix == '.py':
-            test_case = make_test_case(test_name.stem)
-            setattr(TestParse, f'test_{test_name.stem}', test_case)
-
-    unittest.main()
+# make all test cases dynamically!
+for test_name in golden.iterdir():
+    if test_name.suffix == '.py':
+        test_case = make_test_case(test_name.stem)
+        setattr(TestParse, f'test_{test_name.stem}', test_case)

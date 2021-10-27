@@ -1,5 +1,6 @@
 {
-  "name": "Module",
+  "type": "Module",
+  "name": null,
   "start": {
     "line": 0,
     "ch": 0
@@ -10,7 +11,8 @@
   },
   "children": [
     {
-      "name": "Expr",
+      "type": "Expr",
+      "name": null,
       "start": {
         "line": 0,
         "ch": 0
@@ -21,7 +23,8 @@
       },
       "children": [
         {
-          "name": "Call",
+          "type": "Call",
+          "name": "sort_values",
           "start": {
             "line": 0,
             "ch": 1
@@ -33,7 +36,8 @@
           "children": []
         },
         {
-          "name": "Call",
+          "type": "Call",
+          "name": "groupby",
           "start": {
             "line": 0,
             "ch": 1
@@ -45,19 +49,21 @@
           "children": []
         },
         {
-          "name": "Subscript",
+          "type": "Subscript",
+          "name": "loc",
           "start": {
             "line": 0,
             "ch": 1
           },
           "end": {
             "line": 3,
-            "ch": 10
+            "ch": 14
           },
           "children": []
         },
         {
-          "name": "Call",
+          "type": "Call",
+          "name": "mean",
           "start": {
             "line": 0,
             "ch": 1

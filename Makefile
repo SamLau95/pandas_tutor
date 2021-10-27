@@ -7,6 +7,9 @@ test: ## Runs tests
 	python -m unittest
 
 
+run_parse: ## Runs parse.py, copies result
+	python -m pandas_tutor.parse | tee /dev/tty | pbcopy
+
 # OLD STUFF FROM ANOTHER REPO
 build: ## Builds extension
 	jlpm run build
