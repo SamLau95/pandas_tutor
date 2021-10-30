@@ -4,24 +4,13 @@ just for myself
 
 from .main import make_tutor_spec
 
-file_to_read = 'sort_values_01'
-
-code = '''
-import pandas as pd
-
-df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),
-                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),
-                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),
-                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),
-                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],
-                  columns=['Name', 'Sex', 'Count', 'Year'])
-
-df.sort_values('Name')
-'''
+file_to_read = 'sort_values_02'
 
 if __name__ == "__main__":
     from pathlib import Path
     code = (Path(__file__).parent /
             f'tests/e2e_golden/{file_to_read}.py').read_text()
     spec = make_tutor_spec(code)
+    #     print(code)
+    #     print('\n--------------\n')
     print(spec)

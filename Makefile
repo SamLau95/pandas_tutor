@@ -15,6 +15,10 @@ sam: ## Runs what sam wants
 	@$(sam_cmd)
 	@# fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} sh -c '$(sam_cmd)'
 
+short_sam: ## Displays make sam with dataframes taken out of json
+	@# $(MAKE) sam | jq '(..|objects|select(has("data"))).data |= "<omit>"'
+	@$(MAKE) sam | jq '.[].data_frame |= "<omit>"'
+
 
 typecheck: ## Type checks everything
 	mypy pandas_tutor
