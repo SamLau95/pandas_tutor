@@ -1,6 +1,7 @@
 {
   "type": "Module",
   "name": null,
+  "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
   "start": {
     "line": 0,
     "ch": 0
@@ -13,6 +14,7 @@
     {
       "type": "Expr",
       "name": null,
+      "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
       "start": {
         "line": 0,
         "ch": 0
@@ -25,6 +27,7 @@
         {
           "type": "Name",
           "name": "df",
+          "code": "df",
           "start": {
             "line": 0,
             "ch": 1
@@ -38,6 +41,7 @@
         {
           "type": "Call",
           "name": "sort_values",
+          "code": "df\n .sort_values('Name')",
           "start": {
             "line": 0,
             "ch": 1
@@ -51,6 +55,7 @@
         {
           "type": "Call",
           "name": "groupby",
+          "code": "df\n .sort_values('Name')\n .groupby('Sex')",
           "start": {
             "line": 0,
             "ch": 1
@@ -64,6 +69,7 @@
         {
           "type": "Subscript",
           "name": "loc",
+          "code": "df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']",
           "start": {
             "line": 0,
             "ch": 1
@@ -77,6 +83,7 @@
         {
           "type": "Call",
           "name": "mean",
+          "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
           "start": {
             "line": 0,
             "ch": 1

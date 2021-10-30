@@ -2,14 +2,19 @@
 
 CONTENT = pandas_tutor
 
+sam_cmd = python -m pandas_tutor.sams_scratchpad # && echo "\n------------------\n"
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 test: ## Runs tests
 	python -m unittest
 
-run_parse: ## Runs parse.py
-	@python -m pandas_tutor.parse
+# fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} sh -c '$(sam_cmd)'
+sam: ## Runs what sam wants
+	@$(sam_cmd)
+	@# fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} sh -c '$(sam_cmd)'
+
 
 typecheck: ## Type checks everything
 	mypy pandas_tutor

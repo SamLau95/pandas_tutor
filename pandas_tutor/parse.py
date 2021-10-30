@@ -17,24 +17,28 @@ https://pythontutor.com/visualize.html#code=s%20%3D%20'hello%20world%20!!%20'%0A
 from __future__ import annotations
 
 import json
-import typing
+import typing as t
+import dataclasses
 
 import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
 
-class Position(typing.TypedDict):
+@dataclasses.dataclass
+class Position:
     line: int
     ch: int
 
 
-class Node(typing.TypedDict):
+@dataclasses.dataclass
+class Node:
     type: str
-    name: typing.Optional[str]
+    name: t.Optional[str]
+    code: str
     start: Position
     end: Position
-    children: typing.List[Node]  # type: ignore
+    children: t.List[Node]  # type: ignore
 
 
 def parse(code: str) -> Node:
@@ -46,7 +50,8 @@ def parse(code: str) -> Node:
 
 
 def parse_as_json(code: str) -> str:
-    return json.dumps(parse(code), indent=2)
+    node = parse(code)
+    return json.dumps(dataclasses.asdict(node), indent=2)
 
 
 # Assignments also attach the assign target so we know what to display when
@@ -59,11 +64,12 @@ def parse_as_json(code: str) -> str:
 class NodePositions(m.MatcherDecoratableVisitor):
     METADATA_DEPENDENCIES = (cstm.PositionProvider, )
 
+    # Store cst_root because we need its code_for_node method
+    cst_root: cst.CSTNode
+    root: Node
+    stack: t.List[Node]
+
     def __init__(self):
-        # Store cst_root because we need its code_for_node method for
-        # assignments
-        self.cst_root = None
-        self.root = None
         self.stack = []
         super().__init__()
 
@@ -80,24 +86,24 @@ class NodePositions(m.MatcherDecoratableVisitor):
     def visit_Expr(self, node):
         current = self.stack[-1]
         child = self.make_node(type='Expr', node=node)
-        current['children'].append(child)
+        current.children.append(child)
         self.stack.append(child)
 
     def leave_Expr(self, node):
         current = self.stack[-1]
-        current['children'] = list(reversed(current['children']))
+        current.children = list(reversed(current.children))
         self.stack.pop()
 
     # Assign appears instead of Expr when the code looks like df = ...
     def visit_Assign(self, node):
         current = self.stack[-1]
         child = self.make_node(type='Assign', node=node)
-        current['children'].append(child)
+        current.children.append(child)
         self.stack.append(child)
 
     def leave_Assign(self, node):
         current = self.stack[-1]
-        current['children'] = list(reversed(current['children']))
+        current.children = list(reversed(current.children))
         self.stack.pop()
 
     # matches df.f() to get df but not df.f().g()
@@ -107,7 +113,7 @@ class NodePositions(m.MatcherDecoratableVisitor):
         current = self.stack[-1]
         name = node.value.value
         child = self.make_node(type='Name', name=name, node=node.value)
-        current['children'].append(child)
+        current.children.append(child)
 
     # Attribute function calls, like pd.melt(df)
     # won't match square(2)
@@ -116,7 +122,7 @@ class NodePositions(m.MatcherDecoratableVisitor):
         name = node.func.attr.value if m.matches(
             node.func, m.Attribute(attr=m.Name())) else None
         child = self.make_node(type='Call', name=name, node=node)
-        current['children'].append(child)
+        current.children.append(child)
 
     # df.iloc[:, 1] or df.loc['hello'] or df['Name']
     def visit_Subscript(self, node):
@@ -126,12 +132,12 @@ class NodePositions(m.MatcherDecoratableVisitor):
                                           | m.Name('iloc')))) else None)
         current = self.stack[-1]
         child = self.make_node(type='Subscript', name=name, node=node)
-        current['children'].append(child)
+        current.children.append(child)
 
-    def make_positions(self, node) -> typing.Tuple[Position, Position]:
+    def make_positions(self, node) -> t.Tuple[Position, Position]:
         meta: cstm.CodeRange = self.get_metadata(cstm.PositionProvider, node)
 
-        # subtract 1 from line to match CodeMirror (0-indexed)
+        # subtract 1 from line to make everything 0-indexed
         return (
             Position(line=meta.start.line - 1, ch=meta.start.column),
             Position(line=meta.end.line - 1, ch=meta.end.column),
@@ -140,8 +146,14 @@ class NodePositions(m.MatcherDecoratableVisitor):
     def make_node(self, type=None, name=None, node=None):
         assert type is not None
         assert node is not None
+        code = self.cst_root.code_for_node(node)
         start, end = self.make_positions(node)
-        return Node(type=type, name=name, start=start, end=end, children=[])
+        return Node(type=type,
+                    name=name,
+                    code=code,
+                    start=start,
+                    end=end,
+                    children=[])
 
 
 # For debugging; it just logs the nodes it visits
@@ -193,15 +205,6 @@ class LoggingVisitor(cst.CSTVisitor):
 
 
 test = '''
-import pandas as pd
-
-df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),
-                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),
-                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),
-                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),
-                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],
-                  columns=['Name', 'Sex', 'Count', 'Year'])
-
 df.loc[1, 'Name']
 '''.strip()
 
@@ -217,5 +220,8 @@ def log_test():
 
 
 if __name__ == "__main__":
+    from pathlib import Path
+    test = (Path(__file__).parent /
+            'tests/parse_golden/loc_one_val_01.py').read_text()
     print(parse_as_json(test))
     # log_test()
