@@ -10,10 +10,11 @@ help:
 test: ## Runs tests
 	python -m unittest
 
-# fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} sh -c '$(sam_cmd)'
 sam: ## Runs what sam wants
 	@$(sam_cmd)
-	@# fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} sh -c '$(sam_cmd)'
+
+sam_watch:
+	fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} $(MAKE) sam
 
 short_sam: ## Displays make sam with dataframes taken out of json
 	@# $(MAKE) sam | jq '(..|objects|select(has("data"))).data |= "<omit>"'
