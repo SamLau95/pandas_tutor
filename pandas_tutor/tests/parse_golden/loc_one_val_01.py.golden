@@ -96,7 +96,10 @@
             "line": 9,
             "ch": 17
           },
-          "children": []
+          "children": [
+            "1",
+            "'Name'"
+          ]
         }
       ]
     }

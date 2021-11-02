@@ -15,10 +15,11 @@ class TestEndToEnd(unittest.TestCase):
 def make_test_case(test_name):
     in_file = test_cases / f'{test_name}.py'
     golden_file = test_cases / f'{test_name}.py.golden'
-    assert in_file.exists()
-    assert golden_file.exists()
 
     def test(self: TestEndToEnd):
+        self.assertTrue(in_file.exists())
+        self.assertTrue(golden_file.exists())
+
         code = in_file.read_text()
         res = make_tutor_spec_py(code)
         golden_res = json.loads(golden_file.read_text())

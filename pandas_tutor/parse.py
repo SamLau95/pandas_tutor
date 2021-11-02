@@ -38,6 +38,9 @@ class Node:
     code: str
     start: Position
     end: Position
+
+    # TODO: for Call nodes, the children is just a list of strings. we should
+    # eventually make Arg nodes instead
     children: t.List[Node]  # type: ignore
 
 
@@ -145,6 +148,12 @@ class NodePositions(m.MatcherDecoratableVisitor):
                                           | m.Name('iloc')))) else None)
         current = self.stack[-1]
         child = self.make_node(type='Subscript', name=name, node=node)
+
+        # gets "1:5" and "['Name', 'Count']" from
+        # "df.loc[1:5, ['Name', 'Count']]"
+        child.children = [
+            self.cst_root.code_for_node(arg.slice) for arg in node.slice
+        ]
         current.children.append(child)
 
     def make_positions(self, node) -> t.Tuple[Position, Position]:

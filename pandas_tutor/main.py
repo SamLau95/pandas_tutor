@@ -5,10 +5,9 @@ Usage:
     main.py FILE ... [-o] [--parse_only]
 
 Options:
-    -o --output   # Outputs specs to files named {input_file}.golden
-    --parse_only  # Outputs parsed code rather than full spec
+    -o --output      # Outputs specs to files named {input_file}.golden
+    -p --parse_only  # Outputs parsed code rather than full spec
 '''
-import dataclasses
 import typing as t
 from pathlib import Path
 

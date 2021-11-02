@@ -1,5 +1,6 @@
 .PHONY: help build clean
 
+WATCH_EXCLUDE = -e .*__pycache__.*
 CONTENT = pandas_tutor
 
 sam_cmd = python -m pandas_tutor.sams_scratchpad # && echo "\n------------------\n"
@@ -14,10 +15,12 @@ sam: ## Runs what sam wants
 	@$(sam_cmd)
 
 sam_watch:
-	fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} $(MAKE) sam
+	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) --one-per-batch |\
+		xargs -0 -n 1 -I {} $(MAKE) sam
 
 typecheck: ## Type checks everything
 	mypy pandas_tutor
 
 watch: ## reruns typecheck and tests on file change
-	fswatch -0 $(CONTENT) --one-per-batch | xargs -0 -n 1 -I {} $(MAKE) typecheck test
+	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) |\
+		xargs -0 -n 1 -I {} sh -c "echo {} && $(MAKE) typecheck test"

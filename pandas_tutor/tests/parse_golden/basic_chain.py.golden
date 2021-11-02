@@ -82,7 +82,10 @@
             "line": 3,
             "ch": 17
           },
-          "children": []
+          "children": [
+            ":",
+            "'Count'"
+          ]
         },
         {
           "type": "Call",
