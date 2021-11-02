@@ -122,6 +122,19 @@ class NodePositions(m.MatcherDecoratableVisitor):
         name = node.func.attr.value if m.matches(
             node.func, m.Attribute(attr=m.Name())) else None
         child = self.make_node(type='Call', name=name, node=node)
+
+        # HACK: just saves the args as strings. later, we'll essentially use
+        # regexes to figure out what the args are. in the longer term, we
+        # should actually parse the args properly.
+        #
+        # it's a bit tricky to implement at the moment since we're flattening
+        # the Call structure as we parse. to implement this, we should keep the
+        # calls nested, add calls to the stack, and only flatten everything at
+        # the very end.
+        child.children = [
+            self.cst_root.code_for_node(arg) for arg in node.args
+        ]
+
         current.children.append(child)
 
     # df.iloc[:, 1] or df.loc['hello'] or df['Name']
@@ -178,7 +191,7 @@ class LoggingVisitor(cst.CSTVisitor):
         self.depth -= 1
 
     def visit_Call(self, node):
-        self.log(node, 'Call')
+        self.log(node, f'Call({len(node.args)} args)')
         self.depth += 1
 
     def leave_Call(self, node):
@@ -222,6 +235,6 @@ def log_test():
 if __name__ == "__main__":
     from pathlib import Path
     test = (Path(__file__).parent /
-            'tests/parse_golden/loc_one_val_01.py').read_text()
+            'tests/e2e_golden/sort_values_01.py').read_text()
     print(parse_as_json(test))
     # log_test()

@@ -14,7 +14,7 @@ from .parse import Node
 
 @dataclasses.dataclass
 class EvalResult:
-    step: Node
+    node: Node
     df: pd.DataFrame
 
 
@@ -32,8 +32,8 @@ def run(root: Node) -> t.List[EvalResult]:
 
     # wrap individual steps in parens before eval since they can have newlines
     eval_results = [
-        EvalResult(step=step, df=eval(f"({step.code})", globals()))
-        for step in last_expr.children
+        EvalResult(node=node, df=eval(f"({node.code})", globals()))
+        for node in last_expr.children
     ]
 
     return eval_results

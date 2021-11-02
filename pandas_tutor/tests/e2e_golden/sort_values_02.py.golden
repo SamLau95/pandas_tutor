@@ -145,5 +145,152 @@
         ]
       }
     }
+  },
+  {
+    "type": "sort_values",
+    "code_step": "df.sort_values('Name').sort_values('Count')",
+    "mapping": [],
+    "data_frame": {
+      "lhs": {
+        "col_names": [
+          "Name",
+          "Sex",
+          "Count",
+          "Year"
+        ],
+        "data": [
+          {
+            "Name": "Amelia",
+            "Sex": "F",
+            "Count": 12704,
+            "Year": 2020
+          },
+          {
+            "Name": "Ava",
+            "Sex": "F",
+            "Count": 13084,
+            "Year": 2020
+          },
+          {
+            "Name": "Charlotte",
+            "Sex": "F",
+            "Count": 13003,
+            "Year": 2020
+          },
+          {
+            "Name": "Elijah",
+            "Sex": "M",
+            "Count": 13034,
+            "Year": 2020
+          },
+          {
+            "Name": "Emma",
+            "Sex": "F",
+            "Count": 15581,
+            "Year": 2020
+          },
+          {
+            "Name": "Liam",
+            "Sex": "M",
+            "Count": 19659,
+            "Year": 2020
+          },
+          {
+            "Name": "Noah",
+            "Sex": "M",
+            "Count": 18252,
+            "Year": 2020
+          },
+          {
+            "Name": "Oliver",
+            "Sex": "M",
+            "Count": 14147,
+            "Year": 2020
+          },
+          {
+            "Name": "Sophia",
+            "Sex": "F",
+            "Count": 12976,
+            "Year": 2020
+          },
+          {
+            "Name": "William",
+            "Sex": "M",
+            "Count": 12541,
+            "Year": 2020
+          }
+        ]
+      },
+      "rhs": {
+        "col_names": [
+          "Name",
+          "Sex",
+          "Count",
+          "Year"
+        ],
+        "data": [
+          {
+            "Name": "William",
+            "Sex": "M",
+            "Count": 12541,
+            "Year": 2020
+          },
+          {
+            "Name": "Amelia",
+            "Sex": "F",
+            "Count": 12704,
+            "Year": 2020
+          },
+          {
+            "Name": "Sophia",
+            "Sex": "F",
+            "Count": 12976,
+            "Year": 2020
+          },
+          {
+            "Name": "Charlotte",
+            "Sex": "F",
+            "Count": 13003,
+            "Year": 2020
+          },
+          {
+            "Name": "Elijah",
+            "Sex": "M",
+            "Count": 13034,
+            "Year": 2020
+          },
+          {
+            "Name": "Ava",
+            "Sex": "F",
+            "Count": 13084,
+            "Year": 2020
+          },
+          {
+            "Name": "Oliver",
+            "Sex": "M",
+            "Count": 14147,
+            "Year": 2020
+          },
+          {
+            "Name": "Emma",
+            "Sex": "F",
+            "Count": 15581,
+            "Year": 2020
+          },
+          {
+            "Name": "Noah",
+            "Sex": "M",
+            "Count": 18252,
+            "Year": 2020
+          },
+          {
+            "Name": "Liam",
+            "Sex": "M",
+            "Count": 19659,
+            "Year": 2020
+          }
+        ]
+      }
+    }
   }
 ]

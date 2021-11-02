@@ -50,7 +50,9 @@
             "line": 1,
             "ch": 21
           },
-          "children": []
+          "children": [
+            "'Name'"
+          ]
         },
         {
           "type": "Call",
@@ -64,7 +66,9 @@
             "line": 2,
             "ch": 16
           },
-          "children": []
+          "children": [
+            "'Sex'"
+          ]
         },
         {
           "type": "Subscript",

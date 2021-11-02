@@ -22,19 +22,19 @@ Anchor = t.Union[t.Literal['lhs'], t.Literal['rhs']]
 
 @dataclasses.dataclass
 class Highlight:
-    illustrate: t.Literal['highlight']
     select: Selection
     anchor: Anchor
     index: int
+    illustrate: t.Literal['highlight'] = 'highlight'
 
 
 @dataclasses.dataclass
 class Outline:
-    illustrate: t.Literal['outline']
     select: Selection
     # from is a Python keyword!
     from_: TablePos
     to: TablePos
+    illustrate: t.Literal['outline'] = 'outline'
 
 
 Mark = t.Union[Highlight, Outline]
@@ -48,11 +48,11 @@ class TablePos:
 
 @dataclasses.dataclass
 class DFPair:
-    lhs: DF
-    rhs: DF
+    lhs: DFSpec
+    rhs: DFSpec
 
 
 @dataclasses.dataclass
-class DF:
+class DFSpec:
     col_names: t.List[str]
     data: t.List[t.Dict]
