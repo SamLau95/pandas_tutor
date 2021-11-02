@@ -39,15 +39,31 @@ def mark_for_sort_values(before: EvalResult, after: EvalResult):
     return [*highlights, *outlines]
 
 
+# handles:
+# df.loc[1:5, ['Name', 'Count']]
+# df.iloc[2:5, 1:4]
 def mark_for_slice(before: EvalResult, after: EvalResult):
     df = after.df
-    outlines = [
+
+    row_diffs = util.diff_rows(before.df, df)
+    col_diffs = util.diff_cols(before.df, df)
+
+    # only make marks if there is at least one mismatch
+    rows = [
         Outline(select='row',
                 from_=TablePos('lhs', before_index),
                 to=TablePos('rhs', after_index))
-        for before_index, after_index in util.diff_rows(before.df, df)
-    ]
-    return outlines
+        for before_index, after_index in row_diffs
+    ] if util.has_diff(row_diffs) else []
+
+    cols = [
+        Outline(select='column',
+                from_=TablePos('lhs', before_index),
+                to=TablePos('rhs', after_index))
+        for before_index, after_index in util.diff_cols(before.df, df)
+    ] if util.has_diff(col_diffs) else []
+
+    return [*cols, *rows]
 
 
 def no_marks(before: EvalResult, after: EvalResult):

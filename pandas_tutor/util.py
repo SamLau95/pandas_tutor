@@ -2,13 +2,14 @@
 utilities
 '''
 
-import enum
-import pdb
 import re
 import typing as t
 
-import numpy as np
 import pandas as pd  # type: ignore
+
+from .diagram import Null
+
+IndexPair = t.Tuple[int, t.Union[int, Null]]
 
 # https://gist.github.com/bpeterso2000/11277541
 QUOTED_STRING_RE = re.compile(
@@ -45,7 +46,15 @@ def mapt(fn, *args):
     return tuple(map(fn, *args))
 
 
-def diff_rows(df1: pd.DataFrame,
-              df2: pd.DataFrame) -> t.List[t.Tuple[int, int]]:
+def diff_rows(df1: pd.DataFrame, df2: pd.DataFrame) -> t.List[IndexPair]:
     '''for each row in df1, returns (row_index, df2_row_index | "NA")'''
     return left_match(df1.index, df2.index)
+
+
+def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame) -> t.List[IndexPair]:
+    '''for each col in df1, returns (col_index, df2_col_index | "NA")'''
+    return left_match(df1.columns, df2.columns)
+
+
+def has_diff(matches: t.List[IndexPair]):
+    return any(left != right for left, right in matches)

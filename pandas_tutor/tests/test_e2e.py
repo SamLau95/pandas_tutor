@@ -8,7 +8,6 @@ test_cases = Path(__file__).parent / 'e2e_golden'
 
 
 class TestEndToEnd(unittest.TestCase):
-    maxDiff = None
     pass
 
 

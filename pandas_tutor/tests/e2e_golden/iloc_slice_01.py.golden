@@ -1,8 +1,56 @@
 [
   {
     "type": "slice",
-    "code_step": "df.loc[1:5, ['Name', 'Count']]",
+    "code_step": "df.iloc[2:5, 1:4]",
     "mapping": [
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": "NA"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 0
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 1
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 2
+        },
+        "illustrate": "outline"
+      },
       {
         "select": "row",
         "from": {
@@ -23,7 +71,7 @@
         },
         "to": {
           "anchor": "rhs",
-          "index": 0
+          "index": "NA"
         },
         "illustrate": "outline"
       },
@@ -32,6 +80,18 @@
         "from": {
           "anchor": "lhs",
           "index": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 0
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 3
         },
         "to": {
           "anchor": "rhs",
@@ -43,7 +103,7 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 3
+          "index": 4
         },
         "to": {
           "anchor": "rhs",
@@ -55,23 +115,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 4
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 3
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
           "index": 5
         },
         "to": {
           "anchor": "rhs",
-          "index": 4
+          "index": "NA"
         },
         "illustrate": "outline"
       },
@@ -197,29 +245,25 @@
       },
       "rhs": {
         "col_names": [
-          "Name",
-          "Count"
+          "Sex",
+          "Count",
+          "Year"
         ],
         "data": [
           {
-            "Name": "Noah",
-            "Count": 18252
+            "Sex": "M",
+            "Count": 14147,
+            "Year": 2020
           },
           {
-            "Name": "Oliver",
-            "Count": 14147
+            "Sex": "M",
+            "Count": 13034,
+            "Year": 2020
           },
           {
-            "Name": "Elijah",
-            "Count": 13034
-          },
-          {
-            "Name": "William",
-            "Count": 12541
-          },
-          {
-            "Name": "Emma",
-            "Count": 15581
+            "Sex": "M",
+            "Count": 12541,
+            "Year": 2020
           }
         ]
       }

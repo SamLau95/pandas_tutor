@@ -11,6 +11,8 @@ import typing as t
 
 import numpy as np
 
+Null = t.Literal['NA']
+
 
 def _diagram_as_dict(dclass):
     '''pass into dataclasses.asdict to rename from_ to from'''
@@ -78,7 +80,7 @@ Mark = t.Union[Highlight, Outline]
 @dataclasses.dataclass
 class TablePos:
     anchor: Anchor
-    index: int
+    index: t.Union[int, Null]
 
 
 @dataclasses.dataclass

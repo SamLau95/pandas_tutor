@@ -1,0 +1,176 @@
+[
+  {
+    "type": "slice",
+    "code_step": "df.loc[:, ['Name', 'Count']]",
+    "mapping": [
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 0
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": "NA"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 1
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "index": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": "NA"
+        },
+        "illustrate": "outline"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "col_names": [
+          "Name",
+          "Sex",
+          "Count",
+          "Year"
+        ],
+        "data": [
+          {
+            "Name": "Liam",
+            "Sex": "M",
+            "Count": 19659,
+            "Year": 2020
+          },
+          {
+            "Name": "Noah",
+            "Sex": "M",
+            "Count": 18252,
+            "Year": 2020
+          },
+          {
+            "Name": "Oliver",
+            "Sex": "M",
+            "Count": 14147,
+            "Year": 2020
+          },
+          {
+            "Name": "Elijah",
+            "Sex": "M",
+            "Count": 13034,
+            "Year": 2020
+          },
+          {
+            "Name": "William",
+            "Sex": "M",
+            "Count": 12541,
+            "Year": 2020
+          },
+          {
+            "Name": "Emma",
+            "Sex": "F",
+            "Count": 15581,
+            "Year": 2020
+          },
+          {
+            "Name": "Ava",
+            "Sex": "F",
+            "Count": 13084,
+            "Year": 2020
+          },
+          {
+            "Name": "Charlotte",
+            "Sex": "F",
+            "Count": 13003,
+            "Year": 2020
+          },
+          {
+            "Name": "Sophia",
+            "Sex": "F",
+            "Count": 12976,
+            "Year": 2020
+          },
+          {
+            "Name": "Amelia",
+            "Sex": "F",
+            "Count": 12704,
+            "Year": 2020
+          }
+        ]
+      },
+      "rhs": {
+        "col_names": [
+          "Name",
+          "Count"
+        ],
+        "data": [
+          {
+            "Name": "Liam",
+            "Count": 19659
+          },
+          {
+            "Name": "Noah",
+            "Count": 18252
+          },
+          {
+            "Name": "Oliver",
+            "Count": 14147
+          },
+          {
+            "Name": "Elijah",
+            "Count": 13034
+          },
+          {
+            "Name": "William",
+            "Count": 12541
+          },
+          {
+            "Name": "Emma",
+            "Count": 15581
+          },
+          {
+            "Name": "Ava",
+            "Count": 13084
+          },
+          {
+            "Name": "Charlotte",
+            "Count": 13003
+          },
+          {
+            "Name": "Sophia",
+            "Count": 12976
+          },
+          {
+            "Name": "Amelia",
+            "Count": 12704
+          }
+        ]
+      }
+    }
+  }
+]
