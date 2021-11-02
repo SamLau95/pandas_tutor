@@ -31,7 +31,7 @@ def make_tutor_spec_py(code: str) -> t.List[dict]:
     root = parse(code)
     eval_results = run(root)
     spec = serialize(eval_results)
-    return [dataclasses.asdict(diagram) for diagram in spec]
+    return [diagram.to_dict() for diagram in spec]
 
 
 def spec_from_file(filename: str, spec_fn=make_tutor_spec) -> str:

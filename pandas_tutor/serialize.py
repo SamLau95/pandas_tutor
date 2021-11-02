@@ -4,11 +4,9 @@ serializes run.py outputs into json. here's where the magic happens!
 
 from __future__ import annotations
 
-import dataclasses
 import json
 import typing as t
 
-import numpy as np
 import pandas as pd  # type: ignore
 
 from .diagram import DFPair, DFSpec, Diagram
@@ -16,28 +14,6 @@ from .marks import make_marks
 from .run import EvalResult
 
 T = t.TypeVar('T')
-
-
-class DiagramEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if dataclasses.is_dataclass(obj):
-            res = dataclasses.asdict(obj)
-
-            # little hack to get from keys in JSON
-            if 'from_' in res:
-                res['from'] = res['from_']
-                del res['from_']
-
-            return res
-
-        # extras for np objects
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return super().default(obj)
 
 
 def serialize(results: t.List[EvalResult]) -> t.List[Diagram]:
@@ -48,7 +24,7 @@ def serialize(results: t.List[EvalResult]) -> t.List[Diagram]:
 
 def serialize_to_json(results: t.List[EvalResult]) -> str:
     diagrams = serialize(results)
-    return json.dumps(diagrams, indent=2, cls=DiagramEncoder)
+    return Diagram.to_json(diagrams)
 
 
 def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
