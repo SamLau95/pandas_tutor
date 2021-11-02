@@ -5,123 +5,123 @@
     "mapping": [
       {
         "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 0
+        },
         "to": {
           "anchor": "rhs",
           "index": "NA"
         },
-        "illustrate": "outline",
-        "from": {
-          "anchor": "lhs",
-          "index": 0
-        }
+        "illustrate": "outline"
       },
       {
         "select": "row",
-        "to": {
-          "anchor": "rhs",
-          "index": 0
-        },
-        "illustrate": "outline",
         "from": {
           "anchor": "lhs",
           "index": 1
-        }
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 0
+        },
+        "illustrate": "outline"
       },
       {
         "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 2
+        },
         "to": {
           "anchor": "rhs",
           "index": 1
         },
-        "illustrate": "outline",
-        "from": {
-          "anchor": "lhs",
-          "index": 2
-        }
+        "illustrate": "outline"
       },
       {
         "select": "row",
-        "to": {
-          "anchor": "rhs",
-          "index": 2
-        },
-        "illustrate": "outline",
         "from": {
           "anchor": "lhs",
           "index": 3
-        }
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 2
+        },
+        "illustrate": "outline"
       },
       {
         "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 4
+        },
         "to": {
           "anchor": "rhs",
           "index": 3
         },
-        "illustrate": "outline",
-        "from": {
-          "anchor": "lhs",
-          "index": 4
-        }
+        "illustrate": "outline"
       },
       {
         "select": "row",
-        "to": {
-          "anchor": "rhs",
-          "index": 4
-        },
-        "illustrate": "outline",
         "from": {
           "anchor": "lhs",
           "index": 5
-        }
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 4
+        },
+        "illustrate": "outline"
       },
       {
         "select": "row",
-        "to": {
-          "anchor": "rhs",
-          "index": "NA"
-        },
-        "illustrate": "outline",
         "from": {
           "anchor": "lhs",
           "index": 6
-        }
-      },
-      {
-        "select": "row",
+        },
         "to": {
           "anchor": "rhs",
           "index": "NA"
         },
-        "illustrate": "outline",
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
         "from": {
           "anchor": "lhs",
           "index": 7
-        }
-      },
-      {
-        "select": "row",
+        },
         "to": {
           "anchor": "rhs",
           "index": "NA"
         },
-        "illustrate": "outline",
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
         "from": {
           "anchor": "lhs",
           "index": 8
-        }
-      },
-      {
-        "select": "row",
+        },
         "to": {
           "anchor": "rhs",
           "index": "NA"
         },
-        "illustrate": "outline",
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
         "from": {
           "anchor": "lhs",
           "index": 9
-        }
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": "NA"
+        },
+        "illustrate": "outline"
       }
     ],
     "data_frame": {

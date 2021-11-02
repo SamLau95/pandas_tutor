@@ -15,9 +15,10 @@ import numpy as np
 def _diagram_as_dict(dclass):
     '''pass into dataclasses.asdict to rename from_ to from'''
     res = dict(dclass)
+    # we want to preserve the original dict order, so we rebuild the dict if we
+    # see from_
     if 'from_' in res:
-        res['from'] = res['from_']
-        del res['from_']
+        return {'from' if k == 'from_' else k: v for k, v in res.items()}
     return res
 
 
