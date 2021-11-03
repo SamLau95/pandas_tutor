@@ -74,6 +74,7 @@ class NodePositions(m.MatcherDecoratableVisitor):
 
     def __init__(self):
         self.stack = []
+        self.subscript_depth = 0
         super().__init__()
 
     def visit_Module(self, node):
@@ -93,8 +94,8 @@ class NodePositions(m.MatcherDecoratableVisitor):
         self.stack.append(child)
 
     def leave_Expr(self, node):
-        current = self.stack[-1]
-        current.children = list(reversed(current.children))
+        # current = self.stack[-1]
+        # current.children = list(reversed(current.children))
         self.stack.pop()
 
     # Assign appears instead of Expr when the code looks like df = ...
@@ -104,23 +105,34 @@ class NodePositions(m.MatcherDecoratableVisitor):
         current.children.append(child)
         self.stack.append(child)
 
+    # we don't want to mark the df in df = pd.DataFrame(...)
+    def visit_AssignTarget(self, node):
+        return False
+
     def leave_Assign(self, node):
-        current = self.stack[-1]
-        current.children = list(reversed(current.children))
+        # current = self.stack[-1]
+        # current.children = list(reversed(current.children))
         self.stack.pop()
 
-    # matches df.f() to get df but not df.f().g()
-    @m.call_if_inside(m.Attribute(value=m.Name()))
-    @m.visit(m.Attribute())
-    def visit_first_attribute_of_chain(self, node):
+    # we need to get the df out of:
+    # df.f()
+    # df['hello']
+    #
+    # but we should only do this for the first name in an Expr
+    def leave_Name(self, node):
         current = self.stack[-1]
-        name = node.value.value
-        child = self.make_node(type='Name', name=name, node=node.value)
+        should_mark = ((current.type == 'Expr' or current.type == 'Assign')
+                       and len(current.children) == 0)
+        if not should_mark:
+            return
+
+        name = node.value
+        child = self.make_node(type='Name', name=name, node=node)
         current.children.append(child)
 
     # Attribute function calls, like pd.melt(df)
     # won't match square(2)
-    def visit_Call(self, node):
+    def leave_Call(self, node):
         current = self.stack[-1]
         name = node.func.attr.value if m.matches(
             node.func, m.Attribute(attr=m.Name())) else None
@@ -140,13 +152,27 @@ class NodePositions(m.MatcherDecoratableVisitor):
 
         current.children.append(child)
 
-    # df.iloc[:, 1] or df.loc['hello'] or df['Name']
+    # df.iloc[:, 1]
+    # df.loc['hello']
+    # df['Name']
+    # df[df['Sex'] == 'F']
     def visit_Subscript(self, node):
+        self.subscript_depth += 1
+
+    def leave_Subscript(self, node):
+        # HACK: don't visit nested subscripts so we won't make a node for the
+        # df['Name'] in df[df['Name'] == 'Liam']
+        self.subscript_depth -= 1
+        if self.subscript_depth > 0:
+            return
+
+        current = self.stack[-1]
+
         name = (node.value.attr.value if m.matches(
             node,
             m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                           | m.Name('iloc')))) else None)
-        current = self.stack[-1]
+
         child = self.make_node(type='Subscript', name=name, node=node)
 
         # gets "1:5" and "['Name', 'Count']" from
@@ -231,10 +257,10 @@ df.loc[1, 'Name']
 '''.strip()
 
 
-def log_test():
-    print(test)
+def log_test(code):
+    print(code)
     print('\n-----\n')
-    tree = cst.parse_module(test)
+    tree = cst.parse_module(code)
     with_meta = cstm.MetadataWrapper(tree)
     sam = LoggingVisitor()
     _ = with_meta.visit(sam)

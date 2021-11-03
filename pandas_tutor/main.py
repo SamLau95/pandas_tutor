@@ -2,18 +2,19 @@
 functions that put everything together
 
 Usage:
-    main.py FILE ... [-o] [--parse_only]
+    main.py FILE ... [--output] [--parse_only] [--parse_test]
 
 Options:
     -o --output      # Outputs specs to files named {input_file}.golden
     -p --parse_only  # Outputs parsed code rather than full spec
+    -t --parse_test  # Outputs parse debug output
 '''
 import typing as t
 from pathlib import Path
 
 from docopt import docopt  # type: ignore
 
-from .parse import parse, parse_as_json
+from .parse import log_test, parse, parse_as_json
 from .run import run
 from .serialize import serialize, serialize_to_json
 
@@ -48,7 +49,8 @@ def write_spec_to_file(spec: str, out: Path) -> None:
 if __name__ == "__main__":
     args = docopt(__doc__, version='1.0')
     # print(args)
-    spec_fn = make_tutor_spec if not args['--parse_only'] else parse_as_json
+    spec_fn = (log_test if args['--parse_test'] else
+               parse_as_json if args['--parse_only'] else make_tutor_spec)
 
     if not args['--output']:
         for filename in args['FILE']:

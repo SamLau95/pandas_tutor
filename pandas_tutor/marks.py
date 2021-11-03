@@ -24,25 +24,32 @@ def mark_for_sort_values(before: EvalResult, after: EvalResult):
 
     sort_cols = util.literal_strings(args[0])
 
-    highlights = [
+    cols = [
         Highlight(index=index, select='column', anchor='lhs')
         for index in util.search(df.columns, sort_cols)
     ]
 
-    outlines = [
+    rows = [
         Outline(select='row',
                 from_=TablePos('lhs', before_index),
                 to=TablePos('rhs', after_index))
         for before_index, after_index in util.diff_rows(before.df, df)
     ]
 
-    return [*highlights, *outlines]
+    return [*cols, *rows]
 
 
 # handles:
 # df.loc[1:5, ['Name', 'Count']]
 # df.iloc[2:5, 1:4]
+# df[df['Count'] > 10000]
 def mark_for_slice(before: EvalResult, after: EvalResult):
+    # HACK: special case: when there's a boolean op in the slice, use
+    # sort_values logic. but this won't handle cases like: df[df['booleans']]
+    args = t.cast(t.List[str], after.node.children)
+    if any(map(util.has_boolean_op, args)):
+        return mark_for_sort_values(before, after)
+
     df = after.df
 
     row_diffs = util.diff_rows(before.df, df)

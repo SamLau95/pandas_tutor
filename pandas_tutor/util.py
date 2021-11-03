@@ -11,6 +11,8 @@ from .diagram import Null
 
 IndexPair = t.Tuple[int, t.Union[int, Null]]
 
+bool_ops = ['==', '<', '>', '!=']
+
 # https://gist.github.com/bpeterso2000/11277541
 QUOTED_STRING_RE = re.compile(
     r"(?P<quote>['\"])(?P<string>.*?)(?<!\\)(?P=quote)")
@@ -22,6 +24,10 @@ def literal_strings(arg_as_str: str):
         match.group('string')
         for match in QUOTED_STRING_RE.finditer(arg_as_str)
     ]
+
+
+def has_boolean_op(arg_as_str: str) -> bool:
+    return any(op in arg_as_str for op in bool_ops)
 
 
 def item_indexes(seq: t.Sequence):
