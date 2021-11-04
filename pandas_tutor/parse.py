@@ -63,6 +63,16 @@ def parse_as_json(code: str) -> str:
 #     node['target'] = target
 #     return node
 
+# Any statement from:
+# https://libcst.readthedocs.io/en/latest/nodes.html#statements
+# that we don't process and should just execute verbatim, like
+# import pandas as pd
+statement_we_dont_handle = (m.AnnAssign() | m.Assert() | m.Del() | m.Global()
+                            | m.Import() | m.ImportFrom() | m.Nonlocal()
+                            | m.Raise() | m.ClassDef() | m.For()
+                            | m.FunctionDef()
+                            | m.If() | m.Try() | m.While() | m.With())
+
 
 class NodePositions(m.MatcherDecoratableVisitor):
     METADATA_DEPENDENCIES = (cstm.PositionProvider, )
@@ -81,6 +91,12 @@ class NodePositions(m.MatcherDecoratableVisitor):
         self.cst_root = node
         self.root = self.make_node(type='Module', node=node)
         self.stack.append(self.root)
+
+    @m.leave(statement_we_dont_handle)
+    def make_verbatim_node(self, node):
+        current = self.stack[-1]
+        child = self.make_node(type='Verbatim', node=node)
+        current.children.append(child)
 
     # expressions contain one or more calls / subscripts
     # the tricky part is that the calls are nested in reverse order of what we

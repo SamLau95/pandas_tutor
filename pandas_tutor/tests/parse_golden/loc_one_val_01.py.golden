@@ -12,6 +12,20 @@
   },
   "children": [
     {
+      "type": "Verbatim",
+      "name": null,
+      "code": "import pandas as pd",
+      "start": {
+        "line": 0,
+        "ch": 0
+      },
+      "end": {
+        "line": 0,
+        "ch": 19
+      },
+      "children": []
+    },
+    {
       "type": "Assign",
       "name": null,
       "code": "df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",

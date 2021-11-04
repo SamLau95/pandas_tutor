@@ -4,8 +4,11 @@ last line of the code.
 '''
 
 from __future__ import annotations
-import typing as t
+
+import builtins
 import dataclasses
+import types
+import typing as t
 
 import pandas as pd  # type: ignore
 
@@ -27,16 +30,34 @@ def run(root: Node) -> t.List[EvalResult]:
     # all the code above the last expression
     setup_code = '\n'.join([expr.code for expr in setup_exprs])
 
-    # now let's run stuff VERY VERY dangerously!
-    exec(setup_code, globals())
+    # now let's run stuff dangerously!
+    user_globals = setup_user_globals()
+    exec(setup_code, user_globals)
 
     # wrap individual steps in parens before eval since they can have newlines
     eval_results = [
-        EvalResult(node=node, df=eval(f"({node.code})", globals()))
+        EvalResult(node=node, df=eval(f"({node.code})", user_globals))
         for node in last_expr.children
     ]
 
     return eval_results
+
+
+def setup_user_globals():
+    # set up scope like PythonTutor
+    user_builtins = {}
+    assert isinstance(builtins, types.ModuleType)
+    for k in dir(builtins):
+        user_builtins[k] = getattr(builtins, k)
+
+    user_globals = {}
+
+    user_globals.update({
+        "__name__": "__main__",
+        "__builtins__": user_builtins
+    })
+
+    return user_globals
 
 
 test = '''
