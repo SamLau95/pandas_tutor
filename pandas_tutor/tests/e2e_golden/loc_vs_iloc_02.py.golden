@@ -103,56 +103,65 @@
           "kids",
           "size"
         ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
         "data": [
-          {
-            "breed": "Labrador Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "German Shepherd",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "medium",
-            "size": "large"
-          },
-          {
-            "breed": "Beagle",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "high",
-            "size": "small"
-          },
-          {
-            "breed": "Golden Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Yorkshire Terrier",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "low",
-            "size": "small"
-          },
-          {
-            "breed": "Bulldog",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "medium",
-            "size": "medium"
-          },
-          {
-            "breed": "Boxer",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          }
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ]
         ]
       },
       "rhs": {
@@ -163,56 +172,65 @@
           "kids",
           "size"
         ],
+        "row_labels": [
+          0,
+          2,
+          3,
+          6,
+          4,
+          1,
+          5
+        ],
         "data": [
-          {
-            "breed": "Labrador Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Beagle",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "high",
-            "size": "small"
-          },
-          {
-            "breed": "Golden Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Boxer",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Yorkshire Terrier",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "low",
-            "size": "small"
-          },
-          {
-            "breed": "German Shepherd",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "medium",
-            "size": "large"
-          },
-          {
-            "breed": "Bulldog",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "medium",
-            "size": "medium"
-          }
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ]
         ]
       }
     }
@@ -315,56 +333,65 @@
           "kids",
           "size"
         ],
+        "row_labels": [
+          0,
+          2,
+          3,
+          6,
+          4,
+          1,
+          5
+        ],
         "data": [
-          {
-            "breed": "Labrador Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Beagle",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "high",
-            "size": "small"
-          },
-          {
-            "breed": "Golden Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Boxer",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Yorkshire Terrier",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "low",
-            "size": "small"
-          },
-          {
-            "breed": "German Shepherd",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "medium",
-            "size": "large"
-          },
-          {
-            "breed": "Bulldog",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "medium",
-            "size": "medium"
-          }
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ]
         ]
       },
       "rhs": {
@@ -375,35 +402,41 @@
           "kids",
           "size"
         ],
+        "row_labels": [
+          0,
+          2,
+          3,
+          6
+        ],
         "data": [
-          {
-            "breed": "Labrador Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Beagle",
-            "grooming": "daily",
-            "food_cost": 324.0,
-            "kids": "high",
-            "size": "small"
-          },
-          {
-            "breed": "Golden Retriever",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          },
-          {
-            "breed": "Boxer",
-            "grooming": "weekly",
-            "food_cost": 466.0,
-            "kids": "high",
-            "size": "medium"
-          }
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ]
         ]
       }
     }

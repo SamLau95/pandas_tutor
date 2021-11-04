@@ -47,8 +47,9 @@ def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
 
 
 def make_df_spec(df: pd.DataFrame):
-    return DFSpec(col_names=list(df.columns),
-                  data=df.to_dict(orient='records'))
+    return DFSpec(col_names=df.columns.tolist(),
+                  row_labels=df.index.tolist(),
+                  data=df.values.tolist())
 
 
 def pairs(seq: t.List[T]) -> t.List[t.Tuple[T, T]]:

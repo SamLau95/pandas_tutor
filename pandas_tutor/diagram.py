@@ -92,4 +92,5 @@ class DFPair:
 @dataclasses.dataclass
 class DFSpec:
     col_names: t.List[str]
-    data: t.List[t.Dict]
+    row_labels: t.List[str]
+    data: t.List[t.List]
