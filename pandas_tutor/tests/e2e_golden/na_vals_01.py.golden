@@ -1,0 +1,124 @@
+[
+  {
+    "type": "sort_values",
+    "code_step": "df.sort_values('Name')",
+    "mapping": [
+      {
+        "select": "column",
+        "anchor": "lhs",
+        "index": 0,
+        "illustrate": "highlight"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 1
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 3
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 2
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "index": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "index": 0
+        },
+        "illustrate": "outline"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "col_names": [
+          "Name",
+          "Year"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "data": [
+          [
+            "Liam",
+            2020.0
+          ],
+          [
+            null,
+            2020.0
+          ],
+          [
+            "Sophia",
+            2020.0
+          ],
+          [
+            "Amelia",
+            null
+          ]
+        ]
+      },
+      "rhs": {
+        "col_names": [
+          "Name",
+          "Year"
+        ],
+        "row_labels": [
+          3,
+          0,
+          2,
+          1
+        ],
+        "data": [
+          [
+            "Amelia",
+            null
+          ],
+          [
+            "Liam",
+            2020.0
+          ],
+          [
+            "Sophia",
+            2020.0
+          ],
+          [
+            null,
+            2020.0
+          ]
+        ]
+      }
+    }
+  }
+]

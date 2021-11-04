@@ -20,6 +20,8 @@ def make_test_case(test_name):
     assert golden_file.exists()
 
     def test(self: TestParse):
+        self.assertTrue(in_file.exists())
+        self.assertTrue(golden_file.exists())
         code = in_file.read_text()
         res = asdict(parse(code))
         golden_res = json.loads(golden_file.read_text())

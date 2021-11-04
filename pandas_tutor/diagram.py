@@ -35,6 +35,9 @@ class _DiagramEncoder(json.JSONEncoder):
             return float(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()
+        if np.isnan(obj):
+            print('isna')
+            return None
         return super().default(obj)
 
 
