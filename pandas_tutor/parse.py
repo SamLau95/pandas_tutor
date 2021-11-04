@@ -220,52 +220,50 @@ class NodePositions(m.MatcherDecoratableVisitor):
                     children=[])
 
 
+whitespace = (m.Comment() | m.EmptyLine() | m.Newline()
+              | m.ParenthesizedWhitespace() | m.SimpleWhitespace()
+              | m.TrailingWhitespace() | m.BaseParenthesizableWhitespace())
+
+
 # For debugging; it just logs the nodes it visits
-class LoggingVisitor(cst.CSTVisitor):
+class LoggingVisitor(m.MatcherDecoratableVisitor):
     METADATA_DEPENDENCIES = (cstm.PositionProvider, )
+
+    cst_root: cst.CSTNode
+    depth: int
 
     def __init__(self):
         self.depth = 0
+        self.cst_root = None
+        super().__init__()
 
-    def visit_Expr(self, node):
-        self.log(node, 'Expr')
+    def on_visit(self, node):
+        if m.matches(node, whitespace):
+            return False
+        if self.cst_root is None:
+            self.cst_root = node
+            return True
+
+        self.log(node)
         self.depth += 1
+        return True
 
-    def leave_Expr(self, node):
+    def on_leave(self, node):
+        if m.matches(node, whitespace):
+            return
         self.depth -= 1
 
-    def visit_Assign(self, node):
-        self.log(node, 'Assign')
-        self.depth += 1
-
-    def leave_Assign(self, node):
-        self.depth -= 1
-
-    def visit_Call(self, node):
-        self.log(node, f'Call({len(node.args)} args)')
-        self.depth += 1
-
-    def leave_Call(self, node):
-        self.depth -= 1
-
-    def visit_Subscript(self, node):
-        self.log(node, 'Subscript')
-        self.depth += 1
-
-    def leave_Subscript(self, node):
-        self.depth -= 1
-
-    def visit_Attribute(self, node):
-        self.log(node, node.attr.value)
-
-    def log(self, node, name):
-        meta = self.get_metadata(cstm.PositionProvider, node)
-        start = meta.start
-        end = meta.end
+    def log(self, node):
+        name = node.__class__.__name__
+        code = self.cst_root.code_for_node(node)
+        # meta = self.get_metadata(cstm.PositionProvider, node)
+        # start = meta.start
+        # end = meta.end
 
         spaces = '  ' * self.depth
-        print(f'{spaces + name + ":": <20} ({start.line}, {start.column}) '
-              f'-> ({end.line}, {end.column})')
+        print(f'{spaces + name + ":": <40} ({code})')
+        # print(f'{spaces + name + ":": <20} ({start.line}, {start.column}) '
+        #       f'-> ({end.line}, {end.column})')
 
 
 test = '''
