@@ -65,6 +65,9 @@ is_rename = fn_matcher('rename')
 
 is_parsed_call = is_sort_values | is_rename
 
+is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
+                                            | m.Name('iloc')))
+
 
 def get_arg_by_position_or_keyword(
         args: t.Sequence[cst.Arg],
@@ -202,7 +205,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
         if self.subscript_depth > 0:
             return
         # TODO
-        node = self.make_node(Subscript, cst_node, attr='<wip>', elements=[])
+
+        attr = (cst_node.value.attr.value
+                if m.matches(cst_node, is_loc_iloc) else None)
+        node = self.make_node(Subscript, cst_node, attr=attr, elements=[])
         self.current.chain.append(node)
 
     def code_for(self, cst_node):

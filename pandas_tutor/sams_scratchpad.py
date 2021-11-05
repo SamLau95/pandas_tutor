@@ -7,7 +7,7 @@ import prettyprinter  # type: ignore
 from prettyprinter import cpprint  # type: ignore
 from prettyprinter.prettyprinter import IMPLICIT_MODULES  # type: ignore
 
-from .parse import test_parser
+from .parse import parse
 from .run import run
 from .main import make_tutor_spec_py
 
@@ -18,7 +18,7 @@ IMPLICIT_MODULES.add('pandas_tutor.parse_nodes')
 
 shorten_df = True
 
-file_to_read = 'e2e_golden/sort_values_kwarg'
+file_to_read = 'parse_golden/subscript_args'
 
 
 def p(obj):
@@ -28,7 +28,7 @@ def p(obj):
 if __name__ == "__main__":
     from pathlib import Path
     code = (Path(__file__).parent / f'tests/{file_to_read}.py').read_text()
-    root = test_parser(code)
+    root = parse(code)
     #     print(code)
     #     print('\n--------------\n')
 
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
 
-    # p(root, indent=2, ribbon_width=80)
-    p(run(root))
+    p(root)
+    # p(run(root))
 
     print('\n---------------------------------------------------------\n')
