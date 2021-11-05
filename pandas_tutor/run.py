@@ -12,23 +12,25 @@ import typing as t
 
 import pandas as pd  # type: ignore
 
-from .parse import Node
+from .parse_nodes import ChainStatement, ChainStep, ParsedModule
 
 
 @dataclasses.dataclass
 class EvalResult:
-    node: Node
+    step: ChainStep
     df: pd.DataFrame
+    args: dict
 
 
-def run(root: Node) -> t.List[EvalResult]:
-    expressions = root.children
+def run(root: ParsedModule) -> t.List[EvalResult]:
+    statements = root.statements
 
-    # hard-code the last expression!
-    setup_exprs, last_expr = expressions[:-1], expressions[-1]
+    # hard-code the last one!
+    setup_stmts, last_expr = statements[:-1], statements[-1]
+    assert isinstance(last_expr, ChainStatement)
 
     # all the code above the last expression
-    setup_code = '\n'.join([expr.code for expr in setup_exprs])
+    setup_code = '\n'.join([stmt.code for stmt in setup_stmts])
 
     # now let's run stuff dangerously!
     user_globals = setup_user_globals()
@@ -36,8 +38,10 @@ def run(root: Node) -> t.List[EvalResult]:
 
     # wrap individual steps in parens before eval since they can have newlines
     eval_results = [
-        EvalResult(node=node, df=eval(f"({node.code})", user_globals))
-        for node in last_expr.children
+        EvalResult(step=step,
+                   df=eval(f"({step.code})", user_globals),
+                   args=eval_args(step, user_globals))
+        for step in last_expr.chain
     ]
 
     return eval_results
@@ -58,6 +62,18 @@ def setup_user_globals():
     })
 
     return user_globals
+
+
+def eval_args(step: ChainStep, user_globals: dict):
+    '''eval each arg marked with parse_nodes.evals_into()'''
+    args = {}
+    fields = dataclasses.fields(step)
+    for field in fields:
+        evals_into = field.metadata.get('evals_into', False)
+        if evals_into:
+            code_to_eval = getattr(step, field.name)
+            args[evals_into] = eval(f"({code_to_eval})", user_globals)
+    return args
 
 
 test = '''

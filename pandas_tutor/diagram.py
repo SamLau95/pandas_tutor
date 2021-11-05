@@ -10,8 +10,6 @@ import typing as t
 
 import numpy as np
 
-Null = t.Literal['NA']
-
 
 def _diagram_as_dict(dclass):
     '''pass into dataclasses.asdict to rename from_ to from'''
@@ -60,7 +58,7 @@ Anchor = t.Union[t.Literal['lhs'], t.Literal['rhs']]
 class Highlight:
     select: Selection
     anchor: Anchor
-    index: int
+    label: t.Union[int, str]
     illustrate: t.Literal['highlight'] = 'highlight'
 
 
@@ -79,7 +77,7 @@ Mark = t.Union[Highlight, Outline]
 @dataclasses.dataclass
 class TablePos:
     anchor: Anchor
-    index: t.Union[int, Null]
+    label: t.Union[int, str]
 
 
 @dataclasses.dataclass

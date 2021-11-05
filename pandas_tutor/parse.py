@@ -127,12 +127,13 @@ class PandasParser(m.MatcherDecoratableVisitor):
 
     # for things in a chain, we append to chain on _leaving_ a node because of
     # the way chains are nested in the CST. for a chain like df.a().b(), the
-    # first step visited is b(), then a(), then df. if we append on leaving,
+    # parse order is b(), then a(), then df. if we append on leaving,
     # then we get the right chain order of df, a(), b().
 
     # we need to get the df out of:
     # df.f()
     # df['hello']
+    @m.call_if_inside(is_chain_stmt)
     @m.leave(m.Name())
     def make_first_in_chain(self, cst_node):
         # we should only do this for the first name in an chain
@@ -140,6 +141,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
             node = self.make_node(StartOfChain, cst_node)
             self.current.chain.append(node)
 
+    @m.call_if_inside(is_chain_stmt)
     @m.leave(is_attribute_call)
     def make_pass_through_call(self, cst_node):
         if m.matches(cst_node, is_parsed_call):
@@ -152,6 +154,8 @@ class PandasParser(m.MatcherDecoratableVisitor):
         when we don't handle the function, or if the function has weird
         arguments that we can't parse.
         '''
+        assert self.current.chain is not None, (
+            'tried to call fallback when not in a chain!')
         fn_name = cst_node.func.attr.value
         node = self.make_node(PassThroughCall, cst_node, fn_name=fn_name)
         self.current.chain.append(node)
@@ -179,20 +183,25 @@ class PandasParser(m.MatcherDecoratableVisitor):
 
     @m.leave(is_rename)
     def make_rename_call(self, cst_node):
-        node = self.make_node(RenameCall, cst_node, mapping_expr='<wip>')
-        self.current.chain.append(node)
+        # TODO
+        self.fallback_call(cst_node)
+        # node = self.make_node(RenameCall, cst_node, mapping_expr='<wip>')
+        # self.current.chain.append(node)
 
     # HACK: don't visit nested subscripts so we won't make a node for the
     # df['Name'] in df[df['Name'] == 'Liam']
+    @m.call_if_inside(is_chain_stmt)
     @m.visit(m.Subscript())
     def entering_subscript(self, node):
         self.subscript_depth += 1
 
+    @m.call_if_inside(is_chain_stmt)
     @m.leave(m.Subscript())
     def make_subscript(self, cst_node):
         self.subscript_depth -= 1
         if self.subscript_depth > 0:
             return
+        # TODO
         node = self.make_node(Subscript, cst_node, attr='<wip>', elements=[])
         self.current.chain.append(node)
 

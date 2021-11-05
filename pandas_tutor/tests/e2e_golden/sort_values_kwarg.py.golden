@@ -1,0 +1,300 @@
+[
+  {
+    "type": "SortValuesCall",
+    "code_step": "df.sort_values(axis=0, by='Name')",
+    "mapping": [
+      {
+        "select": "column",
+        "anchor": "lhs",
+        "label": "Name",
+        "illustrate": "highlight"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 0
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 1
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 2
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 3
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 4
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 4
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 5
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 5
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 6
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 6
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 7
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 7
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 8
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 8
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 9
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 9
+        },
+        "illustrate": "outline"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "col_names": [
+          "Name",
+          "Sex",
+          "Count",
+          "Year"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "data": [
+          [
+            "Liam",
+            "M",
+            19659,
+            2020
+          ],
+          [
+            "Noah",
+            "M",
+            18252,
+            2020
+          ],
+          [
+            "Oliver",
+            "M",
+            14147,
+            2020
+          ],
+          [
+            "Elijah",
+            "M",
+            13034,
+            2020
+          ],
+          [
+            "William",
+            "M",
+            12541,
+            2020
+          ],
+          [
+            "Emma",
+            "F",
+            15581,
+            2020
+          ],
+          [
+            "Ava",
+            "F",
+            13084,
+            2020
+          ],
+          [
+            "Charlotte",
+            "F",
+            13003,
+            2020
+          ],
+          [
+            "Sophia",
+            "F",
+            12976,
+            2020
+          ],
+          [
+            "Amelia",
+            "F",
+            12704,
+            2020
+          ]
+        ]
+      },
+      "rhs": {
+        "col_names": [
+          "Name",
+          "Sex",
+          "Count",
+          "Year"
+        ],
+        "row_labels": [
+          9,
+          6,
+          7,
+          3,
+          5,
+          0,
+          1,
+          2,
+          8,
+          4
+        ],
+        "data": [
+          [
+            "Amelia",
+            "F",
+            12704,
+            2020
+          ],
+          [
+            "Ava",
+            "F",
+            13084,
+            2020
+          ],
+          [
+            "Charlotte",
+            "F",
+            13003,
+            2020
+          ],
+          [
+            "Elijah",
+            "M",
+            13034,
+            2020
+          ],
+          [
+            "Emma",
+            "F",
+            15581,
+            2020
+          ],
+          [
+            "Liam",
+            "M",
+            19659,
+            2020
+          ],
+          [
+            "Noah",
+            "M",
+            18252,
+            2020
+          ],
+          [
+            "Oliver",
+            "M",
+            14147,
+            2020
+          ],
+          [
+            "Sophia",
+            "F",
+            12976,
+            2020
+          ],
+          [
+            "William",
+            "M",
+            12541,
+            2020
+          ]
+        ]
+      }
+    }
+  }
+]

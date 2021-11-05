@@ -6,6 +6,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import typing as t
+from dataclasses import field
 
 # Use a distinct type to distinguish between strings that can be eval'd
 RawCode = t.NewType('RawCode', str)
@@ -26,21 +27,8 @@ class CodePosition:
 
 
 @dataclasses.dataclass
-class Node:
-    type: str
-    name: t.Optional[str]
-    code: str
-    start: CodePosition
-    end: CodePosition
-
-    # TODO: for Call nodes, the children is just a list of strings. we should
-    # eventually make Arg nodes instead
-    children: t.List[Node]  # type: ignore
-
-
-@dataclasses.dataclass
 class Base:
-    type_: str = dataclasses.field(init=False)
+    type_: str = field(init=False)
     code: RawCode
     start: CodePosition
     end: CodePosition
@@ -86,7 +74,22 @@ class StartOfChain(Base):
 
 ##############################################################################
 # Calls
+#
+# calls and subscripts have arguments that we need to eval. to handle this,
+# we'll do the following:
+#
+# 1. when parsing, we save the raw code for arguments we'll eval later, and
+#    mark those fields using the `evals_into` function (see
+#    SortValuesCall.label_expr).
+# 2. when executing, we eval each field and save the results into
+#    run.EvalResult.args. so, we'll take evals_into('labels') and put it into
+#    EvalResult.args['labels']
 ##############################################################################
+
+
+def evals_into(attr: str) -> field:
+    return field(metadata=dict(evals_into=attr))
+
 
 Axis = t.Literal['index', 'columns']
 
@@ -100,9 +103,10 @@ class SortValuesCall(Base):
     fn_name = 'sort_values'
 
     # Expression that evaluates to labels
-    label_expr: RawCode
+    label_expr: RawCode = evals_into('labels')
 
-    axis: Axis
+    # technically the axis can be an expression too...but who does that??
+    axis: Axis = 'index'
 
 
 @dataclasses.dataclass

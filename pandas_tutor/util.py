@@ -7,9 +7,7 @@ import typing as t
 
 import pandas as pd  # type: ignore
 
-from .diagram import Null
-
-IndexPair = t.Tuple[int, t.Union[int, Null]]
+IndexPair = t.Tuple[int, int]
 
 bool_ops = ['==', '<', '>', '!=']
 

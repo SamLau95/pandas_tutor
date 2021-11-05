@@ -4,11 +4,11 @@ just for myself
 # flake8: noqa
 
 import prettyprinter  # type: ignore
-from prettyprinter import cpprint as p  # type: ignore
+from prettyprinter import cpprint  # type: ignore
 from prettyprinter.prettyprinter import IMPLICIT_MODULES  # type: ignore
 
-from pandas_tutor.parse import test_parser
-
+from .parse import test_parser
+from .run import run
 from .main import make_tutor_spec_py
 
 prettyprinter.install_extras(include=['dataclasses', 'python', 'numpy'])
@@ -18,12 +18,17 @@ IMPLICIT_MODULES.add('pandas_tutor.parse_nodes')
 
 shorten_df = True
 
-file_to_read = 'parse_golden/sort_value_args'
+file_to_read = 'e2e_golden/sort_values_kwarg'
+
+
+def p(obj):
+    cpprint(obj, indent=2, ribbon_width=80)
+
 
 if __name__ == "__main__":
     from pathlib import Path
     code = (Path(__file__).parent / f'tests/{file_to_read}.py').read_text()
-    spec = test_parser(code)
+    root = test_parser(code)
     #     print(code)
     #     print('\n--------------\n')
 
@@ -33,5 +38,8 @@ if __name__ == "__main__":
     #         rhs = diagram['data_frame']['rhs']
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
-    p(spec, indent=2, ribbon_width=80)
+
+    # p(root, indent=2, ribbon_width=80)
+    p(run(root))
+
     print('\n---------------------------------------------------------\n')
