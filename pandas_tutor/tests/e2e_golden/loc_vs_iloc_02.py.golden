@@ -1,23 +1,23 @@
 [
   {
-    "type": "sort_values",
+    "type": "SortValuesCall",
     "code_step": "dogs.sort_values('kids')",
     "mapping": [
       {
         "select": "column",
         "anchor": "lhs",
-        "index": 3,
+        "label": "kids",
         "illustrate": "highlight"
       },
       {
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 0
+          "label": 0
         },
         "to": {
           "anchor": "rhs",
-          "index": 0
+          "label": 0
         },
         "illustrate": "outline"
       },
@@ -25,11 +25,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 1
+          "label": 1
         },
         "to": {
           "anchor": "rhs",
-          "index": 5
+          "label": 1
         },
         "illustrate": "outline"
       },
@@ -37,11 +37,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 2
+          "label": 2
         },
         "to": {
           "anchor": "rhs",
-          "index": 1
+          "label": 2
         },
         "illustrate": "outline"
       },
@@ -49,11 +49,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 3
+          "label": 3
         },
         "to": {
           "anchor": "rhs",
-          "index": 2
+          "label": 3
         },
         "illustrate": "outline"
       },
@@ -61,11 +61,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 4
+          "label": 4
         },
         "to": {
           "anchor": "rhs",
-          "index": 4
+          "label": 4
         },
         "illustrate": "outline"
       },
@@ -73,11 +73,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 5
+          "label": 5
         },
         "to": {
           "anchor": "rhs",
-          "index": 6
+          "label": 5
         },
         "illustrate": "outline"
       },
@@ -85,11 +85,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "index": 6
+          "label": 6
         },
         "to": {
           "anchor": "rhs",
-          "index": 3
+          "label": 6
         },
         "illustrate": "outline"
       }
@@ -236,94 +236,9 @@
     }
   },
   {
-    "type": "slice",
+    "type": "Subscript",
     "code_step": "dogs.sort_values('kids').loc[0:6]",
-    "mapping": [
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 0
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 0
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 1
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 1
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 2
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 2
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 3
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 3
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 4
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": "NA"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 5
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": "NA"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "index": 6
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": "NA"
-        },
-        "illustrate": "outline"
-      }
-    ],
+    "mapping": [],
     "data_frame": {
       "lhs": {
         "col_names": [

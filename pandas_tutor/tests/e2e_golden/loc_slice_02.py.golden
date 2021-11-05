@@ -1,57 +1,8 @@
 [
   {
-    "type": "slice",
+    "type": "Subscript",
     "code_step": "df.loc[:, ['Name', 'Count']]",
-    "mapping": [
-      {
-        "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "index": 0
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 0
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "index": 1
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": "NA"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "index": 2
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": 1
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "index": 3
-        },
-        "to": {
-          "anchor": "rhs",
-          "index": "NA"
-        },
-        "illustrate": "outline"
-      }
-    ],
+    "mapping": [],
     "data_frame": {
       "lhs": {
         "col_names": [

@@ -23,7 +23,7 @@ def make_marks(step: ChainStep, before: EvalResult,
     if isinstance(step, PassThroughCall):
         return no_marks(step, before, after)
     if isinstance(step, Subscript):
-        return no_marks(step, before, after)
+        return mark_for_subscript(step, before, after)
     else:
         return no_marks(step, before, after)
 
