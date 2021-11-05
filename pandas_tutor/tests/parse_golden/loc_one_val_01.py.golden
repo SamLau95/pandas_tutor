@@ -1,6 +1,5 @@
 {
-  "type": "Module",
-  "name": null,
+  "type_": "ParsedModule",
   "code": "import pandas as pd\n\ndf = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])\n\ndf.loc[1, 'Name']\n",
   "start": {
     "line": 0,
@@ -10,10 +9,9 @@
     "line": 10,
     "ch": 0
   },
-  "children": [
+  "statements": [
     {
-      "type": "Verbatim",
-      "name": null,
+      "type_": "VerbatimStatement",
       "code": "import pandas as pd",
       "start": {
         "line": 0,
@@ -22,12 +20,10 @@
       "end": {
         "line": 0,
         "ch": 19
-      },
-      "children": []
+      }
     },
     {
-      "type": "Assign",
-      "name": null,
+      "type_": "VerbatimStatement",
       "code": "df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
       "start": {
         "line": 2,
@@ -36,44 +32,10 @@
       "end": {
         "line": 7,
         "ch": 59
-      },
-      "children": [
-        {
-          "type": "Name",
-          "name": "pd",
-          "code": "pd",
-          "start": {
-            "line": 2,
-            "ch": 5
-          },
-          "end": {
-            "line": 2,
-            "ch": 7
-          },
-          "children": []
-        },
-        {
-          "type": "Call",
-          "name": "DataFrame",
-          "code": "pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
-          "start": {
-            "line": 2,
-            "ch": 5
-          },
-          "end": {
-            "line": 7,
-            "ch": 59
-          },
-          "children": [
-            "[('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  ",
-            "columns=['Name', 'Sex', 'Count', 'Year']"
-          ]
-        }
-      ]
+      }
     },
     {
-      "type": "Expr",
-      "name": null,
+      "type_": "ChainStatement",
       "code": "df.loc[1, 'Name']",
       "start": {
         "line": 9,
@@ -83,10 +45,9 @@
         "line": 9,
         "ch": 17
       },
-      "children": [
+      "chain": [
         {
-          "type": "Name",
-          "name": "df",
+          "type_": "StartOfChain",
           "code": "df",
           "start": {
             "line": 9,
@@ -95,12 +56,10 @@
           "end": {
             "line": 9,
             "ch": 2
-          },
-          "children": []
+          }
         },
         {
-          "type": "Subscript",
-          "name": "loc",
+          "type_": "Subscript",
           "code": "df.loc[1, 'Name']",
           "start": {
             "line": 9,
@@ -110,10 +69,8 @@
             "line": 9,
             "ch": 17
           },
-          "children": [
-            "1",
-            "'Name'"
-          ]
+          "attr": "<wip>",
+          "elements": []
         }
       ]
     }

@@ -1,6 +1,5 @@
 {
-  "type": "Module",
-  "name": null,
+  "type_": "ParsedModule",
   "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
   "start": {
     "line": 0,
@@ -10,10 +9,9 @@
     "line": 6,
     "ch": 0
   },
-  "children": [
+  "statements": [
     {
-      "type": "Expr",
-      "name": null,
+      "type_": "ChainStatement",
       "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
       "start": {
         "line": 0,
@@ -23,10 +21,9 @@
         "line": 5,
         "ch": 1
       },
-      "children": [
+      "chain": [
         {
-          "type": "Name",
-          "name": "df",
+          "type_": "StartOfChain",
           "code": "df",
           "start": {
             "line": 0,
@@ -35,12 +32,10 @@
           "end": {
             "line": 0,
             "ch": 3
-          },
-          "children": []
+          }
         },
         {
-          "type": "Call",
-          "name": "sort_values",
+          "type_": "SortValuesCall",
           "code": "df\n .sort_values('Name')",
           "start": {
             "line": 0,
@@ -50,13 +45,11 @@
             "line": 1,
             "ch": 21
           },
-          "children": [
-            "'Name'"
-          ]
+          "label_expr": "'Name'",
+          "axis": "index"
         },
         {
-          "type": "Call",
-          "name": "groupby",
+          "type_": "PassThroughCall",
           "code": "df\n .sort_values('Name')\n .groupby('Sex')",
           "start": {
             "line": 0,
@@ -66,13 +59,10 @@
             "line": 2,
             "ch": 16
           },
-          "children": [
-            "'Sex'"
-          ]
+          "fn_name": "groupby"
         },
         {
-          "type": "Subscript",
-          "name": "loc",
+          "type_": "Subscript",
           "code": "df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']",
           "start": {
             "line": 0,
@@ -82,14 +72,11 @@
             "line": 3,
             "ch": 17
           },
-          "children": [
-            ":",
-            "'Count'"
-          ]
+          "attr": "<wip>",
+          "elements": []
         },
         {
-          "type": "Call",
-          "name": "mean",
+          "type_": "PassThroughCall",
           "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
           "start": {
             "line": 0,
@@ -99,7 +86,7 @@
             "line": 4,
             "ch": 8
           },
-          "children": []
+          "fn_name": "mean"
         }
       ]
     }

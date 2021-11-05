@@ -87,7 +87,7 @@ class StartOfChain(Base):
 ##############################################################################
 
 
-def evals_into(attr: str) -> field:
+def evals_into(attr: str):
     return field(metadata=dict(evals_into=attr))
 
 

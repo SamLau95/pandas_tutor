@@ -50,8 +50,8 @@ class Diagram:
         return json.dumps(items, indent=2, cls=_DiagramEncoder)
 
 
-Selection = t.Union[t.Literal['column'], t.Literal['row']]
-Anchor = t.Union[t.Literal['lhs'], t.Literal['rhs']]
+Selection = t.Literal['column', 'row']
+Anchor = t.Literal['lhs', 'rhs']
 
 
 @dataclasses.dataclass

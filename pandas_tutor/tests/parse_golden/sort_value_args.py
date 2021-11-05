@@ -10,6 +10,6 @@ df.sort_values(cols)
 
 df.sort_values(by=['entry_id'], ascending=False)
 
-df.sort_values('Name', axis=1)
+df.sort_values(axis=1, by='Name')
 # df.groupby('Name').mean()
 # df.rename(columns={'Name': 'n'})
