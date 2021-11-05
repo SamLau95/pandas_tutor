@@ -1,6 +1,5 @@
 '''
-has dataclass definitions for final JSON output. keep in sync with sean's
-outputs
+has dataclass definitions for final JSON output.
 '''
 
 from __future__ import annotations
@@ -35,9 +34,6 @@ class _DiagramEncoder(json.JSONEncoder):
             return float(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()
-        if np.isnan(obj):
-            print('isna')
-            return None
         return super().default(obj)
 
 

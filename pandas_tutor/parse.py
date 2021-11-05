@@ -16,208 +16,203 @@ https://pythontutor.com/visualize.html#code=s%20%3D%20'hello%20world%20!!%20'%0A
 # For forward type references: https://stackoverflow.com/a/33533514
 from __future__ import annotations
 
-import json
 import typing as t
-import dataclasses
 
 import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
+from .parse_nodes import (Axis, CodePosition, ParsedModule, ChainStatement,
+                          PassThroughCall, RawCode, RenameCall, SortValuesCall,
+                          StartOfChain, Subscript, VerbatimStatement)
 
-@dataclasses.dataclass
-class Position:
-    line: int
-    ch: int
-
-
-@dataclasses.dataclass
-class Node:
-    type: str
-    name: t.Optional[str]
-    code: str
-    start: Position
-    end: Position
-
-    # TODO: for Call nodes, the children is just a list of strings. we should
-    # eventually make Arg nodes instead
-    children: t.List[Node]  # type: ignore
+T = t.TypeVar('T')
 
 
-def parse(code: str) -> Node:
+def parse(code: str) -> ParsedModule:
     tree = cst.parse_module(code)
     with_meta = cstm.MetadataWrapper(tree)
-    sam = NodePositions()
+    sam = PandasParser()
     _ = with_meta.visit(sam)
     return sam.root
 
 
 def parse_as_json(code: str) -> str:
     node = parse(code)
-    return json.dumps(dataclasses.asdict(node), indent=2)
+    return ParsedModule.to_json(node)
 
-
-# Assignments also attach the assign target so we know what to display when
-# we preview the statement
-# def add_target(node, target):
-#     node['target'] = target
-#     return node
 
 # Any statement from:
 # https://libcst.readthedocs.io/en/latest/nodes.html#statements
 # that we don't process and should just execute verbatim, like
 # import pandas as pd
-statement_we_dont_handle = (m.AnnAssign() | m.Assert() | m.Del() | m.Global()
-                            | m.Import() | m.ImportFrom() | m.Nonlocal()
-                            | m.Raise() | m.ClassDef() | m.For()
-                            | m.FunctionDef()
-                            | m.If() | m.Try() | m.While() | m.With())
+is_verbatim_stmt = (m.AnnAssign() | m.Assign() | m.Assert() | m.Del()
+                    | m.Global() | m.Import() | m.ImportFrom() | m.Nonlocal()
+                    | m.Raise() | m.ClassDef() | m.For() | m.FunctionDef()
+                    | m.If() | m.Try() | m.While() | m.With())
+
+is_chain_stmt = m.Expr()
+
+is_attribute_call = m.Call(func=m.Attribute())
 
 
-class NodePositions(m.MatcherDecoratableVisitor):
+def fn_matcher(fn_name: str):
+    return m.Call(func=m.Attribute(attr=m.Name(fn_name)))
+
+
+is_sort_values = fn_matcher('sort_values')
+is_rename = fn_matcher('rename')
+
+is_parsed_call = is_sort_values | is_rename
+
+
+def get_arg_by_position_or_keyword(
+        args: t.Sequence[cst.Arg],
+        position: int,
+        keyword: t.Optional[str] = None) -> t.Optional[cst.Arg]:
+    '''
+    some function args can be passed by both position and keyword. if the arg
+    is passed by keyword, it should have priority over the position, so:
+
+        df.sort_values('Name')
+        df.sort_values(ascending=False, by='Name')
+
+    should all get the Arg for 'Name'
+    '''
+    if keyword is not None:
+        for arg in args:
+            if arg.keyword is not None and arg.keyword.value == keyword:
+                return arg
+    if position >= len(args):
+        return None
+    return args[position]
+
+
+def make_axis(value: str) -> Axis:
+    return (
+        'columns' if value == '1' or 'columns' in value else
+        'index' if value == '0' or 'index' in value
+        # index is the default for most pandas methods so we'll just fall
+        # back to that...maybe we should raise an error in this case instead
+        else 'index')
+
+
+class PandasParser(m.MatcherDecoratableVisitor):
     METADATA_DEPENDENCIES = (cstm.PositionProvider, )
 
     # Store cst_root because we need its code_for_node method
-    cst_root: cst.CSTNode
-    root: Node
-    stack: t.List[Node]
+    cst_root: cst.Module
+    root: ParsedModule
+    current: t.Optional[ChainStatement] = None
+    subscript_depth: int = 0
 
-    def __init__(self):
-        self.stack = []
-        self.subscript_depth = 0
-        super().__init__()
+    def visit_Module(self, cst_node):
+        self.cst_root = cst_node
+        self.root = self.make_node(ParsedModule, cst_node, statements=[])
 
-    def visit_Module(self, node):
-        self.cst_root = node
-        self.root = self.make_node(type='Module', node=node)
-        self.stack.append(self.root)
+    @m.visit(is_verbatim_stmt)
+    def make_verbatim_stmt(self, cst_node):
+        node = self.make_node(VerbatimStatement, cst_node)
+        self.root.statements.append(node)
 
-    @m.leave(statement_we_dont_handle)
-    def make_verbatim_node(self, node):
-        current = self.stack[-1]
-        child = self.make_node(type='Verbatim', node=node)
-        current.children.append(child)
+    @m.visit(is_chain_stmt)
+    def visit_chain_stmt(self, cst_node):
+        node = self.make_node(ChainStatement, cst_node, chain=[])
+        self.root.statements.append(node)
+        self.current = node
 
-    # expressions contain one or more calls / subscripts
-    # the tricky part is that the calls are nested in reverse order of what we
-    # want to run. so the first call in df.f().g() is the function g() called
-    # on df.f() . i'll flatten and reverse the chain so that the child of each
-    # expr will be something like [df.f(), df.f().g()].
-    def visit_Expr(self, node):
-        current = self.stack[-1]
-        child = self.make_node(type='Expr', node=node)
-        current.children.append(child)
-        self.stack.append(child)
+    @m.leave(is_chain_stmt)
+    def leave_current_stmt(self, cst_node):
+        self.current = None
 
-    def leave_Expr(self, node):
-        # current = self.stack[-1]
-        # current.children = list(reversed(current.children))
-        self.stack.pop()
-
-    # Assign appears instead of Expr when the code looks like df = ...
-    def visit_Assign(self, node):
-        current = self.stack[-1]
-        child = self.make_node(type='Assign', node=node)
-        current.children.append(child)
-        self.stack.append(child)
-
-    # we don't want to mark the df in df = pd.DataFrame(...)
-    def visit_AssignTarget(self, node):
-        return False
-
-    def leave_Assign(self, node):
-        # current = self.stack[-1]
-        # current.children = list(reversed(current.children))
-        self.stack.pop()
+    # for things in a chain, we append to chain on _leaving_ a node because of
+    # the way chains are nested in the CST. for a chain like df.a().b(), the
+    # first step visited is b(), then a(), then df. if we append on leaving,
+    # then we get the right chain order of df, a(), b().
 
     # we need to get the df out of:
     # df.f()
     # df['hello']
-    #
-    # but we should only do this for the first name in an Expr
-    def leave_Name(self, node):
-        current = self.stack[-1]
-        should_mark = ((current.type == 'Expr' or current.type == 'Assign')
-                       and len(current.children) == 0)
-        if not should_mark:
+    @m.leave(m.Name())
+    def make_first_in_chain(self, cst_node):
+        # we should only do this for the first name in an chain
+        if self.current is not None and len(self.current.chain) == 0:
+            node = self.make_node(StartOfChain, cst_node)
+            self.current.chain.append(node)
+
+    @m.leave(is_attribute_call)
+    def make_pass_through_call(self, cst_node):
+        if m.matches(cst_node, is_parsed_call):
+            return
+        self.fallback_call(cst_node)
+
+    def fallback_call(self, cst_node):
+        '''
+        called whenever we don't know how to parse a call. that could be
+        when we don't handle the function, or if the function has weird
+        arguments that we can't parse.
+        '''
+        fn_name = cst_node.func.attr.value
+        node = self.make_node(PassThroughCall, cst_node, fn_name=fn_name)
+        self.current.chain.append(node)
+
+    @m.leave(is_sort_values)
+    def make_sort_values_call(self, cst_node):
+        by = get_arg_by_position_or_keyword(cst_node.args, 0, 'by')
+        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
+
+        if by is None:
+            self.fallback_call(cst_node)
             return
 
-        name = node.value
-        child = self.make_node(type='Name', name=name, node=node)
-        current.children.append(child)
+        label_expr = self.code_for(by.value)
 
-    # Attribute function calls, like pd.melt(df)
-    # won't match square(2)
-    def leave_Call(self, node):
-        current = self.stack[-1]
-        name = node.func.attr.value if m.matches(
-            node.func, m.Attribute(attr=m.Name())) else None
-        child = self.make_node(type='Call', name=name, node=node)
+        # default sort_values uses rows
+        axis = (make_axis(self.code_for(axis_arg.value))
+                if axis_arg is not None else 'index')
 
-        # HACK: just saves the args as strings. later, we'll essentially use
-        # regexes to figure out what the args are. in the longer term, we
-        # should actually parse the args properly.
-        #
-        # it's a bit tricky to implement at the moment since we're flattening
-        # the Call structure as we parse. to implement this, we should keep the
-        # calls nested, add calls to the stack, and only flatten everything at
-        # the very end.
-        child.children = [
-            self.cst_root.code_for_node(arg) for arg in node.args
-        ]
+        node = self.make_node(SortValuesCall,
+                              cst_node,
+                              label_expr=label_expr,
+                              axis=axis)
+        self.current.chain.append(node)
 
-        current.children.append(child)
+    @m.leave(is_rename)
+    def make_rename_call(self, cst_node):
+        node = self.make_node(RenameCall, cst_node, mapping_expr='<wip>')
+        self.current.chain.append(node)
 
-    # df.iloc[:, 1]
-    # df.loc['hello']
-    # df['Name']
-    # df[df['Sex'] == 'F']
-    def visit_Subscript(self, node):
+    # HACK: don't visit nested subscripts so we won't make a node for the
+    # df['Name'] in df[df['Name'] == 'Liam']
+    @m.visit(m.Subscript())
+    def entering_subscript(self, node):
         self.subscript_depth += 1
 
-    def leave_Subscript(self, node):
-        # HACK: don't visit nested subscripts so we won't make a node for the
-        # df['Name'] in df[df['Name'] == 'Liam']
+    @m.leave(m.Subscript())
+    def make_subscript(self, cst_node):
         self.subscript_depth -= 1
         if self.subscript_depth > 0:
             return
+        node = self.make_node(Subscript, cst_node, attr='<wip>', elements=[])
+        self.current.chain.append(node)
 
-        current = self.stack[-1]
+    def code_for(self, cst_node):
+        return RawCode(self.cst_root.code_for_node(cst_node))
 
-        name = (node.value.attr.value if m.matches(
-            node,
-            m.Subscript(value=m.Attribute(attr=m.Name('loc')
-                                          | m.Name('iloc')))) else None)
-
-        child = self.make_node(type='Subscript', name=name, node=node)
-
-        # gets "1:5" and "['Name', 'Count']" from
-        # "df.loc[1:5, ['Name', 'Count']]"
-        child.children = [
-            self.cst_root.code_for_node(arg.slice) for arg in node.slice
-        ]
-        current.children.append(child)
-
-    def make_positions(self, node) -> t.Tuple[Position, Position]:
-        meta: cstm.CodeRange = self.get_metadata(cstm.PositionProvider, node)
+    def make_positions(self, cst_node) -> t.Tuple[CodePosition, CodePosition]:
+        meta: cstm.CodeRange = self.get_metadata(cstm.PositionProvider,
+                                                 cst_node)
 
         # subtract 1 from line to make everything 0-indexed
         return (
-            Position(line=meta.start.line - 1, ch=meta.start.column),
-            Position(line=meta.end.line - 1, ch=meta.end.column),
+            CodePosition(line=meta.start.line - 1, ch=meta.start.column),
+            CodePosition(line=meta.end.line - 1, ch=meta.end.column),
         )
 
-    def make_node(self, type=None, name=None, node=None):
-        assert type is not None
-        assert node is not None
-        code = self.cst_root.code_for_node(node)
-        start, end = self.make_positions(node)
-        return Node(type=type,
-                    name=name,
-                    code=code,
-                    start=start,
-                    end=end,
-                    children=[])
+    def make_node(self, cls: t.Type[T], cst_node: cst.CSTNode, **kwargs) -> T:
+        code = self.code_for(cst_node)
+        start, end = self.make_positions(cst_node)
+        return cls(code=code, start=start, end=end, **kwargs)  # type: ignore
 
 
 whitespace = (m.Comment() | m.EmptyLine() | m.Newline()
@@ -271,7 +266,7 @@ df.loc[1, 'Name']
 '''.strip()
 
 
-def log_test(code):
+def test_logger(code):
     print(code)
     print('\n-----\n')
     tree = cst.parse_module(code)
@@ -279,6 +274,16 @@ def log_test(code):
     sam = LoggingVisitor()
     _ = with_meta.visit(sam)
     return
+
+
+def test_parser(code):
+    print(code)
+    print('\n-----\n')
+    tree = cst.parse_module(code)
+    with_meta = cstm.MetadataWrapper(tree)
+    sam = PandasParser()
+    _ = with_meta.visit(sam)
+    return sam.root
 
 
 if __name__ == "__main__":
