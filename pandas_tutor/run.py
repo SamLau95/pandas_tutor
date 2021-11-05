@@ -22,6 +22,7 @@ class EvalResult:
     args: dict
 
 
+# TODO: handle stdout and stderr from user code
 def run(root: ParsedModule) -> t.List[EvalResult]:
     statements = root.statements
 
