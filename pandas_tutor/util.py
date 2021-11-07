@@ -1,31 +1,18 @@
 '''
 utilities
 '''
-
-import re
+import base64
+import gzip
 import typing as t
 
 import pandas as pd  # type: ignore
 
 IndexPair = t.Tuple[int, int]
 
-bool_ops = ['==', '<', '>', '!=']
 
-# https://gist.github.com/bpeterso2000/11277541
-QUOTED_STRING_RE = re.compile(
-    r"(?P<quote>['\"])(?P<string>.*?)(?<!\\)(?P=quote)")
-
-
-def literal_strings(arg_as_str: str):
-    '''gets ["name", "count"] from the string "df[['name', 'count']]" '''
-    return [
-        match.group('string')
-        for match in QUOTED_STRING_RE.finditer(arg_as_str)
-    ]
-
-
-def has_boolean_op(arg_as_str: str) -> bool:
-    return any(op in arg_as_str for op in bool_ops)
+def gzip_str(s):
+    f = gzip.compress(s.encode())
+    return base64.b64encode(f).decode()
 
 
 def item_indexes(seq: t.Sequence):

@@ -3,11 +3,13 @@ functions that put everything together
 
 Usage:
     main.py FILE ... [--output] [--parse_only] [--parse_log]
+    main.py -c CODE
 
 Options:
     -o --output      # Outputs specs to files named {input_file}.golden
     -p --parse_only  # Outputs parsed code rather than full spec
     -l --parse_log   # Outputs parse debug output
+    -c --code        # Code as a string (instead of a file)
 '''
 import typing as t
 from pathlib import Path
@@ -48,10 +50,12 @@ def write_spec_to_file(spec: str, out: Path) -> None:
 
 if __name__ == "__main__":
     args = docopt(__doc__, version='1.0')
-    # print(args)
     spec_fn = (test_logger if args['--parse_log'] else
                parse_as_json if args['--parse_only'] else make_tutor_spec)
 
+    if args['--code']:
+        code = args['CODE']
+        print(spec_fn(code))
     if not args['--output']:
         for filename in args['FILE']:
             print(spec_from_file(filename, spec_fn))

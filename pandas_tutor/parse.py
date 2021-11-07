@@ -107,7 +107,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
     cst_root: cst.Module
     root: ParsedModule
     current: t.Optional[ChainStatement] = None
-    subscript_depth: int = 0
+    current_subscript: t.Optional[Subscript] = None
 
     def visit_Module(self, cst_node):
         self.cst_root = cst_node
@@ -191,18 +191,19 @@ class PandasParser(m.MatcherDecoratableVisitor):
         # node = self.make_node(RenameCall, cst_node, mapping_expr='<wip>')
         # self.current.chain.append(node)
 
-    # HACK: don't visit nested subscripts so we won't make a node for the
-    # df['Name'] in df[df['Name'] == 'Liam']
     @m.call_if_inside(is_chain_stmt)
     @m.visit(m.Subscript())
-    def entering_subscript(self, node):
-        self.subscript_depth += 1
+    def entering_subscript(self, cst_node):
+        if self.current_subscript is None:
+            self.current_subscript = cst_node
+        else:
+            pass
 
     @m.call_if_inside(is_chain_stmt)
     @m.leave(m.Subscript())
     def make_subscript(self, cst_node):
-        self.subscript_depth -= 1
-        if self.subscript_depth > 0:
+        # HACK: limit subscript parsing depth to 1
+        if self.current_subscript is not None:
             return
         # TODO
 
