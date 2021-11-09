@@ -69,8 +69,23 @@
             "line": 9,
             "ch": 23
           },
-          "attr": "<wip>",
-          "elements": []
+          "slicer": null,
+          "slice1": {
+            "type_": "SubsComparison",
+            "code": "df['Count'] > 13000",
+            "start": {
+              "line": 9,
+              "ch": 3
+            },
+            "end": {
+              "line": 9,
+              "ch": 22
+            },
+            "label_exprs": [
+              "'Count'"
+            ]
+          },
+          "slice2": null
         }
       ]
     }

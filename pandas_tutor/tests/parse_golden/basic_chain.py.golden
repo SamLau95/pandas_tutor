@@ -72,8 +72,32 @@
             "line": 3,
             "ch": 17
           },
-          "attr": "<wip>",
-          "elements": []
+          "slicer": "loc",
+          "slice1": {
+            "type_": "SubsSlice",
+            "code": ":",
+            "start": {
+              "line": 3,
+              "ch": 6
+            },
+            "end": {
+              "line": 3,
+              "ch": 7
+            }
+          },
+          "slice2": {
+            "type_": "SubsEval",
+            "code": "'Count'",
+            "start": {
+              "line": 3,
+              "ch": 9
+            },
+            "end": {
+              "line": 3,
+              "ch": 16
+            },
+            "expr": "'Count'"
+          }
         },
         {
           "type_": "PassThroughCall",

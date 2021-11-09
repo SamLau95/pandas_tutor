@@ -69,8 +69,33 @@
             "line": 9,
             "ch": 17
           },
-          "attr": "<wip>",
-          "elements": []
+          "slicer": "loc",
+          "slice1": {
+            "type_": "SubsEval",
+            "code": "1",
+            "start": {
+              "line": 9,
+              "ch": 7
+            },
+            "end": {
+              "line": 9,
+              "ch": 8
+            },
+            "expr": "1"
+          },
+          "slice2": {
+            "type_": "SubsEval",
+            "code": "'Name'",
+            "start": {
+              "line": 9,
+              "ch": 10
+            },
+            "end": {
+              "line": 9,
+              "ch": 16
+            },
+            "expr": "'Name'"
+          }
         }
       ]
     }

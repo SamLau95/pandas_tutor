@@ -18,7 +18,7 @@ IMPLICIT_MODULES.add('pandas_tutor.parse_nodes')
 
 shorten_df = True
 
-file_to_read = 'parse_golden/subscript_args'
+file_to_read = 'parse_golden/loc_one_val_01'
 
 
 def p(obj):

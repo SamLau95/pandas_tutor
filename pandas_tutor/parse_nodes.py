@@ -142,23 +142,29 @@ Call = t.Union[SortValuesCall, RenameCall, PassThroughCall]
 # Subscripts
 ##############################################################################
 
-SubscriptAttr = t.Literal['loc', 'iloc', None]
+Slicer = t.Literal['loc', 'iloc', None]
 
 
 @dataclasses.dataclass
 class Subscript(Base):
-    attr: SubscriptAttr
-    elements: t.List[SubscriptEl]
+    '''
+    hard-codes one or two slice elements (i've never seen a third slice in
+    pandas code, but i could be wrong)
+    '''
+    slicer: Slicer
+
+    slice1: SubscriptEl
+    slice2: t.Optional[SubscriptEl]
 
 
 @dataclasses.dataclass
-class SubscriptSlice(Base):
+class SubsSlice(Base):
     '''df.iloc[:3]'''
     pass
 
 
 @dataclasses.dataclass
-class ComparisonSlice(Base):
+class SubsComparison(Base):
     '''
     special case for boolean expressions:
 
@@ -176,11 +182,12 @@ class ComparisonSlice(Base):
     '''
     # this is a list of code expressions that will each eval to one-or-more
     # labels. when parsing, we need to pull these out of each boolean mask
-    label_exprs: t.List[str]
+    label_exprs: t.List[RawCode] = field(metadata=dict(
+        evals_into='{attr}_labels'))
 
 
 @dataclasses.dataclass
-class EvalSlice(Base):
+class SubsEval(Base):
     '''
     anything that evals into row/column label(s), like:
 
@@ -193,9 +200,9 @@ class EvalSlice(Base):
     if the result isn't a list of labels, then we should just pass it through
     and not try to visualize it
     '''
-    pass
+    expr: RawCode = field(metadata=dict(evals_into='{attr}_values'))
 
 
-SubscriptEl = t.Union[SubscriptSlice, ComparisonSlice, EvalSlice]
+SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
 
-ChainStep = t.Union[Call, Subscript]
+ChainStep = t.Union[StartOfChain, Call, Subscript]
