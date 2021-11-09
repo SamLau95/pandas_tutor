@@ -2,7 +2,32 @@
   {
     "type": "Subscript",
     "code_step": "df.loc[:, ['Name', 'Count']]",
-    "mapping": [],
+    "mapping": [
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "label": "Name"
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "Name"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "label": "Count"
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "Count"
+        },
+        "illustrate": "outline"
+      }
+    ],
     "data_frame": {
       "lhs": {
         "col_names": [

@@ -2,7 +2,80 @@
   {
     "type": "Subscript",
     "code_step": "df.iloc[2:5, 1:4]",
-    "mapping": [],
+    "mapping": [
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "label": "Sex"
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "Sex"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "label": "Count"
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "Count"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "column",
+        "from": {
+          "anchor": "lhs",
+          "label": "Year"
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "Year"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 2
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 3
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 4
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 4
+        },
+        "illustrate": "outline"
+      }
+    ],
     "data_frame": {
       "lhs": {
         "col_names": [

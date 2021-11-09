@@ -10,6 +10,10 @@ import typing as t
 
 import numpy as np
 
+# technically dataframe labels can be all sorts of things...
+# TODO: handle other index dtypes
+Label = t.Union[int, str]
+
 
 def _diagram_as_dict(dclass):
     '''pass into dataclasses.asdict to rename from_ to from'''
@@ -58,7 +62,7 @@ Anchor = t.Literal['lhs', 'rhs']
 class Highlight:
     select: Selection
     anchor: Anchor
-    label: t.Union[int, str]
+    label: Label
     illustrate: t.Literal['highlight'] = 'highlight'
 
 
@@ -77,7 +81,7 @@ Mark = t.Union[Highlight, Outline]
 @dataclasses.dataclass
 class TablePos:
     anchor: Anchor
-    label: t.Union[int, str]
+    label: Label
 
 
 @dataclasses.dataclass

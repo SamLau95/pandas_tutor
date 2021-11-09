@@ -2,12 +2,15 @@
 creates mark specs
 '''
 import typing as t
-# import pandas as pd
 
-from .parse_nodes import (Axis, ChainStep, PassThroughCall, RenameCall,
-                          SortValuesCall, Subscript)
+import pandas as pd  # type: ignore
 
 from . import util
+
+from .parse_nodes import (Axis, ChainStep, PassThroughCall, RenameCall,
+                          SortValuesCall, SubsComparison, SubsEval, SubsSlice,
+                          Subscript, SubscriptEl)
+
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
 from .run import EvalResult
 
@@ -34,27 +37,33 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
     df = before.df
     args = after.args
 
-    used_for_sorting = args.get('labels', [])
-    if isinstance(used_for_sorting, str):
-        used_for_sorting = [used_for_sorting]
+    sort_by = args.get('labels', [])
+    if isinstance(sort_by, str):
+        sort_by = [sort_by]
 
-    highlight_axis = selection(step.axis, other=True)
-    outline_axis = selection(step.axis)
+    sorted_vals = df.index if step.axis == 'index' else df.columns
 
-    what_was_sorted = df.index if step.axis == 'index' else df.columns
-
-    highlights = [
-        Highlight(label=label, select=highlight_axis, anchor='lhs')
-        for label in used_for_sorting
-    ]
-
-    outlines = [
-        Outline(select=outline_axis,
-                from_=TablePos('lhs', label),
-                to=TablePos('rhs', label)) for label in what_was_sorted
-    ]
-
+    highlights = make_highlights(sort_by, selection(step.axis, other=True))
+    outlines = make_outlines(sorted_vals, selection(step.axis))
     return [*highlights, *outlines]
+
+
+def make_highlights(labels: t.Iterable, select: Selection):
+    return [
+        Highlight(label=label, select=select, anchor='lhs') for label in labels
+    ]
+
+
+def make_outlines(labels: t.Iterable, select: Selection):
+    '''
+    used as a shorthand when index values don't change, which is most of the
+    time
+    '''
+    return [
+        Outline(select=select,
+                from_=TablePos('lhs', label),
+                to=TablePos('rhs', label)) for label in labels
+    ]
 
 
 # handles:
@@ -63,34 +72,117 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
 # df[df['Count'] > 10000]
 def mark_for_subscript(step: Subscript, before: EvalResult,
                        after: EvalResult) -> t.List[Mark]:
-    # HACK: special case: when there's a boolean op in the slice, use
-    # sort_values logic. but this won't handle cases like: df[df['booleans']]
-    # args = t.cast(t.List[str], after.step.children)
-    # if any(map(util.has_boolean_op, args)):
-    #     return mark_for_sort_values(before, after)
+    if step.slicer == 'loc':
+        mark_fn = mark_for_loc
+    elif step.slicer == 'iloc':
+        mark_fn = mark_for_iloc
 
-    # df = after.df
+    # slicer is None, so we need to figure out what kind of slice it is
+    elif isinstance(step.slice1, SubsSlice):
+        mark_fn = mark_for_iloc
+    elif (isinstance(step.slice1, SubsComparison)
+          or isinstance(step.slice1, SubsEval)):
+        mark_fn = mark_for_loc
+    else:
+        raise ValueError('weird subscript: {step}')
+    return mark_fn(step.slice1, step.slice2, before, after)
 
-    # row_diffs = util.diff_rows(before.df, df)
-    # col_diffs = util.diff_cols(before.df, df)
 
-    # # only make marks if there is at least one mismatch
-    # rows = [
-    #     Outline(select='row',
-    #             from_=TablePos('lhs', before_index),
-    #             to=TablePos('rhs', after_index))
-    #     for before_index, after_index in row_diffs
-    # ] if util.has_diff(row_diffs) else []
+def mark_for_iloc(row_slice: t.Optional[SubscriptEl],
+                  col_slice: t.Optional[SubscriptEl], before: EvalResult,
+                  after: EvalResult) -> t.List[Mark]:
+    row_marks = []
+    col_marks = []
 
-    # cols = [
-    #     Outline(select='column',
-    #             from_=TablePos('lhs', before_index),
-    #             to=TablePos('rhs', after_index))
-    #     for before_index, after_index in util.diff_cols(before.df, df)
-    # ] if util.has_diff(col_diffs) else []
+    if row_slice is None:
+        pass
+    elif isinstance(row_slice, SubsSlice):
+        row_marks = diff_rows(before.df, after.df)
+    elif isinstance(row_slice, SubsComparison):
+        # TODO: handle comparisons
+        row_marks = diff_rows(before.df, after.df)
+    elif isinstance(row_slice, SubsEval):
+        row_marks = diff_rows(before.df, after.df)
+    else:
+        raise ValueError(f'weird slice: {row_slice}')
 
-    # return [*cols, *rows]
-    return []
+    if col_slice is None:
+        pass
+    elif isinstance(col_slice, SubsSlice):
+        col_marks = diff_cols(before.df, after.df)
+    elif isinstance(col_slice, SubsComparison):
+        # TODO: should we handle this? pretty uncommon...
+        col_marks = diff_cols(before.df, after.df)
+    elif isinstance(col_slice, SubsEval):
+        col_marks = diff_cols(before.df, after.df)
+    else:
+        raise ValueError(f'weird slice: {col_slice}')
+
+    return [*col_marks, *row_marks]
+
+
+def mark_for_loc(row_slice: t.Optional[SubscriptEl],
+                 col_slice: t.Optional[SubscriptEl], before: EvalResult,
+                 after: EvalResult) -> t.List[Mark]:
+    row_marks = []
+    col_marks = []
+
+    if row_slice is None:
+        pass
+    elif isinstance(row_slice, SubsSlice):
+        row_marks = diff_rows(before.df, after.df)
+    elif isinstance(row_slice, SubsComparison):
+        # TODO: handle comparisons
+        row_marks = diff_rows(before.df, after.df)
+    elif isinstance(row_slice, SubsEval):
+        row_marks = diff_rows(before.df, after.df)
+    else:
+        raise ValueError(f'weird slice: {row_slice}')
+
+    if col_slice is None:
+        pass
+    elif isinstance(col_slice, SubsSlice):
+        col_marks = diff_cols(before.df, after.df)
+    elif isinstance(col_slice, SubsComparison):
+        # TODO: should we handle this? pretty uncommon...
+        col_marks = diff_cols(before.df, after.df)
+    elif isinstance(col_slice, SubsEval):
+        col_marks = diff_cols(before.df, after.df)
+    else:
+        raise ValueError(f'weird slice: {col_slice}')
+
+    return [*col_marks, *row_marks]
+
+
+def diff_dfs(df1: pd.DataFrame, df2: pd.DataFrame):
+    '''
+    when we just want to draw arrows between different rows and cols without
+    special highlights. only outputs when there is at least one mismatching row
+    / col
+    '''
+    rows = diff_rows(df1, df2)
+    cols = diff_cols(df1, df2)
+    return [*cols, *rows]
+
+
+def diff_rows(df1, df2):
+    '''
+    when we just want to draw arrows between different rows and cols without
+    special highlights. only outputs when there is at least one mismatching row
+    '''
+    row_matches = util.matching_rows(df1, df2)
+    return (make_outlines(row_matches, 'row')  #
+            if util.has_diff(df1, row_matches) else [])
+
+
+def diff_cols(df1, df2):
+    '''
+    when we just want to draw arrows between different rows and cols without
+    special highlights. only outputs when there is at least one mismatching col
+    '''
+    col_matches = util.matching_cols(df1, df2)
+    return (make_outlines(col_matches, 'column')  #
+            if util.has_diff(df1, col_matches) else [])
 
 
 def no_marks(step: ChainStep, before: EvalResult,

@@ -7,20 +7,25 @@ from __future__ import annotations
 
 import builtins
 import dataclasses
-import pdb
 import types
 import typing as t
 
 import pandas as pd  # type: ignore
 
-from .parse_nodes import ChainStatement, ChainStep, ParsedModule, RawCode, Subscript
+from .parse_nodes import (ChainStatement, ChainStep, ParsedModule, RawCode,
+                          Subscript)
+
+# technically args can be anything...but most of the time it'll be labels
+Arg = t.Union[str, t.List[str]]
+
+Args = t.Dict[str, Arg]
 
 
 @dataclasses.dataclass
 class EvalResult:
     step: ChainStep
     df: pd.DataFrame
-    args: dict
+    args: Args
 
 
 # TODO: handle stdout and stderr from user code
@@ -46,9 +51,6 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
         for step in last_expr.chain
     ]
 
-    import pdb
-    pdb.set_trace()
-
     return eval_results
 
 
@@ -69,26 +71,26 @@ def setup_user_globals():
     return user_globals
 
 
-def eval_args(step: ChainStep, user_globals: dict) -> dict:
+def eval_args(step: ChainStep, user_globals: dict) -> Args:
     '''eval each arg marked with parse_nodes.evals_into()'''
     if isinstance(step, Subscript):
         return eval_args_subscript(step, user_globals)
     return eval_dataclass(step, user_globals)
 
 
-def eval_args_subscript(step: Subscript, user_globals: dict) -> dict:
+def eval_args_subscript(step: Subscript, user_globals: dict) -> Args:
     '''subscripts have nested eval exprs so we have a special case'''
     slice1_args = eval_dataclass(step.slice1, user_globals, attr='slice1')
     slice2_args = eval_dataclass(step.slice2, user_globals, attr='slice2')
     return {**slice1_args, **slice2_args}
 
 
-def eval_dataclass(obj: t.Any, user_globals: dict, attr='') -> dict:
+def eval_dataclass(obj: t.Any, user_globals: dict, attr='') -> Args:
     '''
     takes a dataclasss with fields marked by evals_into(), outputs
     dict of evaluated values
     '''
-    args = {}
+    args: Args = {}
     if obj is None:
         return args
 

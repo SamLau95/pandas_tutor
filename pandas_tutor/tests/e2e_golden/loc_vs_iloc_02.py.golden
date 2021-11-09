@@ -238,7 +238,56 @@
   {
     "type": "Subscript",
     "code_step": "dogs.sort_values('kids').loc[0:6]",
-    "mapping": [],
+    "mapping": [
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 0
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 2
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 3
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 6
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": 6
+        },
+        "illustrate": "outline"
+      }
+    ],
     "data_frame": {
       "lhs": {
         "col_names": [
