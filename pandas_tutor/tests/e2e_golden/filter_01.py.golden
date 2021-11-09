@@ -4,6 +4,12 @@
     "code_step": "df[df['Count'] > 14000]",
     "mapping": [
       {
+        "select": "column",
+        "anchor": "lhs",
+        "label": "Count",
+        "illustrate": "highlight"
+      },
+      {
         "select": "row",
         "from": {
           "anchor": "lhs",

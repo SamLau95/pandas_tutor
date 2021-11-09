@@ -22,15 +22,29 @@ def mapt(fn, *args):
     return tuple(map(fn, *args))
 
 
-def matching_rows(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.Index:
-    '''find all matching row labels between df1 and df2'''
-    return df1.index.intersection(df2.index)
+def match_rows(df1: pd.DataFrame,
+               df2: pd.DataFrame,
+               only_if_diff=False) -> pd.Index:
+    '''
+    find all matching row labels between df1 and df2. if only_if_diff=False
+    (default), then return empty list when df1 has exact same rows as df2.
+    '''
+    # TODO: doesn't handle duplicate values in an index properly, since:
+    # >>> a = pd.Index([2, 2])
+    # >>> a.intersection(a)
+    # Index([2])
+    matches = df1.index.intersection(df2.index)
+    return (pd.Index([])
+            if len(matches) == len(df1.index) or only_if_diff else matches)
 
 
-def matching_cols(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.Index:
-    '''find all matching col labels between df1 and df2'''
-    return df1.columns.intersection(df2.columns)
-
-
-def has_diff(df1: pd.DataFrame, matches: pd.Index):
-    return (len(df1) != len(matches)) or (df1.index != matches).any()
+def match_cols(df1: pd.DataFrame,
+               df2: pd.DataFrame,
+               only_if_diff=False) -> pd.Index:
+    '''
+    find all matching col labels between df1 and df2. if only_if_diff=False
+    (default), then return empty list when df1 has exact same cols as df2.
+    '''
+    matches = df1.columns.intersection(df2.columns)
+    return (pd.Index([])
+            if len(matches) == len(df1.columns) or only_if_diff else matches)
