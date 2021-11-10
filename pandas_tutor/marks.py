@@ -43,14 +43,18 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
 
     sorted_labels = df.index if step.axis == 'index' else df.columns
 
-    highlights = make_highlights(sort_by, selection(step.axis, other=True))
+    # highlight sorted cols in RHS since the LHS values aren't sorted
+    highlights = make_highlights(sort_by,
+                                 selection(step.axis, other=True),
+                                 anchor='rhs')
     outlines = make_outlines(sorted_labels, selection(step.axis))
     return [*highlights, *outlines]
 
 
-def make_highlights(labels: t.Iterable, select: Selection):
+def make_highlights(labels: t.Iterable, select: Selection, anchor='lhs'):
     return [
-        Highlight(label=label, select=select, anchor='lhs') for label in labels
+        Highlight(label=label, select=select, anchor=anchor)
+        for label in labels
     ]
 
 
