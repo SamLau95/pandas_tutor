@@ -9,6 +9,7 @@ import json
 import typing as t
 
 import numpy as np
+import pandas as pd  # type: ignore
 
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes
@@ -29,13 +30,19 @@ class _DiagramEncoder(json.JSONEncoder):
     def default(self, obj):
         if dataclasses.is_dataclass(obj):
             return dataclasses.asdict(obj, dict_factory=_diagram_as_dict)
-        # extras for np objects
+        # extras for np and pandas objects
+        if pd.isnull(obj):
+            print(f'{obj} is null')
+            return None
+        print(f'{obj} is not null')
         if isinstance(obj, np.integer):
             return int(obj)
         if isinstance(obj, np.floating):
             return float(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()
+        if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
+            return str(obj)
         return super().default(obj)
 
 

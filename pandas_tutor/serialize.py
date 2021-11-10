@@ -43,11 +43,9 @@ def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
 
 
 def make_df_spec(df: pd.DataFrame):
-    return DFSpec(
-        col_names=df.columns.tolist(),
-        row_labels=df.index.tolist(),
-        # Encodes all null-type values as JSON null
-        data=df.to_numpy(na_value=None).tolist())
+    return DFSpec(col_names=df.columns.tolist(),
+                  row_labels=df.index.tolist(),
+                  data=df.to_numpy().tolist())  # type: ignore
 
 
 def pairs(seq: t.List[T]) -> t.List[t.Tuple[T, T]]:
