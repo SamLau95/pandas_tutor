@@ -2,7 +2,7 @@ from pathlib import Path
 import unittest
 import json
 
-from ..main import make_tutor_spec_py
+from ..main import make_tutor_spec
 
 test_cases = Path(__file__).parent / 'e2e_golden'
 
@@ -20,8 +20,12 @@ def make_test_case(test_name):
         self.assertTrue(golden_file.exists())
 
         code = in_file.read_text()
-        res = make_tutor_spec_py(code)
-        golden_res = json.loads(golden_file.read_text())
+
+        # we'll just compare JSON strings here since we only apply special
+        # encoding rules (e.g. NaN to None) after converting to JSON.
+        res = make_tutor_spec(code)
+        golden_res = golden_file.read_text().strip()
+
         self.assertEqual(res, golden_res)
 
     return test

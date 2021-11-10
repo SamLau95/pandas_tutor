@@ -45,11 +45,12 @@ def write_spec_to_file(spec: str, out: Path) -> None:
     print(f'Writing {out}')
     with out.open('w') as f:
         f.write(spec)
-        f.write('\n')
 
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version='1.0')
+    doc = __doc__ or ''
+    args = docopt(doc, version='1.0')
+
     spec_fn = (test_logger if args['--parse_log'] else
                parse_as_json if args['--parse_only'] else make_tutor_spec)
 

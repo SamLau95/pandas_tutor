@@ -3,3 +3,4 @@ libcst==0.3.21
 docopt==0.6.2
 prettyprinter==0.18.0
 simplejson==3.17.5
+types-simplejson==3.17.1

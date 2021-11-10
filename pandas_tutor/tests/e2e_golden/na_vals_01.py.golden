@@ -1,23 +1,23 @@
 [
   {
     "type": "SortValuesCall",
-    "code_step": "df.sort_values('Name')",
+    "code_step": "df2.sort_values('two')",
     "mapping": [
       {
         "select": "column",
         "anchor": "lhs",
-        "label": "Name",
+        "label": "two",
         "illustrate": "highlight"
       },
       {
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "label": 0
+          "label": "a"
         },
         "to": {
           "anchor": "rhs",
-          "label": 0
+          "label": "a"
         },
         "illustrate": "outline"
       },
@@ -25,11 +25,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "label": 1
+          "label": "c"
         },
         "to": {
           "anchor": "rhs",
-          "label": 1
+          "label": "c"
         },
         "illustrate": "outline"
       },
@@ -37,11 +37,11 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "label": 2
+          "label": "e"
         },
         "to": {
           "anchor": "rhs",
-          "label": 2
+          "label": "e"
         },
         "illustrate": "outline"
       },
@@ -49,11 +49,23 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "label": 3
+          "label": "f"
         },
         "to": {
           "anchor": "rhs",
-          "label": 3
+          "label": "f"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": "h"
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "h"
         },
         "illustrate": "outline"
       }
@@ -61,61 +73,119 @@
     "data_frame": {
       "lhs": {
         "col_names": [
-          "Name",
-          "Year"
+          "one",
+          "two",
+          "three",
+          "four",
+          "five",
+          "timestamp"
         ],
         "row_labels": [
-          0,
-          1,
-          2,
-          3
+          "a",
+          "c",
+          "e",
+          "f",
+          "h"
         ],
         "data": [
           [
-            "Liam",
-            2020.0
+            null,
+            -0.13826430117118466,
+            0.6476885381006925,
+            "bar",
+            true,
+            null
           ],
           [
             null,
-            2020.0
+            -0.23415337472333597,
+            -0.23413695694918055,
+            "bar",
+            true,
+            null
           ],
           [
-            "Sophia",
-            2020.0
+            1.5792128155073915,
+            0.7674347291529088,
+            -0.4694743859349521,
+            "bar",
+            true,
+            "2012-01-01 00:00:00"
           ],
           [
-            "Amelia",
+            0.5425600435859647,
+            -0.46341769281246226,
+            -0.46572975357025687,
+            "bar",
+            true,
+            "2012-01-01 00:00:00"
+          ],
+          [
+            null,
+            -1.913280244657798,
+            -1.7249178325130328,
+            "bar",
+            true,
             null
           ]
         ]
       },
       "rhs": {
         "col_names": [
-          "Name",
-          "Year"
+          "one",
+          "two",
+          "three",
+          "four",
+          "five",
+          "timestamp"
         ],
         "row_labels": [
-          3,
-          0,
-          2,
-          1
+          "h",
+          "f",
+          "c",
+          "a",
+          "e"
         ],
         "data": [
           [
-            "Amelia",
+            null,
+            -1.913280244657798,
+            -1.7249178325130328,
+            "bar",
+            true,
             null
           ],
           [
-            "Liam",
-            2020.0
-          ],
-          [
-            "Sophia",
-            2020.0
+            0.5425600435859647,
+            -0.46341769281246226,
+            -0.46572975357025687,
+            "bar",
+            true,
+            "2012-01-01 00:00:00"
           ],
           [
             null,
-            2020.0
+            -0.23415337472333597,
+            -0.23413695694918055,
+            "bar",
+            true,
+            null
+          ],
+          [
+            null,
+            -0.13826430117118466,
+            0.6476885381006925,
+            "bar",
+            true,
+            null
+          ],
+          [
+            1.5792128155073915,
+            0.7674347291529088,
+            -0.4694743859349521,
+            "bar",
+            true,
+            "2012-01-01 00:00:00"
           ]
         ]
       }

@@ -5,7 +5,7 @@ has dataclass definitions for final JSON output.
 from __future__ import annotations
 
 import dataclasses
-import json
+import simplejson as json
 import typing as t
 
 import numpy as np
@@ -26,24 +26,25 @@ def _diagram_as_dict(dclass):
     return res
 
 
-class _DiagramEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if dataclasses.is_dataclass(obj):
-            return dataclasses.asdict(obj, dict_factory=_diagram_as_dict)
-        # extras for np and pandas objects
-        if pd.isnull(obj):
-            print(f'{obj} is null')
-            return None
-        print(f'{obj} is not null')
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
-            return str(obj)
-        return super().default(obj)
+def encode_pd_objs(obj: t.Any):
+    if dataclasses.is_dataclass(obj):
+        return dataclasses.asdict(obj, dict_factory=_diagram_as_dict)
+
+    # extras for np and pandas objects
+
+    # note that this doesn't catch np.nan! python's json module natively
+    # encodes np.nan to NaN for whatever reason, which is why need to use
+    # simplejson for json encoding
+    if pd.isnull(obj):
+        return None
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.floating):
+        return float(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
+        return str(obj)
 
 
 @dataclasses.dataclass
@@ -58,7 +59,10 @@ class Diagram:
 
     @classmethod
     def to_json(cls, items: t.Union[t.List[Diagram], Diagram]):
-        return json.dumps(items, indent=2, cls=_DiagramEncoder)
+        return json.dumps(items,
+                          indent=2,
+                          default=encode_pd_objs,
+                          ignore_nan=True)
 
 
 Selection = t.Literal['column', 'row']
