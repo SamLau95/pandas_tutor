@@ -5,7 +5,7 @@
     "mapping": [
       {
         "select": "column",
-        "anchor": "lhs",
+        "anchor": "rhs",
         "label": "kids",
         "illustrate": "highlight"
       },
