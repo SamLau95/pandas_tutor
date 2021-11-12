@@ -1,5 +1,5 @@
 '''
-serializes run.py outputs into json. here's where the magic happens!
+serializes run.py outputs into json.
 '''
 
 from __future__ import annotations

@@ -207,10 +207,32 @@ class PandasParser(m.MatcherDecoratableVisitor):
     @m.call_if_inside(is_chain_stmt)
     @m.leave(is_rename)
     def make_rename_call(self, cst_node):
-        # TODO
-        self.fallback_call(cst_node)
-        # node = self.make_node(RenameCall, cst_node, mapping_expr='<wip>')
-        # self.current.chain.append(node)
+        assert self.current is not None, (
+            'tried to call make_sort_values_call when not in a chain!')
+        mapper = get_arg_by_position_or_keyword(cst_node.args, 0, 'mapper')
+        index = get_arg_by_position_or_keyword(cst_node.args, 1, 'index')
+        columns = get_arg_by_position_or_keyword(cst_node.args, 2, 'columns')
+        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 3, 'axis')
+        axis = 'index'  # default
+
+        if index is not None:
+            mapper = index
+            axis = 'index'
+        elif columns is not None:
+            mapper = columns
+            axis = 'columns'
+        elif axis_arg is not None:
+            axis = make_axis(self.code_for(axis_arg.value))
+
+        if mapper is None:
+            self.fallback_call(cst_node)
+            return
+
+        node = self.make_node(RenameCall,
+                              cst_node,
+                              mapping_expr=self.code_for(mapper.value),
+                              axis=axis)
+        self.current.chain.append(node)
 
     # this is tricky!
     # we don't want to treat inner subscripts as a chain e.g. df[df['keep']]

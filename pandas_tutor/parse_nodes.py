@@ -122,7 +122,7 @@ class RenameCall(Base):
 
     # expression that results in a dict. can sometimes be a function, in which
     # case we need to just pass it through
-    mapping_expr: RawCode
+    mapping_expr: RawCode = evals_into('mapping')
 
     axis: Axis = 'index'
 
