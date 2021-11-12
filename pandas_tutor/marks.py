@@ -1,5 +1,5 @@
 '''
-creates mark specs
+creates mark specs. here's where the magic happens!
 '''
 import typing as t
 
@@ -22,7 +22,7 @@ def make_marks(step: ChainStep, before: EvalResult,
     if isinstance(step, SortValuesCall):
         return mark_for_sort_values(step, before, after)
     if isinstance(step, RenameCall):
-        return no_marks(step, before, after)
+        return mark_for_rename(step, before, after)
     if isinstance(step, PassThroughCall):
         return no_marks(step, before, after)
     if isinstance(step, Subscript):
@@ -51,22 +51,23 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
     return [*highlights, *outlines]
 
 
-def make_highlights(labels: t.Iterable, select: Selection, anchor='lhs'):
-    return [
-        Highlight(label=label, select=select, anchor=anchor)
-        for label in labels
-    ]
+# df.rename(index={'sam': 'smae'})
+Mapper = t.Union[dict, t.Callable]
 
 
-def make_outlines(labels: t.Iterable, select: Selection):
-    '''
-    used as a shorthand when index values don't change, which is most of the
-    time
-    '''
+def mark_for_rename(step: RenameCall, before: EvalResult,
+                    after: EvalResult) -> t.List[Mark]:
+    args = after.args
+    mapping = t.cast(Mapper, args.get('mapping', {}))
+
+    if not isinstance(mapping, dict):
+        return no_marks()
+
+    select = selection(step.axis)
+
     return [
-        Outline(select=select,
-                from_=TablePos('lhs', label),
-                to=TablePos('rhs', label)) for label in labels
+        Outline(select=select, from_=lhs(old), to=rhs(new))
+        for old, new in mapping.items()
     ]
 
 
@@ -163,8 +164,7 @@ def diff_cols(df1, df2):
     return make_outlines(col_matches, 'column')
 
 
-def no_marks(step: ChainStep, before: EvalResult,
-             after: EvalResult) -> t.List[Mark]:
+def no_marks(*args) -> t.List[Mark]:
     # print(f'Unknown mark for {step.type_}')
     return []
 
@@ -173,3 +173,31 @@ def selection(axis: Axis, other=False) -> Selection:
     if other:
         return 'column' if axis == 'index' else 'row'
     return 'row' if axis == 'index' else 'column'
+
+
+def make_highlights(labels: t.Iterable,
+                    select: Selection,
+                    anchor='lhs') -> t.List[Mark]:
+    return [
+        Highlight(label=label, select=select, anchor=anchor)
+        for label in labels
+    ]
+
+
+def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
+    '''
+    used as a shorthand when index values don't change, which is most of the
+    time
+    '''
+    return [
+        Outline(select=select, from_=lhs(label), to=rhs(label))
+        for label in labels
+    ]
+
+
+def lhs(label):
+    return TablePos('lhs', label)
+
+
+def rhs(label):
+    return TablePos('rhs', label)

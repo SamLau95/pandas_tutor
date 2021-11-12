@@ -1,6 +1,6 @@
 .PHONY: help build clean
 
-WATCH_EXCLUDE = -e .*__pycache__.*
+WATCH_EXCLUDE = -e .*__pycache__.* -e .*.tmp
 CONTENT = pandas_tutor
 
 sam_cmd = python -m pandas_tutor.sams_scratchpad # && echo "\n------------------\n"
