@@ -165,7 +165,7 @@ def diff_cols(df1, df2):
 
 def no_marks(step: ChainStep, before: EvalResult,
              after: EvalResult) -> t.List[Mark]:
-    print(f'Unknown mark for {step.type_}')
+    # print(f'Unknown mark for {step.type_}')
     return []
 
 
