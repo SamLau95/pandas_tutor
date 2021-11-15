@@ -22,10 +22,11 @@ import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
-from .parse_nodes import (Axis, CodePosition, ParsedModule, ChainStatement,
-                          PassThroughCall, RawCode, RenameCall, SortValuesCall,
-                          StartOfChain, SubsComparison, SubsEval, SubsSlice,
-                          Subscript, SubscriptEl, VerbatimStatement)
+from .parse_nodes import (Axis, CodePosition, HeadCall, ParsedModule,
+                          ChainStatement, PassThroughCall, RawCode, RenameCall,
+                          SortValuesCall, StartOfChain, SubsComparison,
+                          SubsEval, SubsSlice, Subscript, SubscriptEl,
+                          TailCall, VerbatimStatement)
 
 T = t.TypeVar('T')
 
@@ -61,10 +62,17 @@ def fn_matcher(fn_name: str):
     return m.Call(func=m.Attribute(attr=m.Name(fn_name)))
 
 
+def fn_name(call: cst.Call):
+    func = t.cast(cst.Attribute, call.func)
+    return func.attr.value
+
+
 is_sort_values = fn_matcher('sort_values')
 is_rename = fn_matcher('rename')
+is_head_or_tail = fn_matcher('head') | fn_matcher('tail')
 
-is_parsed_call = is_sort_values | is_rename
+# make sure to update this whenever we add a new call to the section above
+is_parsed_call = is_sort_values | is_rename | is_head_or_tail
 
 is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                             | m.Name('iloc')))
@@ -161,6 +169,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
             node = self.make_node(StartOfChain, cst_node)
             self.current.chain.append(node)
 
+    ###########################################################################
+    # Calls
+    ###########################################################################
+
     @m.call_if_inside(is_chain_stmt)
     @m.leave(is_attribute_call)
     def make_pass_through_call(self, cst_node):
@@ -233,6 +245,20 @@ class PandasParser(m.MatcherDecoratableVisitor):
                               mapping_expr=self.code_for(mapper.value),
                               axis=axis)
         self.current.chain.append(node)
+
+    @m.call_if_inside(is_chain_stmt)
+    @m.leave(is_head_or_tail)
+    def make_head_or_tail(self, cst_node):
+        assert self.current is not None, (
+            'tried to call make_head_or_tail when not in a chain!')
+        name = fn_name(cst_node)
+        node = self.make_node(HeadCall if name == 'head' else TailCall,
+                              cst_node)
+        self.current.chain.append(node)
+
+    ###########################################################################
+    # Subscripts
+    ###########################################################################
 
     # this is tricky!
     # we don't want to treat inner subscripts as a chain e.g. df[df['keep']]
@@ -354,6 +380,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
     # fallback to just eval'ing the slice
     def fallback_slice(self, cst_node):
         return self.make_node(SubsEval, cst_node, expr=self.code_for(cst_node))
+
+    ###########################################################################
+    # Helpers
+    ###########################################################################
 
     def code_for(self, cst_node):
         return RawCode(self.cst_root.code_for_node(cst_node))

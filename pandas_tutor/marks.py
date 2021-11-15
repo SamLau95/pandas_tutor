@@ -7,9 +7,9 @@ import pandas as pd  # type: ignore
 
 from . import util
 
-from .parse_nodes import (Axis, ChainStep, PassThroughCall, RenameCall,
-                          SortValuesCall, SubsComparison, SubsEval, SubsSlice,
-                          Subscript, SubscriptEl)
+from .parse_nodes import (Axis, ChainStep, HeadCall, PassThroughCall,
+                          RenameCall, SortValuesCall, SubsComparison, SubsEval,
+                          SubsSlice, Subscript, SubscriptEl, TailCall)
 
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
 from .run import EvalResult
@@ -23,6 +23,8 @@ def make_marks(step: ChainStep, before: EvalResult,
         return mark_for_sort_values(step, before, after)
     if isinstance(step, RenameCall):
         return mark_for_rename(step, before, after)
+    if isinstance(step, HeadCall) or isinstance(step, TailCall):
+        return mark_for_head_or_tail(step, before, after)
     if isinstance(step, PassThroughCall):
         return no_marks(step, before, after)
     if isinstance(step, Subscript):
@@ -52,13 +54,10 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
 
 
 # df.rename(index={'sam': 'smae'})
-Mapper = t.Union[dict, t.Callable]
-
-
 def mark_for_rename(step: RenameCall, before: EvalResult,
                     after: EvalResult) -> t.List[Mark]:
     args = after.args
-    mapping = t.cast(Mapper, args.get('mapping', {}))
+    mapping = args.get('mapping', {})
 
     if not isinstance(mapping, dict):
         return no_marks()
@@ -69,6 +68,14 @@ def mark_for_rename(step: RenameCall, before: EvalResult,
         Outline(select=select, from_=lhs(old), to=rhs(new))
         for old, new in mapping.items()
     ]
+
+
+# df.head(2)
+# df.tail()
+def mark_for_head_or_tail(step: t.Union[HeadCall,
+                                        TailCall], before: EvalResult,
+                          after: EvalResult) -> t.List[Mark]:
+    return diff_rows(before.df, after.df)
 
 
 # handles:
