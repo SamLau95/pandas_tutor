@@ -128,6 +128,26 @@ class RenameCall(Base):
 
 
 @dataclasses.dataclass
+class HeadCall(Base):
+    '''
+    df.head(5)
+    df.head()
+    df.head(-2)
+    '''
+    fn_name = 'head'
+
+
+@dataclasses.dataclass
+class TailCall(Base):
+    '''
+    df.tail(5)
+    df.tail()
+    df.tail(-2)
+    '''
+    fn_name = 'tail'
+
+
+@dataclasses.dataclass
 class PassThroughCall(Base):
     '''
     call that we don't know how to draw diagram for, so we should just run it
@@ -136,7 +156,8 @@ class PassThroughCall(Base):
     fn_name: str
 
 
-Call = t.Union[SortValuesCall, RenameCall, PassThroughCall]
+# make sure to update this whenever we add new call node
+Call = t.Union[SortValuesCall, RenameCall, HeadCall, TailCall, PassThroughCall]
 
 ##############################################################################
 # Subscripts
