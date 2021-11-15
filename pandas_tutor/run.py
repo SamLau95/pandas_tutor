@@ -14,6 +14,7 @@ import pandas as pd  # type: ignore
 
 from .parse_nodes import (ChainStatement, ChainStep, ParsedModule, RawCode,
                           Subscript)
+from . import util
 
 # technically args can be anything...but most of the time it'll be labels
 Arg = t.Union[str, t.List[str]]
@@ -22,10 +23,28 @@ Args = t.Dict[str, Arg]
 
 
 @dataclasses.dataclass
-class EvalResult:
+class EvalBase:
     step: ChainStep
-    df: pd.DataFrame
     args: Args
+
+
+@dataclasses.dataclass
+class DFResult(EvalBase):
+    val: pd.DataFrame
+
+
+@dataclasses.dataclass
+class GroupbyResult(EvalBase):
+    val: util.DataFrameGroupBy
+
+
+@dataclasses.dataclass
+class UnhandledResult(EvalBase):
+    '''catch-all for chain outputs we don't know how to serialize'''
+    val: t.Any
+
+
+EvalResult = t.Union[DFResult, GroupbyResult, UnhandledResult]
 
 
 # TODO: handle stdout and stderr from user code
@@ -43,15 +62,24 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
     user_globals = setup_user_globals()
     exec(setup_code, user_globals)
 
-    # wrap individual steps in parens before eval since they can have newlines
-    eval_results = [
-        EvalResult(step=step,
-                   df=eval(f"({step.code})", user_globals),
-                   args=eval_args(step, user_globals))
-        for step in last_expr.chain
-    ]
+    eval_results = []
+    for step in last_expr.chain:
+        # wrap individual steps in parens before eval since they can have newlines
+        val = eval(f"({step.code})", user_globals)
+        args = eval_args(step, user_globals)
+        result = make_result(step, val, args)
+        eval_results.append(result)
 
     return eval_results
+
+
+def make_result(step: ChainStep, val: t.Any, args: Args) -> EvalResult:
+    if isinstance(val, util.DataFrameGroupBy):
+        return GroupbyResult(step, args, val)
+    if isinstance(val, pd.DataFrame):
+        return DFResult(step, args, val)
+    else:
+        return UnhandledResult(step, args, val)
 
 
 def setup_user_globals():
