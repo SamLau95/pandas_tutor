@@ -156,8 +156,41 @@ class PassThroughCall(Base):
     fn_name: str
 
 
+@dataclasses.dataclass
+class GroupByCall(Base):
+    '''
+    df.groupby('region')
+    df.groupby(['region', 'id'])
+    df.groupby(df['region'])
+    df.groupby(lambda val: val // 10)
+    '''
+    fn_name = 'groupby'
+
+    # Expression that evaluates to labels usually
+    label_expr: RawCode = evals_into('labels')
+
+    axis: Axis = 'index'
+
+
+@dataclasses.dataclass
+class AggCall(Base):
+    '''
+    catch-all for any function that happens after a groupby. note: some
+    functions on groupby objects are transforms, not aggregations, e.g.
+    .transform(), .apply(), cumcount(), etc. and shouldn't be parsed into an
+    AggCall
+
+    g = df.groupby('region')
+    g.agg('mean')
+    g.mean()
+    g.std()
+    '''
+    fn_name = 'agg'
+
+
 # make sure to update this whenever we add new call node
-Call = t.Union[SortValuesCall, RenameCall, HeadCall, TailCall, PassThroughCall]
+Call = t.Union[PassThroughCall, SortValuesCall, RenameCall, HeadCall, TailCall,
+               GroupByCall, AggCall]
 
 ##############################################################################
 # Subscripts

@@ -1,24 +1,24 @@
 {
   "type_": "ParsedModule",
-  "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
+  "code": "(df\n .sort_values('Name')\n .loc[:, 'Count']\n)",
   "start": {
     "line": 0,
     "ch": 0
   },
   "end": {
-    "line": 6,
+    "line": 4,
     "ch": 0
   },
   "statements": [
     {
       "type_": "ChainStatement",
-      "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
+      "code": "(df\n .sort_values('Name')\n .loc[:, 'Count']\n)",
       "start": {
         "line": 0,
         "ch": 0
       },
       "end": {
-        "line": 5,
+        "line": 3,
         "ch": 1
       },
       "chain": [
@@ -49,27 +49,14 @@
           "axis": "index"
         },
         {
-          "type_": "PassThroughCall",
-          "code": "df\n .sort_values('Name')\n .groupby('Sex')",
+          "type_": "Subscript",
+          "code": "(df\n .sort_values('Name')\n .loc[:, 'Count']\n)",
           "start": {
             "line": 0,
             "ch": 1
           },
           "end": {
             "line": 2,
-            "ch": 16
-          },
-          "fn_name": "groupby"
-        },
-        {
-          "type_": "Subscript",
-          "code": "df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']",
-          "start": {
-            "line": 0,
-            "ch": 1
-          },
-          "end": {
-            "line": 3,
             "ch": 17
           },
           "slicer": "loc",
@@ -77,11 +64,11 @@
             "type_": "SubsSlice",
             "code": ":",
             "start": {
-              "line": 3,
+              "line": 2,
               "ch": 6
             },
             "end": {
-              "line": 3,
+              "line": 2,
               "ch": 7
             }
           },
@@ -89,28 +76,15 @@
             "type_": "SubsEval",
             "code": "'Count'",
             "start": {
-              "line": 3,
+              "line": 2,
               "ch": 9
             },
             "end": {
-              "line": 3,
+              "line": 2,
               "ch": 16
             },
             "expr": "'Count'"
           }
-        },
-        {
-          "type_": "PassThroughCall",
-          "code": "(df\n .sort_values('Name')\n .groupby('Sex')\n .loc[:, 'Count']\n .mean()\n)",
-          "start": {
-            "line": 0,
-            "ch": 1
-          },
-          "end": {
-            "line": 4,
-            "ch": 8
-          },
-          "fn_name": "mean"
         }
       ]
     }

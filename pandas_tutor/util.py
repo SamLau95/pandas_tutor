@@ -6,8 +6,11 @@ import gzip
 import typing as t
 
 import pandas as pd  # type: ignore
+from pandas.core.groupby.generic import DataFrameGroupBy  # type: ignore
 
 from .diagram import Label
+
+Groups = t.Dict[t.Union[str, tuple], pd.Index]
 
 IndexPair = t.Tuple[Label, Label]
 
@@ -48,3 +51,8 @@ def match_cols(df1: pd.DataFrame,
     matches = df1.columns.intersection(df2.columns)
     return (pd.Index([])
             if len(matches) == len(df1.columns) or only_if_diff else matches)
+
+
+def ungroup(groupby: DataFrameGroupBy) -> pd.DataFrame:
+    '''undos a groupby back into original dataframe'''
+    return groupby.transform(lambda x: x)

@@ -106,3 +106,6 @@ class DFSpec:
     col_names: t.List[str]
     row_labels: t.List[str]
     data: t.List[t.List]
+
+    # For groupby objects, holds the group info
+    groups: t.Optional[dict] = None

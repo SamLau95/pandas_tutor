@@ -6,13 +6,11 @@ import typing as t
 import pandas as pd  # type: ignore
 
 from . import util
-
-from .parse_nodes import (Axis, ChainStep, HeadCall, PassThroughCall,
-                          RenameCall, SortValuesCall, SubsComparison, SubsEval,
-                          SubsSlice, Subscript, SubscriptEl, TailCall)
-
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
-from .run import EvalResult
+from .parse_nodes import (AggCall, Axis, ChainStep, GroupByCall, HeadCall,
+                          PassThroughCall, RenameCall, SortValuesCall,
+                          SubsComparison, Subscript, TailCall)
+from .run import DFResult, EvalResult, GroupbyResult, UnhandledResult
 
 
 # yes, step comes from after.step, but we pull it out here to help with
@@ -21,13 +19,17 @@ def make_marks(step: ChainStep, before: EvalResult,
                after: EvalResult) -> t.List[Mark]:
     if isinstance(step, SortValuesCall):
         return mark_for_sort_values(step, before, after)
-    if isinstance(step, RenameCall):
+    elif isinstance(step, RenameCall):
         return mark_for_rename(step, before, after)
-    if isinstance(step, HeadCall) or isinstance(step, TailCall):
+    elif isinstance(step, HeadCall) or isinstance(step, TailCall):
         return mark_for_head_or_tail(step, before, after)
-    if isinstance(step, PassThroughCall):
+    elif isinstance(step, GroupByCall):
+        return mark_for_groupby(step, before, after)
+    elif isinstance(step, AggCall):
+        return mark_for_agg(step, before, after)
+    elif isinstance(step, PassThroughCall):
         return no_marks(step, before, after)
-    if isinstance(step, Subscript):
+    elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
         return no_marks(step, before, after)
@@ -36,7 +38,7 @@ def make_marks(step: ChainStep, before: EvalResult,
 # df.sort_values('Name')
 def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
                          after: EvalResult) -> t.List[Mark]:
-    df = before.df
+    df = before.val
     args = after.args
 
     sort_by = args.get('labels', [])
@@ -75,59 +77,82 @@ def mark_for_rename(step: RenameCall, before: EvalResult,
 def mark_for_head_or_tail(step: t.Union[HeadCall,
                                         TailCall], before: EvalResult,
                           after: EvalResult) -> t.List[Mark]:
-    return diff_rows(before.df, after.df)
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+    return diff_rows(before.val, after.val)
+
+
+# df.groupby('hello')
+def mark_for_groupby(step: GroupByCall, before: EvalResult,
+                     after: EvalResult) -> t.List[Mark]:
+    args = after.args
+
+    group_cols = args.get('labels', [])
+    # TODO: typeguard against function calls too
+    if isinstance(group_cols, str):
+        group_cols = [group_cols]
+
+    highlights = make_highlights(group_cols,
+                                 selection(step.axis, other=True),
+                                 anchor='lhs')
+
+    return highlights
+
+
+# df.head(2)
+# df.tail()
+# basic heuristic: assume that group keys map to row labels of result
+def mark_for_agg(step: AggCall, before: EvalResult,
+                 after: EvalResult) -> t.List[Mark]:
+    if not isinstance(before, GroupbyResult):
+        return []
+    if not isinstance(after, DFResult):
+        return []
+
+    groups = t.cast(util.Groups, before.val.groups)
+
+    row_outlines: t.List[Mark] = []
+    for group_key, lhs_labels in groups.items():
+        # TODO: support multi-column grouping
+        if isinstance(group_key, tuple):
+            continue
+
+        for label in lhs_labels:
+            row_outlines.append(
+                Outline(
+                    select='row',  # TODO: get selection from groupby
+                    from_=lhs(label),
+                    to=rhs(group_key),
+                ))
+
+    return row_outlines
 
 
 # handles:
 # df.loc[1:5, ['Name', 'Count']]
 # df.iloc[2:5, 1:4]
 # df[df['Count'] > 10000]
+# df.groupby('Sex')[['Count']]
 def mark_for_subscript(step: Subscript, before: EvalResult,
                        after: EvalResult) -> t.List[Mark]:
-    if step.slicer == 'loc':
-        mark_fn = mark_for_loc
-    elif step.slicer == 'iloc':
-        mark_fn = mark_for_iloc
+    before_df: pd.DataFrame
+    after_df: pd.DataFrame
 
-    # slicer is None, so we need to figure out what kind of slice it is
-    elif isinstance(step.slice1, SubsSlice):
-        mark_fn = mark_for_iloc
-    elif (isinstance(step.slice1, SubsComparison)
-          or isinstance(step.slice1, SubsEval)):
-        mark_fn = mark_for_loc
+    if (isinstance(before, GroupbyResult)
+            and isinstance(after, GroupbyResult)):
+        before_df = util.ungroup(before.val)
+        after_df = util.ungroup(after.val)
+    elif not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
     else:
-        raise ValueError('weird subscript: {step}')
-    return mark_fn(step.slice1, step.slice2, before, after)
+        before_df = before.val
+        after_df = after.val
 
-
-# TODO: iloc and loc have the exact same code...should we merge into one
-# method? i'll hold off on it for now in case we need to differentiate later
-def mark_for_iloc(row_slice: t.Optional[SubscriptEl],
-                  col_slice: t.Optional[SubscriptEl], before: EvalResult,
-                  after: EvalResult) -> t.List[Mark]:
+    row_slice = step.slice1
+    col_slice = step.slice2
     args = after.args
-    row_marks = diff_rows(before.df, after.df)
-    col_marks = diff_cols(before.df, after.df)
-
-    if isinstance(row_slice, SubsComparison):
-        labels = args.get('slice1_labels', [])
-        highlights = make_highlights(labels, 'column')
-        col_marks = [*highlights, *col_marks]
-
-    if isinstance(col_slice, SubsComparison):
-        labels = args.get('slice2_labels', [])
-        highlights = make_highlights(labels, 'row')
-        row_marks = [*highlights, *row_marks]
-
-    return [*col_marks, *row_marks]
-
-
-def mark_for_loc(row_slice: t.Optional[SubscriptEl],
-                 col_slice: t.Optional[SubscriptEl], before: EvalResult,
-                 after: EvalResult) -> t.List[Mark]:
-    args = after.args
-    row_marks = diff_rows(before.df, after.df)
-    col_marks = diff_cols(before.df, after.df)
+    row_marks = diff_rows(before_df, after_df)
+    col_marks = diff_cols(before_df, after_df)
 
     if isinstance(row_slice, SubsComparison):
         labels = args.get('slice1_labels', [])
@@ -153,7 +178,7 @@ def diff_dfs(df1: pd.DataFrame, df2: pd.DataFrame):
     return [*cols, *rows]
 
 
-def diff_rows(df1, df2):
+def diff_rows(df1: pd.DataFrame, df2: pd.DataFrame):
     '''
     when we just want to draw arrows between different rows and cols without
     special highlights. only outputs when there is at least one mismatching row
@@ -162,7 +187,7 @@ def diff_rows(df1, df2):
     return make_outlines(row_matches, 'row')
 
 
-def diff_cols(df1, df2):
+def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame):
     '''
     when we just want to draw arrows between different rows and cols without
     special highlights. only outputs when there is at least one mismatching col

@@ -22,11 +22,11 @@ import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
-from .parse_nodes import (Axis, CodePosition, HeadCall, ParsedModule,
-                          ChainStatement, PassThroughCall, RawCode, RenameCall,
-                          SortValuesCall, StartOfChain, SubsComparison,
-                          SubsEval, SubsSlice, Subscript, SubscriptEl,
-                          TailCall, VerbatimStatement)
+from .parse_nodes import (AggCall, Axis, CodePosition, GroupByCall, HeadCall,
+                          ParsedModule, ChainStatement, PassThroughCall,
+                          RawCode, RenameCall, SortValuesCall, StartOfChain,
+                          SubsComparison, SubsEval, SubsSlice, Subscript,
+                          SubscriptEl, TailCall, VerbatimStatement)
 
 T = t.TypeVar('T')
 
@@ -70,9 +70,10 @@ def fn_name(call: cst.Call):
 is_sort_values = fn_matcher('sort_values')
 is_rename = fn_matcher('rename')
 is_head_or_tail = fn_matcher('head') | fn_matcher('tail')
+is_groupby = fn_matcher('groupby')
 
 # make sure to update this whenever we add a new call to the section above
-is_parsed_call = is_sort_values | is_rename | is_head_or_tail
+is_parsed_call = is_sort_values | is_rename | is_head_or_tail | is_groupby
 
 is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                             | m.Name('iloc')))
@@ -178,6 +179,17 @@ class PandasParser(m.MatcherDecoratableVisitor):
     def make_pass_through_call(self, cst_node):
         if m.matches(cst_node, is_parsed_call):
             return
+
+        # special case: any function called on a groupby gets parsed into an
+        # AggCall.
+        # TODO: don't do this for non-aggregating funcs like .transform()
+        if self.current is not None and len(self.current.chain) > 1:
+            last = self.current.chain[-1]
+            if isinstance(last, GroupByCall):
+                node = self.make_node(AggCall, cst_node)
+                self.current.chain.append(node)
+                return
+
         self.fallback_call(cst_node)
 
     def fallback_call(self, cst_node):
@@ -254,6 +266,30 @@ class PandasParser(m.MatcherDecoratableVisitor):
         name = fn_name(cst_node)
         node = self.make_node(HeadCall if name == 'head' else TailCall,
                               cst_node)
+        self.current.chain.append(node)
+
+    @m.call_if_inside(is_chain_stmt)
+    @m.leave(is_groupby)
+    def make_groupby(self, cst_node):
+        assert self.current is not None, (
+            'tried to call make_head_or_tail when not in a chain!')
+        by = get_arg_by_position_or_keyword(cst_node.args, 0, 'by')
+        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
+
+        if by is None:
+            self.fallback_call(cst_node)
+            return
+
+        label_expr = self.code_for(by.value)
+
+        # default groupby uses rows
+        axis = (make_axis(self.code_for(axis_arg.value))
+                if axis_arg is not None else 'index')
+
+        node = self.make_node(GroupByCall,
+                              cst_node,
+                              label_expr=label_expr,
+                              axis=axis)
         self.current.chain.append(node)
 
     ###########################################################################

@@ -128,7 +128,8 @@
             true,
             null
           ]
-        ]
+        ],
+        "groups": null
       },
       "rhs": {
         "col_names": [
@@ -187,7 +188,8 @@
             true,
             "2012-01-01 00:00:00"
           ]
-        ]
+        ],
+        "groups": null
       }
     }
   }

@@ -1,97 +1,13 @@
 [
   {
-    "type": "SortValuesCall",
-    "code_step": "dogs.sort_values('kids')",
+    "type": "GroupByCall",
+    "code_step": "dogs\n .groupby('grooming')",
     "mapping": [
       {
         "select": "column",
-        "anchor": "rhs",
-        "label": "kids",
+        "anchor": "lhs",
+        "label": "grooming",
         "illustrate": "highlight"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 0
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 0
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 1
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 1
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 2
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 2
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 3
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 3
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 4
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 4
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 5
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 5
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": 6
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": 6
-        },
-        "illustrate": "outline"
       }
     ],
     "data_frame": {
@@ -168,88 +84,92 @@
       "rhs": {
         "col_names": [
           "breed",
-          "grooming",
           "food_cost",
           "kids",
           "size"
         ],
         "row_labels": [
           0,
+          1,
           2,
           3,
-          6,
           4,
-          1,
-          5
+          5,
+          6
         ],
         "data": [
           [
             "Labrador Retriever",
-            "weekly",
             466.0,
             "high",
             "medium"
           ],
           [
+            "German Shepherd",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
             "Beagle",
-            "daily",
             324.0,
             "high",
             "small"
           ],
           [
             "Golden Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
-          ],
-          [
-            "Boxer",
-            "weekly",
             466.0,
             "high",
             "medium"
           ],
           [
             "Yorkshire Terrier",
-            "daily",
             324.0,
             "low",
             "small"
           ],
           [
-            "German Shepherd",
-            "weekly",
-            466.0,
-            "medium",
-            "large"
-          ],
-          [
             "Bulldog",
-            "weekly",
             466.0,
             "medium",
             "medium"
+          ],
+          [
+            "Boxer",
+            466.0,
+            "high",
+            "medium"
           ]
         ],
-        "groups": null
+        "groups": {
+          "daily": [
+            2,
+            4
+          ],
+          "weekly": [
+            0,
+            1,
+            3,
+            5,
+            6
+          ]
+        }
       }
     }
   },
   {
-    "type": "Subscript",
-    "code_step": "dogs.sort_values('kids').loc[0:6]",
+    "type": "AggCall",
+    "code_step": "(dogs\n .groupby('grooming')\n .agg('mean')\n)",
     "mapping": [
       {
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "label": 0
+          "label": 2
         },
         "to": {
           "anchor": "rhs",
-          "label": 0
+          "label": "daily"
         },
         "illustrate": "outline"
       },
@@ -257,11 +177,35 @@
         "select": "row",
         "from": {
           "anchor": "lhs",
-          "label": 2
+          "label": 4
         },
         "to": {
           "anchor": "rhs",
-          "label": 2
+          "label": "daily"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "weekly"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "weekly"
         },
         "illustrate": "outline"
       },
@@ -273,7 +217,19 @@
         },
         "to": {
           "anchor": "rhs",
-          "label": 3
+          "label": "weekly"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 5
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "weekly"
         },
         "illustrate": "outline"
       },
@@ -285,7 +241,7 @@
         },
         "to": {
           "anchor": "rhs",
-          "label": 6
+          "label": "weekly"
         },
         "illustrate": "outline"
       }
@@ -294,115 +250,91 @@
       "lhs": {
         "col_names": [
           "breed",
-          "grooming",
           "food_cost",
           "kids",
           "size"
         ],
         "row_labels": [
           0,
+          1,
           2,
           3,
-          6,
           4,
-          1,
-          5
+          5,
+          6
         ],
         "data": [
           [
             "Labrador Retriever",
-            "weekly",
             466.0,
             "high",
             "medium"
           ],
           [
+            "German Shepherd",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
             "Beagle",
-            "daily",
             324.0,
             "high",
             "small"
           ],
           [
             "Golden Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
-          ],
-          [
-            "Boxer",
-            "weekly",
             466.0,
             "high",
             "medium"
           ],
           [
             "Yorkshire Terrier",
-            "daily",
             324.0,
             "low",
             "small"
           ],
           [
-            "German Shepherd",
-            "weekly",
-            466.0,
-            "medium",
-            "large"
-          ],
-          [
             "Bulldog",
-            "weekly",
             466.0,
             "medium",
-            "medium"
-          ]
-        ],
-        "groups": null
-      },
-      "rhs": {
-        "col_names": [
-          "breed",
-          "grooming",
-          "food_cost",
-          "kids",
-          "size"
-        ],
-        "row_labels": [
-          0,
-          2,
-          3,
-          6
-        ],
-        "data": [
-          [
-            "Labrador Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
-          ],
-          [
-            "Beagle",
-            "daily",
-            324.0,
-            "high",
-            "small"
-          ],
-          [
-            "Golden Retriever",
-            "weekly",
-            466.0,
-            "high",
             "medium"
           ],
           [
             "Boxer",
-            "weekly",
             466.0,
             "high",
             "medium"
+          ]
+        ],
+        "groups": {
+          "daily": [
+            2,
+            4
+          ],
+          "weekly": [
+            0,
+            1,
+            3,
+            5,
+            6
+          ]
+        }
+      },
+      "rhs": {
+        "col_names": [
+          "food_cost"
+        ],
+        "row_labels": [
+          "daily",
+          "weekly"
+        ],
+        "data": [
+          [
+            324.0
+          ],
+          [
+            466.0
           ]
         ],
         "groups": null
