@@ -7,10 +7,10 @@ import pandas as pd  # type: ignore
 
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
-from .parse_nodes import (Axis, ChainStep, HeadCall, PassThroughCall,
-                          RenameCall, SortValuesCall, SubsComparison,
-                          Subscript, TailCall)
-from .run import DFResult, EvalResult, GroupbyResult
+from .parse_nodes import (AggCall, Axis, ChainStep, GroupByCall, HeadCall,
+                          PassThroughCall, RenameCall, SortValuesCall,
+                          SubsComparison, Subscript, TailCall)
+from .run import DFResult, EvalResult, GroupbyResult, UnhandledResult
 
 
 # yes, step comes from after.step, but we pull it out here to help with
@@ -19,13 +19,17 @@ def make_marks(step: ChainStep, before: EvalResult,
                after: EvalResult) -> t.List[Mark]:
     if isinstance(step, SortValuesCall):
         return mark_for_sort_values(step, before, after)
-    if isinstance(step, RenameCall):
+    elif isinstance(step, RenameCall):
         return mark_for_rename(step, before, after)
-    if isinstance(step, HeadCall) or isinstance(step, TailCall):
+    elif isinstance(step, HeadCall) or isinstance(step, TailCall):
         return mark_for_head_or_tail(step, before, after)
-    if isinstance(step, PassThroughCall):
+    elif isinstance(step, GroupByCall):
+        return mark_for_groupby(step, before, after)
+    elif isinstance(step, AggCall):
+        return mark_for_agg(step, before, after)
+    elif isinstance(step, PassThroughCall):
         return no_marks(step, before, after)
-    if isinstance(step, Subscript):
+    elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
         return no_marks(step, before, after)
@@ -76,6 +80,52 @@ def mark_for_head_or_tail(step: t.Union[HeadCall,
     if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
         return []
     return diff_rows(before.val, after.val)
+
+
+# df.groupby('hello')
+def mark_for_groupby(step: GroupByCall, before: EvalResult,
+                     after: EvalResult) -> t.List[Mark]:
+    args = after.args
+
+    group_cols = args.get('labels', [])
+    # TODO: typeguard against function calls too
+    if isinstance(group_cols, str):
+        group_cols = [group_cols]
+
+    highlights = make_highlights(group_cols,
+                                 selection(step.axis, other=True),
+                                 anchor='lhs')
+
+    return highlights
+
+
+# df.head(2)
+# df.tail()
+# basic heuristic: assume that group keys map to row labels of result
+def mark_for_agg(step: AggCall, before: EvalResult,
+                 after: EvalResult) -> t.List[Mark]:
+    if not isinstance(before, GroupbyResult):
+        return []
+    if not isinstance(after, DFResult):
+        return []
+
+    groups = t.cast(util.Groups, before.val.groups)
+
+    row_outlines: t.List[Mark] = []
+    for group_key, lhs_labels in groups.items():
+        # TODO: support multi-column grouping
+        if isinstance(group_key, tuple):
+            continue
+
+        for label in lhs_labels:
+            row_outlines.append(
+                Outline(
+                    select='row',  # TODO: get selection from groupby
+                    from_=lhs(label),
+                    to=rhs(group_key),
+                ))
+
+    return row_outlines
 
 
 # handles:

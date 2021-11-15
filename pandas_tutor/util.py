@@ -10,6 +10,8 @@ from pandas.core.groupby.generic import DataFrameGroupBy  # type: ignore
 
 from .diagram import Label
 
+Groups = t.Dict[t.Union[str, tuple], pd.Index]
+
 IndexPair = t.Tuple[Label, Label]
 
 
