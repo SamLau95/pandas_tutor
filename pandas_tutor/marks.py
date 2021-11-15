@@ -57,7 +57,7 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
 def mark_for_rename(step: RenameCall, before: EvalResult,
                     after: EvalResult) -> t.List[Mark]:
     args = after.args
-    mapping = args.get('mapping', {})
+    mapping: t.Any = args.get('mapping', {})
 
     if not isinstance(mapping, dict):
         return no_marks()
