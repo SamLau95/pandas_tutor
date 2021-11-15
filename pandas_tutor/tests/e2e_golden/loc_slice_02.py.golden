@@ -109,7 +109,8 @@
             12704,
             2020
           ]
-        ]
+        ],
+        "groups": null
       },
       "rhs": {
         "col_names": [
@@ -169,7 +170,8 @@
             "Amelia",
             12704
           ]
-        ]
+        ],
+        "groups": null
       }
     }
   }

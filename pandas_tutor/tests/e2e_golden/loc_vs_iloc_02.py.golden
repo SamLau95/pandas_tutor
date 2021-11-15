@@ -162,7 +162,8 @@
             "high",
             "medium"
           ]
-        ]
+        ],
+        "groups": null
       },
       "rhs": {
         "col_names": [
@@ -231,7 +232,8 @@
             "medium",
             "medium"
           ]
-        ]
+        ],
+        "groups": null
       }
     }
   },
@@ -356,7 +358,8 @@
             "medium",
             "medium"
           ]
-        ]
+        ],
+        "groups": null
       },
       "rhs": {
         "col_names": [
@@ -401,7 +404,8 @@
             "high",
             "medium"
           ]
-        ]
+        ],
+        "groups": null
       }
     }
   }

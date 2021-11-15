@@ -108,7 +108,8 @@
             "high",
             "medium"
           ]
-        ]
+        ],
+        "groups": null
       },
       "rhs": {
         "col_names": [
@@ -145,7 +146,8 @@
             "high",
             "small"
           ]
-        ]
+        ],
+        "groups": null
       }
     }
   }
