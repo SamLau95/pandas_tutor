@@ -52,7 +52,10 @@ class Diagram:
     type: str
     code_step: str
     mapping: t.List[Mark]
-    data_frame: DFPair
+
+    # although we call this data_frame, technically it can hold any type of
+    # data, like series or groupbys
+    data_frame: DataPair
 
     def to_dict(self):
         return dataclasses.asdict(self, dict_factory=_diagram_as_dict)
@@ -96,16 +99,55 @@ class TablePos:
 
 
 @dataclasses.dataclass
-class DFPair:
-    lhs: DFSpec
-    rhs: DFSpec
+class DataPair:
+    lhs: DataSpec
+    rhs: DataSpec
 
 
 @dataclasses.dataclass
 class DFSpec:
-    col_names: t.List[str]
-    row_labels: t.List[str]
+    type: str = dataclasses.field(default='DataFrame', init=False, repr=False)
+    col_names: t.List[Label]
+    row_labels: t.List[Label]
     data: t.List[t.List]
 
-    # For groupby objects, holds the group info
-    groups: t.Optional[dict] = None
+
+@dataclasses.dataclass
+class SeriesSpec:
+    type: str = dataclasses.field(default='Series', init=False, repr=False)
+    row_labels: t.List[Label]
+    data: t.List
+
+
+@dataclasses.dataclass
+class GroupBySpec(DFSpec):
+    type: str = dataclasses.field(default='DataFrameGroupBy',
+                                  init=False,
+                                  repr=False)
+    group_data: GroupData
+
+
+@dataclasses.dataclass
+class GroupData:
+    # grouping cols, if we can pull them out
+    col_names: t.List[Label]
+
+    # info about each group, like the attributes
+    groups: t.List[Group]
+
+
+@dataclasses.dataclass
+class Group:
+    '''a group maps between dataframe values -> labels that match'''
+    # the group name is the unique combo of grouping vals, so if we do:
+    # >>> dogs.groupby(['size', 'kids'])
+    # then the group names will be: ('small', 'low'), ('small', 'high'), ...
+    #
+    # the labels appear in the same order as GroupData.col_names
+    name: t.List[Label]
+
+    # labels for all rows the group contains
+    labels: t.List[Label]
+
+
+DataSpec = t.Union[DFSpec, SeriesSpec, GroupBySpec]

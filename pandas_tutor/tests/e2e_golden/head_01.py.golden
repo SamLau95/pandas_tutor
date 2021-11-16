@@ -42,6 +42,7 @@
     ],
     "data_frame": {
       "lhs": {
+        "type": "DataFrame",
         "col_names": [
           "breed",
           "grooming",
@@ -108,10 +109,10 @@
             "high",
             "medium"
           ]
-        ],
-        "groups": null
+        ]
       },
       "rhs": {
+        "type": "DataFrame",
         "col_names": [
           "breed",
           "grooming",
@@ -146,8 +147,7 @@
             "high",
             "small"
           ]
-        ],
-        "groups": null
+        ]
       }
     }
   }

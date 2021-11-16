@@ -96,6 +96,7 @@
     ],
     "data_frame": {
       "lhs": {
+        "type": "DataFrame",
         "col_names": [
           "breed",
           "grooming",
@@ -162,10 +163,10 @@
             "high",
             "medium"
           ]
-        ],
-        "groups": null
+        ]
       },
       "rhs": {
+        "type": "DataFrame",
         "col_names": [
           "breed",
           "grooming",
@@ -232,8 +233,7 @@
             "medium",
             "medium"
           ]
-        ],
-        "groups": null
+        ]
       }
     }
   },
@@ -292,6 +292,7 @@
     ],
     "data_frame": {
       "lhs": {
+        "type": "DataFrame",
         "col_names": [
           "breed",
           "grooming",
@@ -358,10 +359,10 @@
             "medium",
             "medium"
           ]
-        ],
-        "groups": null
+        ]
       },
       "rhs": {
+        "type": "DataFrame",
         "col_names": [
           "breed",
           "grooming",
@@ -404,8 +405,7 @@
             "high",
             "medium"
           ]
-        ],
-        "groups": null
+        ]
       }
     }
   }

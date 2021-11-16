@@ -9,7 +9,7 @@ import typing as t
 import numpy as np
 import pandas as pd  # type: ignore
 
-from .diagram import DFPair, DFSpec, Diagram
+from .diagram import DataPair, DFSpec, Diagram, Group, GroupBySpec, GroupData
 from .marks import make_marks
 from .run import DFResult, EvalResult, GroupbyResult
 from . import util
@@ -35,7 +35,7 @@ def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
 
     # this serializes every df twice when we should only do it once.
     # TODO: optimize this
-    df_pair = DFPair(
+    df_pair = DataPair(
         lhs=serialize_step_val(before),
         rhs=serialize_step_val(after),
     )
@@ -72,19 +72,26 @@ def serialize_step_val(step: EvalResult) -> DFSpec:
                   data=df.to_numpy().tolist())  # type: ignore
 
 
-def serialize_groupby(val: util.DataFrameGroupBy) -> DFSpec:
-    # val.groups is {group: labels}, but group can be a tuple (when grouping on
-    # multiple cols), and labels is a pandas index
-    groups = {
-        str(k): v.tolist()  # type: ignore
-        for k, v in val.groups.items()
-    }
+def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
+    # NOTE: when grouping by unnamed sequences, names will contain None
+    # >>> full.groupby([test, test2]).grouper.names
+    # [None, None]
+    col_names = val.grouper.names
+
+    df_groups = t.cast(util.Groups, val.groups)
+    groups = [
+        Group(name=[name] if isinstance(name, str) else list(name),
+              labels=labels.tolist()) for name, labels in df_groups.items()
+    ]
+
     df = util.ungroup(val)
-    return DFSpec(
+
+    group_data = GroupData(col_names=col_names, groups=groups)
+    return GroupBySpec(
         col_names=df.columns.tolist(),
         row_labels=df.index.tolist(),
         data=df.to_numpy().tolist(),  # type: ignore
-        groups=groups)
+        group_data=group_data)
 
 
 def pairs(seq: t.List[T]) -> t.List[t.Tuple[T, T]]:
