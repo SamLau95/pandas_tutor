@@ -8,9 +8,10 @@ import typing as t
 
 from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, Group, GroupBySpec,
-                      GroupData, SeriesSpec, UnhandledData)
+                      GroupData, SeriesGroupBySpec, SeriesSpec, UnhandledData)
 from .marks import make_marks
-from .run import DFResult, EvalResult, GroupbyResult, SeriesResult
+from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
+                  SeriesResult)
 
 T = t.TypeVar('T')
 
@@ -56,15 +57,14 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
                           data=series.tolist())
     elif isinstance(step, GroupbyResult):
         return serialize_groupby(step.val)
+    elif isinstance(step, SeriesGroupbyResult):
+        return serialize_seriesgroupby(step.val)
     else:
         val = step.val
-        return UnhandledData(data=val)
+        return UnhandledData(data=str(val))
 
 
 def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
-    # NOTE: when grouping by unnamed sequences, names will contain None
-    # >>> full.groupby([test, test2]).grouper.names
-    # [None, None]
     col_names = util.grouping_labels(val)
 
     df_groups = t.cast(util.Groups, val.groups)
@@ -80,6 +80,23 @@ def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
         col_names=df.columns.tolist(),
         row_labels=df.index.tolist(),
         data=df.to_numpy().tolist(),  # type: ignore
+        group_data=group_data)
+
+
+def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
+    col_names = util.grouping_labels(val)
+
+    df_groups = t.cast(util.Groups, val.groups)
+    groups = [
+        Group(name=[name] if isinstance(name, str) else list(name),
+              labels=labels.tolist()) for name, labels in df_groups.items()
+    ]
+
+    series = util.ungroup(val)
+    group_data = GroupData(col_names=col_names, groups=groups)
+    return SeriesGroupBySpec(
+        row_labels=series.index.tolist(),
+        data=series.tolist(),  # type: ignore
         group_data=group_data)
 
 

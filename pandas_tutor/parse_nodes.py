@@ -187,6 +187,10 @@ class AggCall(Base):
     '''
     fn_name = 'agg'
 
+    @classmethod
+    def from_passthrough_call(cls, call: PassThroughCall):
+        return cls(code=call.code, start=call.start, end=call.end)
+
 
 # make sure to update this whenever we add new call node
 Call = t.Union[PassThroughCall, SortValuesCall, RenameCall, HeadCall, TailCall,

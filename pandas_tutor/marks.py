@@ -10,7 +10,8 @@ from .diagram import Highlight, Mark, Outline, Selection, TablePos
 from .parse_nodes import (AggCall, Axis, ChainStep, GroupByCall, HeadCall,
                           PassThroughCall, RenameCall, SortValuesCall,
                           SubsComparison, Subscript, TailCall)
-from .run import DFResult, EvalResult, GroupbyResult, SeriesResult
+from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
+                  SeriesResult)
 
 
 # step comes from after.step, but we pull it out here to help with
@@ -101,15 +102,16 @@ def mark_for_groupby(step: GroupByCall, before: EvalResult,
 # basic heuristic: assume that group keys map to row labels of result
 def mark_for_agg(step: AggCall, before: EvalResult,
                  after: EvalResult) -> t.List[Mark]:
-    if not isinstance(before, GroupbyResult):
+    if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
-    if not isinstance(after, DFResult):
+    if not isinstance(after, (DFResult, SeriesResult)):
         return []
 
     groups = t.cast(util.Groups, before.val.groups)
 
     row_outlines: t.List[Mark] = []
     for group_key, lhs_labels in groups.items():
+        # don't draw anything if we have a multi-column group
         # TODO: support multi-column grouping
         if isinstance(group_key, tuple):
             continue
