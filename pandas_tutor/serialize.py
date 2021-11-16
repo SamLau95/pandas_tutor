@@ -6,13 +6,11 @@ from __future__ import annotations
 
 import typing as t
 
-import numpy as np
-import pandas as pd  # type: ignore
-
-from .diagram import DataPair, DFSpec, DataSpec, Diagram, Group, GroupBySpec, GroupData, Label, SeriesSpec, UnhandledData
+from . import util
+from .diagram import (DataPair, DataSpec, DFSpec, Diagram, Group, GroupBySpec,
+                      GroupData, SeriesSpec, UnhandledData)
 from .marks import make_marks
 from .run import DFResult, EvalResult, GroupbyResult, SeriesResult
-from . import util
 
 T = t.TypeVar('T')
 
@@ -67,7 +65,7 @@ def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
     # NOTE: when grouping by unnamed sequences, names will contain None
     # >>> full.groupby([test, test2]).grouper.names
     # [None, None]
-    col_names = val.grouper.names
+    col_names = util.grouping_labels(val)
 
     df_groups = t.cast(util.Groups, val.groups)
     groups = [

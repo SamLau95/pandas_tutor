@@ -1,0 +1,406 @@
+[
+  {
+    "type": "GroupByCall",
+    "code_step": "pm.groupby(months)",
+    "mapping": [
+      {
+        "select": "column",
+        "anchor": "lhs",
+        "label": "date",
+        "illustrate": "highlight"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "date",
+          "id",
+          "pm25aqs",
+          "pm25pa"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "data": [
+          [
+            "2018-11-01",
+            "CA1",
+            9.4,
+            9.46
+          ],
+          [
+            "2018-11-04",
+            "CA1",
+            11.4,
+            17.24
+          ],
+          [
+            "2018-11-03",
+            "CA2",
+            5.67,
+            7.43
+          ],
+          [
+            "2018-11-04",
+            "CA2",
+            3.46,
+            5.36
+          ],
+          [
+            "2018-12-01",
+            "CA1",
+            6.4,
+            9.28
+          ],
+          [
+            "2018-12-01",
+            "CA2",
+            4.12,
+            8.02
+          ],
+          [
+            "2018-12-02",
+            "CA2",
+            2.38,
+            4.03
+          ],
+          [
+            "2018-12-03",
+            "CA2",
+            6.79,
+            11.96
+          ]
+        ]
+      },
+      "rhs": {
+        "type": "DataFrameGroupBy",
+        "col_names": [
+          "date",
+          "id",
+          "pm25aqs",
+          "pm25pa"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "data": [
+          [
+            "2018-11-01",
+            "CA1",
+            9.4,
+            9.46
+          ],
+          [
+            "2018-11-04",
+            "CA1",
+            11.4,
+            17.24
+          ],
+          [
+            "2018-11-03",
+            "CA2",
+            5.67,
+            7.43
+          ],
+          [
+            "2018-11-04",
+            "CA2",
+            3.46,
+            5.36
+          ],
+          [
+            "2018-12-01",
+            "CA1",
+            6.4,
+            9.28
+          ],
+          [
+            "2018-12-01",
+            "CA2",
+            4.12,
+            8.02
+          ],
+          [
+            "2018-12-02",
+            "CA2",
+            2.38,
+            4.03
+          ],
+          [
+            "2018-12-03",
+            "CA2",
+            6.79,
+            11.96
+          ]
+        ],
+        "group_data": {
+          "col_names": [
+            "date"
+          ],
+          "groups": [
+            {
+              "name": [
+                "11"
+              ],
+              "labels": [
+                0,
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "name": [
+                "12"
+              ],
+              "labels": [
+                4,
+                5,
+                6,
+                7
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "type": "AggCall",
+    "code_step": "pm.groupby(months).mean()",
+    "mapping": [
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "11"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "11"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "11"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "11"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 4
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "12"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 5
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "12"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 6
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "12"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 7
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "12"
+        },
+        "illustrate": "outline"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "type": "DataFrameGroupBy",
+        "col_names": [
+          "date",
+          "id",
+          "pm25aqs",
+          "pm25pa"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "data": [
+          [
+            "2018-11-01",
+            "CA1",
+            9.4,
+            9.46
+          ],
+          [
+            "2018-11-04",
+            "CA1",
+            11.4,
+            17.24
+          ],
+          [
+            "2018-11-03",
+            "CA2",
+            5.67,
+            7.43
+          ],
+          [
+            "2018-11-04",
+            "CA2",
+            3.46,
+            5.36
+          ],
+          [
+            "2018-12-01",
+            "CA1",
+            6.4,
+            9.28
+          ],
+          [
+            "2018-12-01",
+            "CA2",
+            4.12,
+            8.02
+          ],
+          [
+            "2018-12-02",
+            "CA2",
+            2.38,
+            4.03
+          ],
+          [
+            "2018-12-03",
+            "CA2",
+            6.79,
+            11.96
+          ]
+        ],
+        "group_data": {
+          "col_names": [
+            "date"
+          ],
+          "groups": [
+            {
+              "name": [
+                "11"
+              ],
+              "labels": [
+                0,
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "name": [
+                "12"
+              ],
+              "labels": [
+                4,
+                5,
+                6,
+                7
+              ]
+            }
+          ]
+        }
+      },
+      "rhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "pm25aqs",
+          "pm25pa"
+        ],
+        "row_labels": [
+          "11",
+          "12"
+        ],
+        "data": [
+          [
+            7.4825,
+            9.8725
+          ],
+          [
+            4.9225,
+            8.3225
+          ]
+        ]
+      }
+    }
+  }
+]

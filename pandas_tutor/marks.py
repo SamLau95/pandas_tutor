@@ -85,13 +85,10 @@ def mark_for_head_or_tail(step: t.Union[HeadCall,
 # df.groupby('hello')
 def mark_for_groupby(step: GroupByCall, before: EvalResult,
                      after: EvalResult) -> t.List[Mark]:
-    args = after.args
+    if not isinstance(after, GroupbyResult):
+        return []
 
-    group_cols = args.get('labels', [])
-    # TODO: typeguard against function calls too
-    if isinstance(group_cols, str):
-        group_cols = [group_cols]
-
+    group_cols = util.grouping_labels(after.val)
     highlights = make_highlights(group_cols,
                                  selection(step.axis, other=True),
                                  anchor='lhs')

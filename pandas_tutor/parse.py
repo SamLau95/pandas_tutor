@@ -280,16 +280,11 @@ class PandasParser(m.MatcherDecoratableVisitor):
             self.fallback_call(cst_node)
             return
 
-        label_expr = self.code_for(by.value)
-
         # default groupby uses rows
         axis = (make_axis(self.code_for(axis_arg.value))
                 if axis_arg is not None else 'index')
 
-        node = self.make_node(GroupByCall,
-                              cst_node,
-                              label_expr=label_expr,
-                              axis=axis)
+        node = self.make_node(GroupByCall, cst_node, axis=axis)
         self.current.chain.append(node)
 
     ###########################################################################

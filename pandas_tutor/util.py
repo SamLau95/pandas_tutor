@@ -8,8 +8,9 @@ import typing as t
 import pandas as pd  # type: ignore
 from pandas.core.groupby.generic import (  # type: ignore
     DataFrameGroupBy, SeriesGroupBy)
+from pandas.core.groupby.groupby import GroupBy  # type: ignore
 
-from .diagram import Label
+from .diagram import Label, Labels
 
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
@@ -72,3 +73,11 @@ def ungroup(groupby):  # noqa: F811
 
     # slower fallback
     # return groupby.transform(lambda x: x)
+
+
+def grouping_labels(groupby: GroupBy) -> Labels:
+    '''gets ['hello', 'world'] from df.groupby(['hello', 'world'])'''
+    # NOTE: when grouping by unnamed sequences, names will contain None
+    # >>> full.groupby([test, test2]).grouper.names
+    # [None, None]
+    return groupby.grouper.names

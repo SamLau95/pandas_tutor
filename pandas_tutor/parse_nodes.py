@@ -159,15 +159,15 @@ class PassThroughCall(Base):
 @dataclasses.dataclass
 class GroupByCall(Base):
     '''
+    the labels for grouping are automatically saved into the groupby object,
+    so we don't need to get them during parsing
+
     df.groupby('region')
     df.groupby(['region', 'id'])
     df.groupby(df['region'])
     df.groupby(lambda val: val // 10)
     '''
     fn_name = 'groupby'
-
-    # Expression that evaluates to labels usually
-    label_expr: RawCode = evals_into('labels')
 
     axis: Axis = 'index'
 
