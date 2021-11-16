@@ -129,11 +129,17 @@ class GroupBySpec(DFSpec):
 
 
 @dataclasses.dataclass
+class SeriesGroupBySpec(SeriesSpec):
+    type: str = dataclasses.field(default='SeriesGroupBy',
+                                  init=False,
+                                  repr=False)
+    group_data: GroupData
+
+
+@dataclasses.dataclass
 class GroupData:
     # grouping cols, if we can pull them out
     col_names: Labels
-
-    # info about each group, like the attributes
     groups: t.List[Group]
 
 
@@ -158,4 +164,5 @@ class UnhandledData:
     data: t.Any
 
 
-DataSpec = t.Union[DFSpec, SeriesSpec, GroupBySpec, UnhandledData]
+DataSpec = t.Union[UnhandledData, DFSpec, SeriesSpec, GroupBySpec,
+                   SeriesGroupBySpec, ]

@@ -12,8 +12,8 @@ import typing as t
 
 import pandas as pd  # type: ignore
 
-from .parse_nodes import (ChainStatement, ChainStep, ParsedModule, RawCode,
-                          Subscript)
+from .parse_nodes import (AggCall, ChainStatement, ChainStep, ParsedModule,
+                          PassThroughCall, RawCode, Subscript)
 from . import util
 
 # technically args can be anything...but most of the time it'll be labels
@@ -44,12 +44,18 @@ class GroupbyResult(EvalBase):
 
 
 @dataclasses.dataclass
+class SeriesGroupbyResult(EvalBase):
+    val: util.SeriesGroupBy
+
+
+@dataclasses.dataclass
 class UnhandledResult(EvalBase):
     '''catch-all for chain outputs we don't know how to serialize'''
     val: t.Any
 
 
-EvalResult = t.Union[DFResult, SeriesResult, GroupbyResult, UnhandledResult]
+EvalResult = t.Union[UnhandledResult, DFResult, SeriesResult, GroupbyResult,
+                     SeriesGroupbyResult]
 
 
 # TODO: handle stdout and stderr from user code
@@ -67,21 +73,34 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
     user_globals = setup_user_globals()
     exec(setup_code, user_globals)
 
+    last_val: t.Any = None
     eval_results = []
     for step in last_expr.chain:
         # wrap individual steps in parens before eval since subexpressions
         # within a line can have newlines
         val = eval(f"({step.code})", user_globals)
         args = eval_args(step, user_globals)
-        result = make_result(step, val, args)
+        result = make_result(step, val, args, last_val)
         eval_results.append(result)
+        last_val = val
 
     return eval_results
 
 
-def make_result(step: ChainStep, val: t.Any, args: Args) -> EvalResult:
+# need the last_val for the special case where we have an agg that doesn't show
+# up immediately after a groupby, like dogs.groupby(...)['...'].mean().
+def make_result(step: ChainStep, val: t.Any, args: Args,
+                last_val: t.Any) -> EvalResult:
+    if (isinstance(step, PassThroughCall)
+            and isinstance(last_val,
+                           (util.DataFrameGroupBy, util.SeriesGroupBy))
+            and isinstance(val, (pd.DataFrame, pd.Series))):
+        step = AggCall.from_passthrough_call(step)
+
     if isinstance(val, util.DataFrameGroupBy):
         return GroupbyResult(step, args, val)
+    elif isinstance(val, util.SeriesGroupBy):
+        return SeriesGroupbyResult(step, args, val)
     elif isinstance(val, pd.DataFrame):
         return DFResult(step, args, val)
     elif isinstance(val, pd.Series):
