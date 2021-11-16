@@ -9,9 +9,9 @@ import typing as t
 import numpy as np
 import pandas as pd  # type: ignore
 
-from .diagram import DataPair, DFSpec, Diagram, Group, GroupBySpec, GroupData
+from .diagram import DataPair, DFSpec, DataSpec, Diagram, Group, GroupBySpec, GroupData, Label, SeriesSpec, UnhandledData
 from .marks import make_marks
-from .run import DFResult, EvalResult, GroupbyResult
+from .run import DFResult, EvalResult, GroupbyResult, SeriesResult
 from . import util
 
 T = t.TypeVar('T')
@@ -46,30 +46,21 @@ def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
                    data_frame=df_pair)
 
 
-def serialize_step_val(step: EvalResult) -> DFSpec:
-    df: pd.DataFrame
+def serialize_step_val(step: EvalResult) -> DataSpec:
     if isinstance(step, DFResult):
         df = step.val
+        return DFSpec(col_names=df.columns.tolist(),
+                      row_labels=df.index.tolist(),
+                      data=df.to_numpy().tolist())
+    elif isinstance(step, SeriesResult):
+        series = step.val
+        return SeriesSpec(row_labels=series.index.tolist(),
+                          data=series.tolist())
     elif isinstance(step, GroupbyResult):
         return serialize_groupby(step.val)
     else:
-        # step.val is unhandled, so we'll do some heuristics
         val = step.val
-        if isinstance(val, str):
-            df = pd.DataFrame([val], columns=['value'])
-        elif isinstance(val, pd.Series):
-            df = val.to_frame()
-        elif isinstance(val, list) or isinstance(val, np.ndarray):
-            df = pd.DataFrame(val, columns=['value'])
-        elif isinstance(val, dict):
-            df = pd.DataFrame(val)
-        else:
-            # fallback: cast to string
-            df = pd.DataFrame(str(val), columns=['value'])
-
-    return DFSpec(col_names=df.columns.tolist(),
-                  row_labels=df.index.tolist(),
-                  data=df.to_numpy().tolist())  # type: ignore
+        return UnhandledData(data=val)
 
 
 def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:

@@ -13,7 +13,7 @@ from .parse_nodes import (AggCall, Axis, ChainStep, GroupByCall, HeadCall,
 from .run import DFResult, EvalResult, GroupbyResult, UnhandledResult
 
 
-# yes, step comes from after.step, but we pull it out here to help with
+# step comes from after.step, but we pull it out here to help with
 # the type checker
 def make_marks(step: ChainStep, before: EvalResult,
                after: EvalResult) -> t.List[Mark]:

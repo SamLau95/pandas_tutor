@@ -34,6 +34,11 @@ class DFResult(EvalBase):
 
 
 @dataclasses.dataclass
+class SeriesResult(EvalBase):
+    val: pd.Series
+
+
+@dataclasses.dataclass
 class GroupbyResult(EvalBase):
     val: util.DataFrameGroupBy
 
@@ -44,7 +49,7 @@ class UnhandledResult(EvalBase):
     val: t.Any
 
 
-EvalResult = t.Union[DFResult, GroupbyResult, UnhandledResult]
+EvalResult = t.Union[DFResult, SeriesResult, GroupbyResult, UnhandledResult]
 
 
 # TODO: handle stdout and stderr from user code

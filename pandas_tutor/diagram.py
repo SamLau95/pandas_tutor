@@ -14,6 +14,7 @@ import pandas as pd  # type: ignore
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes
 Label = t.Union[int, str]
+Labels = t.Union[t.List[int], t.List[str]]
 
 
 def _diagram_as_dict(dclass):
@@ -107,15 +108,15 @@ class DataPair:
 @dataclasses.dataclass
 class DFSpec:
     type: str = dataclasses.field(default='DataFrame', init=False, repr=False)
-    col_names: t.List[Label]
-    row_labels: t.List[Label]
+    col_names: Labels
+    row_labels: Labels
     data: t.List[t.List]
 
 
 @dataclasses.dataclass
 class SeriesSpec:
     type: str = dataclasses.field(default='Series', init=False, repr=False)
-    row_labels: t.List[Label]
+    row_labels: Labels
     data: t.List
 
 
@@ -130,7 +131,7 @@ class GroupBySpec(DFSpec):
 @dataclasses.dataclass
 class GroupData:
     # grouping cols, if we can pull them out
-    col_names: t.List[Label]
+    col_names: Labels
 
     # info about each group, like the attributes
     groups: t.List[Group]
@@ -144,10 +145,17 @@ class Group:
     # then the group names will be: ('small', 'low'), ('small', 'high'), ...
     #
     # the labels appear in the same order as GroupData.col_names
-    name: t.List[Label]
+    name: list
 
     # labels for all rows the group contains
-    labels: t.List[Label]
+    labels: Labels
 
 
-DataSpec = t.Union[DFSpec, SeriesSpec, GroupBySpec]
+@dataclasses.dataclass
+class UnhandledData:
+    '''catch-all for data that we don't know how to handle, like scalars'''
+    type: str = dataclasses.field(default='Unhandled', init=False, repr=False)
+    data: t.Any
+
+
+DataSpec = t.Union[DFSpec, SeriesSpec, GroupBySpec, UnhandledData]

@@ -55,4 +55,8 @@ def match_cols(df1: pd.DataFrame,
 
 def ungroup(groupby: DataFrameGroupBy) -> pd.DataFrame:
     '''undos a groupby back into original dataframe'''
-    return groupby.transform(lambda x: x)
+    # uses a private attribute...hopefully won't break later :)
+    return groupby._selected_obj
+
+    # slower fallback
+    # return groupby.transform(lambda x: x)
