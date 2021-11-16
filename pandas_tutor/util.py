@@ -6,9 +6,12 @@ import gzip
 import typing as t
 
 import pandas as pd  # type: ignore
-from pandas.core.groupby.generic import DataFrameGroupBy  # type: ignore
+from pandas.core.groupby.generic import (  # type: ignore
+    DataFrameGroupBy, SeriesGroupBy)
 
 from .diagram import Label
+
+HasIndex = t.Union[pd.DataFrame, pd.Series]
 
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
 
@@ -25,9 +28,7 @@ def mapt(fn, *args):
     return tuple(map(fn, *args))
 
 
-def match_rows(df1: pd.DataFrame,
-               df2: pd.DataFrame,
-               only_if_diff=False) -> pd.Index:
+def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=False) -> pd.Index:
     '''
     find all matching row labels between df1 and df2. if only_if_diff=False
     (default), then return empty list when df1 has exact same rows as df2.
@@ -53,8 +54,19 @@ def match_cols(df1: pd.DataFrame,
             if len(matches) == len(df1.columns) or only_if_diff else matches)
 
 
-def ungroup(groupby: DataFrameGroupBy) -> pd.DataFrame:
-    '''undos a groupby back into original dataframe'''
+@t.overload
+def ungroup(groupby: SeriesGroupBy) -> pd.Series:
+    ...
+
+
+@t.overload
+def ungroup(  # type: ignore # noqa: F811
+        groupby: DataFrameGroupBy) -> pd.DataFrame:
+    ...
+
+
+def ungroup(groupby):  # noqa: F811
+    '''undos a groupby back into original val'''
     # uses a private attribute...hopefully won't break later :)
     return groupby._selected_obj
 

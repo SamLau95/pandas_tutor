@@ -69,7 +69,8 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
 
     eval_results = []
     for step in last_expr.chain:
-        # wrap individual steps in parens before eval since they can have newlines
+        # wrap individual steps in parens before eval since subexpressions
+        # within a line can have newlines
         val = eval(f"({step.code})", user_globals)
         args = eval_args(step, user_globals)
         result = make_result(step, val, args)
@@ -81,8 +82,10 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
 def make_result(step: ChainStep, val: t.Any, args: Args) -> EvalResult:
     if isinstance(val, util.DataFrameGroupBy):
         return GroupbyResult(step, args, val)
-    if isinstance(val, pd.DataFrame):
+    elif isinstance(val, pd.DataFrame):
         return DFResult(step, args, val)
+    elif isinstance(val, pd.Series):
+        return SeriesResult(step, args, val)
     else:
         return UnhandledResult(step, args, val)
 
