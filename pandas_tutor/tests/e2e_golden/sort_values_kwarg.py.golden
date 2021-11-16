@@ -132,6 +132,7 @@
     ],
     "data_frame": {
       "lhs": {
+        "type": "DataFrame",
         "col_names": [
           "Name",
           "Sex",
@@ -211,10 +212,10 @@
             12704,
             2020
           ]
-        ],
-        "groups": null
+        ]
       },
       "rhs": {
+        "type": "DataFrame",
         "col_names": [
           "Name",
           "Sex",
@@ -294,8 +295,7 @@
             12541,
             2020
           ]
-        ],
-        "groups": null
+        ]
       }
     }
   }

@@ -1,8 +1,15 @@
 [
   {
-    "type": "RenameCall",
-    "code_step": "dogs.rename(columns=renamer)",
-    "mapping": [],
+    "type": "Subscript",
+    "code_step": "(dogs['breed'])",
+    "mapping": [
+      {
+        "select": "column",
+        "anchor": "lhs",
+        "label": "breed",
+        "illustrate": "highlight"
+      }
+    ],
     "data_frame": {
       "lhs": {
         "type": "DataFrame",
@@ -75,14 +82,7 @@
         ]
       },
       "rhs": {
-        "type": "DataFrame",
-        "col_names": [
-          "BREED",
-          "GROOMING",
-          "FOOD_COST",
-          "KIDS",
-          "SIZE"
-        ],
+        "type": "Series",
         "row_labels": [
           0,
           1,
@@ -93,55 +93,13 @@
           6
         ],
         "data": [
-          [
-            "Labrador Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
-          ],
-          [
-            "German Shepherd",
-            "weekly",
-            466.0,
-            "medium",
-            "large"
-          ],
-          [
-            "Beagle",
-            "daily",
-            324.0,
-            "high",
-            "small"
-          ],
-          [
-            "Golden Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
-          ],
-          [
-            "Yorkshire Terrier",
-            "daily",
-            324.0,
-            "low",
-            "small"
-          ],
-          [
-            "Bulldog",
-            "weekly",
-            466.0,
-            "medium",
-            "medium"
-          ],
-          [
-            "Boxer",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
-          ]
+          "Labrador Retriever",
+          "German Shepherd",
+          "Beagle",
+          "Golden Retriever",
+          "Yorkshire Terrier",
+          "Bulldog",
+          "Boxer"
         ]
       }
     }

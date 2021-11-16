@@ -183,7 +183,7 @@
   },
   {
     "type": "AggCall",
-    "code_step": "(dogs\n .groupby('grooming')\n .agg('mean')\n)",
+    "code_step": "(dogs\n .groupby('grooming')\n .max()\n)",
     "mapping": [
       {
         "select": "row",
@@ -372,7 +372,10 @@
       "rhs": {
         "type": "DataFrame",
         "col_names": [
-          "food_cost"
+          "breed",
+          "food_cost",
+          "kids",
+          "size"
         ],
         "row_labels": [
           "daily",
@@ -380,10 +383,16 @@
         ],
         "data": [
           [
-            324.0
+            "Yorkshire Terrier",
+            324.0,
+            "low",
+            "small"
           ],
           [
-            466.0
+            "Labrador Retriever",
+            466.0,
+            "medium",
+            "medium"
           ]
         ]
       }

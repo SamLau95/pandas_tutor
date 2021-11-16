@@ -1,31 +1,13 @@
 [
   {
-    "type": "RenameCall",
-    "code_step": "dogs.rename(columns={'breed': 'b', 'food_cost': 'cost'})",
+    "type": "Subscript",
+    "code_step": "dogs['breed']",
     "mapping": [
       {
         "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "label": "breed"
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": "b"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "label": "food_cost"
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": "cost"
-        },
-        "illustrate": "outline"
+        "anchor": "lhs",
+        "label": "breed",
+        "illustrate": "highlight"
       }
     ],
     "data_frame": {
@@ -100,13 +82,58 @@
         ]
       },
       "rhs": {
+        "type": "Series",
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          "Labrador Retriever",
+          "German Shepherd",
+          "Beagle",
+          "Golden Retriever",
+          "Yorkshire Terrier",
+          "Bulldog",
+          "Boxer"
+        ]
+      }
+    }
+  },
+  {
+    "type": "PassThroughCall",
+    "code_step": "dogs['breed'].to_frame()",
+    "mapping": [],
+    "data_frame": {
+      "lhs": {
+        "type": "Series",
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          "Labrador Retriever",
+          "German Shepherd",
+          "Beagle",
+          "Golden Retriever",
+          "Yorkshire Terrier",
+          "Bulldog",
+          "Boxer"
+        ]
+      },
+      "rhs": {
         "type": "DataFrame",
         "col_names": [
-          "b",
-          "grooming",
-          "cost",
-          "kids",
-          "size"
+          "breed"
         ],
         "row_labels": [
           0,
@@ -119,53 +146,25 @@
         ],
         "data": [
           [
-            "Labrador Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
+            "Labrador Retriever"
           ],
           [
-            "German Shepherd",
-            "weekly",
-            466.0,
-            "medium",
-            "large"
+            "German Shepherd"
           ],
           [
-            "Beagle",
-            "daily",
-            324.0,
-            "high",
-            "small"
+            "Beagle"
           ],
           [
-            "Golden Retriever",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
+            "Golden Retriever"
           ],
           [
-            "Yorkshire Terrier",
-            "daily",
-            324.0,
-            "low",
-            "small"
+            "Yorkshire Terrier"
           ],
           [
-            "Bulldog",
-            "weekly",
-            466.0,
-            "medium",
-            "medium"
+            "Bulldog"
           ],
           [
-            "Boxer",
-            "weekly",
-            466.0,
-            "high",
-            "medium"
+            "Boxer"
           ]
         ]
       }

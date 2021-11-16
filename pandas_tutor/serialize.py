@@ -9,9 +9,9 @@ import typing as t
 import numpy as np
 import pandas as pd  # type: ignore
 
-from .diagram import DFPair, DFSpec, Diagram
+from .diagram import DataPair, DFSpec, DataSpec, Diagram, Group, GroupBySpec, GroupData, Label, SeriesSpec, UnhandledData
 from .marks import make_marks
-from .run import DFResult, EvalResult, GroupbyResult
+from .run import DFResult, EvalResult, GroupbyResult, SeriesResult
 from . import util
 
 T = t.TypeVar('T')
@@ -35,7 +35,7 @@ def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
 
     # this serializes every df twice when we should only do it once.
     # TODO: optimize this
-    df_pair = DFPair(
+    df_pair = DataPair(
         lhs=serialize_step_val(before),
         rhs=serialize_step_val(after),
     )
@@ -46,45 +46,43 @@ def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
                    data_frame=df_pair)
 
 
-def serialize_step_val(step: EvalResult) -> DFSpec:
-    df: pd.DataFrame
+def serialize_step_val(step: EvalResult) -> DataSpec:
     if isinstance(step, DFResult):
         df = step.val
+        return DFSpec(col_names=df.columns.tolist(),
+                      row_labels=df.index.tolist(),
+                      data=df.to_numpy().tolist())
+    elif isinstance(step, SeriesResult):
+        series = step.val
+        return SeriesSpec(row_labels=series.index.tolist(),
+                          data=series.tolist())
     elif isinstance(step, GroupbyResult):
         return serialize_groupby(step.val)
     else:
-        # step.val is unhandled, so we'll do some heuristics
         val = step.val
-        if isinstance(val, str):
-            df = pd.DataFrame([val], columns=['value'])
-        elif isinstance(val, pd.Series):
-            df = val.to_frame()
-        elif isinstance(val, list) or isinstance(val, np.ndarray):
-            df = pd.DataFrame(val, columns=['value'])
-        elif isinstance(val, dict):
-            df = pd.DataFrame(val)
-        else:
-            # fallback: cast to string
-            df = pd.DataFrame(str(val), columns=['value'])
-
-    return DFSpec(col_names=df.columns.tolist(),
-                  row_labels=df.index.tolist(),
-                  data=df.to_numpy().tolist())  # type: ignore
+        return UnhandledData(data=val)
 
 
-def serialize_groupby(val: util.DataFrameGroupBy) -> DFSpec:
-    # val.groups is {group: labels}, but group can be a tuple (when grouping on
-    # multiple cols), and labels is a pandas index
-    groups = {
-        str(k): v.tolist()  # type: ignore
-        for k, v in val.groups.items()
-    }
+def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
+    # NOTE: when grouping by unnamed sequences, names will contain None
+    # >>> full.groupby([test, test2]).grouper.names
+    # [None, None]
+    col_names = val.grouper.names
+
+    df_groups = t.cast(util.Groups, val.groups)
+    groups = [
+        Group(name=[name] if isinstance(name, str) else list(name),
+              labels=labels.tolist()) for name, labels in df_groups.items()
+    ]
+
     df = util.ungroup(val)
-    return DFSpec(
+
+    group_data = GroupData(col_names=col_names, groups=groups)
+    return GroupBySpec(
         col_names=df.columns.tolist(),
         row_labels=df.index.tolist(),
         data=df.to_numpy().tolist(),  # type: ignore
-        groups=groups)
+        group_data=group_data)
 
 
 def pairs(seq: t.List[T]) -> t.List[t.Tuple[T, T]]:

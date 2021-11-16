@@ -10,10 +10,10 @@ from .diagram import Highlight, Mark, Outline, Selection, TablePos
 from .parse_nodes import (AggCall, Axis, ChainStep, GroupByCall, HeadCall,
                           PassThroughCall, RenameCall, SortValuesCall,
                           SubsComparison, Subscript, TailCall)
-from .run import DFResult, EvalResult, GroupbyResult, UnhandledResult
+from .run import DFResult, EvalResult, GroupbyResult, SeriesResult
 
 
-# yes, step comes from after.step, but we pull it out here to help with
+# step comes from after.step, but we pull it out here to help with
 # the type checker
 def make_marks(step: ChainStep, before: EvalResult,
                after: EvalResult) -> t.List[Mark]:
@@ -135,22 +135,21 @@ def mark_for_agg(step: AggCall, before: EvalResult,
 # df.groupby('Sex')[['Count']]
 def mark_for_subscript(step: Subscript, before: EvalResult,
                        after: EvalResult) -> t.List[Mark]:
-    before_df: pd.DataFrame
-    after_df: pd.DataFrame
-
-    if (isinstance(before, GroupbyResult)
-            and isinstance(after, GroupbyResult)):
-        before_df = util.ungroup(before.val)
-        after_df = util.ungroup(after.val)
-    elif not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+    if (isinstance(before, DFResult) and isinstance(after, SeriesResult)):
+        return mark_for_subscript_to_series(step, before, after)
+    elif not isinstance(before, (DFResult, GroupbyResult)):
         return []
-    else:
-        before_df = before.val
-        after_df = after.val
+    elif not isinstance(after, (DFResult, GroupbyResult)):
+        return []
 
     row_slice = step.slice1
     col_slice = step.slice2
     args = after.args
+
+    before_df = util.ungroup(before.val) if isinstance(
+        before, GroupbyResult) else before.val
+    after_df = util.ungroup(after.val) if isinstance(
+        after, GroupbyResult) else after.val
     row_marks = diff_rows(before_df, after_df)
     col_marks = diff_cols(before_df, after_df)
 
@@ -167,6 +166,31 @@ def mark_for_subscript(step: Subscript, before: EvalResult,
     return [*col_marks, *row_marks]
 
 
+def mark_for_subscript_to_series(step: Subscript, before: EvalResult,
+                                 after: EvalResult) -> t.List[Mark]:
+    args = after.args
+    # when the output is a series, just highlight the row/column used for
+    # slicing, like the 'kids' in df['kids']
+
+    # df['kids']
+    if step.slicer is None:
+        maybe_col = args.get('slice1_values')
+        if isinstance(maybe_col, (str, int)):
+            return make_highlights([maybe_col], 'column')
+    else:
+        # df.iloc[0]
+        maybe_row = args.get('slice1_values')
+        if isinstance(maybe_row, (str, int)):
+            return make_highlights([maybe_row], 'row')
+
+        # df.iloc[:, 0]
+        maybe_col = args.get('slice2_values')
+        if isinstance(maybe_col, (str, int)):
+            return make_highlights([maybe_col], 'column')
+
+    return []
+
+
 def diff_dfs(df1: pd.DataFrame, df2: pd.DataFrame):
     '''
     when we just want to draw arrows between different rows and cols without
@@ -178,7 +202,7 @@ def diff_dfs(df1: pd.DataFrame, df2: pd.DataFrame):
     return [*cols, *rows]
 
 
-def diff_rows(df1: pd.DataFrame, df2: pd.DataFrame):
+def diff_rows(df1: util.HasIndex, df2: util.HasIndex):
     '''
     when we just want to draw arrows between different rows and cols without
     special highlights. only outputs when there is at least one mismatching row
