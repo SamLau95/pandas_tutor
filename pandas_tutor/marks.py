@@ -7,9 +7,9 @@ import pandas as pd  # type: ignore
 
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
-from .parse_nodes import (AggCall, Axis, ChainStep, GroupByCall, HeadCall,
-                          PassThroughCall, RenameCall, SortValuesCall,
-                          SubsComparison, Subscript, TailCall)
+from .parse_nodes import (AggCall, ApplyCall, Axis, ChainStep, GroupByCall,
+                          HeadCall, PassThroughCall, RenameCall,
+                          SortValuesCall, SubsComparison, Subscript, TailCall)
 from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
                   SeriesResult)
 
@@ -24,6 +24,8 @@ def make_marks(step: ChainStep, before: EvalResult,
         return mark_for_rename(step, before, after)
     elif isinstance(step, HeadCall) or isinstance(step, TailCall):
         return mark_for_head_or_tail(step, before, after)
+    elif isinstance(step, ApplyCall):
+        return mark_for_apply(step, before, after)
     elif isinstance(step, GroupByCall):
         return mark_for_groupby(step, before, after)
     elif isinstance(step, AggCall):
@@ -81,6 +83,27 @@ def mark_for_head_or_tail(step: t.Union[HeadCall,
     if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
         return []
     return diff_rows(before.val, after.val)
+
+
+# df['breed'].apply(len)
+def mark_for_apply(step: ApplyCall, before: EvalResult,
+                   after: EvalResult) -> t.List[Mark]:
+    if isinstance(before, DFResult) and isinstance(after, DFResult):
+        df = after.val
+        labels = df.index if step.axis == 'index' else df.columns
+        return make_outlines(labels, selection(step.axis))
+    elif isinstance(before, DFResult) and isinstance(after, SeriesResult):
+        # dogs.apply(len)  -> series with column names as index
+        # special case: result is transposed! but i think this is confusing to
+        # draw arrows for (since we draw arrows from column to rows) so let's
+        # not bother with this.
+        return []
+    elif isinstance(before, SeriesResult) and isinstance(after, SeriesResult):
+        labels = after.val.index
+        return make_outlines(labels, 'row')
+    else:
+        # TODO: handle apply on groupby objects
+        return []
 
 
 # df.groupby('hello')

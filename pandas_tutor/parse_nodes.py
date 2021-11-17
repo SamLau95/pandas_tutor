@@ -192,9 +192,19 @@ class AggCall(Base):
         return cls(code=call.code, start=call.start, end=call.end)
 
 
+@dataclasses.dataclass
+class ApplyCall(Base):
+    '''
+    df['region'].apply(len)
+    '''
+    fn_name = 'apply'
+
+    axis: Axis = 'index'
+
+
 # make sure to update this whenever we add new call node
 Call = t.Union[PassThroughCall, SortValuesCall, RenameCall, HeadCall, TailCall,
-               GroupByCall, AggCall]
+               GroupByCall, AggCall, ApplyCall]
 
 ##############################################################################
 # Subscripts
