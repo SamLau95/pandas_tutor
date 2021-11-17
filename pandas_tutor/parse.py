@@ -22,11 +22,11 @@ import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
-from .parse_nodes import (AggCall, Axis, CodePosition, GroupByCall, HeadCall,
-                          ParsedModule, ChainStatement, PassThroughCall,
-                          RawCode, RenameCall, SortValuesCall, StartOfChain,
-                          SubsComparison, SubsEval, SubsSlice, Subscript,
-                          SubscriptEl, TailCall, VerbatimStatement)
+from .parse_nodes import (AggCall, ApplyCall, Axis, CodePosition, GroupByCall,
+                          HeadCall, ParsedModule, ChainStatement,
+                          PassThroughCall, RawCode, RenameCall, SortValuesCall,
+                          StartOfChain, SubsComparison, SubsEval, SubsSlice,
+                          Subscript, SubscriptEl, TailCall, VerbatimStatement)
 
 T = t.TypeVar('T')
 
@@ -71,9 +71,11 @@ is_sort_values = fn_matcher('sort_values')
 is_rename = fn_matcher('rename')
 is_head_or_tail = fn_matcher('head') | fn_matcher('tail')
 is_groupby = fn_matcher('groupby')
+is_apply = fn_matcher('apply')
 
 # make sure to update this whenever we add a new call to the section above
-is_parsed_call = is_sort_values | is_rename | is_head_or_tail | is_groupby
+is_parsed_call = (is_sort_values | is_rename | is_head_or_tail | is_groupby
+                  | is_apply)
 
 is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                             | m.Name('iloc')))
@@ -266,6 +268,20 @@ class PandasParser(m.MatcherDecoratableVisitor):
         name = fn_name(cst_node)
         node = self.make_node(HeadCall if name == 'head' else TailCall,
                               cst_node)
+        self.current.chain.append(node)
+
+    @m.call_if_inside(is_chain_stmt)
+    @m.leave(is_apply)
+    def make_apply(self, cst_node):
+        assert self.current is not None, (
+            'tried to call make_apply when not in a chain!')
+        # axis only available for dataframes...for series, arg 1 is some other arg
+        # that we don't care about so we should be careful here
+        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
+        axis = 'index'  # default
+        if axis_arg is not None:
+            axis = make_axis(self.code_for(axis_arg.value))
+        node = self.make_node(ApplyCall, cst_node, axis=axis)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
