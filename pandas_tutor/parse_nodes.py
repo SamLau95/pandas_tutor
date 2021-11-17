@@ -202,9 +202,20 @@ class ApplyCall(Base):
     axis: Axis = 'index'
 
 
+@dataclasses.dataclass
+class AssignCall(Base):
+    '''
+    df.assign(test=2)
+    df.assign(temp_f=df['temp_c'] * 9 / 5 + 32)
+    '''
+    fn_name = 'assign'
+
+    new_col_labels: t.List[str]
+
+
 # make sure to update this whenever we add new call node
 Call = t.Union[PassThroughCall, SortValuesCall, RenameCall, HeadCall, TailCall,
-               GroupByCall, AggCall, ApplyCall]
+               GroupByCall, AggCall, ApplyCall, AssignCall]
 
 ##############################################################################
 # Subscripts

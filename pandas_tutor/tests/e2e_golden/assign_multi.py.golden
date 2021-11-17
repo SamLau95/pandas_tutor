@@ -1,0 +1,192 @@
+[
+  {
+    "type": "AssignCall",
+    "code_step": "(dogs.assign(daily=lambda df: df['food_cost'] * 30,\n             yearly=lambda df: df['daily'] / 365,\n             s=dogs['size'].str[0]))",
+    "mapping": [
+      {
+        "select": "column",
+        "anchor": "rhs",
+        "label": "daily",
+        "illustrate": "highlight"
+      },
+      {
+        "select": "column",
+        "anchor": "rhs",
+        "label": "yearly",
+        "illustrate": "highlight"
+      },
+      {
+        "select": "column",
+        "anchor": "rhs",
+        "label": "s",
+        "illustrate": "highlight"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "breed",
+          "grooming",
+          "food_cost",
+          "kids",
+          "size"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ]
+        ]
+      },
+      "rhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "breed",
+          "grooming",
+          "food_cost",
+          "kids",
+          "size",
+          "daily",
+          "yearly",
+          "s"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium",
+            13980.0,
+            38.3013698630137,
+            "m"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large",
+            13980.0,
+            38.3013698630137,
+            "l"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small",
+            9720.0,
+            26.63013698630137,
+            "s"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium",
+            13980.0,
+            38.3013698630137,
+            "m"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small",
+            9720.0,
+            26.63013698630137,
+            "s"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium",
+            13980.0,
+            38.3013698630137,
+            "m"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium",
+            13980.0,
+            38.3013698630137,
+            "m"
+          ]
+        ]
+      }
+    }
+  }
+]
