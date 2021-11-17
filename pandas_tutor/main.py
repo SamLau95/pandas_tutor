@@ -16,13 +16,18 @@ from pathlib import Path
 
 from docopt import docopt  # type: ignore
 
-from .parse import test_logger, parse, parse_as_json
+from .parse import parse, parse_as_json, test_logger
+from .parse_nodes import ParseError
 from .run import run
 from .serialize import serialize, serialize_to_json
 
 
 def make_tutor_spec(code: str) -> str:
+    '''oh yeah, it's all coming together'''
     root = parse(code)
+    if isinstance(root, ParseError):
+        return ParseError.to_json(root)
+
     eval_results = run(root)
     spec = serialize_to_json(eval_results)
     return spec
@@ -31,6 +36,9 @@ def make_tutor_spec(code: str) -> str:
 def make_tutor_spec_py(code: str) -> t.List[dict]:
     '''Keeps serialized output as a Python object for testing'''
     root = parse(code)
+    if isinstance(root, ParseError):
+        return [root.to_dict()]
+
     eval_results = run(root)
     spec = serialize(eval_results)
     return [diagram.to_dict() for diagram in spec]
