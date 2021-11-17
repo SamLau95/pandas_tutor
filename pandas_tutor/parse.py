@@ -350,7 +350,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         # self.slices = []
 
     @m.call_if_inside(is_chain_stmt)
-    @m.call_if_not_inside(m.SubscriptElement() | m.Call())
+    @m.call_if_not_inside(m.SubscriptElement() | m.Arg())
     @m.leave(m.Subscript())
     def make_subscript(self, cst_node):
         assert self.current is not None, (
