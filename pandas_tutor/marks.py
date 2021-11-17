@@ -7,8 +7,8 @@ import pandas as pd  # type: ignore
 
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
-from .parse_nodes import (AggCall, ApplyCall, Axis, ChainStep, GroupByCall,
-                          HeadCall, PassThroughCall, RenameCall,
+from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStep,
+                          GroupByCall, HeadCall, PassThroughCall, RenameCall,
                           SortValuesCall, SubsComparison, Subscript, TailCall)
 from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
                   SeriesResult)
@@ -26,6 +26,8 @@ def make_marks(step: ChainStep, before: EvalResult,
         return mark_for_head_or_tail(step, before, after)
     elif isinstance(step, ApplyCall):
         return mark_for_apply(step, before, after)
+    elif isinstance(step, AssignCall):
+        return mark_for_assign(step, before, after)
     elif isinstance(step, GroupByCall):
         return mark_for_groupby(step, before, after)
     elif isinstance(step, AggCall):
@@ -104,6 +106,13 @@ def mark_for_apply(step: ApplyCall, before: EvalResult,
     else:
         # TODO: handle apply on groupby objects
         return []
+
+
+# don't do anything super crazy for assigns...just highlight the new columns
+# dogs.assign(daily=lambda df: df['food_cost'] * 30)
+def mark_for_assign(step: AssignCall, before: EvalResult,
+                    after: EvalResult) -> t.List[Mark]:
+    return make_highlights(step.new_col_labels, 'column', 'rhs')
 
 
 # df.groupby('hello')
@@ -256,6 +265,9 @@ def selection(axis: Axis, other=False) -> Selection:
 def make_highlights(labels: t.Iterable,
                     select: Selection,
                     anchor='lhs') -> t.List[Mark]:
+    '''
+    shorthand to make a highlight for each label
+    '''
     return [
         Highlight(label=label, select=select, anchor=anchor)
         for label in labels

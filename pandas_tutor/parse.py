@@ -22,8 +22,8 @@ import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
-from .parse_nodes import (AggCall, ApplyCall, Axis, CodePosition, GroupByCall,
-                          HeadCall, ParsedModule, ChainStatement,
+from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, CodePosition,
+                          GroupByCall, HeadCall, ParsedModule, ChainStatement,
                           PassThroughCall, RawCode, RenameCall, SortValuesCall,
                           StartOfChain, SubsComparison, SubsEval, SubsSlice,
                           Subscript, SubscriptEl, TailCall, VerbatimStatement)
@@ -72,10 +72,11 @@ is_rename = fn_matcher('rename')
 is_head_or_tail = fn_matcher('head') | fn_matcher('tail')
 is_groupby = fn_matcher('groupby')
 is_apply = fn_matcher('apply')
+is_assign = fn_matcher('assign')
 
 # make sure to update this whenever we add a new call to the section above
 is_parsed_call = (is_sort_values | is_rename | is_head_or_tail | is_groupby
-                  | is_apply)
+                  | is_apply | is_assign)
 
 is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                             | m.Name('iloc')))
@@ -285,6 +286,22 @@ class PandasParser(m.MatcherDecoratableVisitor):
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
+    @m.leave(is_assign)
+    def make_assign(self, cst_node: cst.Call):
+        assert self.current is not None, (
+            'tried to call make_assign when not in a chain!')
+        # each kwarg is a new column
+        new_col_labels = [
+            arg.keyword.value for arg in cst_node.args
+            if arg.keyword is not None
+        ]
+
+        node = self.make_node(AssignCall,
+                              cst_node,
+                              new_col_labels=new_col_labels)
+        self.current.chain.append(node)
+
+    @m.call_if_inside(is_chain_stmt)
     @m.leave(is_groupby)
     def make_groupby(self, cst_node):
         assert self.current is not None, (
@@ -333,7 +350,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         # self.slices = []
 
     @m.call_if_inside(is_chain_stmt)
-    @m.call_if_not_inside(m.SubscriptElement())
+    @m.call_if_not_inside(m.SubscriptElement() | m.Call())
     @m.leave(m.Subscript())
     def make_subscript(self, cst_node):
         assert self.current is not None, (
