@@ -1,0 +1,13 @@
+{
+  "type_": "ParseError",
+  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs\n .apply(lambda x: x * 2)\n\n",
+  "start": {
+    "line": 17,
+    "ch": 2
+  },
+  "end": {
+    "line": 17,
+    "ch": 2
+  },
+  "error_msg": "Syntax Error @ 18:2.\nIncomplete input. Unexpectedly encountered an indent.\n\n .apply(lambda x: x * 2)\n ^"
+}

@@ -21,14 +21,17 @@ class _ParseTreeEncoder(json.JSONEncoder):
 
 @dataclasses.dataclass
 class CodePosition:
-    '''points to a location within the original code string'''
+    '''
+    points to a location within the original code string. both lines and
+    columns are 0-indexed
+    '''
     line: int
     ch: int
 
 
 @dataclasses.dataclass
 class Base:
-    type_: str = field(init=False)
+    type_: str = field(init=False, repr=False)
     code: RawCode
     start: CodePosition
     end: CodePosition
@@ -42,6 +45,16 @@ class Base:
     @classmethod
     def to_json(cls, items: t.Union[t.List[Base], Base]):
         return json.dumps(items, indent=2, cls=_ParseTreeEncoder)
+
+
+@dataclasses.dataclass
+class ParseError(Base):
+    '''
+    represents an error in parsing. when this happens, we should pass along the
+    error for serializing. we don't run the code since libcst produces nicer
+    error messages compared to Python
+    '''
+    error_msg: str
 
 
 @dataclasses.dataclass
