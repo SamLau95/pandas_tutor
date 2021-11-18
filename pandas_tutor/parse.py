@@ -285,8 +285,8 @@ class PandasParser(m.MatcherDecoratableVisitor):
     def make_apply(self, cst_node):
         assert self.current is not None, (
             'tried to call make_apply when not in a chain!')
-        # axis only available for dataframes...for series, arg 1 is some other arg
-        # that we don't care about so we should be careful here
+        # axis only available for dataframes...for series, arg 1 is some other
+        # arg that we don't care about so we should be careful here
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
         axis = 'index'  # default
         if axis_arg is not None:

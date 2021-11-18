@@ -297,4 +297,23 @@ class SubsEval(Base):
 
 SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
 
-ChainStep = t.Union[StartOfChain, Call, Subscript]
+##############################################################################
+# Errors
+##############################################################################
+
+_dummy_code_position = CodePosition(-999, -999)
+
+
+@dataclasses.dataclass
+class EvalError(Base):
+    '''represents a step in the chain that caused a runtime error'''
+    # TODO: compute code positions for errors
+    @classmethod
+    def from_code(cls, code: RawCode):
+        return cls(code, start=_dummy_code_position, end=_dummy_code_position)
+
+
+##############################################################################
+# ChainStep
+##############################################################################
+ChainStep = t.Union[StartOfChain, Call, Subscript, EvalError]

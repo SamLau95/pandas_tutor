@@ -12,14 +12,19 @@ import typing as t
 
 import pandas as pd  # type: ignore
 
-from .parse_nodes import (AggCall, ChainStatement, ChainStep, ParsedModule,
-                          PassThroughCall, RawCode, Subscript)
 from . import util
+from .parse_nodes import (AggCall, ChainStatement, ChainStep, EvalError,
+                          ParsedModule, PassThroughCall, RawCode, Subscript)
 
 # technically args can be anything...but most of the time it'll be labels
 Arg = t.Union[str, t.List[str]]
 
 Args = t.Dict[str, Arg]
+
+# errors that we care about showing to the user
+serializable_errors = (ArithmeticError, AttributeError, ImportError,
+                       LookupError, NameError, RuntimeError, TypeError,
+                       ValueError)
 
 
 @dataclasses.dataclass
@@ -49,13 +54,18 @@ class SeriesGroupbyResult(EvalBase):
 
 
 @dataclasses.dataclass
+class RuntimeErrorResult(EvalBase):
+    val: Exception
+
+
+@dataclasses.dataclass
 class UnhandledResult(EvalBase):
     '''catch-all for chain outputs we don't know how to serialize'''
     val: t.Any
 
 
 EvalResult = t.Union[UnhandledResult, DFResult, SeriesResult, GroupbyResult,
-                     SeriesGroupbyResult]
+                     SeriesGroupbyResult, RuntimeErrorResult]
 
 
 # TODO: handle stdout and stderr from user code
@@ -64,22 +74,36 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
 
     # hard-code the last one!
     setup_stmts, last_expr = statements[:-1], statements[-1]
-    assert isinstance(last_expr, ChainStatement)
+    if not isinstance(last_expr, ChainStatement):
+        # don't visualize
+        return []
 
     # all the code above the last expression
-    setup_code = '\n'.join([stmt.code for stmt in setup_stmts])
+    setup_code = RawCode('\n'.join([stmt.code for stmt in setup_stmts]))
 
     # now let's run stuff dangerously!
     user_globals = setup_user_globals()
-    exec(setup_code, user_globals)
+
+    try:
+        exec(setup_code, user_globals)
+    except serializable_errors as error:
+        step = EvalError.from_code(setup_code)
+        return [RuntimeErrorResult(step=step, args={}, val=error)]
 
     last_val: t.Any = None
     eval_results = []
     for step in last_expr.chain:
-        # wrap individual steps in parens before eval since subexpressions
-        # within a line can have newlines
-        val = eval(f"({step.code})", user_globals)
-        args = eval_args(step, user_globals)
+        try:
+            # wrap individual steps in parens before eval since subexpressions
+            # within a line can have newlines
+            val = eval(f"({step.code})", user_globals)
+            args = eval_args(step, user_globals)
+        except serializable_errors as error:
+            step = EvalError.from_code(step.code)
+            result = RuntimeErrorResult(step=step, args={}, val=error)
+            eval_results.append(result)
+            break
+
         result = make_result(step, val, args, last_val)
         eval_results.append(result)
         last_val = val
