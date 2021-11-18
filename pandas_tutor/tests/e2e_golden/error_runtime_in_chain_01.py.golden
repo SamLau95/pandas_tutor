@@ -1,0 +1,7 @@
+[
+  {
+    "type": "ErrorOutput",
+    "code_step": "dogs\n .loc[:, ['not_a_column']]",
+    "message": "KeyError: \"None of [Index(['not_a_column'], dtype='object')] are in the [columns]\"\n"
+  }
+]

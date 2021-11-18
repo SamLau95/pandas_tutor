@@ -5,6 +5,7 @@ has dataclass definitions for final JSON output.
 from __future__ import annotations
 
 import dataclasses
+from dataclasses import field
 import simplejson as json
 import typing as t
 
@@ -61,13 +62,26 @@ class Diagram:
     def to_dict(self):
         return dataclasses.asdict(self, dict_factory=_diagram_as_dict)
 
+    # a bit clunky since we'll also use this for ErrorOutput, but :shrug:
     @classmethod
-    def to_json(cls, items: t.Union[t.List[Diagram], Diagram]):
+    def to_json(cls, items: t.Any):
         return json.dumps(items,
                           indent=2,
                           default=encode_pd_objs,
                           ignore_nan=True)
 
+
+@dataclasses.dataclass
+class ErrorOutput:
+    type: str = field(default='ErrorOutput', init=False, repr=False)
+    code_step: str
+    message: str
+
+    def to_dict(self):
+        return dataclasses.asdict(self, dict_factory=_diagram_as_dict)
+
+
+Explanation = t.List[t.Union[Diagram, ErrorOutput]]
 
 Selection = t.Literal['column', 'row']
 Anchor = t.Literal['lhs', 'rhs']
@@ -107,7 +121,7 @@ class DataPair:
 
 @dataclasses.dataclass
 class DFSpec:
-    type: str = dataclasses.field(default='DataFrame', init=False, repr=False)
+    type: str = field(default='DataFrame', init=False, repr=False)
     col_names: Labels
     row_labels: Labels
     data: t.List[t.List]
@@ -115,24 +129,20 @@ class DFSpec:
 
 @dataclasses.dataclass
 class SeriesSpec:
-    type: str = dataclasses.field(default='Series', init=False, repr=False)
+    type: str = field(default='Series', init=False, repr=False)
     row_labels: Labels
     data: t.List
 
 
 @dataclasses.dataclass
 class GroupBySpec(DFSpec):
-    type: str = dataclasses.field(default='DataFrameGroupBy',
-                                  init=False,
-                                  repr=False)
+    type: str = field(default='DataFrameGroupBy', init=False, repr=False)
     group_data: GroupData
 
 
 @dataclasses.dataclass
 class SeriesGroupBySpec(SeriesSpec):
-    type: str = dataclasses.field(default='SeriesGroupBy',
-                                  init=False,
-                                  repr=False)
+    type: str = field(default='SeriesGroupBy', init=False, repr=False)
     group_data: GroupData
 
 
@@ -160,7 +170,7 @@ class Group:
 @dataclasses.dataclass
 class UnhandledData:
     '''catch-all for data that we don't know how to handle, like scalars'''
-    type: str = dataclasses.field(default='Unhandled', init=False, repr=False)
+    type: str = field(default='Unhandled', init=False, repr=False)
     data: t.Any
 
 

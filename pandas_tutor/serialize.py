@@ -3,20 +3,32 @@ serializes run.py outputs into json.
 '''
 
 from __future__ import annotations
+from traceback import TracebackException
 
 import typing as t
 
 from . import util
-from .diagram import (DataPair, DataSpec, DFSpec, Diagram, Group, GroupBySpec,
-                      GroupData, SeriesGroupBySpec, SeriesSpec, UnhandledData)
+from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
+                      Explanation, Group, GroupBySpec, GroupData,
+                      SeriesGroupBySpec, SeriesSpec, UnhandledData)
 from .marks import make_marks
-from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
-                  SeriesResult)
+from .run import (DFResult, EvalResult, GroupbyResult, RuntimeErrorResult,
+                  SeriesGroupbyResult, SeriesResult)
 
 T = t.TypeVar('T')
 
 
-def serialize(results: t.List[EvalResult]) -> t.List[Diagram]:
+def serialize(results: t.List[EvalResult]) -> Explanation:
+    if len(results) == 0:
+        return []
+    elif len(results) == 1:
+        # happens when user inputs `df` without a function call, or when
+        # error happens in setup code
+        result = results[0]
+        if isinstance(result, RuntimeErrorResult):
+            error_output = serialize_error(result)
+            return [error_output]
+        return []
     return [
         serialize_one_step(before, after) for before, after in pairs(results)
     ]
@@ -27,7 +39,17 @@ def serialize_to_json(results: t.List[EvalResult]) -> str:
     return Diagram.to_json(diagrams)
 
 
-def serialize_one_step(before: EvalResult, after: EvalResult) -> Diagram:
+def serialize_error(result: RuntimeErrorResult) -> ErrorOutput:
+    tb = TracebackException.from_exception(result.val)
+    # get error message from last stack frame
+    message = list(tb.format_exception_only())[-1]
+    return ErrorOutput(code_step=result.step.code, message=message)
+
+
+def serialize_one_step(before: EvalResult,
+                       after: EvalResult) -> t.Union[Diagram, ErrorOutput]:
+    if isinstance(after, RuntimeErrorResult):
+        return serialize_error(after)
     step = after.step
 
     marks = make_marks(step, before, after)
@@ -61,7 +83,7 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
         return serialize_seriesgroupby(step.val)
     else:
         val = step.val
-        return UnhandledData(data=str(val))
+        return UnhandledData(data=repr(val))
 
 
 def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:

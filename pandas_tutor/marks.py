@@ -8,8 +8,9 @@ import pandas as pd  # type: ignore
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStep,
-                          GroupByCall, HeadCall, PassThroughCall, RenameCall,
-                          SortValuesCall, SubsComparison, Subscript, TailCall)
+                          EvalError, GroupByCall, HeadCall, PassThroughCall,
+                          RenameCall, SortValuesCall, SubsComparison,
+                          Subscript, TailCall)
 from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
                   SeriesResult)
 
@@ -18,7 +19,11 @@ from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
 # the type checker
 def make_marks(step: ChainStep, before: EvalResult,
                after: EvalResult) -> t.List[Mark]:
-    if isinstance(step, SortValuesCall):
+    if isinstance(step, EvalError):
+        return no_marks()
+    elif isinstance(step, PassThroughCall):
+        return no_marks()
+    elif isinstance(step, SortValuesCall):
         return mark_for_sort_values(step, before, after)
     elif isinstance(step, RenameCall):
         return mark_for_rename(step, before, after)
@@ -32,17 +37,17 @@ def make_marks(step: ChainStep, before: EvalResult,
         return mark_for_groupby(step, before, after)
     elif isinstance(step, AggCall):
         return mark_for_agg(step, before, after)
-    elif isinstance(step, PassThroughCall):
-        return no_marks(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
-        return no_marks(step, before, after)
+        return no_marks()
 
 
 # df.sort_values('Name')
 def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
                          after: EvalResult) -> t.List[Mark]:
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
     df = before.val
     args = after.args
 
