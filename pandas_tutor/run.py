@@ -91,7 +91,7 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
         return [RuntimeErrorResult(step=step, args={}, val=error)]
 
     last_val: t.Any = None
-    eval_results = []
+    eval_results: t.List[EvalResult] = []
     for step in last_expr.chain:
         try:
             # wrap individual steps in parens before eval since subexpressions
@@ -100,8 +100,8 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
             args = eval_args(step, user_globals)
         except serializable_errors as error:
             step = EvalError.from_code(step.code)
-            result = RuntimeErrorResult(step=step, args={}, val=error)
-            eval_results.append(result)
+            err_result = RuntimeErrorResult(step=step, args={}, val=error)
+            eval_results.append(err_result)
             break
 
         result = make_result(step, val, args, last_val)
