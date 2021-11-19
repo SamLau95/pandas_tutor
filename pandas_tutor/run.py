@@ -29,51 +29,48 @@ serializable_errors = (ArithmeticError, AttributeError, ImportError,
 
 
 @dataclasses.dataclass
-class EvalBase:
+class EvalResult:
     step: ChainStep
     # location of fragment to highlight, relative to the entire expression
     fragment: CodeRange
     args: Args
+    val: t.Any
 
 
 @dataclasses.dataclass
-class DFResult(EvalBase):
+class DFResult(EvalResult):
     val: pd.DataFrame
 
 
 @dataclasses.dataclass
-class SeriesResult(EvalBase):
+class SeriesResult(EvalResult):
     val: pd.Series
 
 
 @dataclasses.dataclass
-class GroupbyResult(EvalBase):
+class GroupbyResult(EvalResult):
     val: util.DataFrameGroupBy
 
 
 @dataclasses.dataclass
-class SeriesGroupbyResult(EvalBase):
+class SeriesGroupbyResult(EvalResult):
     val: util.SeriesGroupBy
 
 
 @dataclasses.dataclass
-class ImageResult(EvalBase):
+class ImageResult(EvalResult):
     val: t.Any
 
 
 @dataclasses.dataclass
-class RuntimeErrorResult(EvalBase):
+class RuntimeErrorResult(EvalResult):
     val: Exception
 
 
 @dataclasses.dataclass
-class UnhandledResult(EvalBase):
+class UnhandledResult(EvalResult):
     '''catch-all for chain outputs we don't know how to serialize'''
     val: t.Any
-
-
-EvalResult = t.Union[UnhandledResult, DFResult, SeriesResult, GroupbyResult,
-                     SeriesGroupbyResult, ImageResult, RuntimeErrorResult]
 
 
 # TODO: handle stdout and stderr from user code
