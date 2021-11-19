@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import unittest
 
@@ -33,5 +34,8 @@ def make_test_case(test_name):
 # make all test cases dynamically!
 for test_name in test_cases.iterdir():
     if test_name.suffix == '.py':
+        if os.environ.get('CI', False) and test_name.stem.startswith('plot_'):
+            # skip plotting test cases since gzipping isn't deterministic
+            continue
         test_case = make_test_case(test_name.stem)
         setattr(TestEndToEnd, f'test_{test_name.stem}', test_case)
