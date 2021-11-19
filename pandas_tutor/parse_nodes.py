@@ -71,7 +71,13 @@ Statement = t.Union[VerbatimStatement, ChainStatement]
 
 
 @dataclasses.dataclass
-class StartOfChain(Base):
+class ChainStep(Base):
+    '''represents a step that we can visualize, or an error'''
+    pass
+
+
+@dataclasses.dataclass
+class StartOfChain(ChainStep):
     '''the pd in pd.pivot_table, or df in df['Name']'''
     pass
 
@@ -91,6 +97,12 @@ class StartOfChain(Base):
 ##############################################################################
 
 
+@dataclasses.dataclass
+class Call(ChainStep):
+    '''base class used for typing'''
+    pass
+
+
 def evals_into(attr: str):
     return field(metadata=dict(evals_into=attr))
 
@@ -99,7 +111,7 @@ Axis = t.Literal['index', 'columns']
 
 
 @dataclasses.dataclass
-class SortValuesCall(Base):
+class SortValuesCall(Call):
     '''
     cols = ['size', 'breed']
     df.sort_values(cols)
@@ -114,7 +126,7 @@ class SortValuesCall(Base):
 
 
 @dataclasses.dataclass
-class RenameCall(Base):
+class RenameCall(Call):
     '''
     names = {'size': 'SIZE', 'food_cost': 'cost'}
     df.rename(names, axis=1)
@@ -132,7 +144,7 @@ class RenameCall(Base):
 
 
 @dataclasses.dataclass
-class HeadCall(Base):
+class HeadCall(Call):
     '''
     df.head(5)
     df.head()
@@ -142,7 +154,7 @@ class HeadCall(Base):
 
 
 @dataclasses.dataclass
-class TailCall(Base):
+class TailCall(Call):
     '''
     df.tail(5)
     df.tail()
@@ -152,7 +164,7 @@ class TailCall(Base):
 
 
 @dataclasses.dataclass
-class PassThroughCall(Base):
+class PassThroughCall(Call):
     '''
     call that we don't know how to draw diagram for, so we should just run it
     and keep going
@@ -161,7 +173,7 @@ class PassThroughCall(Base):
 
 
 @dataclasses.dataclass
-class GroupByCall(Base):
+class GroupByCall(Call):
     '''
     the labels for grouping are automatically saved into the groupby object,
     so we don't need to get them during parsing
@@ -177,7 +189,7 @@ class GroupByCall(Base):
 
 
 @dataclasses.dataclass
-class AggCall(Base):
+class AggCall(Call):
     '''
     catch-all for any function that happens after a groupby. note: some
     functions on groupby objects are transforms, not aggregations, e.g.
@@ -197,7 +209,7 @@ class AggCall(Base):
 
 
 @dataclasses.dataclass
-class ApplyCall(Base):
+class ApplyCall(Call):
     '''
     df['region'].apply(len)
     '''
@@ -207,7 +219,7 @@ class ApplyCall(Base):
 
 
 @dataclasses.dataclass
-class AssignCall(Base):
+class AssignCall(Call):
     '''
     df.assign(test=2)
     df.assign(temp_f=df['temp_c'] * 9 / 5 + 32)
@@ -217,10 +229,6 @@ class AssignCall(Base):
     new_col_labels: t.List[str]
 
 
-# make sure to update this whenever we add new call node
-Call = t.Union[PassThroughCall, SortValuesCall, RenameCall, HeadCall, TailCall,
-               GroupByCall, AggCall, ApplyCall, AssignCall]
-
 ##############################################################################
 # Subscripts
 ##############################################################################
@@ -229,7 +237,7 @@ Slicer = t.Literal['loc', 'iloc', None]
 
 
 @dataclasses.dataclass
-class Subscript(Base):
+class Subscript(ChainStep):
     '''
     hard-codes one or two slice elements (i've never seen a third slice in
     pandas code, but i could be wrong)
@@ -294,15 +302,9 @@ SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
 
 
 @dataclasses.dataclass
-class EvalError(Base):
+class EvalError(ChainStep):
     '''represents a step in the chain that caused a runtime error'''
     # TODO: compute code positions for errors
     @classmethod
     def from_code(cls, code: RawCode):
         return cls(code, location=NULL_LOC)
-
-
-##############################################################################
-# ChainStep
-##############################################################################
-ChainStep = t.Union[StartOfChain, Call, Subscript, EvalError]

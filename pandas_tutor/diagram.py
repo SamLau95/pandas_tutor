@@ -118,7 +118,13 @@ class DataPair:
 
 
 @dataclasses.dataclass
-class DFSpec:
+class DataSpec:
+    '''base class for a python val we're going to serialize'''
+    type: str
+
+
+@dataclasses.dataclass
+class DFSpec(DataSpec):
     type: str = field(default='DataFrame', init=False, repr=False)
     col_names: Labels
     row_labels: Labels
@@ -126,7 +132,7 @@ class DFSpec:
 
 
 @dataclasses.dataclass
-class SeriesSpec:
+class SeriesSpec(DataSpec):
     type: str = field(default='Series', init=False, repr=False)
     row_labels: Labels
     data: t.List
@@ -166,18 +172,14 @@ class Group:
 
 
 @dataclasses.dataclass
-class ImageSpec:
+class ImageSpec(DataSpec):
     '''encodes an image as a gzipped base64 png'''
     type: str = field(default='Image', init=False, repr=False)
     data: str
 
 
 @dataclasses.dataclass
-class UnhandledData:
+class UnhandledData(DataSpec):
     '''catch-all for data that we don't know how to handle, like scalars'''
     type: str = field(default='Unhandled', init=False, repr=False)
     data: t.Any
-
-
-DataSpec = t.Union[UnhandledData, DFSpec, SeriesSpec, GroupBySpec,
-                   SeriesGroupBySpec, ImageSpec, ]
