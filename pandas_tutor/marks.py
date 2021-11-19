@@ -3,7 +3,7 @@ creates mark specs. here's where the magic happens!
 '''
 import typing as t
 
-import pandas as pd  # type: ignore
+import pandas as pd
 
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos

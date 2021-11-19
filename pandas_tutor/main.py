@@ -14,7 +14,7 @@ Options:
 import typing as t
 from pathlib import Path
 
-from docopt import docopt  # type: ignore
+from docopt import docopt
 
 from .parse import parse, parse_as_json, test_logger
 from .parse_nodes import ParseError

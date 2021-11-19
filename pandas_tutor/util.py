@@ -1,14 +1,17 @@
 '''
 utilities
 '''
+import io
 import base64
 import gzip
 import typing as t
 
-import pandas as pd  # type: ignore
-from pandas.core.groupby.generic import (  # type: ignore
-    DataFrameGroupBy, SeriesGroupBy)
-from pandas.core.groupby.groupby import GroupBy  # type: ignore
+import matplotlib.pyplot as plt
+import matplotlib.figure as figure
+import seaborn as sns
+import pandas as pd
+from pandas.core.groupby.generic import (DataFrameGroupBy, SeriesGroupBy)
+from pandas.core.groupby.groupby import GroupBy
 
 from .diagram import Label, Labels
 
@@ -17,11 +20,6 @@ HasIndex = t.Union[pd.DataFrame, pd.Series]
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
 
 IndexPair = t.Tuple[Label, Label]
-
-
-def gzip_str(s):
-    f = gzip.compress(s.encode())
-    return base64.b64encode(f).decode()
 
 
 def mapt(fn, *args):
@@ -81,3 +79,26 @@ def grouping_labels(groupby: GroupBy) -> Labels:
     # >>> full.groupby([test, test2]).grouper.names
     # [None, None]
     return groupby.grouper.names
+
+
+def is_plottable(obj: t.Any) -> bool:
+    return isinstance(obj, (plt.Axes, figure.Figure, sns.FacetGrid))
+
+
+def base64_encode_plot(fig_or_axes: t.Any) -> str:
+    '''
+    saves plot as a gzipped, base64 encoded png
+    '''
+    if not is_plottable(fig_or_axes):
+        return ''
+
+    fig = (fig_or_axes.figure
+           if hasattr(fig_or_axes, 'figure') else fig_or_axes)
+
+    # saves figure as base64 encoded string
+    with io.BytesIO() as buf:
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        # set mtime=0 to get deterministic gzips for testing
+        zipped = gzip.compress(buf.read(), mtime=0)
+        return base64.b64encode(zipped).decode()

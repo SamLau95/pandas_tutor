@@ -1,6 +1,5 @@
 from pathlib import Path
 import unittest
-import json
 
 from ..main import make_tutor_spec
 

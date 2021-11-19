@@ -5,15 +5,16 @@ serializes run.py outputs into json.
 from __future__ import annotations
 from traceback import TracebackException
 
+import types
 import typing as t
 
 from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
-                      Explanation, Group, GroupBySpec, GroupData,
+                      Explanation, Group, GroupBySpec, GroupData, ImageSpec,
                       SeriesGroupBySpec, SeriesSpec, UnhandledData)
 from .marks import make_marks
-from .run import (DFResult, EvalResult, GroupbyResult, RuntimeErrorResult,
-                  SeriesGroupbyResult, SeriesResult)
+from .run import (DFResult, EvalResult, GroupbyResult, ImageResult,
+                  RuntimeErrorResult, SeriesGroupbyResult, SeriesResult)
 
 T = t.TypeVar('T')
 
@@ -28,6 +29,7 @@ def serialize(results: t.List[EvalResult]) -> Explanation:
         if isinstance(result, RuntimeErrorResult):
             error_output = serialize_error(result)
             return [error_output]
+        # TODO: handle case where chain is just single element
         return []
     return [
         serialize_one_step(before, after) for before, after in pairs(results)
@@ -81,9 +83,17 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
         return serialize_groupby(step.val)
     elif isinstance(step, SeriesGroupbyResult):
         return serialize_seriesgroupby(step.val)
+    elif isinstance(step, ImageResult):
+        return serialize_image(step.val)
     else:
         val = step.val
-        return UnhandledData(data=repr(val))
+        if isinstance(val, types.ModuleType):
+            # take off module path from the module output, otherwise tests
+            # don't work in CI
+            data = f"<module '{val.__name__}'>"
+        else:
+            data = repr(val)
+        return UnhandledData(data=data)
 
 
 def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
@@ -120,6 +130,10 @@ def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
         row_labels=series.index.tolist(),
         data=series.tolist(),  # type: ignore
         group_data=group_data)
+
+
+def serialize_image(val: t.Any) -> ImageSpec:
+    return ImageSpec(util.base64_encode_plot(val))
 
 
 def pairs(seq: t.List[T]) -> t.List[t.Tuple[T, T]]:
