@@ -1,0 +1,443 @@
+[
+  {
+    "type": "GroupByCall",
+    "code_step": "dogs\n .groupby('size')",
+    "mapping": [
+      {
+        "select": "column",
+        "anchor": "lhs",
+        "label": "size",
+        "illustrate": "highlight"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "breed",
+          "grooming",
+          "food_cost",
+          "kids",
+          "size"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ]
+        ]
+      },
+      "rhs": {
+        "type": "DataFrameGroupBy",
+        "col_names": [
+          "breed",
+          "grooming",
+          "food_cost",
+          "kids",
+          "size"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ]
+        ],
+        "group_data": {
+          "col_names": [
+            "size"
+          ],
+          "groups": [
+            {
+              "name": [
+                "large"
+              ],
+              "labels": [
+                1
+              ]
+            },
+            {
+              "name": [
+                "medium"
+              ],
+              "labels": [
+                0,
+                3,
+                5,
+                6
+              ]
+            },
+            {
+              "name": [
+                "small"
+              ],
+              "labels": [
+                2,
+                4
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "type": "AggCall",
+    "code_step": "dogs\n .groupby('size')\n .mean()",
+    "mapping": [
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 1
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "large"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 0
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "medium"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 3
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "medium"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 5
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "medium"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 6
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "medium"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 2
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "small"
+        },
+        "illustrate": "outline"
+      },
+      {
+        "select": "row",
+        "from": {
+          "anchor": "lhs",
+          "label": 4
+        },
+        "to": {
+          "anchor": "rhs",
+          "label": "small"
+        },
+        "illustrate": "outline"
+      }
+    ],
+    "data_frame": {
+      "lhs": {
+        "type": "DataFrameGroupBy",
+        "col_names": [
+          "breed",
+          "grooming",
+          "food_cost",
+          "kids",
+          "size"
+        ],
+        "row_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "data": [
+          [
+            "Labrador Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "German Shepherd",
+            "weekly",
+            466.0,
+            "medium",
+            "large"
+          ],
+          [
+            "Beagle",
+            "daily",
+            324.0,
+            "high",
+            "small"
+          ],
+          [
+            "Golden Retriever",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ],
+          [
+            "Yorkshire Terrier",
+            "daily",
+            324.0,
+            "low",
+            "small"
+          ],
+          [
+            "Bulldog",
+            "weekly",
+            466.0,
+            "medium",
+            "medium"
+          ],
+          [
+            "Boxer",
+            "weekly",
+            466.0,
+            "high",
+            "medium"
+          ]
+        ],
+        "group_data": {
+          "col_names": [
+            "size"
+          ],
+          "groups": [
+            {
+              "name": [
+                "large"
+              ],
+              "labels": [
+                1
+              ]
+            },
+            {
+              "name": [
+                "medium"
+              ],
+              "labels": [
+                0,
+                3,
+                5,
+                6
+              ]
+            },
+            {
+              "name": [
+                "small"
+              ],
+              "labels": [
+                2,
+                4
+              ]
+            }
+          ]
+        }
+      },
+      "rhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "food_cost"
+        ],
+        "row_labels": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "data": [
+          [
+            466.0
+          ],
+          [
+            466.0
+          ],
+          [
+            324.0
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "type": "PassThroughCall",
+    "code_step": "(dogs\n .groupby('size')\n .mean()\n .plot(kind='bar')\n)",
+    "mapping": [],
+    "data_frame": {
+      "lhs": {
+        "type": "DataFrame",
+        "col_names": [
+          "food_cost"
+        ],
+        "row_labels": [
+          "large",
+          "medium",
+          "small"
+        ],
+        "data": [
+          [
+            466.0
+          ],
+          [
+            466.0
+          ],
+          [
+            324.0
+          ]
+        ]
+      },
+      "rhs": {
+        "type": "Image",
+        "data": "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"
+      }
+    }
+  }
+]

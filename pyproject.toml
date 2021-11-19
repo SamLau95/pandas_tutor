@@ -1,6 +1,8 @@
 [yapf]
+# https://github.com/google/yapf#knobs
 SPLIT_COMPLEX_COMPREHENSION = true
 SPLIT_BEFORE_DOT = true
+SPLIT_ALL_TOP_LEVEL_COMMA_SEPARATED_VALUES = true
 ignore_patterns = [
     "pandas_tutor/tests/**/*.py"
 ]

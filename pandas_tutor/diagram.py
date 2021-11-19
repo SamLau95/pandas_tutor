@@ -10,7 +10,7 @@ import simplejson as json
 import typing as t
 
 import numpy as np
-import pandas as pd  # type: ignore
+import pandas as pd
 
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes
@@ -168,6 +168,13 @@ class Group:
 
 
 @dataclasses.dataclass
+class ImageSpec:
+    '''encodes an image as a gzipped base64 png'''
+    type: str = field(default='Image', init=False, repr=False)
+    data: str
+
+
+@dataclasses.dataclass
 class UnhandledData:
     '''catch-all for data that we don't know how to handle, like scalars'''
     type: str = field(default='Unhandled', init=False, repr=False)
@@ -175,4 +182,4 @@ class UnhandledData:
 
 
 DataSpec = t.Union[UnhandledData, DFSpec, SeriesSpec, GroupBySpec,
-                   SeriesGroupBySpec, ]
+                   SeriesGroupBySpec, ImageSpec, ]

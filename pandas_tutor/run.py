@@ -10,7 +10,7 @@ import dataclasses
 import types
 import typing as t
 
-import pandas as pd  # type: ignore
+import pandas as pd
 
 from . import util
 from .parse_nodes import (AggCall, ChainStatement, ChainStep, EvalError,
@@ -54,6 +54,11 @@ class SeriesGroupbyResult(EvalBase):
 
 
 @dataclasses.dataclass
+class ImageResult(EvalBase):
+    val: t.Any
+
+
+@dataclasses.dataclass
 class RuntimeErrorResult(EvalBase):
     val: Exception
 
@@ -65,7 +70,7 @@ class UnhandledResult(EvalBase):
 
 
 EvalResult = t.Union[UnhandledResult, DFResult, SeriesResult, GroupbyResult,
-                     SeriesGroupbyResult, RuntimeErrorResult]
+                     SeriesGroupbyResult, ImageResult, RuntimeErrorResult]
 
 
 # TODO: handle stdout and stderr from user code
@@ -129,6 +134,8 @@ def make_result(step: ChainStep, val: t.Any, args: Args,
         return DFResult(step, args, val)
     elif isinstance(val, pd.Series):
         return SeriesResult(step, args, val)
+    elif util.is_plottable(val):
+        return ImageResult(step, args, val)
     else:
         return UnhandledResult(step, args, val)
 
