@@ -13,8 +13,9 @@ import typing as t
 import pandas as pd
 
 from . import util
-from .parse_nodes import (AggCall, ChainStatement, ChainStep, EvalError,
-                          ParsedModule, PassThroughCall, RawCode, Subscript)
+from .parse_nodes import (AggCall, ChainStatement, ChainStep, CodeRange,
+                          EvalError, ParsedModule, PassThroughCall, RawCode,
+                          Subscript, NULL_LOC)
 
 # technically args can be anything...but most of the time it'll be labels
 Arg = t.Union[str, t.List[str]]
@@ -30,6 +31,8 @@ serializable_errors = (ArithmeticError, AttributeError, ImportError,
 @dataclasses.dataclass
 class EvalBase:
     step: ChainStep
+    # location of fragment to highlight, relative to the entire expression
+    relative_loc: CodeRange
     args: Args
 
 
@@ -93,11 +96,22 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
         exec(setup_code, user_globals)
     except serializable_errors as error:
         step = EvalError.from_code(setup_code)
-        return [RuntimeErrorResult(step=step, args={}, val=error)]
+        return [
+            RuntimeErrorResult(
+                step=step,
+                relative_loc=step.location,
+                args={},
+                val=error,
+            )
+        ]
 
+    relative_to = last_expr.location.start
+    last_location = NULL_LOC
     last_val: t.Any = None
     eval_results: t.List[EvalResult] = []
     for step in last_expr.chain:
+        relative_loc = (step.location - last_location) % relative_to
+
         try:
             # wrap individual steps in parens before eval since subexpressions
             # within a line can have newlines
@@ -105,11 +119,16 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
             args = eval_args(step, user_globals)
         except serializable_errors as error:
             step = EvalError.from_code(step.code)
-            err_result = RuntimeErrorResult(step=step, args={}, val=error)
+            err_result = RuntimeErrorResult(
+                step=step,
+                relative_loc=relative_loc,
+                args={},
+                val=error,
+            )
             eval_results.append(err_result)
             break
 
-        result = make_result(step, val, args, last_val)
+        result = make_result(step, relative_loc, args, val, last_val)
         eval_results.append(result)
         last_val = val
 
@@ -118,8 +137,8 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
 
 # need the last_val for the special case where we have an agg that doesn't show
 # up immediately after a groupby, like dogs.groupby(...)['...'].mean().
-def make_result(step: ChainStep, val: t.Any, args: Args,
-                last_val: t.Any) -> EvalResult:
+def make_result(step: ChainStep, relative_loc: CodeRange, args: Args,
+                val: t.Any, last_val: t.Any) -> EvalResult:
     if (isinstance(step, PassThroughCall)
             and isinstance(last_val,
                            (util.DataFrameGroupBy, util.SeriesGroupBy))
@@ -127,17 +146,17 @@ def make_result(step: ChainStep, val: t.Any, args: Args,
         step = AggCall.from_passthrough_call(step)
 
     if isinstance(val, util.DataFrameGroupBy):
-        return GroupbyResult(step, args, val)
+        return GroupbyResult(step, relative_loc, args, val)
     elif isinstance(val, util.SeriesGroupBy):
-        return SeriesGroupbyResult(step, args, val)
+        return SeriesGroupbyResult(step, relative_loc, args, val)
     elif isinstance(val, pd.DataFrame):
-        return DFResult(step, args, val)
+        return DFResult(step, relative_loc, args, val)
     elif isinstance(val, pd.Series):
-        return SeriesResult(step, args, val)
+        return SeriesResult(step, relative_loc, args, val)
     elif util.is_plottable(val):
-        return ImageResult(step, args, val)
+        return ImageResult(step, relative_loc, args, val)
     else:
-        return UnhandledResult(step, args, val)
+        return UnhandledResult(step, relative_loc, args, val)
 
 
 def setup_user_globals():

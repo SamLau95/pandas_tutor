@@ -1,98 +1,114 @@
 {
   "type_": "ParsedModule",
   "code": "import pandas as pd\n\ndf = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])\n\ndf.loc[1, 'Name']\n",
-  "start": {
-    "line": 0,
-    "ch": 0
-  },
-  "end": {
-    "line": 10,
-    "ch": 0
+  "location": {
+    "start": {
+      "line": 0,
+      "ch": 0
+    },
+    "end": {
+      "line": 10,
+      "ch": 0
+    }
   },
   "statements": [
     {
       "type_": "VerbatimStatement",
       "code": "import pandas as pd",
-      "start": {
-        "line": 0,
-        "ch": 0
-      },
-      "end": {
-        "line": 0,
-        "ch": 19
+      "location": {
+        "start": {
+          "line": 0,
+          "ch": 0
+        },
+        "end": {
+          "line": 0,
+          "ch": 19
+        }
       }
     },
     {
       "type_": "VerbatimStatement",
       "code": "df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
-      "start": {
-        "line": 2,
-        "ch": 0
-      },
-      "end": {
-        "line": 7,
-        "ch": 59
+      "location": {
+        "start": {
+          "line": 2,
+          "ch": 0
+        },
+        "end": {
+          "line": 7,
+          "ch": 59
+        }
       }
     },
     {
       "type_": "ChainStatement",
       "code": "df.loc[1, 'Name']",
-      "start": {
-        "line": 9,
-        "ch": 0
-      },
-      "end": {
-        "line": 9,
-        "ch": 17
+      "location": {
+        "start": {
+          "line": 9,
+          "ch": 0
+        },
+        "end": {
+          "line": 9,
+          "ch": 17
+        }
       },
       "chain": [
         {
           "type_": "StartOfChain",
           "code": "df",
-          "start": {
-            "line": 9,
-            "ch": 0
-          },
-          "end": {
-            "line": 9,
-            "ch": 2
+          "location": {
+            "start": {
+              "line": 9,
+              "ch": 0
+            },
+            "end": {
+              "line": 9,
+              "ch": 2
+            }
           }
         },
         {
           "type_": "Subscript",
           "code": "df.loc[1, 'Name']",
-          "start": {
-            "line": 9,
-            "ch": 0
-          },
-          "end": {
-            "line": 9,
-            "ch": 17
+          "location": {
+            "start": {
+              "line": 9,
+              "ch": 0
+            },
+            "end": {
+              "line": 9,
+              "ch": 17
+            }
           },
           "slicer": "loc",
           "slice1": {
             "type_": "SubsEval",
             "code": "1",
-            "start": {
-              "line": 9,
-              "ch": 7
-            },
-            "end": {
-              "line": 9,
-              "ch": 8
+            "location": {
+              "start": {
+                "line": 9,
+                "ch": 7
+              },
+              "end": {
+                "line": 9,
+                "ch": 8
+              }
             },
             "expr": "1"
           },
           "slice2": {
             "type_": "SubsEval",
             "code": "'Name'",
-            "start": {
-              "line": 9,
-              "ch": 10
-            },
-            "end": {
-              "line": 9,
-              "ch": 16
+            "location": {
+              "start": {
+                "line": 9,
+                "ch": 10
+              },
+              "end": {
+                "line": 9,
+                "ch": 16
+              }
             },
             "expr": "'Name'"
           }

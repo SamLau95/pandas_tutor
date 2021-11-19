@@ -1,85 +1,99 @@
 {
   "type_": "ParsedModule",
   "code": "import pandas as pd\n\ndf = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])\n\ndf[df['Count'] > 13000]\n",
-  "start": {
-    "line": 0,
-    "ch": 0
-  },
-  "end": {
-    "line": 10,
-    "ch": 0
+  "location": {
+    "start": {
+      "line": 0,
+      "ch": 0
+    },
+    "end": {
+      "line": 10,
+      "ch": 0
+    }
   },
   "statements": [
     {
       "type_": "VerbatimStatement",
       "code": "import pandas as pd",
-      "start": {
-        "line": 0,
-        "ch": 0
-      },
-      "end": {
-        "line": 0,
-        "ch": 19
+      "location": {
+        "start": {
+          "line": 0,
+          "ch": 0
+        },
+        "end": {
+          "line": 0,
+          "ch": 19
+        }
       }
     },
     {
       "type_": "VerbatimStatement",
       "code": "df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
-      "start": {
-        "line": 2,
-        "ch": 0
-      },
-      "end": {
-        "line": 7,
-        "ch": 59
+      "location": {
+        "start": {
+          "line": 2,
+          "ch": 0
+        },
+        "end": {
+          "line": 7,
+          "ch": 59
+        }
       }
     },
     {
       "type_": "ChainStatement",
       "code": "df[df['Count'] > 13000]",
-      "start": {
-        "line": 9,
-        "ch": 0
-      },
-      "end": {
-        "line": 9,
-        "ch": 23
+      "location": {
+        "start": {
+          "line": 9,
+          "ch": 0
+        },
+        "end": {
+          "line": 9,
+          "ch": 23
+        }
       },
       "chain": [
         {
           "type_": "StartOfChain",
           "code": "df",
-          "start": {
-            "line": 9,
-            "ch": 0
-          },
-          "end": {
-            "line": 9,
-            "ch": 2
+          "location": {
+            "start": {
+              "line": 9,
+              "ch": 0
+            },
+            "end": {
+              "line": 9,
+              "ch": 2
+            }
           }
         },
         {
           "type_": "Subscript",
           "code": "df[df['Count'] > 13000]",
-          "start": {
-            "line": 9,
-            "ch": 0
-          },
-          "end": {
-            "line": 9,
-            "ch": 23
+          "location": {
+            "start": {
+              "line": 9,
+              "ch": 0
+            },
+            "end": {
+              "line": 9,
+              "ch": 23
+            }
           },
           "slicer": null,
           "slice1": {
             "type_": "SubsComparison",
             "code": "df['Count'] > 13000",
-            "start": {
-              "line": 9,
-              "ch": 3
-            },
-            "end": {
-              "line": 9,
-              "ch": 22
+            "location": {
+              "start": {
+                "line": 9,
+                "ch": 3
+              },
+              "end": {
+                "line": 9,
+                "ch": 22
+              }
             },
             "label_exprs": [
               "'Count'"

@@ -12,6 +12,8 @@ import typing as t
 import numpy as np
 import pandas as pd
 
+from .util import CodeRange
+
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes
 Label = t.Union[int, str]
@@ -53,6 +55,7 @@ def encode_pd_objs(obj: t.Any):
 class Diagram:
     type: str
     code_step: str
+    fragment: CodeRange
     mapping: t.List[Mark]
 
     # although we call this data_frame, technically it can hold any type of

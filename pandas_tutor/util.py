@@ -1,6 +1,8 @@
 '''
 utilities
 '''
+from __future__ import annotations
+import dataclasses
 import io
 import base64
 import gzip
@@ -18,6 +20,52 @@ from .diagram import Label, Labels
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
+
+
+@dataclasses.dataclass
+class CodePosition:
+    '''
+    points to a location within the original code string. both lines and
+    columns are 0-indexed
+    '''
+    line: int
+    ch: int
+
+    def __mod__(self, other: CodePosition):
+        '''self % other is the position relative to other.line'''
+        return CodePosition(self.line - other.line, self.ch)
+
+    def __lt__(self, other: CodePosition):
+        return self.line < other.line or self.ch < other.ch
+
+
+@dataclasses.dataclass
+class CodeRange:
+    '''
+    points to a code range within the original code string. both lines and
+    columns are 0-indexed.
+
+    these are used to highlight code fragments in the frontend
+    '''
+    start: CodePosition
+    end: CodePosition
+
+    def __sub__(self, other: CodeRange):
+        '''
+        the range within this CodeRange that doesn't overlap with other
+        '''
+        if self.end < other.start or other.end < self.start:
+            return self
+        new_start = other.end if self.start < other.end else self.start
+        new_end = self.end if self.end < other.end else other.end
+        return CodeRange(new_start, new_end)
+
+    def __mod__(self, pos: CodePosition):
+        '''self % pos is the range relative to the starting line of pos'''
+        return CodeRange(self.start % pos, self.end % pos)
+
+
+NULL_LOC = CodeRange(CodePosition(-999, -999), CodePosition(-999, -999))
 
 IndexPair = t.Tuple[Label, Label]
 

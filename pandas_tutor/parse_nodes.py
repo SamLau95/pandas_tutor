@@ -8,6 +8,8 @@ import json
 import typing as t
 from dataclasses import field
 
+from .util import NULL_LOC, CodeRange
+
 # Use a distinct type to distinguish between strings that can be eval'd
 RawCode = t.NewType('RawCode', str)
 
@@ -20,21 +22,10 @@ class _ParseTreeEncoder(json.JSONEncoder):
 
 
 @dataclasses.dataclass
-class CodePosition:
-    '''
-    points to a location within the original code string. both lines and
-    columns are 0-indexed
-    '''
-    line: int
-    ch: int
-
-
-@dataclasses.dataclass
 class Base:
     type_: str = field(init=False, repr=False)
     code: RawCode
-    start: CodePosition
-    end: CodePosition
+    location: CodeRange
 
     def __post_init__(self):
         self.type_ = self.__class__.__name__
@@ -202,7 +193,7 @@ class AggCall(Base):
 
     @classmethod
     def from_passthrough_call(cls, call: PassThroughCall):
-        return cls(code=call.code, start=call.start, end=call.end)
+        return cls(code=call.code, location=call.location)
 
 
 @dataclasses.dataclass
@@ -301,8 +292,6 @@ SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
 # Errors
 ##############################################################################
 
-_dummy_code_position = CodePosition(-999, -999)
-
 
 @dataclasses.dataclass
 class EvalError(Base):
@@ -310,7 +299,7 @@ class EvalError(Base):
     # TODO: compute code positions for errors
     @classmethod
     def from_code(cls, code: RawCode):
-        return cls(code, start=_dummy_code_position, end=_dummy_code_position)
+        return cls(code, location=NULL_LOC)
 
 
 ##############################################################################
