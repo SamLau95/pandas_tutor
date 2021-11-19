@@ -15,6 +15,19 @@ import pandas as pd
 from .util import CodeRange, Labels, Label
 
 
+@dataclasses.dataclass
+class OutputSpec:
+    '''the final object we'll make into JSON'''
+    code: str
+    explanation: Explanation
+
+    def to_json(self):
+        return json.dumps(self,
+                          indent=2,
+                          default=encode_pd_objs,
+                          ignore_nan=True)
+
+
 def _diagram_as_dict(dclass):
     '''pass into dataclasses.asdict to rename from_ to from'''
     res = dict(dclass)
@@ -57,17 +70,6 @@ class Diagram:
     # data, like series or groupbys
     data_frame: DataPair
 
-    def to_dict(self):
-        return dataclasses.asdict(self, dict_factory=_diagram_as_dict)
-
-    # a bit clunky since we'll also use this for ErrorOutput, but :shrug:
-    @classmethod
-    def to_json(cls, items: t.Any):
-        return json.dumps(items,
-                          indent=2,
-                          default=encode_pd_objs,
-                          ignore_nan=True)
-
 
 @dataclasses.dataclass
 class ErrorOutput:
@@ -75,8 +77,15 @@ class ErrorOutput:
     code_step: str
     message: str
 
-    def to_dict(self):
-        return dataclasses.asdict(self, dict_factory=_diagram_as_dict)
+
+@dataclasses.dataclass
+class SyntaxErrorOutput(ErrorOutput):
+    type: str = field(default='SyntaxErrorOutput', init=False, repr=False)
+
+
+@dataclasses.dataclass
+class RuntimeErrorOutput(ErrorOutput):
+    type: str = field(default='RuntimeErrorOutput', init=False, repr=False)
 
 
 Explanation = t.List[t.Union[Diagram, ErrorOutput]]

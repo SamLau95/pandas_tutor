@@ -1,110 +1,113 @@
-[
-  {
-    "type": "Subscript",
-    "code_step": "df.loc[:, df.iloc[0] % 2 == 0]",
-    "fragment": {
-      "start": {
-        "line": 0,
-        "ch": 2
+{
+  "code": "# adapted from\n# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html\n# example where a boolean slice happens on the *columns*, not the rows\n\nimport pandas as pd\n\nmydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},\n          {'a': 100, 'b': 200, 'c': 300, 'd': 400},\n          {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000 }]\n\ndf = pd.DataFrame(mydict)\n\ndf.loc[:, df.iloc[0] % 2 == 0]",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "df.loc[:, df.iloc[0] % 2 == 0]",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 30
+        }
       },
-      "end": {
-        "line": 0,
-        "ch": 30
-      }
-    },
-    "mapping": [
-      {
-        "select": "column",
-        "from": {
+      "mapping": [
+        {
+          "select": "column",
+          "from": {
+            "anchor": "lhs",
+            "label": "b"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "b"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "column",
+          "from": {
+            "anchor": "lhs",
+            "label": "d"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "d"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
           "anchor": "lhs",
-          "label": "b"
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": "b"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "column",
-        "from": {
-          "anchor": "lhs",
-          "label": "d"
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": "d"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "anchor": "lhs",
-        "label": 0,
-        "illustrate": "highlight"
-      }
-    ],
-    "data_frame": {
-      "lhs": {
-        "type": "DataFrame",
-        "col_names": [
-          "a",
-          "b",
-          "c",
-          "d"
-        ],
-        "row_labels": [
-          0,
-          1,
-          2
-        ],
-        "data": [
-          [
+          "label": 0,
+          "illustrate": "highlight"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "row_labels": [
+            0,
             1,
-            2,
-            3,
-            4
+            2
           ],
-          [
-            100,
-            200,
-            300,
-            400
-          ],
-          [
-            1000,
-            2000,
-            3000,
-            4000
+          "data": [
+            [
+              1,
+              2,
+              3,
+              4
+            ],
+            [
+              100,
+              200,
+              300,
+              400
+            ],
+            [
+              1000,
+              2000,
+              3000,
+              4000
+            ]
           ]
-        ]
-      },
-      "rhs": {
-        "type": "DataFrame",
-        "col_names": [
-          "b",
-          "d"
-        ],
-        "row_labels": [
-          0,
-          1,
-          2
-        ],
-        "data": [
-          [
-            2,
-            4
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "b",
+            "d"
           ],
-          [
-            200,
-            400
+          "row_labels": [
+            0,
+            1,
+            2
           ],
-          [
-            2000,
-            4000
+          "data": [
+            [
+              2,
+              4
+            ],
+            [
+              200,
+              400
+            ],
+            [
+              2000,
+              4000
+            ]
           ]
-        ]
+        }
       }
     }
-  }
-]
+  ]
+}

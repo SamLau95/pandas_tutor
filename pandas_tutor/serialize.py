@@ -11,10 +11,12 @@ import typing as t
 from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
                       Explanation, Group, GroupBySpec, GroupData, ImageSpec,
-                      SeriesGroupBySpec, SeriesSpec, UnhandledData)
+                      RuntimeErrorOutput, SeriesGroupBySpec, SeriesSpec,
+                      SyntaxErrorOutput, UnhandledData)
 from .marks import make_marks
 from .run import (DFResult, EvalResult, GroupbyResult, ImageResult,
-                  RuntimeErrorResult, SeriesGroupbyResult, SeriesResult)
+                  RuntimeErrorResult, SeriesGroupbyResult, SeriesResult,
+                  SyntaxErrorResult)
 
 T = t.TypeVar('T')
 
@@ -26,7 +28,12 @@ def serialize(results: t.List[EvalResult]) -> Explanation:
         # happens when user inputs `df` without a function call, or when
         # error happens in setup code
         result = results[0]
-        if isinstance(result, RuntimeErrorResult):
+        if isinstance(result, SyntaxErrorResult):
+            return [
+                SyntaxErrorOutput(code_step=result.step.code,
+                                  message=result.step.error_msg)
+            ]
+        elif isinstance(result, RuntimeErrorResult):
             error_output = serialize_error(result)
             return [error_output]
         # TODO: handle case where chain is just single element
@@ -36,16 +43,11 @@ def serialize(results: t.List[EvalResult]) -> Explanation:
     ]
 
 
-def serialize_to_json(results: t.List[EvalResult]) -> str:
-    diagrams = serialize(results)
-    return Diagram.to_json(diagrams)
-
-
-def serialize_error(result: RuntimeErrorResult) -> ErrorOutput:
+def serialize_error(result: RuntimeErrorResult) -> RuntimeErrorOutput:
     tb = TracebackException.from_exception(result.val)
     # get error message from last stack frame
     message = list(tb.format_exception_only())[-1]
-    return ErrorOutput(code_step=result.step.code, message=message)
+    return RuntimeErrorOutput(code_step=result.step.code, message=message)
 
 
 def serialize_one_step(before: EvalResult,

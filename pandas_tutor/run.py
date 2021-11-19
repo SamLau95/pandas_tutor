@@ -14,8 +14,9 @@ import pandas as pd
 
 from . import util
 from .parse_nodes import (AggCall, ChainStatement, ChainStep, CodeRange,
-                          EvalError, ParsedModule, PassThroughCall, RawCode,
-                          Subscript, NULL_LOC)
+                          EvalError, ParseResult, ParseSyntaxError,
+                          ParsedModule, PassThroughCall, RawCode, Subscript,
+                          NULL_LOC)
 
 # technically args can be anything...but most of the time it'll be labels
 Arg = t.Union[str, t.List[str]]
@@ -63,6 +64,12 @@ class ImageResult(EvalResult):
 
 
 @dataclasses.dataclass
+class SyntaxErrorResult(EvalResult):
+    step: ParseSyntaxError
+    val: None
+
+
+@dataclasses.dataclass
 class RuntimeErrorResult(EvalResult):
     val: Exception
 
@@ -74,7 +81,15 @@ class UnhandledResult(EvalResult):
 
 
 # TODO: handle stdout and stderr from user code
-def run(root: ParsedModule) -> t.List[EvalResult]:
+def run(root: ParseResult) -> t.List[EvalResult]:
+    if isinstance(root, ParseSyntaxError):
+        return [
+            SyntaxErrorResult(step=root,
+                              fragment=root.location,
+                              args={},
+                              val=None)
+        ]
+
     statements = root.statements
 
     # hard-code the last one!
