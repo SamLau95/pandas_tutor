@@ -2,6 +2,16 @@
   {
     "type": "Subscript",
     "code_step": "(dogs.loc[:, 'food_cost'])",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 5
+      },
+      "end": {
+        "line": 0,
+        "ch": 25
+      }
+    },
     "mapping": [
       {
         "select": "column",

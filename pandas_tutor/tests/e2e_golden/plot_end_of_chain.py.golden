@@ -2,6 +2,16 @@
   {
     "type": "GroupByCall",
     "code_step": "dogs\n .groupby('size')",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 5
+      },
+      "end": {
+        "line": 1,
+        "ch": 17
+      }
+    },
     "mapping": [
       {
         "select": "column",
@@ -191,6 +201,16 @@
   {
     "type": "AggCall",
     "code_step": "dogs\n .groupby('size')\n .mean()",
+    "fragment": {
+      "start": {
+        "line": 1,
+        "ch": 17
+      },
+      "end": {
+        "line": 2,
+        "ch": 8
+      }
+    },
     "mapping": [
       {
         "select": "row",
@@ -410,6 +430,16 @@
   {
     "type": "PassThroughCall",
     "code_step": "(dogs\n .groupby('size')\n .mean()\n .plot(kind='bar')\n)",
+    "fragment": {
+      "start": {
+        "line": 2,
+        "ch": 8
+      },
+      "end": {
+        "line": 3,
+        "ch": 18
+      }
+    },
     "mapping": [],
     "data_frame": {
       "lhs": {

@@ -23,11 +23,11 @@ import libcst.matchers as m
 import libcst.metadata as cstm
 
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStatement,
-                          CodePosition, GroupByCall, HeadCall, ParsedModule,
-                          ParseError, PassThroughCall, RawCode, RenameCall,
-                          SortValuesCall, StartOfChain, SubsComparison,
-                          Subscript, SubscriptEl, SubsEval, SubsSlice,
-                          TailCall, VerbatimStatement)
+                          GroupByCall, HeadCall, ParsedModule, ParseError,
+                          PassThroughCall, RawCode, RenameCall, SortValuesCall,
+                          StartOfChain, SubsComparison, Subscript, SubscriptEl,
+                          SubsEval, SubsSlice, TailCall, VerbatimStatement)
+from .util import CodePosition, CodeRange
 
 T = t.TypeVar('T')
 
@@ -39,8 +39,7 @@ def parse(code: str) -> t.Union[ParsedModule, ParseError]:
         pos = CodePosition(e.editor_line - 1, e.editor_column)
         return ParseError(code=RawCode(code),
                           error_msg=str(e),
-                          start=pos,
-                          end=pos)
+                          location=CodeRange(pos, pos))
 
     with_meta = cstm.MetadataWrapper(tree)
     sam = PandasParser()
@@ -461,20 +460,19 @@ class PandasParser(m.MatcherDecoratableVisitor):
     def code_for(self, cst_node):
         return RawCode(self.cst_root.code_for_node(cst_node))
 
-    def make_positions(self, cst_node) -> t.Tuple[CodePosition, CodePosition]:
+    def location(self, cst_node) -> CodeRange:
         meta = t.cast(cstm.CodeRange,
                       self.get_metadata(cstm.PositionProvider, cst_node))
 
         # subtract 1 from line to make everything 0-indexed
-        return (
-            CodePosition(line=meta.start.line - 1, ch=meta.start.column),
-            CodePosition(line=meta.end.line - 1, ch=meta.end.column),
-        )
+        start = CodePosition(line=meta.start.line - 1, ch=meta.start.column)
+        end = CodePosition(line=meta.end.line - 1, ch=meta.end.column)
+        return CodeRange(start, end)
 
     def make_node(self, cls: t.Type[T], cst_node: cst.CSTNode, **kwargs) -> T:
         code = self.code_for(cst_node)
-        start, end = self.make_positions(cst_node)
-        return cls(code=code, start=start, end=end, **kwargs)  # type: ignore
+        location = self.location(cst_node)
+        return cls(code=code, location=location, **kwargs)  # type: ignore
 
 
 whitespace = (m.Comment() | m.EmptyLine() | m.Newline()

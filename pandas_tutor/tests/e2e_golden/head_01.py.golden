@@ -2,6 +2,16 @@
   {
     "type": "HeadCall",
     "code_step": "dogs.head(3)",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 12
+      }
+    },
     "mapping": [
       {
         "select": "row",

@@ -1,6 +1,8 @@
 '''
 utilities
 '''
+from __future__ import annotations
+import dataclasses
 import io
 import base64
 import gzip
@@ -13,11 +15,73 @@ import pandas as pd
 from pandas.core.groupby.generic import (DataFrameGroupBy, SeriesGroupBy)
 from pandas.core.groupby.groupby import GroupBy
 
-from .diagram import Label, Labels
+# technically dataframe labels can be all sorts of things...
+# TODO: handle other index dtypes
+Label = t.Union[int, str]
+Labels = t.Union[t.List[int], t.List[str]]
 
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
+
+
+@dataclasses.dataclass
+class CodePosition:
+    '''
+    points to a location within the original code string. both lines and
+    columns are 0-indexed
+    '''
+    line: int
+    ch: int
+
+    def __mod__(self, other: CodePosition):
+        '''self % other is the position relative to other.line'''
+        return CodePosition(self.line - other.line, self.ch)
+
+    def __lt__(self, other: CodePosition):
+        return self.line < other.line or self.ch < other.ch
+
+    def __gt__(self, other: CodePosition):
+        return self.line > other.line or self.ch > other.ch
+
+
+@dataclasses.dataclass
+class CodeRange:
+    '''
+    points to a code range within the original code string. both lines and
+    columns are 0-indexed.
+
+    these are used to highlight code fragments in the frontend
+    '''
+    start: CodePosition
+    end: CodePosition
+
+    def __sub__(self, other: CodeRange):
+        '''
+        a range within this CodeRange that doesn't overlap with other. similar
+        to set difference. assumes other isn't entirely contained within self,
+        and vice versa
+        '''
+        # non-overlapping
+        if self.end < other.start or other.end < self.start:
+            return self
+
+        # cut off left tail, common case
+        if self.end > other.end:
+            return CodeRange(other.end, self.end)
+
+        # cut off right tail
+        if self.start < other.start:
+            return CodeRange(self.start, other.start)
+
+        return self
+
+    def __mod__(self, pos: CodePosition):
+        '''self % pos is the range relative to the starting line of pos'''
+        return CodeRange(self.start % pos, self.end % pos)
+
+
+NULL_LOC = CodeRange(CodePosition(-999, -999), CodePosition(-999, -999))
 
 IndexPair = t.Tuple[Label, Label]
 

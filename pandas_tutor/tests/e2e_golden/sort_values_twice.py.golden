@@ -2,6 +2,16 @@
   {
     "type": "SortValuesCall",
     "code_step": "df.sort_values('Name')",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 2
+      },
+      "end": {
+        "line": 0,
+        "ch": 22
+      }
+    },
     "mapping": [
       {
         "select": "column",
@@ -302,6 +312,16 @@
   {
     "type": "SortValuesCall",
     "code_step": "df.sort_values('Name').sort_values('Count')",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 22
+      },
+      "end": {
+        "line": 0,
+        "ch": 43
+      }
+    },
     "mapping": [
       {
         "select": "column",

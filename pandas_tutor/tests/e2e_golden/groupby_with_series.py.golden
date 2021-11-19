@@ -2,6 +2,16 @@
   {
     "type": "GroupByCall",
     "code_step": "pm.groupby(months)",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 2
+      },
+      "end": {
+        "line": 0,
+        "ch": 18
+      }
+    },
     "mapping": [
       {
         "select": "column",
@@ -183,6 +193,16 @@
   {
     "type": "AggCall",
     "code_step": "pm.groupby(months).mean()",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 18
+      },
+      "end": {
+        "line": 0,
+        "ch": 25
+      }
+    },
     "mapping": [
       {
         "select": "row",

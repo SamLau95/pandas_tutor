@@ -2,6 +2,16 @@
   {
     "type": "AssignCall",
     "code_step": "(dogs\n .assign(test='hello world')\n)",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 5
+      },
+      "end": {
+        "line": 1,
+        "ch": 28
+      }
+    },
     "mapping": [
       {
         "select": "column",

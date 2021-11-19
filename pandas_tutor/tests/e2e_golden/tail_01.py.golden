@@ -2,6 +2,16 @@
   {
     "type": "TailCall",
     "code_step": "dogs.tail(2)",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 12
+      }
+    },
     "mapping": [
       {
         "select": "row",

@@ -2,6 +2,16 @@
   {
     "type": "AssignCall",
     "code_step": "(dogs.assign(daily=lambda df: df['food_cost'] * 30,\n             yearly=lambda df: df['daily'] / 365,\n             s=dogs['size'].str[0]))",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 5
+      },
+      "end": {
+        "line": 2,
+        "ch": 35
+      }
+    },
     "mapping": [
       {
         "select": "column",

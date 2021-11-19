@@ -2,6 +2,16 @@
   {
     "type": "SortValuesCall",
     "code_step": "dogs.sort_values('kids')",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 24
+      }
+    },
     "mapping": [
       {
         "select": "column",
@@ -240,6 +250,16 @@
   {
     "type": "Subscript",
     "code_step": "dogs.sort_values('kids').loc[0:6]",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 24
+      },
+      "end": {
+        "line": 0,
+        "ch": 33
+      }
+    },
     "mapping": [
       {
         "select": "row",

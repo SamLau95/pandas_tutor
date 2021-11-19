@@ -12,10 +12,7 @@ import typing as t
 import numpy as np
 import pandas as pd
 
-# technically dataframe labels can be all sorts of things...
-# TODO: handle other index dtypes
-Label = t.Union[int, str]
-Labels = t.Union[t.List[int], t.List[str]]
+from .util import CodeRange, Labels, Label
 
 
 def _diagram_as_dict(dclass):
@@ -53,6 +50,7 @@ def encode_pd_objs(obj: t.Any):
 class Diagram:
     type: str
     code_step: str
+    fragment: CodeRange
     mapping: t.List[Mark]
 
     # although we call this data_frame, technically it can hold any type of

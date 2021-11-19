@@ -2,6 +2,16 @@
   {
     "type": "Subscript",
     "code_step": "df.iloc[2:5, 1:4]",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 2
+      },
+      "end": {
+        "line": 0,
+        "ch": 17
+      }
+    },
     "mapping": [
       {
         "select": "column",
