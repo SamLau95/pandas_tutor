@@ -12,12 +12,7 @@ import typing as t
 import numpy as np
 import pandas as pd
 
-from .util import CodeRange
-
-# technically dataframe labels can be all sorts of things...
-# TODO: handle other index dtypes
-Label = t.Union[int, str]
-Labels = t.Union[t.List[int], t.List[str]]
+from .util import CodeRange, Labels, Label
 
 
 def _diagram_as_dict(dclass):

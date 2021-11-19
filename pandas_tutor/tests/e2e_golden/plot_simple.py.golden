@@ -2,6 +2,16 @@
   {
     "type": "PassThroughCall",
     "code_step": "dogs.plot()",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 11
+      }
+    },
     "mapping": [],
     "data_frame": {
       "lhs": {

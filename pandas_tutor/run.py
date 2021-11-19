@@ -32,7 +32,7 @@ serializable_errors = (ArithmeticError, AttributeError, ImportError,
 class EvalBase:
     step: ChainStep
     # location of fragment to highlight, relative to the entire expression
-    relative_loc: CodeRange
+    fragment: CodeRange
     args: Args
 
 
@@ -99,7 +99,7 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
         return [
             RuntimeErrorResult(
                 step=step,
-                relative_loc=step.location,
+                fragment=step.location,
                 args={},
                 val=error,
             )
@@ -110,7 +110,7 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
     last_val: t.Any = None
     eval_results: t.List[EvalResult] = []
     for step in last_expr.chain:
-        relative_loc = (step.location - last_location) % relative_to
+        fragment = (step.location - last_location) % relative_to
 
         try:
             # wrap individual steps in parens before eval since subexpressions
@@ -121,24 +121,25 @@ def run(root: ParsedModule) -> t.List[EvalResult]:
             step = EvalError.from_code(step.code)
             err_result = RuntimeErrorResult(
                 step=step,
-                relative_loc=relative_loc,
+                fragment=fragment,
                 args={},
                 val=error,
             )
             eval_results.append(err_result)
             break
 
-        result = make_result(step, relative_loc, args, val, last_val)
+        result = make_result(step, fragment, args, val, last_val)
         eval_results.append(result)
         last_val = val
+        last_location = step.location
 
     return eval_results
 
 
 # need the last_val for the special case where we have an agg that doesn't show
 # up immediately after a groupby, like dogs.groupby(...)['...'].mean().
-def make_result(step: ChainStep, relative_loc: CodeRange, args: Args,
-                val: t.Any, last_val: t.Any) -> EvalResult:
+def make_result(step: ChainStep, fragment: CodeRange, args: Args, val: t.Any,
+                last_val: t.Any) -> EvalResult:
     if (isinstance(step, PassThroughCall)
             and isinstance(last_val,
                            (util.DataFrameGroupBy, util.SeriesGroupBy))
@@ -146,17 +147,17 @@ def make_result(step: ChainStep, relative_loc: CodeRange, args: Args,
         step = AggCall.from_passthrough_call(step)
 
     if isinstance(val, util.DataFrameGroupBy):
-        return GroupbyResult(step, relative_loc, args, val)
+        return GroupbyResult(step, fragment, args, val)
     elif isinstance(val, util.SeriesGroupBy):
-        return SeriesGroupbyResult(step, relative_loc, args, val)
+        return SeriesGroupbyResult(step, fragment, args, val)
     elif isinstance(val, pd.DataFrame):
-        return DFResult(step, relative_loc, args, val)
+        return DFResult(step, fragment, args, val)
     elif isinstance(val, pd.Series):
-        return SeriesResult(step, relative_loc, args, val)
+        return SeriesResult(step, fragment, args, val)
     elif util.is_plottable(val):
-        return ImageResult(step, relative_loc, args, val)
+        return ImageResult(step, fragment, args, val)
     else:
-        return UnhandledResult(step, relative_loc, args, val)
+        return UnhandledResult(step, fragment, args, val)
 
 
 def setup_user_globals():

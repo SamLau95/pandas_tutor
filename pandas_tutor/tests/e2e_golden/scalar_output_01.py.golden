@@ -2,6 +2,16 @@
   {
     "type": "Subscript",
     "code_step": "dogs['food_cost']",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 17
+      }
+    },
     "mapping": [
       {
         "select": "column",
@@ -107,6 +117,16 @@
   {
     "type": "PassThroughCall",
     "code_step": "dogs['food_cost'].mean()",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 17
+      },
+      "end": {
+        "line": 0,
+        "ch": 24
+      }
+    },
     "mapping": [],
     "data_frame": {
       "lhs": {

@@ -2,6 +2,16 @@
   {
     "type": "GroupByCall",
     "code_step": "dogs\n .groupby('size')",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 5
+      },
+      "end": {
+        "line": 1,
+        "ch": 17
+      }
+    },
     "mapping": [
       {
         "select": "column",
@@ -191,6 +201,16 @@
   {
     "type": "Subscript",
     "code_step": "dogs\n .groupby('size')\n ['food_cost']",
+    "fragment": {
+      "start": {
+        "line": 1,
+        "ch": 17
+      },
+      "end": {
+        "line": 2,
+        "ch": 14
+      }
+    },
     "mapping": [],
     "data_frame": {
       "lhs": {
@@ -359,6 +379,16 @@
   {
     "type": "AggCall",
     "code_step": "(dogs\n .groupby('size')\n ['food_cost']\n .mean()\n)",
+    "fragment": {
+      "start": {
+        "line": 2,
+        "ch": 14
+      },
+      "end": {
+        "line": 3,
+        "ch": 8
+      }
+    },
     "mapping": [
       {
         "select": "row",

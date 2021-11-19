@@ -2,6 +2,16 @@
   {
     "type": "RenameCall",
     "code_step": "dogs.rename(columns={'breed': 'b', 'food_cost': 'cost'})",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 56
+      }
+    },
     "mapping": [
       {
         "select": "column",

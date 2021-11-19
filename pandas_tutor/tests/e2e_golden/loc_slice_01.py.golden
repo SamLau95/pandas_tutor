@@ -2,6 +2,16 @@
   {
     "type": "Subscript",
     "code_step": "df.loc[1:5, ['Name', 'Count']]",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 2
+      },
+      "end": {
+        "line": 0,
+        "ch": 30
+      }
+    },
     "mapping": [
       {
         "select": "column",

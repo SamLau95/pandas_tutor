@@ -2,6 +2,16 @@
   {
     "type": "RenameCall",
     "code_step": "dogs.rename(columns=renamer)",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 4
+      },
+      "end": {
+        "line": 0,
+        "ch": 28
+      }
+    },
     "mapping": [],
     "data_frame": {
       "lhs": {

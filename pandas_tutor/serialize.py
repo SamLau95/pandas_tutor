@@ -65,6 +65,7 @@ def serialize_one_step(before: EvalResult,
 
     return Diagram(type=step.type_,
                    code_step=step.code,
+                   fragment=after.fragment,
                    mapping=marks,
                    data_frame=df_pair)
 

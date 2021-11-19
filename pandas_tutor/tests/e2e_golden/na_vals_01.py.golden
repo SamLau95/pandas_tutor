@@ -2,6 +2,16 @@
   {
     "type": "SortValuesCall",
     "code_step": "df2.sort_values('two')",
+    "fragment": {
+      "start": {
+        "line": 0,
+        "ch": 3
+      },
+      "end": {
+        "line": 0,
+        "ch": 22
+      }
+    },
     "mapping": [
       {
         "select": "column",

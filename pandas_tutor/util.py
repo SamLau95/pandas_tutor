@@ -15,7 +15,10 @@ import pandas as pd
 from pandas.core.groupby.generic import (DataFrameGroupBy, SeriesGroupBy)
 from pandas.core.groupby.groupby import GroupBy
 
-from .diagram import Label, Labels
+# technically dataframe labels can be all sorts of things...
+# TODO: handle other index dtypes
+Label = t.Union[int, str]
+Labels = t.Union[t.List[int], t.List[str]]
 
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
@@ -38,6 +41,9 @@ class CodePosition:
     def __lt__(self, other: CodePosition):
         return self.line < other.line or self.ch < other.ch
 
+    def __gt__(self, other: CodePosition):
+        return self.line > other.line or self.ch > other.ch
+
 
 @dataclasses.dataclass
 class CodeRange:
@@ -52,13 +58,23 @@ class CodeRange:
 
     def __sub__(self, other: CodeRange):
         '''
-        the range within this CodeRange that doesn't overlap with other
+        a range within this CodeRange that doesn't overlap with other. similar
+        to set difference. assumes other isn't entirely contained within self,
+        and vice versa
         '''
+        # non-overlapping
         if self.end < other.start or other.end < self.start:
             return self
-        new_start = other.end if self.start < other.end else self.start
-        new_end = self.end if self.end < other.end else other.end
-        return CodeRange(new_start, new_end)
+
+        # cut off left tail, common case
+        if self.end > other.end:
+            return CodeRange(other.end, self.end)
+
+        # cut off right tail
+        if self.start < other.start:
+            return CodeRange(self.start, other.start)
+
+        return self
 
     def __mod__(self, pos: CodePosition):
         '''self % pos is the range relative to the starting line of pos'''
