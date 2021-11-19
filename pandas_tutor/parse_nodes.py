@@ -39,16 +39,6 @@ class Base:
 
 
 @dataclasses.dataclass
-class ParseError(Base):
-    '''
-    represents an error in parsing. when this happens, we should pass along the
-    error for serializing. we don't run the code since libcst produces nicer
-    error messages compared to Python
-    '''
-    error_msg: str
-
-
-@dataclasses.dataclass
 class ParsedModule(Base):
     '''root of parse tree'''
     statements: t.List[Statement]
@@ -302,9 +292,22 @@ SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
 
 
 @dataclasses.dataclass
+class ParseSyntaxError(ChainStep):
+    '''
+    represents an error in parsing. when this happens, we should pass along the
+    error for serializing. we don't run the code since libcst produces nicer
+    error messages compared to Python
+    '''
+    error_msg: str
+
+
+@dataclasses.dataclass
 class EvalError(ChainStep):
     '''represents a step in the chain that caused a runtime error'''
     # TODO: compute code positions for errors
     @classmethod
     def from_code(cls, code: RawCode):
         return cls(code, location=NULL_LOC)
+
+
+ParseResult = t.Union[ParsedModule, ParseSyntaxError]

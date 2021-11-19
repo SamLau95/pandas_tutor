@@ -1,206 +1,209 @@
-[
-  {
-    "type": "SortValuesCall",
-    "code_step": "df2.sort_values('two')",
-    "fragment": {
-      "start": {
-        "line": 0,
-        "ch": 3
-      },
-      "end": {
-        "line": 0,
-        "ch": 22
-      }
-    },
-    "mapping": [
-      {
-        "select": "column",
-        "anchor": "rhs",
-        "label": "two",
-        "illustrate": "highlight"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": "a"
+{
+  "code": "# tests that all nullish values are serialized to JSON null\n# adapted from https://pandas.pydata.org/docs/user_guide/missing_data.html\nimport pandas as pd\nimport numpy as np\n\nnp.random.seed(42)\n\ndf = pd.DataFrame(\n    np.random.randn(5, 3),\n    index=[\"a\", \"c\", \"e\", \"f\", \"h\"],\n    columns=[\"one\", \"two\", \"three\"],\n)\ndf[\"four\"] = \"bar\"\ndf[\"five\"] = df[\"one\"] > 0\n\ndf2 = df.copy()\ndf2[\"timestamp\"] = pd.Timestamp(\"20120101\")\ndf2.loc[[\"a\", \"c\", \"h\"], [\"one\", \"timestamp\"]] = np.nan\n\n# >>> df2\n#         one       two     three four   five  timestamp\n# a       NaN -0.282863 -1.509059  bar   True        NaT\n# c       NaN  1.212112 -0.173215  bar  False        NaT\n# e  0.119209 -1.044236 -0.861849  bar   True 2012-01-01\n# f -2.104569 -0.494929  1.071804  bar  False 2012-01-01\n# h       NaN -0.706771 -1.039575  bar   True        NaT\n\ndf2.sort_values('two')\n",
+  "explanation": [
+    {
+      "type": "SortValuesCall",
+      "code_step": "df2.sort_values('two')",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 3
         },
-        "to": {
+        "end": {
+          "line": 0,
+          "ch": 22
+        }
+      },
+      "mapping": [
+        {
+          "select": "column",
           "anchor": "rhs",
-          "label": "a"
+          "label": "two",
+          "illustrate": "highlight"
         },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": "c"
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "a"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "a"
+          },
+          "illustrate": "outline"
         },
-        "to": {
-          "anchor": "rhs",
-          "label": "c"
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "c"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "c"
+          },
+          "illustrate": "outline"
         },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": "e"
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "e"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "e"
+          },
+          "illustrate": "outline"
         },
-        "to": {
-          "anchor": "rhs",
-          "label": "e"
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "f"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "f"
+          },
+          "illustrate": "outline"
         },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": "f"
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": "f"
-        },
-        "illustrate": "outline"
-      },
-      {
-        "select": "row",
-        "from": {
-          "anchor": "lhs",
-          "label": "h"
-        },
-        "to": {
-          "anchor": "rhs",
-          "label": "h"
-        },
-        "illustrate": "outline"
-      }
-    ],
-    "data_frame": {
-      "lhs": {
-        "type": "DataFrame",
-        "col_names": [
-          "one",
-          "two",
-          "three",
-          "four",
-          "five",
-          "timestamp"
-        ],
-        "row_labels": [
-          "a",
-          "c",
-          "e",
-          "f",
-          "h"
-        ],
-        "data": [
-          [
-            null,
-            -0.13826430117118466,
-            0.6476885381006925,
-            "bar",
-            true,
-            null
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "h"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "h"
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "timestamp"
           ],
-          [
-            null,
-            -0.23415337472333597,
-            -0.23413695694918055,
-            "bar",
-            true,
-            null
+          "row_labels": [
+            "a",
+            "c",
+            "e",
+            "f",
+            "h"
           ],
-          [
-            1.5792128155073915,
-            0.7674347291529088,
-            -0.4694743859349521,
-            "bar",
-            true,
-            "2012-01-01 00:00:00"
-          ],
-          [
-            0.5425600435859647,
-            -0.46341769281246226,
-            -0.46572975357025687,
-            "bar",
-            true,
-            "2012-01-01 00:00:00"
-          ],
-          [
-            null,
-            -1.913280244657798,
-            -1.7249178325130328,
-            "bar",
-            true,
-            null
+          "data": [
+            [
+              null,
+              -0.13826430117118466,
+              0.6476885381006925,
+              "bar",
+              true,
+              null
+            ],
+            [
+              null,
+              -0.23415337472333597,
+              -0.23413695694918055,
+              "bar",
+              true,
+              null
+            ],
+            [
+              1.5792128155073915,
+              0.7674347291529088,
+              -0.4694743859349521,
+              "bar",
+              true,
+              "2012-01-01 00:00:00"
+            ],
+            [
+              0.5425600435859647,
+              -0.46341769281246226,
+              -0.46572975357025687,
+              "bar",
+              true,
+              "2012-01-01 00:00:00"
+            ],
+            [
+              null,
+              -1.913280244657798,
+              -1.7249178325130328,
+              "bar",
+              true,
+              null
+            ]
           ]
-        ]
-      },
-      "rhs": {
-        "type": "DataFrame",
-        "col_names": [
-          "one",
-          "two",
-          "three",
-          "four",
-          "five",
-          "timestamp"
-        ],
-        "row_labels": [
-          "h",
-          "f",
-          "c",
-          "a",
-          "e"
-        ],
-        "data": [
-          [
-            null,
-            -1.913280244657798,
-            -1.7249178325130328,
-            "bar",
-            true,
-            null
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "timestamp"
           ],
-          [
-            0.5425600435859647,
-            -0.46341769281246226,
-            -0.46572975357025687,
-            "bar",
-            true,
-            "2012-01-01 00:00:00"
+          "row_labels": [
+            "h",
+            "f",
+            "c",
+            "a",
+            "e"
           ],
-          [
-            null,
-            -0.23415337472333597,
-            -0.23413695694918055,
-            "bar",
-            true,
-            null
-          ],
-          [
-            null,
-            -0.13826430117118466,
-            0.6476885381006925,
-            "bar",
-            true,
-            null
-          ],
-          [
-            1.5792128155073915,
-            0.7674347291529088,
-            -0.4694743859349521,
-            "bar",
-            true,
-            "2012-01-01 00:00:00"
+          "data": [
+            [
+              null,
+              -1.913280244657798,
+              -1.7249178325130328,
+              "bar",
+              true,
+              null
+            ],
+            [
+              0.5425600435859647,
+              -0.46341769281246226,
+              -0.46572975357025687,
+              "bar",
+              true,
+              "2012-01-01 00:00:00"
+            ],
+            [
+              null,
+              -0.23415337472333597,
+              -0.23413695694918055,
+              "bar",
+              true,
+              null
+            ],
+            [
+              null,
+              -0.13826430117118466,
+              0.6476885381006925,
+              "bar",
+              true,
+              null
+            ],
+            [
+              1.5792128155073915,
+              0.7674347291529088,
+              -0.4694743859349521,
+              "bar",
+              true,
+              "2012-01-01 00:00:00"
+            ]
           ]
-        ]
+        }
       }
     }
-  }
-]
+  ]
+}

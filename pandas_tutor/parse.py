@@ -23,23 +23,24 @@ import libcst.matchers as m
 import libcst.metadata as cstm
 
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStatement,
-                          GroupByCall, HeadCall, ParsedModule, ParseError,
-                          PassThroughCall, RawCode, RenameCall, SortValuesCall,
-                          StartOfChain, SubsComparison, Subscript, SubscriptEl,
-                          SubsEval, SubsSlice, TailCall, VerbatimStatement)
+                          GroupByCall, HeadCall, ParseResult, ParsedModule,
+                          ParseSyntaxError, PassThroughCall, RawCode,
+                          RenameCall, SortValuesCall, StartOfChain,
+                          SubsComparison, Subscript, SubscriptEl, SubsEval,
+                          SubsSlice, TailCall, VerbatimStatement)
 from .util import CodePosition, CodeRange
 
 T = t.TypeVar('T')
 
 
-def parse(code: str) -> t.Union[ParsedModule, ParseError]:
+def parse(code: str) -> ParseResult:
     try:
         tree = cst.parse_module(code)
     except cst.ParserSyntaxError as e:
         pos = CodePosition(e.editor_line - 1, e.editor_column)
-        return ParseError(code=RawCode(code),
-                          error_msg=str(e),
-                          location=CodeRange(pos, pos))
+        return ParseSyntaxError(code=RawCode(code),
+                                error_msg=str(e),
+                                location=CodeRange(pos, pos))
 
     with_meta = cstm.MetadataWrapper(tree)
     sam = PandasParser()
