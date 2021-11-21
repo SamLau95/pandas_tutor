@@ -8,9 +8,6 @@ import base64
 import gzip
 import typing as t
 
-import matplotlib.pyplot as plt
-import matplotlib.figure as figure
-import seaborn as sns
 import pandas as pd
 from pandas.core.groupby.generic import (DataFrameGroupBy, SeriesGroupBy)
 from pandas.core.groupby.groupby import GroupBy
@@ -146,7 +143,8 @@ def grouping_labels(groupby: GroupBy) -> Labels:
 
 
 def is_plottable(obj: t.Any) -> bool:
-    return isinstance(obj, (plt.Axes, figure.Figure, sns.FacetGrid))
+    fig = obj.figure if hasattr(obj, 'figure') else obj
+    return hasattr(fig, 'savefig')
 
 
 def base64_encode_plot(fig_or_axes: t.Any) -> str:
