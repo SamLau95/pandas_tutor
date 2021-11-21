@@ -11,6 +11,7 @@ import typing as t
 from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
                       Explanation, Group, GroupBySpec, GroupData, ImageSpec,
+                      RuntimeErrorInChain, RuntimeErrorInSetup,
                       RuntimeErrorOutput, SeriesGroupBySpec, SeriesSpec,
                       SyntaxErrorOutput, UnhandledData)
 from .marks import make_marks
@@ -29,13 +30,9 @@ def serialize(results: t.List[EvalResult]) -> Explanation:
         # error happens in setup code
         result = results[0]
         if isinstance(result, SyntaxErrorResult):
-            return [
-                SyntaxErrorOutput(code_step=result.step.code,
-                                  message=result.step.error_msg)
-            ]
+            return [SyntaxErrorOutput.from_parse_syntax_error(result.step)]
         elif isinstance(result, RuntimeErrorResult):
-            error_output = serialize_error(result)
-            return [error_output]
+            return [RuntimeErrorInSetup.from_runtime_error_result(result)]
         # TODO: handle case where chain is just single element
         return []
     return [
@@ -43,17 +40,10 @@ def serialize(results: t.List[EvalResult]) -> Explanation:
     ]
 
 
-def serialize_error(result: RuntimeErrorResult) -> RuntimeErrorOutput:
-    tb = TracebackException.from_exception(result.val)
-    # get error message from last stack frame
-    message = list(tb.format_exception_only())[-1]
-    return RuntimeErrorOutput(code_step=result.step.code, message=message)
-
-
 def serialize_one_step(before: EvalResult,
                        after: EvalResult) -> t.Union[Diagram, ErrorOutput]:
     if isinstance(after, RuntimeErrorResult):
-        return serialize_error(after)
+        return RuntimeErrorInChain.from_runtime_error_result(after)
     step = after.step
 
     marks = make_marks(step, before, after)

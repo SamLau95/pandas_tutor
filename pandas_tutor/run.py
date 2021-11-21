@@ -15,8 +15,7 @@ import pandas as pd
 from . import util
 from .parse_nodes import (AggCall, ChainStatement, ChainStep, CodeRange,
                           EvalError, ParseResult, ParseSyntaxError,
-                          ParsedModule, PassThroughCall, RawCode, Subscript,
-                          NULL_LOC)
+                          PassThroughCall, RawCode, Subscript, NULL_LOC)
 
 # technically args can be anything...but most of the time it'll be labels
 Arg = t.Union[str, t.List[str]]
