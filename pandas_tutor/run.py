@@ -93,28 +93,27 @@ def run(root: ParseResult) -> t.List[EvalResult]:
 
     # hard-code the last one!
     setup_stmts, last_expr = statements[:-1], statements[-1]
-    if not isinstance(last_expr, ChainStatement):
-        # don't visualize
-        return []
 
-    # all the code above the last expression
-    setup_code = RawCode('\n'.join([stmt.code for stmt in setup_stmts]))
+    # TODO: return warning when last statement isn't a chain
+    if not isinstance(last_expr, ChainStatement):
+        return []
 
     # now let's run stuff dangerously!
     user_globals = setup_user_globals()
 
-    try:
-        exec(setup_code, user_globals)
-    except serializable_errors as error:
-        step = EvalError.from_code(setup_code)
-        return [
-            RuntimeErrorResult(
-                step=step,
-                fragment=step.location,
-                args={},
-                val=error,
-            )
-        ]
+    for stmt in setup_stmts:
+        try:
+            exec(stmt.code, user_globals)
+        except serializable_errors as error:
+            step = EvalError.from_node(stmt)
+            return [
+                RuntimeErrorResult(
+                    step=step,
+                    fragment=step.location,
+                    args={},
+                    val=error,
+                )
+            ]
 
     relative_to = last_expr.location.start
     last_location = NULL_LOC
@@ -129,7 +128,7 @@ def run(root: ParseResult) -> t.List[EvalResult]:
             val = eval(f"({step.code})", user_globals)
             args = eval_args(step, user_globals)
         except serializable_errors as error:
-            step = EvalError.from_code(step.code)
+            step = EvalError.from_node(step)
             err_result = RuntimeErrorResult(
                 step=step,
                 fragment=fragment,

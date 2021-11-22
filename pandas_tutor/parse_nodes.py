@@ -306,8 +306,8 @@ class EvalError(ChainStep):
     '''represents a step in the chain that caused a runtime error'''
     # TODO: compute code positions for errors
     @classmethod
-    def from_code(cls, code: RawCode):
-        return cls(code, location=NULL_LOC)
+    def from_node(cls, node: Base):
+        return cls(code=node.code, location=node.location)
 
 
 ParseResult = t.Union[ParsedModule, ParseSyntaxError]

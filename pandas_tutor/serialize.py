@@ -3,7 +3,6 @@ serializes run.py outputs into json.
 '''
 
 from __future__ import annotations
-from traceback import TracebackException
 
 import types
 import typing as t
@@ -12,8 +11,8 @@ from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
                       Explanation, Group, GroupBySpec, GroupData, ImageSpec,
                       RuntimeErrorInChain, RuntimeErrorInSetup,
-                      RuntimeErrorOutput, SeriesGroupBySpec, SeriesSpec,
-                      SyntaxErrorOutput, UnhandledData)
+                      SeriesGroupBySpec, SeriesSpec, SyntaxErrorOutput,
+                      UnhandledData)
 from .marks import make_marks
 from .run import (DFResult, EvalResult, GroupbyResult, ImageResult,
                   RuntimeErrorResult, SeriesGroupbyResult, SeriesResult,
