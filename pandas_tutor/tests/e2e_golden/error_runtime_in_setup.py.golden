@@ -2,9 +2,13 @@
   "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(some_random_var_name))\n\n(dogs\n .apply(lambda x: x * 2)\n)\n",
   "explanation": [
     {
-      "type": "RuntimeErrorOutput",
-      "code_step": "import pandas as pd\nimport io\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\ndogs = pd.read_csv(io.StringIO(some_random_var_name))",
-      "message": "NameError: name 'some_random_var_name' is not defined\n"
+      "type": "RuntimeErrorInSetup",
+      "code_step": "dogs = pd.read_csv(io.StringIO(some_random_var_name))",
+      "message": "NameError: name 'some_random_var_name' is not defined\n",
+      "location": {
+        "line": 14,
+        "ch": 0
+      }
     }
   ]
 }

@@ -250,9 +250,13 @@
       }
     },
     {
-      "type": "RuntimeErrorOutput",
+      "type": "RuntimeErrorInChain",
       "code_step": "(dogs\n .sort_values('kids')\n .loc[:, ['not_a_column']]\n)",
-      "message": "KeyError: \"None of [Index(['not_a_column'], dtype='object')] are in the [columns]\"\n"
+      "message": "KeyError: \"None of [Index(['not_a_column'], dtype='object')] are in the [columns]\"\n",
+      "location": {
+        "line": 1,
+        "ch": 21
+      }
     }
   ]
 }

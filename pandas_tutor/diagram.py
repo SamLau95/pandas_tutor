@@ -5,14 +5,17 @@ has dataclass definitions for final JSON output.
 from __future__ import annotations
 
 import dataclasses
-from dataclasses import field
-import simplejson as json
+from traceback import TracebackException
 import typing as t
+from dataclasses import field
 
 import numpy as np
 import pandas as pd
+import simplejson as json
 
-from .util import CodeRange, Labels, Label
+from .parse_nodes import ParseSyntaxError
+from .run import RuntimeErrorResult
+from .util import CodePosition, CodeRange, Label, Labels
 
 
 @dataclasses.dataclass
@@ -76,16 +79,42 @@ class ErrorOutput:
     type: str = field(default='ErrorOutput', init=False, repr=False)
     code_step: str
     message: str
+    location: CodePosition
 
 
 @dataclasses.dataclass
 class SyntaxErrorOutput(ErrorOutput):
     type: str = field(default='SyntaxErrorOutput', init=False, repr=False)
 
+    @classmethod
+    def from_parse_syntax_error(cls, err: ParseSyntaxError):
+        return cls(code_step=err.code,
+                   message=err.error_msg,
+                   location=err.location.start)
+
 
 @dataclasses.dataclass
 class RuntimeErrorOutput(ErrorOutput):
     type: str = field(default='RuntimeErrorOutput', init=False, repr=False)
+
+    @classmethod
+    def from_runtime_error_result(cls, result: RuntimeErrorResult):
+        tb = TracebackException.from_exception(result.val)
+        # get error message from last stack frame
+        message = list(tb.format_exception_only())[-1]
+        return cls(code_step=result.step.code,
+                   message=message,
+                   location=result.fragment.start)
+
+
+@dataclasses.dataclass
+class RuntimeErrorInSetup(RuntimeErrorOutput):
+    type: str = field(default='RuntimeErrorInSetup', init=False, repr=False)
+
+
+@dataclasses.dataclass
+class RuntimeErrorInChain(RuntimeErrorOutput):
+    type: str = field(default='RuntimeErrorInChain', init=False, repr=False)
 
 
 Explanation = t.List[t.Union[Diagram, ErrorOutput]]
