@@ -5,9 +5,15 @@
       "type": "RuntimeErrorInSetup",
       "code_step": "dogs = pd.read_csv(io.StringIO(some_random_var_name))",
       "message": "NameError: name 'some_random_var_name' is not defined\n",
-      "location": {
-        "line": 14,
-        "ch": 0
+      "fragment": {
+        "start": {
+          "line": 14,
+          "ch": 0
+        },
+        "end": {
+          "line": 14,
+          "ch": 53
+        }
       }
     }
   ]

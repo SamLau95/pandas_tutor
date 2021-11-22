@@ -3,11 +3,17 @@
   "explanation": [
     {
       "type": "RuntimeErrorInChain",
-      "code_step": "dogs\n .loc[:, ['not_a_column']]",
+      "code_step": "(dogs\n .loc[:, ['not_a_column']]\n .sort_values('kids')\n)",
       "message": "KeyError: \"None of [Index(['not_a_column'], dtype='object')] are in the [columns]\"\n",
-      "location": {
-        "line": 0,
-        "ch": 5
+      "fragment": {
+        "start": {
+          "line": 1,
+          "ch": 1
+        },
+        "end": {
+          "line": 1,
+          "ch": 26
+        }
       }
     }
   ]

@@ -198,7 +198,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         if self.current is not None and len(self.current.chain) > 1:
             last = self.current.chain[-1]
             if isinstance(last, GroupByCall):
-                node = self.make_node(AggCall, cst_node)
+                node = self.make_call_node(AggCall, cst_node)
                 self.current.chain.append(node)
                 return
 
@@ -213,7 +213,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         assert self.current is not None, (
             'tried to call fallback when not in a chain!')
         fn_name = cst_node.func.attr.value
-        node = self.make_node(PassThroughCall, cst_node, fn_name=fn_name)
+        node = self.make_call_node(PassThroughCall, cst_node, fn_name=fn_name)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
@@ -234,10 +234,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
         axis = (make_axis(self.code_for(axis_arg.value))
                 if axis_arg is not None else 'index')
 
-        node = self.make_node(SortValuesCall,
-                              cst_node,
-                              label_expr=label_expr,
-                              axis=axis)
+        node = self.make_call_node(SortValuesCall,
+                                   cst_node,
+                                   label_expr=label_expr,
+                                   axis=axis)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
@@ -264,10 +264,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
             self.fallback_call(cst_node)
             return
 
-        node = self.make_node(RenameCall,
-                              cst_node,
-                              mapping_expr=self.code_for(mapper.value),
-                              axis=axis)
+        node = self.make_call_node(RenameCall,
+                                   cst_node,
+                                   mapping_expr=self.code_for(mapper.value),
+                                   axis=axis)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
@@ -276,8 +276,8 @@ class PandasParser(m.MatcherDecoratableVisitor):
         assert self.current is not None, (
             'tried to call make_head_or_tail when not in a chain!')
         name = fn_name(cst_node)
-        node = self.make_node(HeadCall if name == 'head' else TailCall,
-                              cst_node)
+        node = self.make_call_node(HeadCall if name == 'head' else TailCall,
+                                   cst_node)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
@@ -291,7 +291,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         axis = 'index'  # default
         if axis_arg is not None:
             axis = make_axis(self.code_for(axis_arg.value))
-        node = self.make_node(ApplyCall, cst_node, axis=axis)
+        node = self.make_call_node(ApplyCall, cst_node, axis=axis)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
@@ -305,9 +305,9 @@ class PandasParser(m.MatcherDecoratableVisitor):
             if arg.keyword is not None
         ]
 
-        node = self.make_node(AssignCall,
-                              cst_node,
-                              new_col_labels=new_col_labels)
+        node = self.make_call_node(AssignCall,
+                                   cst_node,
+                                   new_col_labels=new_col_labels)
         self.current.chain.append(node)
 
     @m.call_if_inside(is_chain_stmt)
@@ -326,7 +326,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         axis = (make_axis(self.code_for(axis_arg.value))
                 if axis_arg is not None else 'index')
 
-        node = self.make_node(GroupByCall, cst_node, axis=axis)
+        node = self.make_call_node(GroupByCall, cst_node, axis=axis)
         self.current.chain.append(node)
 
     ###########################################################################
@@ -361,15 +361,16 @@ class PandasParser(m.MatcherDecoratableVisitor):
     @m.call_if_inside(is_chain_stmt)
     @m.call_if_not_inside(m.SubscriptElement() | m.Arg())
     @m.leave(m.Subscript())
-    def make_subscript(self, cst_node):
+    def make_subscript(self, cst_node: cst.Subscript):
         assert self.current is not None, (
             'called make_subscript when not in a chain!')
         # HACK: limit subscript parsing depth to 1
         assert self.slice_depth == 0, (
             'called make_subscript in a nested subscript')
 
-        slicer = (cst_node.value.attr.value if m.matches(
-            cst_node, is_loc_iloc) else None)
+        slicer: t.Optional[str] = None
+        if m.matches(cst_node, is_loc_iloc):
+            slicer = t.cast(cst.Attribute, cst_node.value).attr.value
 
         n_slices = len(self.slices)
         slice1 = None
@@ -385,8 +386,17 @@ class PandasParser(m.MatcherDecoratableVisitor):
                   f'{self.slices}\n')
             # TODO: have a 'passthrough slice'
 
+        # from dogs["breed"], get location of ["breed"]
+        location = (self.location(cst_node.lbracket)
+                    | self.location(cst_node.rbracket))
+        # if we have a slicer, then we want the '.loc' too
+        if slicer is not None:
+            location = location | self.location(
+                t.cast(cst.Attribute, cst_node.value).dot)
+
         node = self.make_node(Subscript,
                               cst_node,
+                              location=location,
                               slicer=slicer,
                               slice1=slice1,
                               slice2=slice2)
@@ -470,10 +480,28 @@ class PandasParser(m.MatcherDecoratableVisitor):
         end = CodePosition(line=meta.end.line - 1, ch=meta.end.column)
         return CodeRange(start, end)
 
-    def make_node(self, cls: t.Type[T], cst_node: cst.CSTNode, **kwargs) -> T:
+    def make_node(self,
+                  cls: t.Type[T],
+                  cst_node: cst.CSTNode,
+                  location=None,
+                  **kwargs) -> T:
         code = self.code_for(cst_node)
-        location = self.location(cst_node)
+        if location is None:
+            location = self.location(cst_node)
         return cls(code=code, location=location, **kwargs)  # type: ignore
+
+    def make_call_node(self, cls: t.Type[T], cst_node: cst.Call,
+                       **kwargs) -> T:
+        '''
+        for calls in chain like df.apply(), the location of the call is the
+        dot + everything after
+        '''
+        func = t.cast(cst.Attribute, cst_node.func)
+        dot = self.location(func.dot)
+        entire_expr = self.location(cst_node)
+        location = CodeRange(dot.start, entire_expr.end)
+
+        return self.make_node(cls, cst_node, location=location, **kwargs)
 
 
 whitespace = (m.Comment() | m.EmptyLine() | m.Newline()

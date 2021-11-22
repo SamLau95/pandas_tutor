@@ -45,7 +45,7 @@
           "code": "df\n .sort_values('Name')",
           "location": {
             "start": {
-              "line": 0,
+              "line": 1,
               "ch": 1
             },
             "end": {
@@ -61,7 +61,7 @@
           "code": "(df\n .sort_values('Name')\n .loc[:, 'Count']\n)",
           "location": {
             "start": {
-              "line": 0,
+              "line": 2,
               "ch": 1
             },
             "end": {

@@ -3,7 +3,7 @@
   "explanation": [
     {
       "type": "Subscript",
-      "code_step": "dogs['breed']",
+      "code_step": "(dogs['breed']\n .apply(len)\n)",
       "fragment": {
         "start": {
           "line": 0,
@@ -121,8 +121,8 @@
       "code_step": "(dogs['breed']\n .apply(len)\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 14
+          "line": 1,
+          "ch": 1
         },
         "end": {
           "line": 1,

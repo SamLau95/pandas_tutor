@@ -3,7 +3,7 @@
   "explanation": [
     {
       "type": "SortValuesCall",
-      "code_step": "df.sort_values('Name')",
+      "code_step": "df.sort_values('Name').sort_values('Count')",
       "fragment": {
         "start": {
           "line": 0,

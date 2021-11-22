@@ -3,7 +3,7 @@
   "explanation": [
     {
       "type": "Subscript",
-      "code_step": "dogs['food_cost']",
+      "code_step": "dogs['food_cost'].mean()",
       "fragment": {
         "start": {
           "line": 0,

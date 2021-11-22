@@ -1,0 +1,100 @@
+{
+  "code": "# tests that fragments point to the right parts of the code\n\nimport pandas as pd\nimport io\ncsv = \"breed,grooming,food_cost,kids,size\"\ndogs = pd.read_csv(io.StringIO(csv))\n\n(    dogs  [\"breed\"] # <-- look at leading spaces here\n .apply(len) # another comment test\n   .rename('test'   )       # test\n)\n",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "(    dogs  [\"breed\"] # <-- look at leading spaces here\n .apply(len) # another comment test\n   .rename('test'   )       # test\n)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 11
+        },
+        "end": {
+          "line": 0,
+          "ch": 20
+        }
+      },
+      "mapping": [
+        {
+          "select": "column",
+          "anchor": "lhs",
+          "label": "breed",
+          "illustrate": "highlight"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "breed",
+            "grooming",
+            "food_cost",
+            "kids",
+            "size"
+          ],
+          "row_labels": [],
+          "data": []
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [],
+          "data": []
+        }
+      }
+    },
+    {
+      "type": "ApplyCall",
+      "code_step": "(    dogs  [\"breed\"] # <-- look at leading spaces here\n .apply(len) # another comment test\n   .rename('test'   )       # test\n)",
+      "fragment": {
+        "start": {
+          "line": 1,
+          "ch": 1
+        },
+        "end": {
+          "line": 1,
+          "ch": 12
+        }
+      },
+      "mapping": [],
+      "data_frame": {
+        "lhs": {
+          "type": "Series",
+          "row_labels": [],
+          "data": []
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [],
+          "data": []
+        }
+      }
+    },
+    {
+      "type": "RenameCall",
+      "code_step": "(    dogs  [\"breed\"] # <-- look at leading spaces here\n .apply(len) # another comment test\n   .rename('test'   )       # test\n)",
+      "fragment": {
+        "start": {
+          "line": 2,
+          "ch": 3
+        },
+        "end": {
+          "line": 2,
+          "ch": 21
+        }
+      },
+      "mapping": [],
+      "data_frame": {
+        "lhs": {
+          "type": "Series",
+          "row_labels": [],
+          "data": []
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [],
+          "data": []
+        }
+      }
+    }
+  ]
+}
