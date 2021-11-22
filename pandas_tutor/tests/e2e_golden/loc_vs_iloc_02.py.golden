@@ -3,7 +3,7 @@
   "explanation": [
     {
       "type": "SortValuesCall",
-      "code_step": "dogs.sort_values('kids')",
+      "code_step": "dogs.sort_values('kids').loc[0:6]",
       "fragment": {
         "start": {
           "line": 0,

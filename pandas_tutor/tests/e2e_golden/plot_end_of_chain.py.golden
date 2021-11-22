@@ -3,11 +3,11 @@
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "dogs\n .groupby('size')",
+      "code_step": "(dogs\n .groupby('size')\n .mean()\n .plot(kind='bar')\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 5
+          "line": 1,
+          "ch": 1
         },
         "end": {
           "line": 1,
@@ -202,11 +202,11 @@
     },
     {
       "type": "AggCall",
-      "code_step": "dogs\n .groupby('size')\n .mean()",
+      "code_step": "(dogs\n .groupby('size')\n .mean()\n .plot(kind='bar')\n)",
       "fragment": {
         "start": {
-          "line": 1,
-          "ch": 17
+          "line": 2,
+          "ch": 1
         },
         "end": {
           "line": 2,
@@ -434,8 +434,8 @@
       "code_step": "(dogs\n .groupby('size')\n .mean()\n .plot(kind='bar')\n)",
       "fragment": {
         "start": {
-          "line": 2,
-          "ch": 8
+          "line": 3,
+          "ch": 1
         },
         "end": {
           "line": 3,

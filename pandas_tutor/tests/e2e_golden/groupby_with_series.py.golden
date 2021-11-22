@@ -3,7 +3,7 @@
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "pm.groupby(months)",
+      "code_step": "pm.groupby(months).mean()",
       "fragment": {
         "start": {
           "line": 0,

@@ -79,12 +79,12 @@ class ErrorOutput:
     type: str = field(default='ErrorOutput', init=False, repr=False)
     code_step: str
     message: str
-    location: CodePosition
 
 
 @dataclasses.dataclass
 class SyntaxErrorOutput(ErrorOutput):
     type: str = field(default='SyntaxErrorOutput', init=False, repr=False)
+    location: CodePosition
 
     @classmethod
     def from_parse_syntax_error(cls, err: ParseSyntaxError):
@@ -96,6 +96,7 @@ class SyntaxErrorOutput(ErrorOutput):
 @dataclasses.dataclass
 class RuntimeErrorOutput(ErrorOutput):
     type: str = field(default='RuntimeErrorOutput', init=False, repr=False)
+    fragment: CodeRange
 
     @classmethod
     def from_runtime_error_result(cls, result: RuntimeErrorResult):
@@ -104,7 +105,7 @@ class RuntimeErrorOutput(ErrorOutput):
         message = list(tb.format_exception_only())[-1]
         return cls(code_step=result.step.code,
                    message=message,
-                   location=result.fragment.start)
+                   fragment=result.fragment)
 
 
 @dataclasses.dataclass

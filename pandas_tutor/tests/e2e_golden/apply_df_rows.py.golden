@@ -6,8 +6,8 @@
       "code_step": "(dogs\n .apply(lambda x: x * 2)\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 5
+          "line": 1,
+          "ch": 1
         },
         "end": {
           "line": 1,

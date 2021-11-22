@@ -46,7 +46,7 @@
           "location": {
             "start": {
               "line": 5,
-              "ch": 0
+              "ch": 2
             },
             "end": {
               "line": 5,
@@ -106,7 +106,7 @@
           "location": {
             "start": {
               "line": 8,
-              "ch": 0
+              "ch": 2
             },
             "end": {
               "line": 8,
@@ -152,7 +152,7 @@
           "location": {
             "start": {
               "line": 10,
-              "ch": 0
+              "ch": 2
             },
             "end": {
               "line": 10,
@@ -198,7 +198,7 @@
           "location": {
             "start": {
               "line": 12,
-              "ch": 0
+              "ch": 2
             },
             "end": {
               "line": 12,

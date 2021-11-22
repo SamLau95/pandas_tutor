@@ -116,11 +116,10 @@ def run(root: ParseResult) -> t.List[EvalResult]:
             ]
 
     relative_to = last_expr.location.start
-    last_location = NULL_LOC
     last_val: t.Any = None
     eval_results: t.List[EvalResult] = []
     for step in last_expr.chain:
-        fragment = (step.location - last_location) % relative_to
+        fragment = step.location % relative_to
 
         try:
             # wrap individual steps in parens before eval since subexpressions
@@ -141,8 +140,14 @@ def run(root: ParseResult) -> t.List[EvalResult]:
         result = make_result(step, fragment, args, val, last_val)
         eval_results.append(result)
         last_val = val
-        last_location = step.location
 
+    # HACK: hard-code all step code strings to the entire statement's code
+    # string to make fragment positions work. the code string for individual
+    # function calls omits the whitespace that the fragment positions already
+    # take into account.
+    # https://github.com/SamLau95/pandas_tutor/issues/42
+    for result in eval_results:
+        result.step.code = last_expr.code
     return eval_results
 
 

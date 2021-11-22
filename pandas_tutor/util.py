@@ -36,10 +36,12 @@ class CodePosition:
         return CodePosition(self.line - other.line, self.ch)
 
     def __lt__(self, other: CodePosition):
-        return self.line < other.line or self.ch < other.ch
+        return (self.line < other.line
+                if self.line != other.line else self.ch < other.ch)
 
     def __gt__(self, other: CodePosition):
-        return self.line > other.line or self.ch > other.ch
+        return (self.line > other.line
+                if self.line != other.line else self.ch > other.ch)
 
 
 @dataclasses.dataclass
@@ -56,8 +58,7 @@ class CodeRange:
     def __sub__(self, other: CodeRange):
         '''
         a range within this CodeRange that doesn't overlap with other. similar
-        to set difference. assumes other isn't entirely contained within self,
-        and vice versa
+        to set difference. assumes the CodeRanges only partially overlap
         '''
         # non-overlapping
         if self.end < other.start or other.end < self.start:
@@ -72,6 +73,14 @@ class CodeRange:
             return CodeRange(self.start, other.start)
 
         return self
+
+    def __or__(self, other: CodeRange):
+        '''
+        minimum CodeRange that contains both self and other
+        '''
+        return CodeRange(
+            start=self.start if self.start < other.start else other.start,
+            end=self.end if self.end > other.end else other.end)
 
     def __mod__(self, pos: CodePosition):
         '''self % pos is the range relative to the starting line of pos'''
