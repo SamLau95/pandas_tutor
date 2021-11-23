@@ -20,6 +20,18 @@
           "anchor": "lhs",
           "label": "food_cost",
           "illustrate": "highlight"
+        },
+        {
+          "select": "column",
+          "from": {
+            "anchor": "lhs",
+            "label": "food_cost"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          },
+          "illustrate": "outline"
         }
       ],
       "data_frame": {

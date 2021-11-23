@@ -4,6 +4,7 @@ creates mark specs. here's where the magic happens!
 import typing as t
 
 import pandas as pd
+from pandas.core.groupby.generic import DataFrameGroupBy
 
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
@@ -171,7 +172,8 @@ def mark_for_agg(step: AggCall, before: EvalResult,
 # df.groupby('Sex')[['Count']]
 def mark_for_subscript(step: Subscript, before: EvalResult,
                        after: EvalResult) -> t.List[Mark]:
-    if (isinstance(before, DFResult) and isinstance(after, SeriesResult)):
+    if (isinstance(before, (DFResult, GroupbyResult))
+            and isinstance(after, (SeriesResult, SeriesGroupbyResult))):
         return mark_for_subscript_to_series(step, before, after)
     elif not isinstance(before, (DFResult, GroupbyResult)):
         return []
@@ -182,10 +184,10 @@ def mark_for_subscript(step: Subscript, before: EvalResult,
     col_slice = step.slice2
     args = after.args
 
-    before_df = util.ungroup(before.val) if isinstance(
-        before, GroupbyResult) else before.val
-    after_df = util.ungroup(after.val) if isinstance(
-        after, GroupbyResult) else after.val
+    before_df = (util.ungroup(before.val)
+                 if isinstance(before, GroupbyResult) else before.val)
+    after_df = (util.ungroup(after.val)
+                if isinstance(after, GroupbyResult) else after.val)
     row_marks = diff_rows(before_df, after_df)
     col_marks = diff_cols(before_df, after_df)
 
@@ -202,8 +204,9 @@ def mark_for_subscript(step: Subscript, before: EvalResult,
     return [*col_marks, *row_marks]
 
 
-def mark_for_subscript_to_series(step: Subscript, before: EvalResult,
-                                 after: EvalResult) -> t.List[Mark]:
+def mark_for_subscript_to_series(
+        step: Subscript, before: t.Union[DFResult, GroupbyResult],
+        after: t.Union[SeriesResult, SeriesGroupbyResult]) -> t.List[Mark]:
     args = after.args
     # when the output is a series, just highlight the row/column used for
     # slicing, like the 'kids' in df['kids']
@@ -211,18 +214,41 @@ def mark_for_subscript_to_series(step: Subscript, before: EvalResult,
     # df['kids']
     if step.slicer is None:
         maybe_col = args.get('slice1_values')
-        if isinstance(maybe_col, (str, int)):
-            return make_highlights([maybe_col], 'column')
-    else:
-        # df.iloc[0]
-        maybe_row = args.get('slice1_values')
-        if isinstance(maybe_row, (str, int)):
-            return make_highlights([maybe_row], 'row')
+        if not isinstance(maybe_col, (str, int)):
+            return []
 
-        # df.iloc[:, 0]
-        maybe_col = args.get('slice2_values')
-        if isinstance(maybe_col, (str, int)):
-            return make_highlights([maybe_col], 'column')
+        highlights = make_highlights([maybe_col], 'column')
+        outlines = [
+            Outline(select='column', from_=lhs(maybe_col), to=rhs_series())
+        ]
+        return [*highlights, *outlines]
+
+    # df.iloc[0]
+    maybe_row = args.get('slice1_values')
+    if isinstance(maybe_row, (str, int)):
+        row = maybe_row
+        if step.slicer == 'iloc':
+            df = (util.ungroup(before.val) if isinstance(
+                before, GroupbyResult) else before.val)
+            row = df.index[row]
+
+        highlights = make_highlights([row], 'row')
+        outlines = [Outline(select='row', from_=lhs(row), to=rhs_series())]
+        return [*highlights, *outlines]
+
+    # df.iloc[:, 0]
+    maybe_col = args.get('slice2_values')
+    if isinstance(maybe_col, (str, int)):
+        col = maybe_col
+        if step.slicer == 'iloc':
+            df = (util.ungroup(before.val) if isinstance(
+                before, GroupbyResult) else before.val)
+            col = df.columns[col]
+        highlights = make_highlights([col], 'column')
+        outlines = [
+            Outline(select='column', from_=lhs(col), to=rhs_series())
+        ]
+        return [*highlights, *outlines]
 
     return []
 
@@ -296,3 +322,11 @@ def lhs(label):
 
 def rhs(label):
     return TablePos('rhs', label)
+
+
+def lhs_series():
+    return lhs('pandas.Series')
+
+
+def rhs_series():
+    return rhs('pandas.Series')

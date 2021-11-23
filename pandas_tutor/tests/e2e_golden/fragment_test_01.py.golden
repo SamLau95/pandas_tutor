@@ -20,6 +20,18 @@
           "anchor": "lhs",
           "label": "breed",
           "illustrate": "highlight"
+        },
+        {
+          "select": "column",
+          "from": {
+            "anchor": "lhs",
+            "label": "breed"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          },
+          "illustrate": "outline"
         }
       ],
       "data_frame": {
