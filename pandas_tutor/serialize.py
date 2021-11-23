@@ -7,6 +7,8 @@ from __future__ import annotations
 import types
 import typing as t
 
+from pandas_tutor.parse_nodes import StartOfChain
+
 from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
                       Explanation, Group, GroupBySpec, GroupData, ImageSpec,
@@ -61,7 +63,8 @@ def serialize_one_step(before: EvalResult,
     # this serializes every df twice when we should only do it once.
     # TODO: optimize this
     df_pair = DataPair(
-        lhs=serialize_step_val(before),
+        lhs=(serialize_step_val(before)
+             if isinstance(before.step, StartOfChain) else 'prev_rhs'),
         rhs=serialize_step_val(after),
     )
 

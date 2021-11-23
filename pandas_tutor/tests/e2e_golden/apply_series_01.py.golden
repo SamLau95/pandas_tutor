@@ -228,27 +228,7 @@
         }
       ],
       "data_frame": {
-        "lhs": {
-          "type": "Series",
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "data": [
-            "Labrador Retriever",
-            "German Shepherd",
-            "Beagle",
-            "Golden Retriever",
-            "Yorkshire Terrier",
-            "Bulldog",
-            "Boxer"
-          ]
-        },
+        "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
           "row_labels": [
