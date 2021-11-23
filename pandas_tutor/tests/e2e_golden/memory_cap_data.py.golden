@@ -1,0 +1,20 @@
+{
+  "code": "import pandas as pd\nimport numpy as np\n\n# this uses about 1.5 MB\nbig = pd.DataFrame({'numbers': np.arange(200_000)})\n\nbig.head()\n",
+  "explanation": [
+    {
+      "type": "RuntimeErrorInChain",
+      "code_step": "big.head()",
+      "message": "Your total data uses 1.53 MB of memory, which exceeds the maximum of 1.00 MB that this tool supports.",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 3
+        },
+        "end": {
+          "line": 0,
+          "ch": 10
+        }
+      }
+    }
+  ]
+}

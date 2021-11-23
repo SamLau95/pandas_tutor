@@ -2,14 +2,16 @@
 utilities
 '''
 from __future__ import annotations
-import dataclasses
-import io
+
 import base64
+import dataclasses
 import gzip
+import io
 import typing as t
+import warnings
 
 import pandas as pd
-from pandas.core.groupby.generic import (DataFrameGroupBy, SeriesGroupBy)
+from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
 
 # technically dataframe labels can be all sorts of things...
@@ -173,3 +175,35 @@ def base64_encode_plot(fig_or_axes: t.Any) -> str:
         # set mtime=0 to get deterministic gzips for testing
         zipped = gzip.compress(buf.read(), mtime=0)
         return base64.b64encode(zipped).decode()
+
+
+def mem_used(obj: t.Any) -> float:
+    if isinstance(obj, pd.DataFrame):
+        return obj.memory_usage(deep=True).sum()
+    elif isinstance(obj, pd.Series):
+        return obj.memory_usage(deep=True)
+    else:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from pympler.asizeof import asizeof
+        return asizeof(obj)
+
+
+KB = 2**10
+MB = 2**20
+MEM_LIMIT = 1 * MB
+
+
+def mem_as_str(mem: float) -> str:
+    if mem >= MB:
+        # 2 decimal places
+        return f'{mem / MB:.2f} MB'
+    elif mem >= KB:
+        return f'{mem / KB:.2f} KB'
+    else:
+        return f'{mem} B'
+
+
+def too_much_mem_msg(mem: float):
+    return (f'Your total data uses {mem_as_str(mem)} of memory, which exceeds '
+            f'the maximum of {mem_as_str(MEM_LIMIT)} that this tool supports.')
