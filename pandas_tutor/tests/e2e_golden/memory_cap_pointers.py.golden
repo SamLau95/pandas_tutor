@@ -1,0 +1,20 @@
+{
+  "code": "# tests that pointers still trigger memory cap\n\n\nclass MyStr:\n    def __init__(self, val):\n        self.val = val\n\n\n# this uses about 2.5 MB\n# but, sys.getsizeof() only returns ~120 KB\nhello = [MyStr('hello world') for _ in range(15_000)]\n\nhello[:5]\n",
+  "explanation": [
+    {
+      "type": "RuntimeErrorInChain",
+      "code_step": "hello[:5]",
+      "message": "Your total data uses 2.29 MB of memory, which exceeds the maximum of 1.00 MB that this tool supports.",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 5
+        },
+        "end": {
+          "line": 0,
+          "ch": 9
+        }
+      }
+    }
+  ]
+}

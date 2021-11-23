@@ -151,6 +151,9 @@ class PandasParser(m.MatcherDecoratableVisitor):
         self.cst_root = cst_node
         self.root = self.make_node(ParsedModule, cst_node, statements=[])
 
+    def visit_IndentedBlock(self, cst_node):
+        return False
+
     @m.visit(is_verbatim_stmt)
     def make_verbatim_stmt(self, cst_node):
         node = self.make_node(VerbatimStatement, cst_node)
