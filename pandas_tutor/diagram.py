@@ -150,9 +150,12 @@ class TablePos:
     label: Label
 
 
+PrevRHS = t.Literal['prev_rhs']
+
+
 @dataclasses.dataclass
 class DataPair:
-    lhs: DataSpec
+    lhs: t.Union[DataSpec, PrevRHS]
     rhs: DataSpec
 
 

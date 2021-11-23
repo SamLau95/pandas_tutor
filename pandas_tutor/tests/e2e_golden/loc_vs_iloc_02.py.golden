@@ -313,76 +313,7 @@
         }
       ],
       "data_frame": {
-        "lhs": {
-          "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            2,
-            3,
-            6,
-            4,
-            1,
-            5
-          ],
-          "data": [
-            [
-              "Labrador Retriever",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
-            ],
-            [
-              "Beagle",
-              "daily",
-              324.0,
-              "high",
-              "small"
-            ],
-            [
-              "Golden Retriever",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
-            ],
-            [
-              "Boxer",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
-            ],
-            [
-              "Yorkshire Terrier",
-              "daily",
-              324.0,
-              "low",
-              "small"
-            ],
-            [
-              "German Shepherd",
-              "weekly",
-              466.0,
-              "medium",
-              "large"
-            ],
-            [
-              "Bulldog",
-              "weekly",
-              466.0,
-              "medium",
-              "medium"
-            ]
-          ]
-        },
+        "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
           "col_names": [
