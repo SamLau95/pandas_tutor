@@ -8,7 +8,6 @@ from __future__ import annotations
 import builtins
 import contextlib
 import dataclasses
-import io
 import sys
 import types
 import typing as t
@@ -24,11 +23,6 @@ from .parse_nodes import (AggCall, ChainStatement, ChainStep, CodeRange,
 Arg = t.Union[str, t.List[str]]
 
 Args = t.Dict[str, Arg]
-
-# errors that we care about showing to the user
-serializable_errors = (ArithmeticError, AttributeError, ImportError,
-                       LookupError, NameError, RuntimeError, TypeError,
-                       ValueError)
 
 
 @dataclasses.dataclass
@@ -83,13 +77,6 @@ class UnhandledResult(EvalResult):
 
 
 def run(root: ParseResult) -> t.List[EvalResult]:
-    if util.in_testing_env():
-        # toss out stdout and stderr to avoid cluttering test output.
-        buffer = io.StringIO()
-        with contextlib.redirect_stdout(buffer):
-            with contextlib.redirect_stderr(buffer):
-                return run_code(root)
-
     # since we send JSON to stdout, we'll send user code's stdout to stderr.
     with contextlib.redirect_stdout(sys.stderr):
         return run_code(root)
@@ -119,7 +106,7 @@ def run_code(root: ParseResult) -> t.List[EvalResult]:
     for stmt in setup_stmts:
         try:
             exec(stmt.code, user_globals)
-        except serializable_errors as error:
+        except Exception as error:
             step = EvalError.from_node(stmt)
             return [
                 RuntimeErrorResult(
@@ -141,7 +128,7 @@ def run_code(root: ParseResult) -> t.List[EvalResult]:
             # within a line can have newlines
             val = eval(f"({step.code})", user_globals)
             args = eval_args(step, user_globals)
-        except serializable_errors as error:
+        except Exception as error:
             step = EvalError.from_node(step)
             err_result = RuntimeErrorResult(
                 step=step,
