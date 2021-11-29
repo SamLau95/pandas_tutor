@@ -9,6 +9,7 @@ import gzip
 import io
 import typing as t
 import warnings
+import collections.abc
 
 import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
@@ -27,6 +28,16 @@ Groups = t.Dict[t.Union[str, tuple], pd.Index]
 def mapt(fn, *args):
     "map(fn, *args) and return the result as a tuple."
     return tuple(map(fn, *args))
+
+
+def is_list_like(obj: t.Any) -> bool:
+    '''
+    checks whether obj is a list-like. we need this because we don't usually
+    want to do list(string), but we want to convert other types of list-like
+    things to lists
+    '''
+    return (not isinstance(obj, str)
+            and isinstance(obj, collections.abc.Iterable))
 
 
 @dataclasses.dataclass
