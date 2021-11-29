@@ -1,0 +1,20 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html\nimport pandas as pd\nimport numpy as np\nnp.random.seed(0) # uncomment if you want deterministic outputs\ns = pd.Series([1, 3, 5, np.nan, 6, 8])\ndates = pd.date_range(\"20130101\", periods=6)\ndf = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list(\"ABCD\"))\n\ndf.iloc[1, 2, 3, [1, 2, 4], [0, 2]]\n",
+  "explanation": [
+    {
+      "type": "RuntimeErrorInChain",
+      "code_step": "df.iloc[1, 2, 3, [1, 2, 4], [0, 2]]",
+      "message": "pandas.core.indexing.IndexingError: Too many indexers\n",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 35
+        }
+      }
+    }
+  ]
+}

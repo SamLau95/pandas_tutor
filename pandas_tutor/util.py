@@ -7,7 +7,6 @@ import base64
 import dataclasses
 import gzip
 import io
-import sys
 import typing as t
 import warnings
 
@@ -23,11 +22,6 @@ Labels = t.Union[t.List[int], t.List[str]]
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
-
-
-# hacky way of checking whether we're in the testing env
-def in_testing_env() -> bool:
-    return 'unittest' in sys.modules
 
 
 def mapt(fn, *args):

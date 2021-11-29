@@ -1,6 +1,9 @@
+import contextlib
+import io
 import os
-from pathlib import Path
+import sys
 import unittest
+from pathlib import Path
 
 from ..main import make_tutor_spec
 
@@ -8,7 +11,24 @@ test_cases = Path(__file__).parent / 'pg_wreck_it'
 
 
 class TestEndToEnd(unittest.TestCase):
-    pass
+    @classmethod
+    def setUpClass(cls):
+        # capture stdout and stderr to avoid cluttering test output.
+        cls._stdout = io.StringIO()
+        cls._context_stdout = contextlib.redirect_stdout(cls._stdout)
+
+        cls._stderr = io.StringIO()
+        cls._context_stderr = contextlib.redirect_stderr(cls._stderr)
+
+        cls._context_stdout.__enter__()
+        cls._context_stderr.__enter__()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._context_stdout.__exit__(None, None, None)
+        cls._context_stderr.__exit__(None, None, None)
+
+        # we can print captured stdout and stderr if needed, in the future
 
 
 def make_test_case(test_name):

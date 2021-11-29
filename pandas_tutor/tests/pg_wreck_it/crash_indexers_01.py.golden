@@ -1,0 +1,20 @@
+{
+  "code": "import pandas as pd\ns = pd.Series([3, -5, 7, 4], index=['a', 'b', 'c', 'd'])\ns.loc[1,3]\n",
+  "explanation": [
+    {
+      "type": "RuntimeErrorInChain",
+      "code_step": "s.loc[1,3]",
+      "message": "pandas.core.indexing.IndexingError: Too many indexers\n",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 10
+        }
+      }
+    }
+  ]
+}
