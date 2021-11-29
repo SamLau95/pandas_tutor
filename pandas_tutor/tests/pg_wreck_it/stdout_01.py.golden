@@ -1,0 +1,4 @@
+{
+  "code": "import sys\nprint(\"print to stdout\")\nsys.stderr.write(\"print to stderr\")\nprint(\"print again to stderr\", file=sys.stderr)\n",
+  "explanation": []
+}
