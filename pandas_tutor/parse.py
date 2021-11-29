@@ -17,6 +17,7 @@ https://pythontutor.com/visualize.html#code=s%20%3D%20'hello%20world%20!!%20'%0A
 from __future__ import annotations
 
 import typing as t
+from warnings import warn
 
 import libcst as cst
 import libcst.matchers as m
@@ -384,9 +385,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
         elif n_slices == 2:
             [slice1, slice2, *_] = self.slices
         else:
-            print(f'weird: parsed subscript with {n_slices} slices @\n'
-                  f'{self.code_for(cst_node)}\n'
-                  f'{self.slices}\n')
+            warn(f'weird: parsed subscript with {n_slices} slices @\n'
+                 f'{self.code_for(cst_node)}\n\n'
+                 f'self.slices:\n'
+                 f'{self.slices}\n')
             # TODO: have a 'passthrough slice'
 
         # from dogs["breed"], get location of ["breed"]
@@ -439,8 +441,8 @@ class PandasParser(m.MatcherDecoratableVisitor):
             f'called make_subs_comparison outside a comparison:'
             f'{self.code_for(cst_node)}')
         if len(self.comparison_labels) == 0:
-            print("couldn't parse labels out of comparison, falling back "
-                  "to eval slice")
+            warn("couldn't parse labels out of comparison, falling back "
+                 "to eval slice")
             node = self.fallback_slice(cst_node)
             self.slices.append(node)
             return
