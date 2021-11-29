@@ -6,7 +6,10 @@ last line of the code.
 from __future__ import annotations
 
 import builtins
+import contextlib
 import dataclasses
+import io
+import sys
 import types
 import typing as t
 
@@ -15,7 +18,7 @@ import pandas as pd
 from . import util
 from .parse_nodes import (AggCall, ChainStatement, ChainStep, CodeRange,
                           EvalError, ParseResult, ParseSyntaxError,
-                          PassThroughCall, RawCode, Subscript, NULL_LOC)
+                          PassThroughCall, RawCode, Subscript)
 
 # technically args can be anything...but most of the time it'll be labels
 Arg = t.Union[str, t.List[str]]
@@ -79,8 +82,20 @@ class UnhandledResult(EvalResult):
     val: t.Any
 
 
-# TODO: handle stdout and stderr from user code
 def run(root: ParseResult) -> t.List[EvalResult]:
+    if util.in_testing_env():
+        # toss out stdout and stderr to avoid cluttering test output.
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            with contextlib.redirect_stderr(buffer):
+                return run_code(root)
+
+    # since we send JSON to stdout, we'll send user code's stdout to stderr.
+    with contextlib.redirect_stdout(sys.stderr):
+        return run_code(root)
+
+
+def run_code(root: ParseResult) -> t.List[EvalResult]:
     if isinstance(root, ParseSyntaxError):
         return [
             SyntaxErrorResult(step=root,

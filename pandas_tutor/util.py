@@ -7,6 +7,7 @@ import base64
 import dataclasses
 import gzip
 import io
+import sys
 import typing as t
 import warnings
 
@@ -22,6 +23,16 @@ Labels = t.Union[t.List[int], t.List[str]]
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
+
+
+# hacky way of checking whether we're in the testing env
+def in_testing_env() -> bool:
+    return 'unittest' in sys.modules
+
+
+def mapt(fn, *args):
+    "map(fn, *args) and return the result as a tuple."
+    return tuple(map(fn, *args))
 
 
 @dataclasses.dataclass
@@ -92,11 +103,6 @@ class CodeRange:
 NULL_LOC = CodeRange(CodePosition(-999, -999), CodePosition(-999, -999))
 
 IndexPair = t.Tuple[Label, Label]
-
-
-def mapt(fn, *args):
-    "map(fn, *args) and return the result as a tuple."
-    return tuple(map(fn, *args))
 
 
 def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=False) -> pd.Index:
