@@ -1,0 +1,73 @@
+{
+  "code": "import pandas as pd\n\ns = pd.Series([3, -5, 7, 4], index=['a', 'b', 'c', 'd'])\ns.head(2)\n",
+  "explanation": [
+    {
+      "type": "HeadCall",
+      "code_step": "s.head(2)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 9
+        }
+      },
+      "mapping": [
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "a"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "a"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "b"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "b"
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "Series",
+          "row_labels": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "data": [
+            3,
+            -5,
+            7,
+            4
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [
+            "a",
+            "b"
+          ],
+          "data": [
+            3,
+            -5
+          ]
+        }
+      }
+    }
+  ]
+}

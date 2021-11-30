@@ -88,7 +88,8 @@ def mark_for_rename(step: RenameCall, before: EvalResult,
 def mark_for_head_or_tail(step: t.Union[HeadCall,
                                         TailCall], before: EvalResult,
                           after: EvalResult) -> t.List[Mark]:
-    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+    if not (isinstance(before, (DFResult, SeriesResult))
+            and isinstance(after, (DFResult, SeriesResult))):
         return []
     return diff_rows(before.val, after.val)
 
