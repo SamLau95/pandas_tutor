@@ -46,7 +46,8 @@ def make_marks(step: ChainStep, before: EvalResult,
 # df.sort_values('Name')
 def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
                          after: EvalResult) -> t.List[Mark]:
-    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+    if not (isinstance(before, (DFResult, SeriesResult))
+            and isinstance(after, (DFResult, SeriesResult))):
         return []
     df = before.val
     args = after.args
