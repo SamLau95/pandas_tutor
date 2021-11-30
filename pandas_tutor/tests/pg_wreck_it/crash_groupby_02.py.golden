@@ -1,0 +1,125 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html\nimport pandas as pd\ndf_list = [[1, 2, 3], [1, None, 4], [2, 1, 3], [1, 2, 2]]\ndf_dropna = pd.DataFrame(df_list, columns=[\"a\", \"b\", \"c\"])\ndf_dropna.groupby(by=[\"b\"])\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "df_dropna.groupby(by=[\"b\"])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 9
+        },
+        "end": {
+          "line": 0,
+          "ch": 27
+        }
+      },
+      "mapping": [
+        {
+          "select": "column",
+          "anchor": "lhs",
+          "label": "b",
+          "illustrate": "highlight"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "a",
+            "b",
+            "c"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "data": [
+            [
+              1.0,
+              2.0,
+              3.0
+            ],
+            [
+              1.0,
+              null,
+              4.0
+            ],
+            [
+              2.0,
+              1.0,
+              3.0
+            ],
+            [
+              1.0,
+              2.0,
+              2.0
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "col_names": [
+            "a",
+            "b",
+            "c"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "data": [
+            [
+              1.0,
+              2.0,
+              3.0
+            ],
+            [
+              1.0,
+              null,
+              4.0
+            ],
+            [
+              2.0,
+              1.0,
+              3.0
+            ],
+            [
+              1.0,
+              2.0,
+              2.0
+            ]
+          ],
+          "group_data": {
+            "col_names": [
+              "b"
+            ],
+            "groups": [
+              {
+                "name": [
+                  1.0
+                ],
+                "labels": [
+                  2
+                ]
+              },
+              {
+                "name": [
+                  2.0
+                ],
+                "labels": [
+                  0,
+                  3
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

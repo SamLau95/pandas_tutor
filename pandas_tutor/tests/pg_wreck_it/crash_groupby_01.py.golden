@@ -1,0 +1,115 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html\nimport pandas as pd\nimport numpy as np\n\nlst = [1, 2, 3, 4, 5, 6] # <-- this was initially [1, 2, 3, 1, 2, 3] so i thought it was a duplicate index issue, but even with no duplicates it still crashes\ns = pd.Series([1, 2, 3, 10, 20, 30], lst)\ns.groupby(level=0)\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "s.groupby(level=0)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 18
+        }
+      },
+      "mapping": [],
+      "data_frame": {
+        "lhs": {
+          "type": "Series",
+          "row_labels": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "data": [
+            1,
+            2,
+            3,
+            10,
+            20,
+            30
+          ]
+        },
+        "rhs": {
+          "type": "SeriesGroupBy",
+          "row_labels": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "data": [
+            1,
+            2,
+            3,
+            10,
+            20,
+            30
+          ],
+          "group_data": {
+            "col_names": [
+              null
+            ],
+            "groups": [
+              {
+                "name": [
+                  1
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  2
+                ],
+                "labels": [
+                  2
+                ]
+              },
+              {
+                "name": [
+                  3
+                ],
+                "labels": [
+                  3
+                ]
+              },
+              {
+                "name": [
+                  4
+                ],
+                "labels": [
+                  4
+                ]
+              },
+              {
+                "name": [
+                  5
+                ],
+                "labels": [
+                  5
+                ]
+              },
+              {
+                "name": [
+                  6
+                ],
+                "labels": [
+                  6
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
