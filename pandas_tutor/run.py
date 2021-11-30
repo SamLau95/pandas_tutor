@@ -20,7 +20,7 @@ from .parse_nodes import (AggCall, ChainStatement, ChainStep, CodeRange,
                           PassThroughCall, RawCode, Subscript)
 
 # technically args can be anything...but most of the time it'll be labels
-Arg = t.Union[str, t.List[str]]
+Arg = t.Union[str, list]
 
 Args = t.Dict[str, Arg]
 

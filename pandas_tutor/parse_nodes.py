@@ -8,7 +8,7 @@ import json
 import typing as t
 from dataclasses import field
 
-from .util import NULL_LOC, CodeRange
+from .util import Axis, CodeRange, Slicer
 
 # Use a distinct type to distinguish between strings that can be eval'd
 RawCode = t.NewType('RawCode', str)
@@ -95,9 +95,6 @@ class Call(ChainStep):
 
 def evals_into(attr: str):
     return field(metadata=dict(evals_into=attr))
-
-
-Axis = t.Literal['index', 'columns']
 
 
 @dataclasses.dataclass
@@ -223,8 +220,6 @@ class AssignCall(Call):
 # Subscripts
 ##############################################################################
 
-Slicer = t.Literal['loc', 'iloc', None]
-
 
 @dataclasses.dataclass
 class Subscript(ChainStep):
@@ -264,7 +259,7 @@ class SubsComparison(Base):
     # this is a list of code expressions that will each eval to one-or-more
     # labels. when parsing, we need to pull these out of each boolean mask
     label_exprs: t.List[RawCode] = field(metadata=dict(
-        evals_into='{attr}_labels'))
+        evals_into='{attr}_filter_labels'))
 
 
 @dataclasses.dataclass

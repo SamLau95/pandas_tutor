@@ -8,6 +8,6 @@ mydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},
           {'a': 100, 'b': 200, 'c': 300, 'd': 400},
           {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000 }]
 
-df = pd.DataFrame(mydict)
+df = pd.DataFrame(mydict, index=['one', 'two', 'three'])
 
-df.loc[:, df.iloc[0] % 2 == 0]
+df.loc[:, df.loc['one'] % 2 == 0]

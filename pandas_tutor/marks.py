@@ -10,9 +10,9 @@ from .diagram import Highlight, Mark, Outline, Selection, TablePos
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStep,
                           EvalError, GroupByCall, HeadCall, PassThroughCall,
                           RenameCall, SortValuesCall, SubsComparison,
-                          Subscript, TailCall)
-from .run import (DFResult, EvalResult, GroupbyResult, SeriesGroupbyResult,
-                  SeriesResult)
+                          Subscript, SubscriptEl, TailCall)
+from .run import (Arg, DFResult, EvalResult, GroupbyResult,
+                  SeriesGroupbyResult, SeriesResult)
 
 
 # step comes from after.step, but we pull it out here to help with
@@ -177,48 +177,70 @@ def mark_for_subscript(step: Subscript, before: EvalResult,
         return mark_for_subscript_into_series(step, before, after)
     elif isinstance(before, SeriesResult) and isinstance(after, SeriesResult):
         return mark_for_subscript_of_series(step, before, after)
-    elif not isinstance(before, (DFResult, GroupbyResult)):
-        return []
-    elif not isinstance(after, (DFResult, GroupbyResult)):
+    elif (isinstance(before, (DFResult, GroupbyResult))
+          and isinstance(after, (DFResult, GroupbyResult))):
+        return mark_for_subscript_df_to_df(step, before, after)
+    else:
         return []
 
+
+def mark_for_subscript_df_to_df(
+    step: Subscript,
+    before: t.Union[DFResult, GroupbyResult],
+    after: t.Union[DFResult, GroupbyResult],
+) -> t.List[Mark]:
     row_slice = step.slice1
     col_slice = step.slice2
     args = after.args
 
-    before_df = (util.ungroup(before.val)
-                 if isinstance(before, GroupbyResult) else before.val)
-    after_df = (util.ungroup(after.val)
-                if isinstance(after, GroupbyResult) else after.val)
-    row_marks = diff_rows(before_df, after_df)
-    col_marks = diff_cols(before_df, after_df)
+    before_df = util.ungroup(before.val)
+    after_df = util.ungroup(after.val)
 
-    if isinstance(row_slice, SubsComparison):
-        labels = args.get('slice1_labels', [])
-        highlights = make_highlights(labels, 'column')
-        col_marks = [*highlights, *col_marks]
+    # df.loc[:, df.iloc[0] % 2 == 0]
+    rows_used_for_filter = make_subscript_comparison_marks(
+        col_slice, args.get('slice2_filter_labels', []), 'row')
 
-    if isinstance(col_slice, SubsComparison):
-        labels = args.get('slice2_labels', [])
-        highlights = make_highlights(labels, 'row')
-        row_marks = [*highlights, *row_marks]
+    # df[df['Count'] > 14000]
+    cols_used_for_filter = make_subscript_comparison_marks(
+        row_slice, args.get('slice1_filter_labels', []), 'column')
 
-    return [*col_marks, *row_marks]
+    return [
+        *cols_used_for_filter,
+        *diff_cols(before_df, after_df),
+        *rows_used_for_filter,
+        *diff_rows(before_df, after_df),
+    ]
 
 
-def mark_for_subscript_of_series(step: Subscript, before: SeriesResult,
-                                 after: SeriesResult) -> t.List[Mark]:
+def make_subscript_comparison_marks(
+    subs_el: t.Optional[SubscriptEl],
+    labels: Arg,
+    selection: Selection,
+) -> t.List[Mark]:
+    '''
+    makes highlights for cols/rows used for filtering, if the subscript is a
+    filter.
+    '''
+    return (make_highlights(labels, selection) if isinstance(
+        subs_el, SubsComparison) else [])
+
+
+def mark_for_subscript_of_series(
+    step: Subscript,
+    before: SeriesResult,
+    after: SeriesResult,
+) -> t.List[Mark]:
     # no special cases for comparisons since there isn't a "column" we're using
     # to filter
     return diff_rows(before.val, after.val)
 
 
 def mark_for_subscript_into_series(
-        step: Subscript, before: t.Union[DFResult, GroupbyResult],
-        after: t.Union[SeriesResult, SeriesGroupbyResult]) -> t.List[Mark]:
+    step: Subscript,
+    before: t.Union[DFResult, GroupbyResult],
+    after: t.Union[SeriesResult, SeriesGroupbyResult],
+) -> t.List[Mark]:
     args = after.args
-    # when the output is a series, just draw an arrow for the row/column used
-    # for slicing, like the 'kids' in df['kids']
 
     # df['kids']
     if step.slicer is None:
@@ -230,26 +252,48 @@ def mark_for_subscript_into_series(
             Outline(select='column', from_=lhs(maybe_col), to=rhs_series())
         ]
 
-    # df.iloc[0]
-    maybe_row = args.get('slice1_values')
-    if isinstance(maybe_row, (str, int)):
-        row = maybe_row
-        if step.slicer == 'iloc':
-            df = (util.ungroup(before.val) if isinstance(
-                before, GroupbyResult) else before.val)
-            row = df.index[row]
+    # df.loc[df["email"] > "s", "web"]
+    # import pdb; pdb.set_trace()
+    # df.loc[:, df.iloc[0] % 2 == 0]
+    row_slice = step.slice1
+    col_slice = step.slice2
 
-        return [Outline(select='row', from_=lhs(row), to=rhs_series())]
+    # df.loc['sam@sam.com', df.loc['jan@jan.com'] > 10]
+    rows_used_for_filter = make_subscript_comparison_marks(
+        col_slice, args.get('slice2_filter_labels', []), 'row')
+
+    # df.loc[df['Count'] > 14000, 'Name']
+    cols_used_for_filter = make_subscript_comparison_marks(
+        row_slice, args.get('slice1_filter_labels', []), 'column')
+
+    maybe_row = args.get('slice1_values')
+    # TODO: indexers can be more types than just str and int e.g. datetimes
+    if isinstance(maybe_row, (str, int)):
+        row = util.positions_to_labels(
+            maybe_row,
+            df=util.ungroup(before.val),
+            slicer=step.slicer,
+            axis='index',
+        )
+
+        return [
+            *rows_used_for_filter,
+            Outline(select='row', from_=lhs(row), to=rhs_series()),
+        ]
 
     # df.iloc[:, 0]
     maybe_col = args.get('slice2_values')
     if isinstance(maybe_col, (str, int)):
-        col = maybe_col
-        if step.slicer == 'iloc':
-            df = (util.ungroup(before.val) if isinstance(
-                before, GroupbyResult) else before.val)
-            col = df.columns[col]
-        return [Outline(select='column', from_=lhs(col), to=rhs_series())]
+        col = util.positions_to_labels(
+            maybe_col,
+            df=util.ungroup(before.val),
+            slicer=step.slicer,
+            axis='columns',
+        )
+        return [
+            *cols_used_for_filter,
+            Outline(select='column', from_=lhs(col), to=rhs_series()),
+        ]
 
     return []
 

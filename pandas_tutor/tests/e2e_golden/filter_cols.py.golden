@@ -1,9 +1,9 @@
 {
-  "code": "# adapted from\n# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html\n# example where a boolean slice happens on the *columns*, not the rows\n\nimport pandas as pd\n\nmydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},\n          {'a': 100, 'b': 200, 'c': 300, 'd': 400},\n          {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000 }]\n\ndf = pd.DataFrame(mydict)\n\ndf.loc[:, df.iloc[0] % 2 == 0]",
+  "code": "# adapted from\n# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html\n# example where a boolean slice happens on the *columns*, not the rows\n\nimport pandas as pd\n\nmydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},\n          {'a': 100, 'b': 200, 'c': 300, 'd': 400},\n          {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000 }]\n\ndf = pd.DataFrame(mydict, index=['one', 'two', 'three'])\n\ndf.loc[:, df.loc['one'] % 2 == 0]",
   "explanation": [
     {
       "type": "Subscript",
-      "code_step": "df.loc[:, df.iloc[0] % 2 == 0]",
+      "code_step": "df.loc[:, df.loc['one'] % 2 == 0]",
       "fragment": {
         "start": {
           "line": 0,
@@ -11,7 +11,7 @@
         },
         "end": {
           "line": 0,
-          "ch": 30
+          "ch": 33
         }
       },
       "mapping": [
@@ -42,7 +42,7 @@
         {
           "select": "row",
           "anchor": "lhs",
-          "label": 0,
+          "label": "one",
           "illustrate": "highlight"
         }
       ],
@@ -56,9 +56,9 @@
             "d"
           ],
           "row_labels": [
-            0,
-            1,
-            2
+            "one",
+            "two",
+            "three"
           ],
           "data": [
             [
@@ -88,9 +88,9 @@
             "d"
           ],
           "row_labels": [
-            0,
-            1,
-            2
+            "one",
+            "two",
+            "three"
           ],
           "data": [
             [
