@@ -216,12 +216,6 @@
       "mapping": [
         {
           "select": "column",
-          "anchor": "lhs",
-          "label": "food_cost",
-          "illustrate": "highlight"
-        },
-        {
-          "select": "column",
           "from": {
             "anchor": "lhs",
             "label": "food_cost"
