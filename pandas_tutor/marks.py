@@ -136,8 +136,6 @@ def mark_for_groupby(step: GroupByCall, before: EvalResult,
     return highlights
 
 
-# df.head(2)
-# df.tail()
 # basic heuristic: assume that group keys map to row labels of result
 def mark_for_agg(step: AggCall, before: EvalResult,
                  after: EvalResult) -> t.List[Mark]:
@@ -166,7 +164,8 @@ def mark_for_agg(step: AggCall, before: EvalResult,
     return row_outlines
 
 
-# handles:
+# handler for all subscripts, like:
+#
 # df.loc[1:5, ['Name', 'Count']]
 # df.iloc[2:5, 1:4]
 # df[df['Count'] > 10000]
@@ -175,7 +174,9 @@ def mark_for_subscript(step: Subscript, before: EvalResult,
                        after: EvalResult) -> t.List[Mark]:
     if (isinstance(before, (DFResult, GroupbyResult))
             and isinstance(after, (SeriesResult, SeriesGroupbyResult))):
-        return mark_for_subscript_to_series(step, before, after)
+        return mark_for_subscript_into_series(step, before, after)
+    elif isinstance(before, SeriesResult) and isinstance(after, SeriesResult):
+        return mark_for_subscript_of_series(step, before, after)
     elif not isinstance(before, (DFResult, GroupbyResult)):
         return []
     elif not isinstance(after, (DFResult, GroupbyResult)):
@@ -205,7 +206,14 @@ def mark_for_subscript(step: Subscript, before: EvalResult,
     return [*col_marks, *row_marks]
 
 
-def mark_for_subscript_to_series(
+def mark_for_subscript_of_series(step: Subscript, before: SeriesResult,
+                                 after: SeriesResult) -> t.List[Mark]:
+    # no special cases for comparisons since there isn't a "column" we're using
+    # to filter
+    return diff_rows(before.val, after.val)
+
+
+def mark_for_subscript_into_series(
         step: Subscript, before: t.Union[DFResult, GroupbyResult],
         after: t.Union[SeriesResult, SeriesGroupbyResult]) -> t.List[Mark]:
     args = after.args
