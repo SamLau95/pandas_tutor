@@ -116,7 +116,7 @@ class CodeRange:
 @t.overload
 def positions_to_labels(
     positions: t.Union[int, Label],
-    df: t.Union[pd.DataFrame, pd.Series],
+    df: HasIndex,
     slicer: Slicer = 'iloc',
     axis: Axis = 'index',
 ) -> Label:
@@ -126,7 +126,7 @@ def positions_to_labels(
 @t.overload
 def positions_to_labels(  # noqa: F811
     positions: list,  # type: ignore
-    df: t.Union[pd.DataFrame, pd.Series],
+    df: HasIndex,
     slicer: Slicer = 'iloc',
     axis: Axis = 'index',
 ) -> t.List[Label]:
@@ -154,30 +154,30 @@ def positions_to_labels(  # noqa: F811
     return labels[positions]
 
 
-def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=False) -> pd.Index:
+def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=True) -> pd.Index:
     '''
-    find all matching row labels between df1 and df2. if only_if_diff=False
-    (default), then return empty list when df1 has exact same rows as df2.
+    find all matching row labels between df1 and df2. if only_if_diff=True
+    (default), then return empty index when df1 has same rows as df2.
     '''
     # TODO: doesn't handle duplicate values in an index properly, since:
     # >>> a = pd.Index([2, 2])
     # >>> a.intersection(a)
     # Index([2])
     matches = df1.index.intersection(df2.index)
-    return (pd.Index([])
-            if len(matches) == len(df1.index) or only_if_diff else matches)
+    return (pd.Index([]) if
+            (len(matches) == len(df1.index) and only_if_diff) else matches)
 
 
 def match_cols(df1: pd.DataFrame,
                df2: pd.DataFrame,
-               only_if_diff=False) -> pd.Index:
+               only_if_diff=True) -> pd.Index:
     '''
-    find all matching col labels between df1 and df2. if only_if_diff=False
-    (default), then return empty list when df1 has exact same cols as df2.
+    find all matching col labels between df1 and df2. if only_if_diff=True
+    (default), then return empty index when df1 has same cols as df2.
     '''
     matches = df1.columns.intersection(df2.columns)
-    return (pd.Index([])
-            if len(matches) == len(df1.columns) or only_if_diff else matches)
+    return (pd.Index([]) if
+            (len(matches) == len(df1.columns) and only_if_diff) else matches)
 
 
 @t.overload
