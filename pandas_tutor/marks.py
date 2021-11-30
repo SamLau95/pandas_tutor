@@ -4,7 +4,6 @@ creates mark specs. here's where the magic happens!
 import typing as t
 
 import pandas as pd
-from pandas.core.groupby.generic import DataFrameGroupBy
 
 from . import util
 from .diagram import Highlight, Mark, Outline, Selection, TablePos
@@ -208,8 +207,8 @@ def mark_for_subscript_to_series(
         step: Subscript, before: t.Union[DFResult, GroupbyResult],
         after: t.Union[SeriesResult, SeriesGroupbyResult]) -> t.List[Mark]:
     args = after.args
-    # when the output is a series, just highlight the row/column used for
-    # slicing, like the 'kids' in df['kids']
+    # when the output is a series, just draw an arrow for the row/column used
+    # for slicing, like the 'kids' in df['kids']
 
     # df['kids']
     if step.slicer is None:
@@ -217,11 +216,9 @@ def mark_for_subscript_to_series(
         if not isinstance(maybe_col, (str, int)):
             return []
 
-        highlights = make_highlights([maybe_col], 'column')
-        outlines = [
+        return [
             Outline(select='column', from_=lhs(maybe_col), to=rhs_series())
         ]
-        return [*highlights, *outlines]
 
     # df.iloc[0]
     maybe_row = args.get('slice1_values')
@@ -232,9 +229,7 @@ def mark_for_subscript_to_series(
                 before, GroupbyResult) else before.val)
             row = df.index[row]
 
-        highlights = make_highlights([row], 'row')
-        outlines = [Outline(select='row', from_=lhs(row), to=rhs_series())]
-        return [*highlights, *outlines]
+        return [Outline(select='row', from_=lhs(row), to=rhs_series())]
 
     # df.iloc[:, 0]
     maybe_col = args.get('slice2_values')
@@ -244,11 +239,7 @@ def mark_for_subscript_to_series(
             df = (util.ungroup(before.val) if isinstance(
                 before, GroupbyResult) else before.val)
             col = df.columns[col]
-        highlights = make_highlights([col], 'column')
-        outlines = [
-            Outline(select='column', from_=lhs(col), to=rhs_series())
-        ]
-        return [*highlights, *outlines]
+        return [Outline(select='column', from_=lhs(col), to=rhs_series())]
 
     return []
 

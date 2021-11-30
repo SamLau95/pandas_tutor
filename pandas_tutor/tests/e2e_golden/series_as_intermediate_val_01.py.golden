@@ -17,12 +17,6 @@
       "mapping": [
         {
           "select": "column",
-          "anchor": "lhs",
-          "label": "breed",
-          "illustrate": "highlight"
-        },
-        {
-          "select": "column",
           "from": {
             "anchor": "lhs",
             "label": "breed"

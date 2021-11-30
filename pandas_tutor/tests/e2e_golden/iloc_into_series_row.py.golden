@@ -166,12 +166,6 @@
       "mapping": [
         {
           "select": "row",
-          "anchor": "lhs",
-          "label": "Beagle",
-          "illustrate": "highlight"
-        },
-        {
-          "select": "row",
           "from": {
             "anchor": "lhs",
             "label": "Beagle"
