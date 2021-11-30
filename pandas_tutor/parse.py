@@ -228,11 +228,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
         by = get_arg_by_position_or_keyword(cst_node.args, 0, 'by')
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
 
-        if by is None:
-            self.fallback_call(cst_node)
-            return
-
-        label_expr = self.code_for(by.value)
+        label_expr = self.code_for(by.value) if by is not None else ''
 
         # default sort_values uses rows
         axis = (make_axis(self.code_for(axis_arg.value))

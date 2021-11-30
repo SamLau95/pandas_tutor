@@ -9,11 +9,15 @@ import gzip
 import io
 import typing as t
 import warnings
-import collections.abc
+from collections import abc
+from warnings import warn
 
 import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
+
+Axis = t.Literal['index', 'columns']
+Slicer = t.Literal['loc', 'iloc', None]
 
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes
@@ -36,8 +40,7 @@ def is_list_like(obj: t.Any) -> bool:
     want to do list(string), but we want to convert other types of list-like
     things to lists
     '''
-    return (not isinstance(obj, str)
-            and isinstance(obj, collections.abc.Iterable))
+    return (not isinstance(obj, str) and isinstance(obj, abc.Iterable))
 
 
 @dataclasses.dataclass
@@ -105,9 +108,50 @@ class CodeRange:
         return CodeRange(self.start % pos, self.end % pos)
 
 
-NULL_LOC = CodeRange(CodePosition(-999, -999), CodePosition(-999, -999))
+##############################################################################
+# pandas
+##############################################################################
 
-IndexPair = t.Tuple[Label, Label]
+
+@t.overload
+def positions_to_labels(
+    positions: t.Union[int, Label],
+    df: t.Union[pd.DataFrame, pd.Series],
+    slicer: Slicer = 'iloc',
+    axis: Axis = 'index',
+) -> Label:
+    ...
+
+
+@t.overload
+def positions_to_labels(  # noqa: F811
+    positions: list,  # type: ignore
+    df: t.Union[pd.DataFrame, pd.Series],
+    slicer: Slicer = 'iloc',
+    axis: Axis = 'index',
+) -> t.List[Label]:
+    ...
+
+
+def positions_to_labels(  # noqa: F811
+        positions,
+        df,
+        slicer='iloc',
+        axis='index',
+):
+    '''
+    convert positional indexes like [2, 3, 0] to labels.
+    doesn't do anything if slicer isn't iloc.
+    if positions is a single number, also returns a single label.
+    '''
+    if slicer != 'iloc':
+        return positions
+    if axis != 'index' and isinstance(df, pd.Series):
+        warn('tried to convert column labels for a series')
+        return positions
+
+    labels = t.cast(pd.Index, df.columns if axis == 'columns' else df.index)
+    return labels[positions]
 
 
 def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=False) -> pd.Index:
@@ -137,20 +181,25 @@ def match_cols(df1: pd.DataFrame,
 
 
 @t.overload
-def ungroup(groupby: SeriesGroupBy) -> pd.Series:
+def ungroup(obj: t.Union[SeriesGroupBy, pd.Series]) -> pd.Series:
     ...
 
 
 @t.overload
 def ungroup(  # type: ignore # noqa: F811
-        groupby: DataFrameGroupBy) -> pd.DataFrame:
+    obj: t.Union[DataFrameGroupBy, pd.DataFrame]  # noqa: F811
+) -> pd.DataFrame:
     ...
 
 
-def ungroup(groupby):  # noqa: F811
-    '''undos a groupby back into original val'''
-    # uses a private attribute...hopefully won't break later :)
-    return groupby._selected_obj
+def ungroup(obj):  # noqa: F811
+    '''
+    undos a groupby back into original val. if obj isn't grouped, returns obj
+    '''
+    if isinstance(obj, (SeriesGroupBy, DataFrameGroupBy)):
+        # uses a private attribute...hopefully won't break later :)
+        return obj._selected_obj
+    return obj
 
     # slower fallback
     # return groupby.transform(lambda x: x)
@@ -186,6 +235,11 @@ def base64_encode_plot(fig_or_axes: t.Any) -> str:
         # set mtime=0 to get deterministic gzips for testing
         zipped = gzip.compress(buf.read(), mtime=0)
         return base64.b64encode(zipped).decode()
+
+
+##############################################################################
+# memory
+##############################################################################
 
 
 def mem_used(obj: t.Any) -> float:

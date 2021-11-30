@@ -1,0 +1,382 @@
+{
+  "code": "# https://www.shanelynn.ie/summarising-aggregation-and-grouping-data-in-python-pandas/\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nindex,date,duration,item,month,network,network_type\n0,15/10/14 06:58,34.429,data,2014-11,data,data\n1,15/10/14 06:58,13,call,2014-11,Vodafone,mobile\n2,15/10/14 14:46,23,call,2014-11,Meteor,mobile\n3,15/10/14 14:48,4,call,2014-11,Tesco,mobile\n4,15/10/14 17:27,4,call,2014-11,Tesco,mobile\n5,15/10/14 18:55,4,call,2014-11,Tesco,mobile\n6,16/10/14 06:58,34.429,data,2014-11,data,data\n7,16/10/14 15:01,602,call,2014-11,Three,mobile\n8,16/10/14 15:12,1050,call,2014-11,Three,mobile\n9,16/10/14 15:30,19,call,2014-11,voicemail,voicemail\n10,16/10/14 16:21,1183,call,2014-11,Three,mobile\n11,16/10/14 22:18,1,sms,2014-11,Meteor,mobile\n12,16/10/14 22:21,1,sms,2014-11,Meteor,mobile\n13,17/10/14 06:58,34.429,data,2014-11,data,data\n14,17/10/14 10:53,1,sms,2014-11,Tesco,mobile\n15,17/10/14 11:19,1,sms,2014-11,Tesco,mobile\n16,17/10/14 11:20,1,sms,2014-11,Meteor,mobile\n17,17/10/14 17:22,1,sms,2014-11,Vodafone,mobile\n18,17/10/14 17:23,1,sms,2014-11,Vodafone,mobile\n\"\"\"\ndata = pd.read_csv(io.StringIO(csv))\ndata['duration'][8:13]  # <-- should show arrows after being turned into Series\n",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "data['duration'][8:13]",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 16
+        }
+      },
+      "mapping": [
+        {
+          "select": "column",
+          "from": {
+            "anchor": "lhs",
+            "label": "duration"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "index",
+            "date",
+            "duration",
+            "item",
+            "month",
+            "network",
+            "network_type"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "data": [
+            [
+              0,
+              "15/10/14 06:58",
+              34.429,
+              "data",
+              "2014-11",
+              "data",
+              "data"
+            ],
+            [
+              1,
+              "15/10/14 06:58",
+              13.0,
+              "call",
+              "2014-11",
+              "Vodafone",
+              "mobile"
+            ],
+            [
+              2,
+              "15/10/14 14:46",
+              23.0,
+              "call",
+              "2014-11",
+              "Meteor",
+              "mobile"
+            ],
+            [
+              3,
+              "15/10/14 14:48",
+              4.0,
+              "call",
+              "2014-11",
+              "Tesco",
+              "mobile"
+            ],
+            [
+              4,
+              "15/10/14 17:27",
+              4.0,
+              "call",
+              "2014-11",
+              "Tesco",
+              "mobile"
+            ],
+            [
+              5,
+              "15/10/14 18:55",
+              4.0,
+              "call",
+              "2014-11",
+              "Tesco",
+              "mobile"
+            ],
+            [
+              6,
+              "16/10/14 06:58",
+              34.429,
+              "data",
+              "2014-11",
+              "data",
+              "data"
+            ],
+            [
+              7,
+              "16/10/14 15:01",
+              602.0,
+              "call",
+              "2014-11",
+              "Three",
+              "mobile"
+            ],
+            [
+              8,
+              "16/10/14 15:12",
+              1050.0,
+              "call",
+              "2014-11",
+              "Three",
+              "mobile"
+            ],
+            [
+              9,
+              "16/10/14 15:30",
+              19.0,
+              "call",
+              "2014-11",
+              "voicemail",
+              "voicemail"
+            ],
+            [
+              10,
+              "16/10/14 16:21",
+              1183.0,
+              "call",
+              "2014-11",
+              "Three",
+              "mobile"
+            ],
+            [
+              11,
+              "16/10/14 22:18",
+              1.0,
+              "sms",
+              "2014-11",
+              "Meteor",
+              "mobile"
+            ],
+            [
+              12,
+              "16/10/14 22:21",
+              1.0,
+              "sms",
+              "2014-11",
+              "Meteor",
+              "mobile"
+            ],
+            [
+              13,
+              "17/10/14 06:58",
+              34.429,
+              "data",
+              "2014-11",
+              "data",
+              "data"
+            ],
+            [
+              14,
+              "17/10/14 10:53",
+              1.0,
+              "sms",
+              "2014-11",
+              "Tesco",
+              "mobile"
+            ],
+            [
+              15,
+              "17/10/14 11:19",
+              1.0,
+              "sms",
+              "2014-11",
+              "Tesco",
+              "mobile"
+            ],
+            [
+              16,
+              "17/10/14 11:20",
+              1.0,
+              "sms",
+              "2014-11",
+              "Meteor",
+              "mobile"
+            ],
+            [
+              17,
+              "17/10/14 17:22",
+              1.0,
+              "sms",
+              "2014-11",
+              "Vodafone",
+              "mobile"
+            ],
+            [
+              18,
+              "17/10/14 17:23",
+              1.0,
+              "sms",
+              "2014-11",
+              "Vodafone",
+              "mobile"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "data": [
+            34.429,
+            13.0,
+            23.0,
+            4.0,
+            4.0,
+            4.0,
+            34.429,
+            602.0,
+            1050.0,
+            19.0,
+            1183.0,
+            1.0,
+            1.0,
+            34.429,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    },
+    {
+      "type": "Subscript",
+      "code_step": "data['duration'][8:13]",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 16
+        },
+        "end": {
+          "line": 0,
+          "ch": 22
+        }
+      },
+      "mapping": [
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 8
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 8
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 9
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 9
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 10
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 10
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 11
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 11
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 12
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 12
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "row_labels": [
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "data": [
+            1050.0,
+            19.0,
+            1183.0,
+            1.0,
+            1.0
+          ]
+        }
+      }
+    }
+  ]
+}

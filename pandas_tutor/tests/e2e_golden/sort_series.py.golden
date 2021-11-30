@@ -1,0 +1,101 @@
+{
+  "code": "import pandas as pd\n\ns = pd.Series([3, -5, 7, 4], index=['a', 'b', 'c', 'd'])\ns.sort_values()\n",
+  "explanation": [
+    {
+      "type": "SortValuesCall",
+      "code_step": "s.sort_values()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 15
+        }
+      },
+      "mapping": [
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "a"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "a"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "b"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "b"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "c"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "c"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": "d"
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "d"
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "Series",
+          "row_labels": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "data": [
+            3,
+            -5,
+            7,
+            4
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [
+            "b",
+            "a",
+            "d",
+            "c"
+          ],
+          "data": [
+            -5,
+            3,
+            4,
+            7
+          ]
+        }
+      }
+    }
+  ]
+}
