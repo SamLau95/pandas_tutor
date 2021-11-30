@@ -1,0 +1,89 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ns = pd.read_csv(io.StringIO(csv))['food_cost']\n\ns.rename({0: 'hello', 1: 'world'})\n",
+  "explanation": [
+    {
+      "type": "RenameCall",
+      "code_step": "s.rename({0: 'hello', 1: 'world'})",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 34
+        }
+      },
+      "mapping": [
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 0
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "hello"
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 1
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "world"
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "Series",
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "data": [
+            466.0,
+            466.0,
+            324.0,
+            466.0,
+            324.0,
+            466.0,
+            466.0
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "row_labels": [
+            "hello",
+            "world",
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "data": [
+            466.0,
+            466.0,
+            324.0,
+            466.0,
+            324.0,
+            466.0,
+            466.0
+          ]
+        }
+      }
+    }
+  ]
+}
