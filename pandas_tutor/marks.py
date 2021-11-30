@@ -197,18 +197,23 @@ def mark_for_subscript_df_to_df(
     after_df = util.ungroup(after.val)
 
     # df.loc[:, df.iloc[0] % 2 == 0]
-    rows_used_for_filter = make_subscript_comparison_marks(
+    rows_for_filter = make_subscript_comparison_marks(
         col_slice, args.get('slice2_filter_labels', []), 'row')
 
+    no_filter_rows = len(rows_for_filter) == 0
+
     # df[df['Count'] > 14000]
-    cols_used_for_filter = make_subscript_comparison_marks(
+    cols_for_filter = make_subscript_comparison_marks(
         row_slice, args.get('slice1_filter_labels', []), 'column')
 
+    no_filter_cols = len(cols_for_filter) == 0
+
     return [
-        *cols_used_for_filter,
-        *diff_cols(before_df, after_df),
-        *rows_used_for_filter,
-        *diff_rows(before_df, after_df),
+        *cols_for_filter,
+        # if we're filtering, always display arrows between matching rows/cols
+        *diff_cols(before_df, after_df, only_if_diff=no_filter_rows),
+        *rows_for_filter,
+        *diff_rows(before_df, after_df, only_if_diff=no_filter_cols),
     ]
 
 
@@ -253,7 +258,6 @@ def mark_for_subscript_into_series(
         ]
 
     # df.loc[df["email"] > "s", "web"]
-    # import pdb; pdb.set_trace()
     # df.loc[:, df.iloc[0] % 2 == 0]
     row_slice = step.slice1
     col_slice = step.slice2
@@ -309,21 +313,21 @@ def diff_dfs(df1: pd.DataFrame, df2: pd.DataFrame):
     return [*cols, *rows]
 
 
-def diff_rows(df1: util.HasIndex, df2: util.HasIndex):
+def diff_rows(df1: util.HasIndex, df2: util.HasIndex, only_if_diff=True):
     '''
     when we just want to draw arrows between different rows and cols without
-    special highlights. only outputs when there is at least one mismatching row
+    special highlights.
     '''
-    row_matches = util.match_rows(df1, df2)
+    row_matches = util.match_rows(df1, df2, only_if_diff)
     return make_outlines(row_matches, 'row')
 
 
-def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame):
+def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame, only_if_diff=True):
     '''
     when we just want to draw arrows between different rows and cols without
-    special highlights. only outputs when there is at least one mismatching col
+    special highlights.
     '''
-    col_matches = util.match_cols(df1, df2)
+    col_matches = util.match_cols(df1, df2, only_if_diff)
     return make_outlines(col_matches, 'column')
 
 
