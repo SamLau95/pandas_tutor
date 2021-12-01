@@ -246,6 +246,8 @@ def mark_for_subscript_into_series(
     after: t.Union[SeriesResult, SeriesGroupbyResult],
 ) -> t.List[Mark]:
     args = after.args
+    before_df = util.ungroup(before.val)
+    after_df = util.ungroup(after.val)
 
     # df['kids']
     if step.slicer is None:
@@ -275,7 +277,7 @@ def mark_for_subscript_into_series(
     if isinstance(maybe_row, (str, int)):
         row = util.positions_to_labels(
             maybe_row,
-            df=util.ungroup(before.val),
+            df=before_df,
             slicer=step.slicer,
             axis='index',
         )
@@ -283,6 +285,9 @@ def mark_for_subscript_into_series(
         return [
             *rows_used_for_filter,
             Outline(select='row', from_=lhs(row), to=rhs_series()),
+            # when slicing a row out of dataframe, the resulting series has
+            # the df's column labels as the index. this means that the labels
+            # are "transposed" so we don't draw arrows for this case.
         ]
 
     # df.iloc[:, 0]
@@ -290,13 +295,16 @@ def mark_for_subscript_into_series(
     if isinstance(maybe_col, (str, int)):
         col = util.positions_to_labels(
             maybe_col,
-            df=util.ungroup(before.val),
+            df=before_df,
             slicer=step.slicer,
             axis='columns',
         )
         return [
             *cols_used_for_filter,
             Outline(select='column', from_=lhs(col), to=rhs_series()),
+            *diff_rows(before_df,
+                       after_df,
+                       only_if_diff=(len(cols_used_for_filter) == 0)),
         ]
 
     return []
