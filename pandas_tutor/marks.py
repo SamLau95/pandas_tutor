@@ -144,7 +144,7 @@ def mark_for_agg(step: AggCall, before: EvalResult,
     if not isinstance(after, (DFResult, SeriesResult)):
         return []
 
-    groups = t.cast(util.Groups, before.val.groups)
+    groups = util.get_groups(before.val)
 
     row_outlines: t.List[Mark] = []
     for group_key, lhs_labels in groups.items():

@@ -105,7 +105,7 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
 def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
     col_names = util.grouping_labels(val)
 
-    df_groups = t.cast(util.Groups, val.groups)
+    df_groups = util.get_groups(val)
     groups = [
         Group(name=list(name) if util.is_list_like(name) else [name],
               labels=labels.tolist()) for name, labels in df_groups.items()
@@ -124,7 +124,7 @@ def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
 def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
     col_names = util.grouping_labels(val)
 
-    df_groups = t.cast(util.Groups, val.groups)
+    df_groups = util.get_groups(val)
     groups = [
         Group(name=list(name) if util.is_list_like(name) else [name],
               labels=labels.tolist()) for name, labels in df_groups.items()

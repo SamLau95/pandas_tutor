@@ -1,0 +1,251 @@
+{
+  "code": "import pandas as pd\n\ndf_list = [[1, 2, None], [1, None, 4], [2, 1, 4], [100, 200, -5], [1, 2, None]]\nx = pd.DataFrame(df_list, columns=[\"a\", \"b\", \"c\"])\n\n# test groupby with NaN rows in keys\nx.groupby(by=[\"c\"], dropna=False).sum()\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "x.groupby(by=[\"c\"], dropna=False).sum()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 33
+        }
+      },
+      "mapping": [
+        {
+          "select": "column",
+          "anchor": "lhs",
+          "label": "c",
+          "illustrate": "highlight"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "a",
+            "b",
+            "c"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "data": [
+            [
+              1.0,
+              2.0,
+              null
+            ],
+            [
+              1.0,
+              null,
+              4.0
+            ],
+            [
+              2.0,
+              1.0,
+              4.0
+            ],
+            [
+              100.0,
+              200.0,
+              -5.0
+            ],
+            [
+              1.0,
+              2.0,
+              null
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "col_names": [
+            "a",
+            "b",
+            "c"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "data": [
+            [
+              1.0,
+              2.0,
+              null
+            ],
+            [
+              1.0,
+              null,
+              4.0
+            ],
+            [
+              2.0,
+              1.0,
+              4.0
+            ],
+            [
+              100.0,
+              200.0,
+              -5.0
+            ],
+            [
+              1.0,
+              2.0,
+              null
+            ]
+          ],
+          "group_data": {
+            "col_names": [
+              "c"
+            ],
+            "groups": [
+              {
+                "name": [
+                  -5.0
+                ],
+                "labels": [
+                  3
+                ]
+              },
+              {
+                "name": [
+                  4.0
+                ],
+                "labels": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "name": [
+                  null
+                ],
+                "labels": [
+                  0,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "AggCall",
+      "code_step": "x.groupby(by=[\"c\"], dropna=False).sum()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 33
+        },
+        "end": {
+          "line": 0,
+          "ch": 39
+        }
+      },
+      "mapping": [
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 3
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": -5.0
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 1
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 4.0
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 2
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": 4.0
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 0
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": null
+          },
+          "illustrate": "outline"
+        },
+        {
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 4
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": null
+          },
+          "illustrate": "outline"
+        }
+      ],
+      "data_frame": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "a",
+            "b"
+          ],
+          "row_labels": [
+            -5.0,
+            4.0,
+            null
+          ],
+          "data": [
+            [
+              100.0,
+              200.0
+            ],
+            [
+              3.0,
+              1.0
+            ],
+            [
+              2.0,
+              4.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

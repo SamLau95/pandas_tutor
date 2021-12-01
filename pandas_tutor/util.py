@@ -213,6 +213,23 @@ def grouping_labels(groupby: GroupBy) -> Labels:
     return groupby.grouper.names
 
 
+def get_groups(groupby: t.Union[SeriesGroupBy, DataFrameGroupBy]) -> Groups:
+    '''
+    gets mapping of group keys -> dataframe labels.
+    '''
+    # when the group keys includes NaN, groupby.groups freaks out, so we use a
+    # workaround by getting the group indices first, then recovering the labels
+    try:
+        return t.cast(Groups, groupby.groups)
+    except ValueError:
+        index = ungroup(groupby).index
+        groups = {
+            key: index[indices]
+            for key, indices in groupby.indices.items()
+        }
+        return t.cast(Groups, groups)
+
+
 def is_plottable(obj: t.Any) -> bool:
     fig = obj.figure if hasattr(obj, 'figure') else obj
     return hasattr(fig, 'savefig')
