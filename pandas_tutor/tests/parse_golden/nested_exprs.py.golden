@@ -1,0 +1,185 @@
+{
+  "type_": "ParsedModule",
+  "code": "# Tests that parser can handle nested function calls and slices\ndf.assign(rando=np.random.randn(12))\n\ndf2[df2[\"E\"].isin([\"two\", \"four\"])]\n\ndf.loc[df['first_name'].isin(['France', 'Tyisha', 'Eric'])]\n",
+  "location": {
+    "start": {
+      "line": 0,
+      "ch": 0
+    },
+    "end": {
+      "line": 6,
+      "ch": 0
+    }
+  },
+  "statements": [
+    {
+      "type_": "ChainStatement",
+      "code": "df.assign(rando=np.random.randn(12))",
+      "location": {
+        "start": {
+          "line": 1,
+          "ch": 0
+        },
+        "end": {
+          "line": 1,
+          "ch": 36
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 1,
+              "ch": 0
+            },
+            "end": {
+              "line": 1,
+              "ch": 2
+            }
+          }
+        },
+        {
+          "type_": "AssignCall",
+          "code": "df.assign(rando=np.random.randn(12))",
+          "location": {
+            "start": {
+              "line": 1,
+              "ch": 2
+            },
+            "end": {
+              "line": 1,
+              "ch": 36
+            }
+          },
+          "new_col_labels": [
+            "rando"
+          ]
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df2[df2[\"E\"].isin([\"two\", \"four\"])]",
+      "location": {
+        "start": {
+          "line": 3,
+          "ch": 0
+        },
+        "end": {
+          "line": 3,
+          "ch": 35
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df2",
+          "location": {
+            "start": {
+              "line": 3,
+              "ch": 0
+            },
+            "end": {
+              "line": 3,
+              "ch": 3
+            }
+          }
+        },
+        {
+          "type_": "Subscript",
+          "code": "df2[df2[\"E\"].isin([\"two\", \"four\"])]",
+          "location": {
+            "start": {
+              "line": 3,
+              "ch": 3
+            },
+            "end": {
+              "line": 3,
+              "ch": 35
+            }
+          },
+          "slicer": null,
+          "slice1": {
+            "type_": "SubsEval",
+            "code": "df2[\"E\"].isin([\"two\", \"four\"])",
+            "location": {
+              "start": {
+                "line": 3,
+                "ch": 4
+              },
+              "end": {
+                "line": 3,
+                "ch": 34
+              }
+            },
+            "expr": "df2[\"E\"].isin([\"two\", \"four\"])"
+          },
+          "slice2": null
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df.loc[df['first_name'].isin(['France', 'Tyisha', 'Eric'])]",
+      "location": {
+        "start": {
+          "line": 5,
+          "ch": 0
+        },
+        "end": {
+          "line": 5,
+          "ch": 59
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 5,
+              "ch": 0
+            },
+            "end": {
+              "line": 5,
+              "ch": 2
+            }
+          }
+        },
+        {
+          "type_": "Subscript",
+          "code": "df.loc[df['first_name'].isin(['France', 'Tyisha', 'Eric'])]",
+          "location": {
+            "start": {
+              "line": 5,
+              "ch": 2
+            },
+            "end": {
+              "line": 5,
+              "ch": 59
+            }
+          },
+          "slicer": "loc",
+          "slice1": {
+            "type_": "SubsEval",
+            "code": "df['first_name'].isin(['France', 'Tyisha', 'Eric'])",
+            "location": {
+              "start": {
+                "line": 5,
+                "ch": 7
+              },
+              "end": {
+                "line": 5,
+                "ch": 58
+              }
+            },
+            "expr": "df['first_name'].isin(['France', 'Tyisha', 'Eric'])"
+          },
+          "slice2": null
+        }
+      ]
+    }
+  ]
+}

@@ -16,8 +16,6 @@ class TestParse(unittest.TestCase):
 def make_test_case(test_name):
     in_file = test_cases / f'{test_name}.py'
     golden_file = test_cases / f'{test_name}.py.golden'
-    assert in_file.exists()
-    assert golden_file.exists()
 
     def test(self: TestParse):
         self.assertTrue(in_file.exists())

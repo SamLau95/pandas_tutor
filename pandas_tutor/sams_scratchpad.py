@@ -7,7 +7,7 @@ import prettyprinter  # type: ignore
 from prettyprinter import cpprint  # type: ignore
 from prettyprinter.prettyprinter import IMPLICIT_MODULES  # type: ignore
 
-from .parse import parse
+from .parse import parse, test_logger, test_parser
 from .run import run
 from .main import make_tutor_spec_py
 
@@ -15,10 +15,11 @@ prettyprinter.install_extras(include=['dataclasses', 'python', 'numpy'])
 
 # https://github.com/tommikaikkonen/prettyprinter/issues/27#issuecomment-451515061
 IMPLICIT_MODULES.add('pandas_tutor.parse_nodes')
+IMPLICIT_MODULES.add('pandas_tutor.util')
 
 shorten_df = True
 
-file_to_read = 'parse_golden/loc_one_val_01'
+file_to_read = 'parse_golden/nested_exprs'
 
 
 def p(obj):
@@ -28,7 +29,8 @@ def p(obj):
 if __name__ == "__main__":
     from pathlib import Path
     code = (Path(__file__).parent / f'tests/{file_to_read}.py').read_text()
-    root = parse(code)
+    root = test_parser(code)
+    test_logger(code)
     #     print(code)
     #     print('\n--------------\n')
 
