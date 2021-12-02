@@ -10,6 +10,8 @@ from dataclasses import field
 
 from .util import Axis, CodeRange, Slicer
 
+T = t.TypeVar('T')
+
 # Use a distinct type to distinguish between strings that can be eval'd
 RawCode = t.NewType('RawCode', str)
 
@@ -224,8 +226,8 @@ class AssignCall(Call):
 @dataclasses.dataclass
 class Subscript(ChainStep):
     '''
-    hard-codes one or two slice elements (i've never seen a third slice in
-    pandas code, but i could be wrong)
+    hard-codes two slice elements (i've never seen a third slice in pandas
+    code, but i could be wrong)
     '''
     slicer: Slicer
 

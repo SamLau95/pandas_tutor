@@ -7,6 +7,7 @@ import base64
 import dataclasses
 import gzip
 import io
+import itertools
 import typing as t
 import warnings
 from collections import abc
@@ -32,6 +33,11 @@ Groups = t.Dict[t.Union[str, tuple], pd.Index]
 def mapt(fn, *args):
     "map(fn, *args) and return the result as a tuple."
     return tuple(map(fn, *args))
+
+
+def flatmap(fn, *args):
+    "map(fn, *args) and return the result as a flattened iterable."
+    return itertools.chain.from_iterable(map(fn, *args))
 
 
 def is_list_like(obj: t.Any) -> bool:

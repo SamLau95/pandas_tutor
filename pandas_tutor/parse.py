@@ -24,12 +24,13 @@ import libcst.matchers as m
 import libcst.metadata as cstm
 
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStatement,
-                          GroupByCall, HeadCall, ParseResult, ParsedModule,
-                          ParseSyntaxError, PassThroughCall, RawCode,
-                          RenameCall, SortValuesCall, StartOfChain,
+                          ChainStep, GroupByCall, HeadCall, ParseResult,
+                          ParsedModule, ParseSyntaxError, PassThroughCall,
+                          RawCode, RenameCall, SortValuesCall, StartOfChain,
                           SubsComparison, Subscript, SubscriptEl, SubsEval,
                           SubsSlice, TailCall, VerbatimStatement)
 from .util import CodePosition, CodeRange
+from . import util
 
 T = t.TypeVar('T')
 
@@ -44,7 +45,8 @@ def parse(code: str) -> ParseResult:
                                 location=CodeRange(pos, pos))
 
     with_meta = cstm.MetadataWrapper(tree)
-    sam = PandasParser()
+    positions = with_meta.resolve(cstm.PositionProvider)
+    sam = PandasParser(tree, positions)
     _ = with_meta.visit(sam)
     return sam.root
 
@@ -64,6 +66,9 @@ is_verbatim_stmt = (m.AnnAssign() | m.Assign() | m.Assert() | m.Del()
                     | m.If() | m.Try() | m.While() | m.With())
 
 is_chain_stmt = m.Expr()
+
+# Used to ensure that we don't recurse into nested calls / subscripts
+is_argument = m.Arg() | m.SubscriptElement()
 
 is_attribute_call = m.Call(func=m.Attribute())
 
@@ -126,87 +131,117 @@ def make_axis(value: str) -> Axis:
         else 'index')
 
 
-class PandasParser(m.MatcherDecoratableVisitor):
-    METADATA_DEPENDENCIES = (cstm.PositionProvider, )
-
-    # Store cst_root because we need its code_for_node method
+class ParserBase(m.MatcherDecoratableVisitor):
+    """base class for our libcst node visitors"""
     cst_root: cst.Module
-    root: ParsedModule
-    current: t.Optional[ChainStatement] = None
 
-    slice_depth: int
+    # We need to initialize with this rather than use metadata since subclasses
+    # will visit subtrees of the module and metadata deps only work on
+    # module-level visitors.
+    positions: t.Mapping[cst.CSTNode, cstm.CodeRange]
 
-    # captures nodes for ":" and 'Name' from df.loc[:, 'Name']
-    slices: t.List[SubscriptEl]
-
-    # captures "col" and 'Year' from df[(df[col] > 10) | (df['Year'] >= 2020)]
-    comparison_labels: t.List[RawCode]
-
-    def __init__(self):
-        self.slice_depth = 0
-        self.slices = []
-        self.comparison_labels = []
+    def __init__(
+        self,
+        cst_root: cst.Module,
+        positions: t.Mapping[cst.CSTNode, cstm.CodeRange],
+    ):
         super().__init__()
+        self.cst_root = cst_root
+        self.positions = positions
+        self.__post_init__()
 
-    def visit_Module(self, cst_node):
-        self.cst_root = cst_node
-        self.root = self.make_node(ParsedModule, cst_node, statements=[])
+    def __post_init__(self):
+        '''called after __init__() to let subclasses initialize other fields'''
+        pass
 
-    def visit_IndentedBlock(self, cst_node):
-        return False
+    @classmethod
+    def from_parent(cls, parent: ParserBase):
+        return cls(parent.cst_root, parent.positions)
 
-    @m.visit(is_verbatim_stmt)
+    def code_for(self, cst_node):
+        return RawCode(self.cst_root.code_for_node(cst_node))
+
+    def location(self, cst_node) -> CodeRange:
+        code_range = self.positions[cst_node]
+        # subtract 1 from line to make everything 0-indexed
+        start = CodePosition(line=code_range.start.line - 1,
+                             ch=code_range.start.column)
+        end = CodePosition(line=code_range.end.line - 1,
+                           ch=code_range.end.column)
+        return CodeRange(start, end)
+
+    def make_node(self,
+                  cls: t.Type[T],
+                  cst_node: cst.CSTNode,
+                  location=None,
+                  **kwargs) -> T:
+        code = self.code_for(cst_node)
+        if location is None:
+            location = self.location(cst_node)
+        return cls(code=code, location=location, **kwargs)  # type: ignore
+
+
+class PandasParser(ParserBase):
+    '''top level visitor that handles statements'''
+    root: ParsedModule
+
+    def visit_Module(self, cst_node: cst.Module):
+        statements = util.flatmap(self.parse_statements, cst_node.body)
+        self.root = self.make_node(ParsedModule,
+                                   cst_node,
+                                   statements=list(statements))
+
+    def parse_statements(
+        self,
+        stmts: t.Union[cst.BaseCompoundStatement, cst.SimpleStatementLine],
+    ) -> t.List[t.Union[VerbatimStatement, ChainStatement]]:
+        if isinstance(stmts, cst.BaseCompoundStatement):
+            return [self.make_verbatim_stmt(stmts)]
+
+        statements = []
+        for stmt in stmts.body:
+            if m.matches(stmt, is_verbatim_stmt):
+                statements.append(self.make_verbatim_stmt(stmt))
+            elif m.matches(stmt, is_chain_stmt):
+                chain = ChainParser.from_parent(self)
+                stmt.visit(chain)
+                statements.append(chain.node)
+        return statements
+
     def make_verbatim_stmt(self, cst_node):
-        node = self.make_node(VerbatimStatement, cst_node)
-        self.root.statements.append(node)
+        return self.make_node(VerbatimStatement, cst_node)
 
-    @m.visit(is_chain_stmt)
-    def visit_chain_stmt(self, cst_node):
-        node = self.make_node(ChainStatement, cst_node, chain=[])
-        self.root.statements.append(node)
-        self.current = node
 
-    @m.leave(is_chain_stmt)
-    def leave_current_stmt(self, cst_node):
-        self.current = None
+class ChainParser(ParserBase):
+    """visits a chain statement, stores resulting node in self.node"""
+    node: ChainStatement
 
-    # for things in a chain, we append to chain on _leaving_ a node because of
-    # the way chains are nested in the CST. for a chain like df.a().b(), the
-    # parse order is b(), then a(), then df. if we append on leaving,
-    # then we get the right chain order of df, a(), b().
+    @property
+    def _chain(self) -> t.List[ChainStep]:
+        '''convenience to get current chain'''
+        return self.node.chain
 
-    # we need to get the df out of:
-    # df.f()
-    # df['hello']
-    @m.call_if_inside(is_chain_stmt)
-    @m.leave(m.Name())
-    def make_first_in_chain(self, cst_node):
-        # we should only do this for the first name in an chain
-        if self.current is not None and len(self.current.chain) == 0:
-            node = self.make_node(StartOfChain, cst_node)
-            self.current.chain.append(node)
+    def _append(self, step: ChainStep) -> None:
+        '''convenience to append to chain'''
+        self._chain.append(step)
 
-    ###########################################################################
-    # Calls
-    ###########################################################################
+    def on_visit(self, cst_node):
+        if not hasattr(self, 'node'):
+            if not isinstance(cst_node, cst.BaseSmallStatement):
+                warn('used ChainParser to visit a non-statement: '
+                     f'{self.code_for(cst_node)}')
+            self.node = self.make_node(ChainStatement, cst_node, chain=[])
 
-    @m.call_if_inside(is_chain_stmt)
-    @m.leave(is_attribute_call)
-    def make_pass_through_call(self, cst_node):
-        if m.matches(cst_node, is_parsed_call):
-            return
+        # skip all arguments so we don't recurse into nested function calls and
+        # subscripts
+        return not m.matches(cst_node, is_argument)
 
-        # special case: any function called on a groupby gets parsed into an
-        # AggCall.
-        # TODO: don't do this for non-aggregating funcs like .transform()
-        if self.current is not None and len(self.current.chain) > 1:
-            last = self.current.chain[-1]
-            if isinstance(last, GroupByCall):
-                node = self.make_call_node(AggCall, cst_node)
-                self.current.chain.append(node)
-                return
-
-        self.fallback_call(cst_node)
+    def leave_Subscript(self, cst_node: cst.Subscript):
+        # special case: use separate parser for subscripts since they require
+        # different logic than function calls
+        subs_parser = SubscriptParser.from_parent(self)
+        cst_node.visit(subs_parser)
+        self._append(subs_parser.step)
 
     def fallback_call(self, cst_node):
         '''
@@ -214,17 +249,53 @@ class PandasParser(m.MatcherDecoratableVisitor):
         when we don't handle the function, or if the function has weird
         arguments that we can't parse.
         '''
-        assert self.current is not None, (
-            'tried to call fallback when not in a chain!')
         fn_name = cst_node.func.attr.value
-        node = self.make_call_node(PassThroughCall, cst_node, fn_name=fn_name)
-        self.current.chain.append(node)
+        step = self.make_call_node(PassThroughCall, cst_node, fn_name=fn_name)
+        self._append(step)
 
-    @m.call_if_inside(is_chain_stmt)
+    # for things in a chain, we append to chain on _leaving_ a node because of
+    # the way chains are nested in the CST. for a chain like df.a().b(), the
+    # parse order is b(), then a(), then df. if we append on leaving,
+    # then we get the right chain order of df, a(), b().
+
+    # gets the df out of:
+    # df.f()
+    # df['hello']
+    @m.leave(m.Name())
+    def make_chain_start(self, cst_node):
+        # we should only do this for the first name in an chain, since for
+        # `df.assign` both `df` and `assign` are Names
+        if len(self._chain) == 0:
+            step = self.make_node(StartOfChain, cst_node)
+            self._append(step)
+
+    @m.leave(is_attribute_call)
+    def make_pass_through_call(self, cst_node):
+        if m.matches(cst_node, is_parsed_call):
+            return
+
+        # special case: assume any function called on a groupby is an
+        # aggregation, so make an AggCall.
+        #
+        # TODO: don't do this for non-aggregating funcs like .transform()
+        if len(self._chain) > 1:
+            last = self._chain[-1]
+            if isinstance(last, GroupByCall):
+                node = self.make_call_node(AggCall, cst_node)
+                self._append(node)
+                return
+
+        self.fallback_call(cst_node)
+
+    @m.leave(is_head_or_tail)
+    def make_head_or_tail(self, cst_node):
+        name = fn_name(cst_node)
+        node = self.make_call_node(HeadCall if name == 'head' else TailCall,
+                                   cst_node)
+        self._append(node)
+
     @m.leave(is_sort_values)
     def make_sort_values_call(self, cst_node):
-        assert self.current is not None, (
-            'tried to call make_sort_values_call when not in a chain!')
         by = get_arg_by_position_or_keyword(cst_node.args, 0, 'by')
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
 
@@ -238,13 +309,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
                                    cst_node,
                                    label_expr=label_expr,
                                    axis=axis)
-        self.current.chain.append(node)
+        self._append(node)
 
-    @m.call_if_inside(is_chain_stmt)
     @m.leave(is_rename)
     def make_rename_call(self, cst_node):
-        assert self.current is not None, (
-            'tried to call make_sort_values_call when not in a chain!')
         mapper = get_arg_by_position_or_keyword(cst_node.args, 0, 'mapper')
         index = get_arg_by_position_or_keyword(cst_node.args, 1, 'index')
         columns = get_arg_by_position_or_keyword(cst_node.args, 2, 'columns')
@@ -268,23 +336,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
                                    cst_node,
                                    mapping_expr=self.code_for(mapper.value),
                                    axis=axis)
-        self.current.chain.append(node)
+        self._append(node)
 
-    @m.call_if_inside(is_chain_stmt)
-    @m.leave(is_head_or_tail)
-    def make_head_or_tail(self, cst_node):
-        assert self.current is not None, (
-            'tried to call make_head_or_tail when not in a chain!')
-        name = fn_name(cst_node)
-        node = self.make_call_node(HeadCall if name == 'head' else TailCall,
-                                   cst_node)
-        self.current.chain.append(node)
-
-    @m.call_if_inside(is_chain_stmt)
     @m.leave(is_apply)
     def make_apply(self, cst_node):
-        assert self.current is not None, (
-            'tried to call make_apply when not in a chain!')
         # axis only available for dataframes...for series, arg 1 is some other
         # arg that we don't care about so we should be careful here
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
@@ -292,13 +347,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
         if axis_arg is not None:
             axis = make_axis(self.code_for(axis_arg.value))
         node = self.make_call_node(ApplyCall, cst_node, axis=axis)
-        self.current.chain.append(node)
+        self._append(node)
 
-    @m.call_if_inside(is_chain_stmt)
     @m.leave(is_assign)
     def make_assign(self, cst_node: cst.Call):
-        assert self.current is not None, (
-            'tried to call make_assign when not in a chain!')
         # each kwarg is a new column
         new_col_labels = [
             arg.keyword.value for arg in cst_node.args
@@ -308,13 +360,10 @@ class PandasParser(m.MatcherDecoratableVisitor):
         node = self.make_call_node(AssignCall,
                                    cst_node,
                                    new_col_labels=new_col_labels)
-        self.current.chain.append(node)
+        self._append(node)
 
-    @m.call_if_inside(is_chain_stmt)
     @m.leave(is_groupby)
     def make_groupby(self, cst_node):
-        assert self.current is not None, (
-            'tried to call make_head_or_tail when not in a chain!')
         by = get_arg_by_position_or_keyword(cst_node.args, 0, 'by')
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
 
@@ -327,169 +376,7 @@ class PandasParser(m.MatcherDecoratableVisitor):
                 if axis_arg is not None else 'index')
 
         node = self.make_call_node(GroupByCall, cst_node, axis=axis)
-        self.current.chain.append(node)
-
-    ###########################################################################
-    # Subscripts
-    ###########################################################################
-
-    # this is tricky!
-    # we don't want to treat inner subscripts as a chain e.g. df[df['keep']]
-    # so we call this when we recurse into df[df[...]]
-    # take care only to call this when we're in a nested slice
-    @m.call_if_inside(m.SubscriptElement())
-    @m.visit(m.Subscript())
-    def enter_inner_subscript(self, cst_node):
-        self.slice_depth += 1
-        # print(f'{self.code_for(cst_node): <40} ({self.slice_depth})')
-
-    @m.call_if_inside(m.SubscriptElement())
-    @m.leave(m.Subscript())
-    def leave_inner_subscript(self, cst_node):
-        self.slice_depth -= 1
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.call_if_not_inside(m.SubscriptElement())
-    @m.visit(m.Subscript())
-    def enter_top_subscript(self, cst_node):
-        pass
-        # assert self.slices is None, (
-        #     f'tried to enter_top_subscript with leftover slices: '
-        #     f'{self.code_for(cst_node)}')
-        # self.slices = []
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.call_if_not_inside(m.SubscriptElement() | m.Arg())
-    @m.leave(m.Subscript())
-    def make_subscript(self, cst_node: cst.Subscript):
-        assert self.current is not None, (
-            'called make_subscript when not in a chain!')
-        # HACK: limit subscript parsing depth to 1
-        assert self.slice_depth == 0, (
-            'called make_subscript in a nested subscript')
-
-        slicer: t.Optional[str] = None
-        if m.matches(cst_node, is_loc_iloc):
-            slicer = t.cast(cst.Attribute, cst_node.value).attr.value
-
-        n_slices = len(self.slices)
-        slice1 = None
-        slice2 = None
-
-        if n_slices == 1:
-            slice1 = self.slices[0]
-        elif n_slices == 2:
-            [slice1, slice2, *_] = self.slices
-        else:
-            warn(f'weird: parsed subscript with {n_slices} slices @\n'
-                 f'{self.code_for(cst_node)}\n\n'
-                 f'self.slices:\n'
-                 f'{self.slices}\n')
-            # TODO: have a 'passthrough slice'
-
-        # from dogs["breed"], get location of ["breed"]
-        location = (self.location(cst_node.lbracket)
-                    | self.location(cst_node.rbracket))
-        # if we have a slicer, then we want the '.loc' too
-        if slicer is not None:
-            location = location | self.location(
-                t.cast(cst.Attribute, cst_node.value).dot)
-
-        node = self.make_node(Subscript,
-                              cst_node,
-                              location=location,
-                              slicer=slicer,
-                              slice1=slice1,
-                              slice2=slice2)
-        self.current.chain.append(node)
-
-        self.slices = []
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.visit(m.Slice())
-    def make_subs_slice(self, cst_node):
-        if self.slice_depth > 0:
-            # print(f'called make_subs_slice from nested subscript, skipping: '
-            #       f'{self.code_for(cst_node)}')
-            return
-        node = self.make_node(SubsSlice, cst_node)
-        self.slices.append(node)
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.visit(m.Index(value=~is_boolean_slice))
-    def make_subs_eval(self, cst_node):
-        if self.slice_depth > 0:
-            # print(f'called make_subs_eval from nested subscript, skipping: '
-            #       f'{self.code_for(cst_node)}')
-            return
-        node = self.fallback_slice(cst_node)
-        self.slices.append(node)
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.visit(m.Index(value=is_boolean_slice))
-    def enter_subs_comparison(self, cst_node):
-        pass
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.leave(m.Index(value=is_boolean_slice))
-    def make_subs_comparison(self, cst_node):
-        assert self.comparison_labels is not None, (
-            f'called make_subs_comparison outside a comparison:'
-            f'{self.code_for(cst_node)}')
-        if len(self.comparison_labels) == 0:
-            warn("couldn't parse labels out of comparison, falling back "
-                 "to eval slice")
-            node = self.fallback_slice(cst_node)
-            self.slices.append(node)
-            return
-
-        node = self.make_node(SubsComparison,
-                              cst_node,
-                              label_exprs=self.comparison_labels)
-        self.slices.append(node)
-        self.comparison_labels = []
-
-    @m.call_if_inside(is_chain_stmt)
-    @m.call_if_inside(is_boolean_slice)
-    @m.visit(m.Index())
-    def record_comparison_label(self, cst_node):
-        assert self.comparison_labels is not None, (
-            f'called record_comparison_label outside a comparison:'
-            f'{self.code_for(cst_node)}')
-        # don't look for labels beyond one level of nesting
-        if self.slice_depth > 1:
-            return
-        self.comparison_labels.append(self.code_for(cst_node))
-
-    # fallback to just eval'ing the slice
-    def fallback_slice(self, cst_node):
-        return self.make_node(SubsEval, cst_node, expr=self.code_for(cst_node))
-
-    ###########################################################################
-    # Helpers
-    ###########################################################################
-
-    def code_for(self, cst_node):
-        return RawCode(self.cst_root.code_for_node(cst_node))
-
-    def location(self, cst_node) -> CodeRange:
-        meta = t.cast(cstm.CodeRange,
-                      self.get_metadata(cstm.PositionProvider, cst_node))
-
-        # subtract 1 from line to make everything 0-indexed
-        start = CodePosition(line=meta.start.line - 1, ch=meta.start.column)
-        end = CodePosition(line=meta.end.line - 1, ch=meta.end.column)
-        return CodeRange(start, end)
-
-    def make_node(self,
-                  cls: t.Type[T],
-                  cst_node: cst.CSTNode,
-                  location=None,
-                  **kwargs) -> T:
-        code = self.code_for(cst_node)
-        if location is None:
-            location = self.location(cst_node)
-        return cls(code=code, location=location, **kwargs)  # type: ignore
+        self._append(node)
 
     def make_call_node(self, cls: t.Type[T], cst_node: cst.Call,
                        **kwargs) -> T:
@@ -503,6 +390,125 @@ class PandasParser(m.MatcherDecoratableVisitor):
         location = CodeRange(dot.start, entire_expr.end)
 
         return self.make_node(cls, cst_node, location=location, **kwargs)
+
+
+class SubscriptParser(ParserBase):
+    """
+    special parser for subscript expressions, stores resulting node in
+    self.step
+    """
+    step: Subscript
+
+    def on_visit(self, node):
+        if not isinstance(node, cst.Subscript):
+            warn('used SubscriptParser to visit a non-subscript: '
+                 f'{self.code_for(node)}')
+
+        slicer: t.Optional[str] = None
+        if m.matches(node, is_loc_iloc):
+            slicer = t.cast(cst.Attribute, node.value).attr.value
+
+        # from dogs["breed"], get location of ["breed"]
+        location = (self.location(node.lbracket)
+                    | self.location(node.rbracket))
+
+        # if we have a slicer, then we want the '.loc' too
+        if slicer is not None:
+            location = location | self.location(
+                t.cast(cst.Attribute, node.value).dot)
+
+        n_slices = len(node.slice)
+        slice1 = (self.parse_slice(node.slice[0].slice)
+                  if n_slices >= 1 else None)
+        slice2 = (self.parse_slice(node.slice[1].slice)
+                  if n_slices >= 2 else None)
+        if n_slices > 2:
+            warn(f'weird: parsed subscript with {n_slices} slices @\n'
+                 f'{self.code_for(node)}')
+
+        self.step = self.make_node(
+            Subscript,
+            node,
+            location=location,
+            slicer=slicer,
+            slice1=slice1,
+            slice2=slice2,
+        )
+
+        # We do everything within on_visit
+        return False
+
+    def parse_slice(self, node: cst.BaseSlice) -> t.Optional[SubscriptEl]:
+        if m.matches(node, m.Slice()):
+            return self.make_node(SubsSlice, node)
+        elif m.matches(node, m.Index(value=is_boolean_slice)):
+            node = t.cast(cst.Index, node)
+            extractor = ExtractLiteralIndexes.from_parent(self)
+            node.value.visit(extractor)
+            return self.make_node(
+                SubsComparison,
+                node,
+                label_exprs=extractor.labels,
+            )
+        elif m.matches(node, m.Index(value=~is_boolean_slice)):
+            # the fallback case: just eval the slice expression
+            return self.make_node(SubsEval, node, expr=self.code_for(node))
+        else:
+            warn(f'weird slice type, defaulting to empty slice:\n'
+                 f'{self.code_for(node)}')
+            return self.make_node(SubsSlice, node)
+
+
+class ExtractLiteralIndexes(ParserBase):
+    """
+    special parser to get all simple index values out of a subscript index.
+    pandas has expressions that look like this:
+
+        df2[df2["E"].isin(["two", "four"])]
+
+    where we want to get the "E" label out of the inner subscript.
+
+    so we use this parser on Expr nodes to get:
+
+    df[0]                                 -> ["0"]
+    df['hello']                           -> ["'hello'"]
+    (df[col] > 0) & (df['sam'] == 2)      -> ["col", "'sam'"]
+    (df[df['nested']]) & (df['sam'] == 2) -> ["'sam'"]
+
+    but the current implementation doesn't try to distinguish iloc from loc:
+
+    df.iloc[0]                            -> ["0"]
+    """
+    labels: t.List[RawCode]
+    _depth: int
+
+    @property
+    def _is_nested(self):
+        return self._depth > 1
+
+    def on_visit(self, cst_node):
+        if not hasattr(self, 'labels'):
+            if not isinstance(cst_node, cst.BaseExpression):
+                warn('used ExtractLiteralIndexes to visit a non-expression: '
+                     f'{self.code_for(cst_node)}')
+            self.labels = []
+            self._depth = 0
+        return super().on_visit(cst_node)
+
+    def visit_Subscript(self, cst_node):
+        self._depth += 1
+
+    def leave_Subscript(self, cst_node):
+        self._depth -= 1
+
+    @m.visit(m.Index())
+    def record_index(self, cst_node: cst.Index):
+        if self._is_nested:
+            return
+
+        val = cst_node.value
+        if isinstance(val, (cst.BaseString, cst.BaseNumber, cst.Name)):
+            self.labels.append(self.code_for(val))
 
 
 whitespace = (m.Comment() | m.EmptyLine() | m.Newline()
@@ -572,7 +578,8 @@ def test_parser(code):
     print('\n-----\n')
     tree = cst.parse_module(code)
     with_meta = cstm.MetadataWrapper(tree)
-    sam = PandasParser()
+    positions = with_meta.resolve(cstm.PositionProvider)
+    sam = PandasParser(tree, positions)
     _ = with_meta.visit(sam)
     return sam.root
 
