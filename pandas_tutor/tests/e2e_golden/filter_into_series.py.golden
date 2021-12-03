@@ -16,12 +16,13 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "email",
-          "illustrate": "highlight"
+          "label": "email"
         },
         {
+          "illustrate": "outline",
           "select": "column",
           "from": {
             "anchor": "lhs",
@@ -30,10 +31,10 @@
           "to": {
             "anchor": "rhs",
             "label": "pandas.Series"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -42,10 +43,10 @@
           "to": {
             "anchor": "rhs",
             "label": 3
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -54,10 +55,10 @@
           "to": {
             "anchor": "rhs",
             "label": 4
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -66,8 +67,7 @@
           "to": {
             "anchor": "rhs",
             "label": 9
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

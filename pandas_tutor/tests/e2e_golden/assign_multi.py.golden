@@ -16,22 +16,22 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "rhs",
-          "label": "daily",
-          "illustrate": "highlight"
+          "label": "daily"
         },
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "rhs",
-          "label": "yearly",
-          "illustrate": "highlight"
+          "label": "yearly"
         },
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "rhs",
-          "label": "s",
-          "illustrate": "highlight"
+          "label": "s"
         }
       ],
       "data_frame": {

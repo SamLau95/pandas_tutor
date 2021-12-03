@@ -16,6 +16,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "column",
           "from": {
             "anchor": "lhs",
@@ -24,8 +25,7 @@
           "to": {
             "anchor": "rhs",
             "label": "pandas.Series"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

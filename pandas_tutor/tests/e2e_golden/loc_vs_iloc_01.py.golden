@@ -16,12 +16,13 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "rhs",
-          "label": "kids",
-          "illustrate": "highlight"
+          "label": "kids"
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -30,10 +31,10 @@
           "to": {
             "anchor": "rhs",
             "label": 0
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -42,10 +43,10 @@
           "to": {
             "anchor": "rhs",
             "label": 1
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -54,10 +55,10 @@
           "to": {
             "anchor": "rhs",
             "label": 2
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -66,10 +67,10 @@
           "to": {
             "anchor": "rhs",
             "label": 3
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -78,10 +79,10 @@
           "to": {
             "anchor": "rhs",
             "label": 4
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -90,10 +91,10 @@
           "to": {
             "anchor": "rhs",
             "label": 5
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -102,8 +103,7 @@
           "to": {
             "anchor": "rhs",
             "label": 6
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {
@@ -264,6 +264,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -272,10 +273,10 @@
           "to": {
             "anchor": "rhs",
             "label": 0
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -284,10 +285,10 @@
           "to": {
             "anchor": "rhs",
             "label": 2
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -296,10 +297,10 @@
           "to": {
             "anchor": "rhs",
             "label": 3
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -308,10 +309,10 @@
           "to": {
             "anchor": "rhs",
             "label": 6
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -320,10 +321,10 @@
           "to": {
             "anchor": "rhs",
             "label": 4
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -332,8 +333,7 @@
           "to": {
             "anchor": "rhs",
             "label": 1
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

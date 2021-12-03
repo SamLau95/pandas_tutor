@@ -16,12 +16,13 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "row",
           "anchor": "lhs",
-          "label": "two",
-          "illustrate": "highlight"
+          "label": "two"
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -30,8 +31,7 @@
           "to": {
             "anchor": "rhs",
             "label": "pandas.Series"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

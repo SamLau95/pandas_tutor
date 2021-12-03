@@ -16,6 +16,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "column",
           "from": {
             "anchor": "lhs",
@@ -24,10 +25,10 @@
           "to": {
             "anchor": "rhs",
             "label": "b"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "column",
           "from": {
             "anchor": "lhs",
@@ -36,14 +37,13 @@
           "to": {
             "anchor": "rhs",
             "label": "d"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "highlight",
           "select": "row",
           "anchor": "lhs",
-          "label": "one",
-          "illustrate": "highlight"
+          "label": "one"
         }
       ],
       "data_frame": {

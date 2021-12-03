@@ -16,12 +16,13 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "size",
-          "illustrate": "highlight"
+          "label": "size"
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -30,10 +31,10 @@
           "to": {
             "anchor": "rhs",
             "label": 2
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -42,10 +43,10 @@
           "to": {
             "anchor": "rhs",
             "label": 4
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -54,10 +55,10 @@
           "to": {
             "anchor": "rhs",
             "label": 8
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -66,10 +67,10 @@
           "to": {
             "anchor": "rhs",
             "label": 10
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -78,10 +79,10 @@
           "to": {
             "anchor": "rhs",
             "label": 11
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -90,10 +91,10 @@
           "to": {
             "anchor": "rhs",
             "label": 13
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -102,10 +103,10 @@
           "to": {
             "anchor": "rhs",
             "label": 16
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -114,10 +115,10 @@
           "to": {
             "anchor": "rhs",
             "label": 19
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -126,10 +127,10 @@
           "to": {
             "anchor": "rhs",
             "label": 20
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -138,10 +139,10 @@
           "to": {
             "anchor": "rhs",
             "label": 22
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -150,10 +151,10 @@
           "to": {
             "anchor": "rhs",
             "label": 24
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -162,10 +163,10 @@
           "to": {
             "anchor": "rhs",
             "label": 26
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -174,10 +175,10 @@
           "to": {
             "anchor": "rhs",
             "label": 31
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -186,10 +187,10 @@
           "to": {
             "anchor": "rhs",
             "label": 32
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -198,10 +199,10 @@
           "to": {
             "anchor": "rhs",
             "label": 33
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -210,8 +211,7 @@
           "to": {
             "anchor": "rhs",
             "label": 35
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {
@@ -708,12 +708,13 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "rhs",
-          "label": "group",
-          "illustrate": "highlight"
+          "label": "group"
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -722,10 +723,10 @@
           "to": {
             "anchor": "rhs",
             "label": 2
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -734,10 +735,10 @@
           "to": {
             "anchor": "rhs",
             "label": 4
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -746,10 +747,10 @@
           "to": {
             "anchor": "rhs",
             "label": 8
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -758,10 +759,10 @@
           "to": {
             "anchor": "rhs",
             "label": 10
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -770,10 +771,10 @@
           "to": {
             "anchor": "rhs",
             "label": 11
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -782,10 +783,10 @@
           "to": {
             "anchor": "rhs",
             "label": 13
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -794,10 +795,10 @@
           "to": {
             "anchor": "rhs",
             "label": 16
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -806,10 +807,10 @@
           "to": {
             "anchor": "rhs",
             "label": 19
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -818,10 +819,10 @@
           "to": {
             "anchor": "rhs",
             "label": 20
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -830,10 +831,10 @@
           "to": {
             "anchor": "rhs",
             "label": 22
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -842,10 +843,10 @@
           "to": {
             "anchor": "rhs",
             "label": 24
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -854,10 +855,10 @@
           "to": {
             "anchor": "rhs",
             "label": 26
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -866,10 +867,10 @@
           "to": {
             "anchor": "rhs",
             "label": 31
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -878,10 +879,10 @@
           "to": {
             "anchor": "rhs",
             "label": 32
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -890,10 +891,10 @@
           "to": {
             "anchor": "rhs",
             "label": 33
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -902,8 +903,7 @@
           "to": {
             "anchor": "rhs",
             "label": 35
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {
@@ -1067,10 +1067,10 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "group",
-          "illustrate": "highlight"
+          "label": "group"
         }
       ],
       "data_frame": {
@@ -1299,6 +1299,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1307,10 +1308,10 @@
           "to": {
             "anchor": "rhs",
             "label": "herding"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1319,10 +1320,10 @@
           "to": {
             "anchor": "rhs",
             "label": "herding"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1331,10 +1332,10 @@
           "to": {
             "anchor": "rhs",
             "label": "hound"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1343,10 +1344,10 @@
           "to": {
             "anchor": "rhs",
             "label": "hound"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1355,10 +1356,10 @@
           "to": {
             "anchor": "rhs",
             "label": "hound"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1367,10 +1368,10 @@
           "to": {
             "anchor": "rhs",
             "label": "non-sporting"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1379,10 +1380,10 @@
           "to": {
             "anchor": "rhs",
             "label": "sporting"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1391,10 +1392,10 @@
           "to": {
             "anchor": "rhs",
             "label": "terrier"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1403,10 +1404,10 @@
           "to": {
             "anchor": "rhs",
             "label": "terrier"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1415,10 +1416,10 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1427,10 +1428,10 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1439,10 +1440,10 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1451,10 +1452,10 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1463,10 +1464,10 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1475,10 +1476,10 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -1487,8 +1488,7 @@
           "to": {
             "anchor": "rhs",
             "label": "toy"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

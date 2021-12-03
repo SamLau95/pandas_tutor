@@ -16,6 +16,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -24,10 +25,10 @@
           "to": {
             "anchor": "rhs",
             "label": "a"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -36,8 +37,7 @@
           "to": {
             "anchor": "rhs",
             "label": "b"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

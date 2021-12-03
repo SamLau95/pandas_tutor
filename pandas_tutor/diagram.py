@@ -3,6 +3,7 @@ has dataclass definitions for final JSON output.
 '''
 
 from __future__ import annotations
+from abc import ABC, abstractmethod
 
 import dataclasses
 from traceback import TracebackException
@@ -60,6 +61,11 @@ def encode_pd_objs(obj: t.Any):
         return obj.tolist()
     if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
         return str(obj)
+
+
+##############################################################################
+# Explanation
+##############################################################################
 
 
 @dataclasses.dataclass
@@ -120,28 +126,48 @@ class RuntimeErrorInChain(RuntimeErrorOutput):
 
 Explanation = t.List[t.Union[Diagram, ErrorOutput]]
 
+##############################################################################
+# Mark
+##############################################################################
+
 Selection = t.Literal['column', 'row']
 Anchor = t.Literal['lhs', 'rhs']
+MarkType = t.Literal['highlight', 'outline', 'crossout']
 
 
 @dataclasses.dataclass
-class Highlight:
+class Mark:
+    illustrate: MarkType = field(init=False)
     select: Selection
+
+    def __post_init__(self):
+        raise NotImplementedError(
+            'subclasses need to initialize self.illustrate')
+
+
+@dataclasses.dataclass
+class Highlight(Mark):
     anchor: Anchor
     label: Label
-    illustrate: t.Literal['highlight'] = 'highlight'
+
+    def __post_init__(self):
+        self.illustrate = 'highlight'
 
 
 @dataclasses.dataclass
-class Outline:
-    select: Selection
+class Outline(Mark):
     # from is a Python keyword!
     from_: TablePos
     to: TablePos
-    illustrate: t.Literal['outline'] = 'outline'
+
+    def __post_init__(self):
+        self.illustrate = 'outline'
 
 
-Mark = t.Union[Highlight, Outline]
+@dataclasses.dataclass
+class CrossOut(Outline):
+    def __post_init__(self):
+        self.illustrate = 'crossout'
 
 
 @dataclasses.dataclass
@@ -151,6 +177,10 @@ class TablePos:
 
 
 PrevRHS = t.Literal['prev_rhs']
+
+##############################################################################
+# DataPair
+##############################################################################
 
 
 @dataclasses.dataclass

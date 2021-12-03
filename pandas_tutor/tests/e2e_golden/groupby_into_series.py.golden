@@ -16,10 +16,10 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "size",
-          "illustrate": "highlight"
+          "label": "size"
         }
       ],
       "data_frame": {
@@ -215,6 +215,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "column",
           "from": {
             "anchor": "lhs",
@@ -223,8 +224,7 @@
           "to": {
             "anchor": "rhs",
             "label": "pandas.Series"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {
@@ -302,6 +302,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -310,10 +311,10 @@
           "to": {
             "anchor": "rhs",
             "label": "large"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -322,10 +323,10 @@
           "to": {
             "anchor": "rhs",
             "label": "medium"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -334,10 +335,10 @@
           "to": {
             "anchor": "rhs",
             "label": "medium"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -346,10 +347,10 @@
           "to": {
             "anchor": "rhs",
             "label": "medium"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -358,10 +359,10 @@
           "to": {
             "anchor": "rhs",
             "label": "medium"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -370,10 +371,10 @@
           "to": {
             "anchor": "rhs",
             "label": "small"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -382,8 +383,7 @@
           "to": {
             "anchor": "rhs",
             "label": "small"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

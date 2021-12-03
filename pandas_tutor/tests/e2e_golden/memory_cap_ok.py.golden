@@ -16,6 +16,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -24,10 +25,10 @@
           "to": {
             "anchor": "rhs",
             "label": 23218
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -36,10 +37,10 @@
           "to": {
             "anchor": "rhs",
             "label": 20731
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -48,10 +49,10 @@
           "to": {
             "anchor": "rhs",
             "label": 39555
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -60,10 +61,10 @@
           "to": {
             "anchor": "rhs",
             "label": 147506
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -72,8 +73,7 @@
           "to": {
             "anchor": "rhs",
             "label": 314215
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

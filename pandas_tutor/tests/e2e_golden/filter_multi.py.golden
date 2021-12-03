@@ -16,18 +16,19 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "Count",
-          "illustrate": "highlight"
+          "label": "Count"
         },
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "Sex",
-          "illustrate": "highlight"
+          "label": "Sex"
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -36,8 +37,7 @@
           "to": {
             "anchor": "rhs",
             "label": 5
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

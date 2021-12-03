@@ -16,12 +16,13 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": "Count",
-          "illustrate": "highlight"
+          "label": "Count"
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -30,10 +31,10 @@
           "to": {
             "anchor": "rhs",
             "label": 0
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -42,10 +43,10 @@
           "to": {
             "anchor": "rhs",
             "label": 1
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -54,10 +55,10 @@
           "to": {
             "anchor": "rhs",
             "label": 2
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -66,8 +67,7 @@
           "to": {
             "anchor": "rhs",
             "label": 5
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {

@@ -16,10 +16,10 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "rhs",
-          "label": "daily",
-          "illustrate": "highlight"
+          "label": "daily"
         }
       ],
       "data_frame": {

@@ -16,10 +16,10 @@
       },
       "mapping": [
         {
+          "illustrate": "highlight",
           "select": "column",
           "anchor": "lhs",
-          "label": null,
-          "illustrate": "highlight"
+          "label": null
         }
       ],
       "data_frame": {
@@ -140,6 +140,7 @@
       },
       "mapping": [
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -148,10 +149,10 @@
           "to": {
             "anchor": "rhs",
             "label": "pg"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -160,10 +161,10 @@
           "to": {
             "anchor": "rhs",
             "label": "sam"
-          },
-          "illustrate": "outline"
+          }
         },
         {
+          "illustrate": "outline",
           "select": "row",
           "from": {
             "anchor": "lhs",
@@ -172,8 +173,7 @@
           "to": {
             "anchor": "rhs",
             "label": "sam"
-          },
-          "illustrate": "outline"
+          }
         }
       ],
       "data_frame": {
