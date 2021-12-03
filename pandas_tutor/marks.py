@@ -6,11 +6,11 @@ import typing as t
 import pandas as pd
 
 from . import util
-from .diagram import Highlight, Mark, Outline, Selection, TablePos
+from .diagram import CrossOut, Highlight, Mark, Outline, Selection, TablePos
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStep,
-                          EvalError, GroupByCall, HeadCall, PassThroughCall,
-                          RenameCall, SortValuesCall, SubsComparison,
-                          Subscript, SubscriptEl, TailCall)
+                          DropCall, EvalError, GroupByCall, HeadCall,
+                          PassThroughCall, RenameCall, SortValuesCall,
+                          SubsComparison, Subscript, SubscriptEl, TailCall)
 from .run import (Arg, DFResult, EvalResult, GroupbyResult,
                   SeriesGroupbyResult, SeriesResult)
 
@@ -25,6 +25,8 @@ def make_marks(step: ChainStep, before: EvalResult,
         return no_marks()
     elif isinstance(step, SortValuesCall):
         return mark_for_sort_values(step, before, after)
+    elif isinstance(step, DropCall):
+        return mark_for_drop(step, before, after)
     elif isinstance(step, RenameCall):
         return mark_for_rename(step, before, after)
     elif isinstance(step, HeadCall) or isinstance(step, TailCall):
@@ -64,6 +66,22 @@ def mark_for_sort_values(step: SortValuesCall, before: EvalResult,
                                  anchor='rhs')
     outlines = make_outlines(sorted_labels, selection(step.axis))
     return [*highlights, *outlines]
+
+
+# dogs.drop(columns=['type', 'price'])
+def mark_for_drop(step: DropCall, before: EvalResult,
+                  after: EvalResult) -> t.List[Mark]:
+    if not (isinstance(before, (DFResult, SeriesResult))
+            and isinstance(after, (DFResult, SeriesResult))):
+        return []
+    args = after.args
+
+    labels = args.get('labels', [])
+    if isinstance(labels, str):
+        labels = [labels]
+
+    # cross out dropped rows or columns
+    return make_crossouts(labels, selection(step.axis))
 
 
 # df.rename(index={'sam': 'smae'})
@@ -364,12 +382,26 @@ def make_highlights(labels: t.Iterable,
 
 def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
     '''
-    used as a shorthand when index values don't change, which is most of the
-    time
+    shorthand when index values don't change, which is most of the time
     '''
     return [
         Outline(select=select, from_=lhs(label), to=rhs(label))
         for label in labels
+    ]
+
+
+def make_crossouts(labels: t.Iterable, select: Selection) -> t.List[Mark]:
+    '''
+    shorthand for crossouts
+    '''
+    # we haven't implemented arg anchors yet, so use a dummy value for now
+    dummy_arg_anchor = {'anchor': 'arg', 'index': 0}
+    return [
+        CrossOut(
+            select=select,
+            from_=dummy_arg_anchor,  # type: ignore
+            to=lhs(label),
+        ) for label in labels
     ]
 
 

@@ -218,6 +218,20 @@ class AssignCall(Call):
     new_col_labels: t.List[str]
 
 
+@dataclasses.dataclass
+class DropCall(Call):
+    '''
+    dogs.drop(columns=['type', 'price'])
+    dogs.drop(['Labrador Retriever', 'Beagle'])
+    '''
+    fn_name = 'drop'
+
+    # Expression that evaluates to labels
+    label_expr: RawCode = evals_into('labels')
+
+    axis: Axis = 'index'
+
+
 ##############################################################################
 # Subscripts
 ##############################################################################
