@@ -24,11 +24,11 @@ import libcst.matchers as m
 import libcst.metadata as cstm
 
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStatement,
-                          ChainStep, GroupByCall, HeadCall, ParseResult,
-                          ParsedModule, ParseSyntaxError, PassThroughCall,
-                          RawCode, RenameCall, SortValuesCall, StartOfChain,
-                          SubsComparison, Subscript, SubscriptEl, SubsEval,
-                          SubsSlice, TailCall, VerbatimStatement)
+                          ChainStep, DropCall, GroupByCall, HeadCall,
+                          ParseResult, ParsedModule, ParseSyntaxError,
+                          PassThroughCall, RawCode, RenameCall, SortValuesCall,
+                          StartOfChain, SubsComparison, Subscript, SubscriptEl,
+                          SubsEval, SubsSlice, TailCall, VerbatimStatement)
 from .util import CodePosition, CodeRange
 from . import util
 
@@ -83,6 +83,7 @@ def fn_name(call: cst.Call):
 
 
 is_sort_values = fn_matcher('sort_values')
+is_drop = fn_matcher('drop')
 is_rename = fn_matcher('rename')
 is_head_or_tail = fn_matcher('head') | fn_matcher('tail')
 is_groupby = fn_matcher('groupby')
@@ -90,8 +91,8 @@ is_apply = fn_matcher('apply')
 is_assign = fn_matcher('assign')
 
 # make sure to update this whenever we add a new call to the section above
-is_parsed_call = (is_sort_values | is_rename | is_head_or_tail | is_groupby
-                  | is_apply | is_assign)
+is_parsed_call = (is_sort_values | is_drop | is_rename | is_head_or_tail
+                  | is_groupby | is_apply | is_assign)
 
 is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                             | m.Name('iloc')))
@@ -306,6 +307,31 @@ class ChainParser(ParserBase):
                 if axis_arg is not None else 'index')
 
         node = self.make_call_node(SortValuesCall,
+                                   cst_node,
+                                   label_expr=label_expr,
+                                   axis=axis)
+        self._append(node)
+
+    @m.leave(is_drop)
+    def make_drop_call(self, cst_node):
+        labels = get_arg_by_position_or_keyword(cst_node.args, 0, 'labels')
+        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
+        index = get_arg_by_position_or_keyword(cst_node.args, 2, 'index')
+        columns = get_arg_by_position_or_keyword(cst_node.args, 3, 'columns')
+        axis = 'index'  # default
+
+        if index is not None:
+            labels = index
+            axis = 'index'
+        elif columns is not None:
+            labels = columns
+            axis = 'columns'
+        elif axis_arg is not None:
+            axis = make_axis(self.code_for(axis_arg.value))
+
+        label_expr = self.code_for(labels.value) if labels is not None else ''
+
+        node = self.make_call_node(DropCall,
                                    cst_node,
                                    label_expr=label_expr,
                                    axis=axis)
