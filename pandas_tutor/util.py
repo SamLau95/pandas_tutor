@@ -256,8 +256,8 @@ def base64_encode_plot(fig_or_axes: t.Any) -> str:
         fig.savefig(buf, format='png')
         buf.seek(0)
         # set mtime=0 to get deterministic gzips for testing
-        zipped = gzip.compress(buf.read(), mtime=0)
-        return base64.b64encode(zipped).decode()
+        # zipped = gzip.compress(buf.read(), mtime=0)
+        return base64.b64encode(buf.read()).decode()
 
 
 ##############################################################################
