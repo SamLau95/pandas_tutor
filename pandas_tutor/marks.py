@@ -77,7 +77,7 @@ def mark_for_drop(step: DropCall, before: EvalResult,
     args = after.args
 
     labels = args.get('labels', [])
-    if isinstance(labels, str):
+    if isinstance(labels, (str, int)):
         labels = [labels]
 
     # cross out dropped rows or columns
