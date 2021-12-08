@@ -253,7 +253,7 @@ def base64_encode_plot(fig_or_axes: t.Any) -> str:
 
     # saves figure as base64 encoded string
     with io.BytesIO() as buf:
-        fig.savefig(buf, format='png')
+        fig.savefig(buf, format='png', bbox_inches='tight')
         buf.seek(0)
         # set mtime=0 to get deterministic gzips for testing
         # zipped = gzip.compress(buf.read(), mtime=0)
