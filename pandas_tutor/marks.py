@@ -76,12 +76,19 @@ def mark_for_drop(step: DropCall, before: EvalResult,
         return []
     args = after.args
 
-    labels = args.get('labels', [])
-    if isinstance(labels, str):
-        labels = [labels]
+    col_labels = args.get('col_labels', [])
+    if not util.is_list_like(col_labels):
+        col_labels = [col_labels]
+
+    row_labels = args.get('row_labels', [])
+    if not util.is_list_like(row_labels):
+        row_labels = [row_labels]
 
     # cross out dropped rows or columns
-    return make_crossouts(labels, selection(step.axis))
+    return [
+        *make_crossouts(col_labels, 'column'),
+        *make_crossouts(row_labels, 'row')
+    ]
 
 
 # df.rename(index={'sam': 'smae'})

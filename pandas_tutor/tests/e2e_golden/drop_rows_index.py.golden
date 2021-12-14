@@ -1,0 +1,125 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,type,longevity,size\nLabrador Retriever,sporting,12.04,medium\nGerman Shepherd,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\n'''\n\ndogs = (pd.read_csv(io.StringIO(csv))\n  [['breed', 'type', 'longevity']]\n)\n\ndogs.drop(index=1, axis=1)",
+  "explanation": [
+    {
+      "type": "DropCall",
+      "code_step": "dogs.drop(index=1, axis=1)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 26
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "crossout",
+          "select": "row",
+          "from": {
+            "anchor": "arg",
+            "index": 0
+          },
+          "to": {
+            "anchor": "lhs",
+            "label": 1
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "breed",
+            "type",
+            "longevity"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "data": [
+            [
+              "Labrador Retriever",
+              "sporting",
+              12.04
+            ],
+            [
+              "German Shepherd",
+              "herding",
+              9.73
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3
+            ],
+            [
+              "Golden",
+              "sporting",
+              12.04
+            ],
+            [
+              "Yorkshire",
+              "toy",
+              12.6
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "breed",
+            "type",
+            "longevity"
+          ],
+          "row_labels": [
+            0,
+            2,
+            3,
+            4,
+            5
+          ],
+          "data": [
+            [
+              "Labrador Retriever",
+              "sporting",
+              12.04
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3
+            ],
+            [
+              "Golden",
+              "sporting",
+              12.04
+            ],
+            [
+              "Yorkshire",
+              "toy",
+              12.6
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
