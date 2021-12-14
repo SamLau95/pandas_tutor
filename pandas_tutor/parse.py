@@ -120,7 +120,9 @@ def get_arg_by_position_or_keyword(
                 return arg
     if position >= len(args):
         return None
-    return args[position]
+
+    arg = args[position]
+    return arg if arg.keyword is None else None
 
 
 def make_axis(value: str) -> Axis:
@@ -316,25 +318,32 @@ class ChainParser(ParserBase):
     def make_drop_call(self, cst_node):
         labels = get_arg_by_position_or_keyword(cst_node.args, 0, 'labels')
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
-        index = get_arg_by_position_or_keyword(cst_node.args, 2, 'index')
-        columns = get_arg_by_position_or_keyword(cst_node.args, 3, 'columns')
+        row_expr = get_arg_by_position_or_keyword(cst_node.args, 2, 'index')
+        col_expr = get_arg_by_position_or_keyword(cst_node.args, 3, 'columns')
         axis = 'index'  # default
 
-        if index is not None:
-            labels = index
-            axis = 'index'
-        elif columns is not None:
-            labels = columns
-            axis = 'columns'
-        elif axis_arg is not None:
+        if row_expr is not None:
+            row_expr = (self.code_for(row_expr.value)
+                        if row_expr is not None else '')
+        if col_expr is not None:
+            col_expr = (self.code_for(col_expr.value)
+                        if col_expr is not None else '')
+
+        if axis_arg is not None:
             axis = make_axis(self.code_for(axis_arg.value))
 
-        label_expr = self.code_for(labels.value) if labels is not None else ''
+        if labels is not None:
+            if axis == 'columns':
+                col_expr = (self.code_for(labels.value)
+                            if labels is not None else '')
+            else:
+                row_expr = (self.code_for(labels.value)
+                            if labels is not None else '')
 
         node = self.make_call_node(DropCall,
                                    cst_node,
-                                   label_expr=label_expr,
-                                   axis=axis)
+                                   col_expr=col_expr,
+                                   row_expr=row_expr)
         self._append(node)
 
     @m.leave(is_rename)

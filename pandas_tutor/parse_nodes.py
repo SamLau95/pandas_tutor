@@ -226,10 +226,8 @@ class DropCall(Call):
     '''
     fn_name = 'drop'
 
-    # Expression that evaluates to labels
-    label_expr: RawCode = evals_into('labels')
-
-    axis: Axis = 'index'
+    col_expr: t.Optional[RawCode] = evals_into('col_labels')
+    row_expr: t.Optional[RawCode] = evals_into('row_labels')
 
 
 ##############################################################################

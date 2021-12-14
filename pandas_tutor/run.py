@@ -224,8 +224,11 @@ def eval_dataclass(obj: t.Any, user_globals: dict, attr='') -> Args:
 
     for field in fields:
         evals_into = field.metadata['evals_into'].format(attr=attr)
-        to_eval: t.Union[RawCode, t.List[RawCode]] = getattr(obj, field.name)
-        if isinstance(to_eval, list):
+        to_eval: t.Union[None, RawCode,
+                         t.List[RawCode]] = getattr(obj, field.name)
+        if to_eval is None:
+            continue
+        elif isinstance(to_eval, list):
             result = [eval(f"({code})", user_globals) for code in to_eval]
         else:
             result = eval(f"({to_eval})", user_globals)
