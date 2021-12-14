@@ -399,12 +399,7 @@ class ChainParser(ParserBase):
 
     @m.leave(is_groupby)
     def make_groupby(self, cst_node):
-        by = get_arg_by_position_or_keyword(cst_node.args, 0, 'by')
         axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, 'axis')
-
-        if by is None:
-            self.fallback_call(cst_node)
-            return
 
         # default groupby uses rows
         axis = (make_axis(self.code_for(axis_arg.value))
