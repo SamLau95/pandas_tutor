@@ -1,4 +1,27 @@
 {
   "code": "import sys\nprint(\"print to stdout\")\nsys.stderr.write(\"print to stderr\")\nprint(\"print again to stderr\", file=sys.stderr)\n",
-  "explanation": []
+  "explanation": [
+    {
+      "type": "StartOfChain",
+      "code_step": "print(\"print again to stderr\", file=sys.stderr)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 0
+        },
+        "end": {
+          "line": 0,
+          "ch": 5
+        }
+      },
+      "mapping": [],
+      "data_frame": {
+        "lhs": {
+          "type": "Unhandled",
+          "data": "<built-in function print>"
+        },
+        "rhs": "no_rhs"
+      }
+    }
+  ]
 }

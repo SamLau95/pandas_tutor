@@ -40,20 +40,29 @@ def serialize(results: t.List[EvalResult]) -> Explanation:
     if len(results) == 1:
         # happens when user inputs `df` without a function call, or when
         # error happens in setup code
-        result = results[0]
-        if isinstance(result, SyntaxErrorResult):
-            return [SyntaxErrorOutput.from_parse_syntax_error(result.step)]
-        elif isinstance(result, RuntimeErrorResult):
-            return [RuntimeErrorInSetup.from_runtime_error_result(result)]
-        # TODO: handle case where chain is just single element
-        return []
+        return serialize_single(results[0])
+
+    return [serialize_pair(before, after) for before, after in pairs(results)]
+
+
+def serialize_single(result: EvalResult) -> Explanation:
+    if isinstance(result, SyntaxErrorResult):
+        return [SyntaxErrorOutput.from_parse_syntax_error(result.step)]
+    elif isinstance(result, RuntimeErrorResult):
+        return [RuntimeErrorInSetup.from_runtime_error_result(result)]
     return [
-        serialize_one_step(before, after) for before, after in pairs(results)
+        Diagram(type=result.step.type_,
+                code_step=result.step.code,
+                fragment=result.fragment,
+                mapping=[],
+                data_frame=DataPair(lhs=serialize_step_val(result),
+                                    rhs='no_rhs'))
     ]
 
 
-def serialize_one_step(before: EvalResult,
-                       after: EvalResult) -> t.Union[Diagram, ErrorOutput]:
+
+def serialize_pair(before: EvalResult,
+                   after: EvalResult) -> t.Union[Diagram, ErrorOutput]:
     if isinstance(after, RuntimeErrorResult):
         return RuntimeErrorInChain.from_runtime_error_result(after)
     step = after.step

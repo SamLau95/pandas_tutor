@@ -176,17 +176,18 @@ class TablePos:
     label: Label
 
 
-PrevRHS = t.Literal['prev_rhs']
-
 ##############################################################################
 # DataPair
 ##############################################################################
+
+PrevRHS = t.Literal['prev_rhs']
+NoRHS = t.Literal['no_rhs']
 
 
 @dataclasses.dataclass
 class DataPair:
     lhs: t.Union[DataSpec, PrevRHS]
-    rhs: DataSpec
+    rhs: t.Union[DataSpec, NoRHS]
 
 
 @dataclasses.dataclass
