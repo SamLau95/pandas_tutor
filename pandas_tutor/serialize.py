@@ -89,11 +89,11 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
         df = step.val
         return DFSpec(col_names=df.columns.tolist(),
                       row_labels=df.index.tolist(),
-                      data=df.to_numpy().tolist())
+                      data=util.prep_df_data(df))
     elif isinstance(step, SeriesResult):
         series = step.val
         return SeriesSpec(row_labels=series.index.tolist(),
-                          data=series.tolist())
+                          data=util.prep_series_data(series))
     elif isinstance(step, GroupbyResult):
         return serialize_groupby(step.val)
     elif isinstance(step, SeriesGroupbyResult):
@@ -121,13 +121,11 @@ def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
     ]
 
     df = util.ungroup(val)
-
     group_data = GroupData(col_names=col_names, groups=groups)
-    return GroupBySpec(
-        col_names=df.columns.tolist(),
-        row_labels=df.index.tolist(),
-        data=df.to_numpy().tolist(),  # type: ignore
-        group_data=group_data)
+    return GroupBySpec(col_names=df.columns.tolist(),
+                       row_labels=df.index.tolist(),
+                       data=util.prep_df_data(df),
+                       group_data=group_data)
 
 
 def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
@@ -141,10 +139,9 @@ def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
 
     series = util.ungroup(val)
     group_data = GroupData(col_names=col_names, groups=groups)
-    return SeriesGroupBySpec(
-        row_labels=series.index.tolist(),
-        data=series.tolist(),  # type: ignore
-        group_data=group_data)
+    return SeriesGroupBySpec(row_labels=series.index.tolist(),
+                             data=util.prep_series_data(series),
+                             group_data=group_data)
 
 
 def serialize_image(val: t.Any) -> ImageSpec:
