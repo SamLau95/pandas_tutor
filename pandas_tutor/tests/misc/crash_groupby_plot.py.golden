@@ -1,0 +1,820 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,type,longevity,size,weight\nGerman Shepherd,herding,9.73,large,\nBeagle,hound,12.3,small,\nYorkshire Terrier,toy,12.6,small,5.5\nGolden Retriever,sporting,12.04,medium,60.0\nBulldog,non-sporting,6.29,medium,45.0\nLabrador Retriever,sporting,12.04,medium,67.5\nBoxer,working,8.81,medium,\nPoodle,non-sporting,11.95,medium,\nDachshund,hound,12.63,small,24.0\nRottweiler,working,9.11,large,\nBoston Terrier,non-sporting,10.92,medium,\nShih Tzu,toy,13.2,small,12.5\nMiniature Schnauzer,terrier,11.81,small,15.5\nDoberman Pinscher,working,10.33,large,\nChihuahua,toy,16.5,small,5.5\nSiberian Husky,working,12.58,medium,47.5\nPomeranian,toy,9.67,small,5.0\nFrench Bulldog,non-sporting,9.0,medium,27.0\nGreat Dane,working,6.96,large,\nShetland Sheepdog,herding,12.53,small,22.0\nCavalier King Charles Spaniel,toy,11.29,small,15.5\nGerman Shorthaired Pointer,sporting,11.46,large,62.5\nMaltese,toy,12.25,small,5.0\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs\n .groupby('type').plot() # <-- crashes when i try to do a plot() here\n)\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "(dogs\n .groupby('type').plot() # <-- crashes when i try to do a plot() here\n)",
+      "fragment": {
+        "start": {
+          "line": 1,
+          "ch": 1
+        },
+        "end": {
+          "line": 1,
+          "ch": 17
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "highlight",
+          "select": "column",
+          "anchor": "lhs",
+          "label": "type"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "breed",
+            "type",
+            "longevity",
+            "size",
+            "weight"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ],
+          "data": [
+            [
+              "German Shepherd",
+              "herding",
+              9.73,
+              "large",
+              null
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3,
+              "small",
+              null
+            ],
+            [
+              "Yorkshire Terrier",
+              "toy",
+              12.6,
+              "small",
+              5.5
+            ],
+            [
+              "Golden Retriever",
+              "sporting",
+              12.04,
+              "medium",
+              60.0
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29,
+              "medium",
+              45.0
+            ],
+            [
+              "Labrador Retriever",
+              "sporting",
+              12.04,
+              "medium",
+              67.5
+            ],
+            [
+              "Boxer",
+              "working",
+              8.81,
+              "medium",
+              null
+            ],
+            [
+              "Poodle",
+              "non-sporting",
+              11.95,
+              "medium",
+              null
+            ],
+            [
+              "Dachshund",
+              "hound",
+              12.63,
+              "small",
+              24.0
+            ],
+            [
+              "Rottweiler",
+              "working",
+              9.11,
+              "large",
+              null
+            ],
+            [
+              "Boston Terrier",
+              "non-sporting",
+              10.92,
+              "medium",
+              null
+            ],
+            [
+              "Shih Tzu",
+              "toy",
+              13.2,
+              "small",
+              12.5
+            ],
+            [
+              "Miniature Schnauzer",
+              "terrier",
+              11.81,
+              "small",
+              15.5
+            ],
+            [
+              "Doberman Pinscher",
+              "working",
+              10.33,
+              "large",
+              null
+            ],
+            [
+              "Chihuahua",
+              "toy",
+              16.5,
+              "small",
+              5.5
+            ],
+            [
+              "Siberian Husky",
+              "working",
+              12.58,
+              "medium",
+              47.5
+            ],
+            [
+              "Pomeranian",
+              "toy",
+              9.67,
+              "small",
+              5.0
+            ],
+            [
+              "French Bulldog",
+              "non-sporting",
+              9.0,
+              "medium",
+              27.0
+            ],
+            [
+              "Great Dane",
+              "working",
+              6.96,
+              "large",
+              null
+            ],
+            [
+              "Shetland Sheepdog",
+              "herding",
+              12.53,
+              "small",
+              22.0
+            ],
+            [
+              "Cavalier King Charles Spaniel",
+              "toy",
+              11.29,
+              "small",
+              15.5
+            ],
+            [
+              "German Shorthaired Pointer",
+              "sporting",
+              11.46,
+              "large",
+              62.5
+            ],
+            [
+              "Maltese",
+              "toy",
+              12.25,
+              "small",
+              5.0
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "col_names": [
+            "breed",
+            "type",
+            "longevity",
+            "size",
+            "weight"
+          ],
+          "row_labels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ],
+          "data": [
+            [
+              "German Shepherd",
+              "herding",
+              9.73,
+              "large",
+              null
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3,
+              "small",
+              null
+            ],
+            [
+              "Yorkshire Terrier",
+              "toy",
+              12.6,
+              "small",
+              5.5
+            ],
+            [
+              "Golden Retriever",
+              "sporting",
+              12.04,
+              "medium",
+              60.0
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29,
+              "medium",
+              45.0
+            ],
+            [
+              "Labrador Retriever",
+              "sporting",
+              12.04,
+              "medium",
+              67.5
+            ],
+            [
+              "Boxer",
+              "working",
+              8.81,
+              "medium",
+              null
+            ],
+            [
+              "Poodle",
+              "non-sporting",
+              11.95,
+              "medium",
+              null
+            ],
+            [
+              "Dachshund",
+              "hound",
+              12.63,
+              "small",
+              24.0
+            ],
+            [
+              "Rottweiler",
+              "working",
+              9.11,
+              "large",
+              null
+            ],
+            [
+              "Boston Terrier",
+              "non-sporting",
+              10.92,
+              "medium",
+              null
+            ],
+            [
+              "Shih Tzu",
+              "toy",
+              13.2,
+              "small",
+              12.5
+            ],
+            [
+              "Miniature Schnauzer",
+              "terrier",
+              11.81,
+              "small",
+              15.5
+            ],
+            [
+              "Doberman Pinscher",
+              "working",
+              10.33,
+              "large",
+              null
+            ],
+            [
+              "Chihuahua",
+              "toy",
+              16.5,
+              "small",
+              5.5
+            ],
+            [
+              "Siberian Husky",
+              "working",
+              12.58,
+              "medium",
+              47.5
+            ],
+            [
+              "Pomeranian",
+              "toy",
+              9.67,
+              "small",
+              5.0
+            ],
+            [
+              "French Bulldog",
+              "non-sporting",
+              9.0,
+              "medium",
+              27.0
+            ],
+            [
+              "Great Dane",
+              "working",
+              6.96,
+              "large",
+              null
+            ],
+            [
+              "Shetland Sheepdog",
+              "herding",
+              12.53,
+              "small",
+              22.0
+            ],
+            [
+              "Cavalier King Charles Spaniel",
+              "toy",
+              11.29,
+              "small",
+              15.5
+            ],
+            [
+              "German Shorthaired Pointer",
+              "sporting",
+              11.46,
+              "large",
+              62.5
+            ],
+            [
+              "Maltese",
+              "toy",
+              12.25,
+              "small",
+              5.0
+            ]
+          ],
+          "group_data": {
+            "col_names": [
+              "type"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "herding"
+                ],
+                "labels": [
+                  0,
+                  19
+                ]
+              },
+              {
+                "name": [
+                  "hound"
+                ],
+                "labels": [
+                  1,
+                  8
+                ]
+              },
+              {
+                "name": [
+                  "non-sporting"
+                ],
+                "labels": [
+                  4,
+                  7,
+                  10,
+                  17
+                ]
+              },
+              {
+                "name": [
+                  "sporting"
+                ],
+                "labels": [
+                  3,
+                  5,
+                  21
+                ]
+              },
+              {
+                "name": [
+                  "terrier"
+                ],
+                "labels": [
+                  12
+                ]
+              },
+              {
+                "name": [
+                  "toy"
+                ],
+                "labels": [
+                  2,
+                  11,
+                  14,
+                  16,
+                  20,
+                  22
+                ]
+              },
+              {
+                "name": [
+                  "working"
+                ],
+                "labels": [
+                  6,
+                  9,
+                  13,
+                  15,
+                  18
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "AggCall",
+      "code_step": "(dogs\n .groupby('type').plot() # <-- crashes when i try to do a plot() here\n)",
+      "fragment": {
+        "start": {
+          "line": 1,
+          "ch": 17
+        },
+        "end": {
+          "line": 1,
+          "ch": 24
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 0
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "herding"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 19
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "herding"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 1
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "hound"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 8
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "hound"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 4
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "non-sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 7
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "non-sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 10
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "non-sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 17
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "non-sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 3
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 5
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 21
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "sporting"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 12
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "terrier"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 2
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "toy"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 11
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "toy"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 14
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "toy"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 16
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "toy"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 20
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "toy"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 22
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "toy"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 6
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "working"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 9
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "working"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 13
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "working"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 15
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "working"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": 18
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "working"
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "row_labels": [
+            "herding",
+            "hound",
+            "non-sporting",
+            "sporting",
+            "terrier",
+            "toy",
+            "working"
+          ],
+          "data": [
+            "AxesSubplot(0.125,0.11;0.775x0.77)",
+            "AxesSubplot(0.125,0.11;0.775x0.77)",
+            "AxesSubplot(0.125,0.11;0.775x0.77)",
+            "AxesSubplot(0.125,0.11;0.775x0.77)",
+            "AxesSubplot(0.125,0.11;0.775x0.77)",
+            "AxesSubplot(0.125,0.11;0.775x0.77)",
+            "AxesSubplot(0.125,0.11;0.775x0.77)"
+          ]
+        }
+      }
+    }
+  ]
+}

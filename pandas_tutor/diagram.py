@@ -16,7 +16,7 @@ import simplejson as json
 
 from .parse_nodes import ParseSyntaxError
 from .run import RuntimeErrorResult
-from .util import CodePosition, CodeRange, Label, Labels
+from .util import CodePosition, CodeRange, JSONScalar, Label, Labels
 
 
 @dataclasses.dataclass
@@ -28,7 +28,7 @@ class OutputSpec:
     def to_json(self):
         return json.dumps(self,
                           indent=2,
-                          default=encode_pd_objs,
+                          default=encode_dataclasses,
                           ignore_nan=True)
 
 
@@ -42,26 +42,10 @@ def _diagram_as_dict(dclass):
     return res
 
 
-def encode_pd_objs(obj: t.Any):
+def encode_dataclasses(obj: t.Any):
     if dataclasses.is_dataclass(obj):
         return dataclasses.asdict(obj, dict_factory=_diagram_as_dict)
-
-    # extras for np and pandas objects
-
-    # note that this doesn't catch np.nan! python's json module natively
-    # encodes np.nan to NaN for whatever reason, which is why need to use
-    # simplejson for json encoding
-    if pd.isnull(obj):
-        return None
-    if isinstance(obj, np.integer):
-        return int(obj)
-    if isinstance(obj, np.floating):
-        return float(obj)
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
-        return str(obj)
-
+    return obj
 
 ##############################################################################
 # Explanation
@@ -201,14 +185,14 @@ class DFSpec(DataSpec):
     type: str = field(default='DataFrame', init=False, repr=False)
     col_names: Labels
     row_labels: Labels
-    data: t.List[t.List]
+    data: t.List[t.List[JSONScalar]]
 
 
 @dataclasses.dataclass
 class SeriesSpec(DataSpec):
     type: str = field(default='Series', init=False, repr=False)
     row_labels: Labels
-    data: t.List
+    data: t.List[JSONScalar]
 
 
 @dataclasses.dataclass
@@ -246,7 +230,7 @@ class Group:
 
 @dataclasses.dataclass
 class ImageSpec(DataSpec):
-    '''encodes an image as a gzipped base64 png'''
+    '''encodes an image as a base64 png'''
     type: str = field(default='Image', init=False, repr=False)
     data: str
 
@@ -255,4 +239,4 @@ class ImageSpec(DataSpec):
 class UnhandledData(DataSpec):
     '''catch-all for data that we don't know how to handle, like scalars'''
     type: str = field(default='Unhandled', init=False, repr=False)
-    data: t.Any
+    data: JSONScalar

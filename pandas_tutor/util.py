@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import base64
 import dataclasses
-import gzip
 import io
 import itertools
 import typing as t
@@ -13,6 +12,7 @@ import warnings
 from collections import abc
 from warnings import warn
 
+import numpy as np
 import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
@@ -28,6 +28,8 @@ Labels = t.Union[t.List[int], t.List[str]]
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
 Groups = t.Dict[t.Union[str, tuple], pd.Index]
+
+JSONScalar = t.Union[int, float, str, bool, None]
 
 
 def mapt(fn, *args):
@@ -259,6 +261,37 @@ def base64_encode_plot(fig_or_axes: t.Any) -> str:
         # zipped = gzip.compress(buf.read(), mtime=0)
         return base64.b64encode(buf.read()).decode()
 
+
+def json_scalar(obj: t.Any) -> JSONScalar:
+    '''
+    transforms special pandas / numpy value to a value that can be
+    serialized to json
+    '''
+    if pd.isnull(obj):
+        return None
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.floating):
+        return float(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
+        return str(obj)
+
+    # groupby().plot() creates a Series with AxesSubplots as data values.
+    # weird!
+    if obj.__class__.__name__ == 'AxesSubplot':
+        return str(obj)
+
+    return obj
+
+
+def prep_series_data(series: pd.Series) -> t.List[JSONScalar]:
+    return [json_scalar(val) for val in series.to_numpy()]
+
+
+def prep_df_data(df: pd.DataFrame) -> t.List[t.List[JSONScalar]]:
+    return [[json_scalar(val) for val in row] for row in df.to_numpy()]
 
 ##############################################################################
 # memory
