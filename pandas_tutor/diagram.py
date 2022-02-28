@@ -3,15 +3,12 @@ has dataclass definitions for final JSON output.
 '''
 
 from __future__ import annotations
-from abc import ABC, abstractmethod
 
 import dataclasses
 from traceback import TracebackException
 import typing as t
 from dataclasses import field
 
-import numpy as np
-import pandas as pd
 import simplejson as json
 
 from .parse_nodes import ParseSyntaxError
@@ -46,6 +43,7 @@ def encode_dataclasses(obj: t.Any):
     if dataclasses.is_dataclass(obj):
         return dataclasses.asdict(obj, dict_factory=_diagram_as_dict)
     return obj
+
 
 ##############################################################################
 # Explanation
