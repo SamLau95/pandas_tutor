@@ -20,10 +20,13 @@ from pandas.core.groupby.groupby import GroupBy
 Axis = t.Literal['index', 'columns']
 Slicer = t.Literal['loc', 'iloc', None]
 
+# A Label is a value that can go into a pandas Index. It's a tuple of values
+# if we have a multi-index, or a single value otherwise.
+#
 # technically dataframe labels can be all sorts of things...
-# TODO: handle other index dtypes
-Label = t.Union[int, str]
-Labels = t.Union[t.List[int], t.List[str]]
+# TODO: handle other index dtypes, like datetimes
+Label = t.Union[int, str, tuple]
+Labels = t.Union[t.List[int], t.List[str], t.List[tuple]]
 
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 

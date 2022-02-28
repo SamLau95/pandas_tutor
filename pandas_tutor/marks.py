@@ -6,7 +6,8 @@ import typing as t
 import pandas as pd
 
 from . import util
-from .diagram import CrossOut, Highlight, Mark, Outline, Selection, TablePos
+from .diagram import (Anchor, CrossOut, Highlight, Mark, Outline, Selection,
+                      TablePos)
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStep,
                           DropCall, EvalError, GroupByCall, HeadCall,
                           PassThroughCall, RenameCall, SortValuesCall,
@@ -173,11 +174,6 @@ def mark_for_agg(step: AggCall, before: EvalResult,
 
     row_outlines: t.List[Mark] = []
     for group_key, lhs_labels in groups.items():
-        # don't draw anything if we have a multi-column group
-        # TODO: support multi-column grouping
-        if isinstance(group_key, tuple):
-            continue
-
         for label in lhs_labels:
             row_outlines.append(
                 Outline(
@@ -377,7 +373,7 @@ def selection(axis: Axis, other=False) -> Selection:
 
 def make_highlights(labels: t.Iterable,
                     select: Selection,
-                    anchor='lhs') -> t.List[Mark]:
+                    anchor: Anchor = 'lhs') -> t.List[Mark]:
     '''
     shorthand to make a highlight for each label
     '''
