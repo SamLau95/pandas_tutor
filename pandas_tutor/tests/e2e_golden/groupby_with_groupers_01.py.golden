@@ -1,0 +1,488 @@
+{
+  "code": "# https://github.com/SamLau95/pandas_tutor/issues/72\n# https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html\nimport pandas as pd\nimport numpy as np\nnp.random.seed(0)\n\narrays = [\n    [\"bar\", \"bar\", \"baz\", \"baz\", \"foo\", \"foo\", \"qux\", \"qux\"],\n    [\"one\", \"two\", \"one\", \"two\", \"one\", \"two\", \"one\", \"two\"],\n]\nindex = pd.MultiIndex.from_arrays(arrays, names=[\"first\", \"second\"])\n\ndf = pd.DataFrame({\"A\": [1, 1, 1, 1, 2, 2, 3, 3], \"B\": np.arange(8)}, index=index)\n\ndf.groupby([pd.Grouper(level=1), \"A\"]).mean()\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "df.groupby([pd.Grouper(level=1), \"A\"]).mean()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 38
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "highlight",
+          "select": "column",
+          "anchor": "lhs",
+          "label": "second"
+        },
+        {
+          "illustrate": "highlight",
+          "select": "column",
+          "anchor": "lhs",
+          "label": "A"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "A",
+            "B"
+          ],
+          "row_labels": [
+            [
+              "bar",
+              "one"
+            ],
+            [
+              "bar",
+              "two"
+            ],
+            [
+              "baz",
+              "one"
+            ],
+            [
+              "baz",
+              "two"
+            ],
+            [
+              "foo",
+              "one"
+            ],
+            [
+              "foo",
+              "two"
+            ],
+            [
+              "qux",
+              "one"
+            ],
+            [
+              "qux",
+              "two"
+            ]
+          ],
+          "data": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              6
+            ],
+            [
+              3,
+              7
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "col_names": [
+            "A",
+            "B"
+          ],
+          "row_labels": [
+            [
+              "bar",
+              "one"
+            ],
+            [
+              "bar",
+              "two"
+            ],
+            [
+              "baz",
+              "one"
+            ],
+            [
+              "baz",
+              "two"
+            ],
+            [
+              "foo",
+              "one"
+            ],
+            [
+              "foo",
+              "two"
+            ],
+            [
+              "qux",
+              "one"
+            ],
+            [
+              "qux",
+              "two"
+            ]
+          ],
+          "data": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              6
+            ],
+            [
+              3,
+              7
+            ]
+          ],
+          "group_data": {
+            "col_names": [
+              "second",
+              "A"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "one",
+                  1
+                ],
+                "labels": [
+                  [
+                    "bar",
+                    "one"
+                  ],
+                  [
+                    "baz",
+                    "one"
+                  ]
+                ]
+              },
+              {
+                "name": [
+                  "one",
+                  2
+                ],
+                "labels": [
+                  [
+                    "foo",
+                    "one"
+                  ]
+                ]
+              },
+              {
+                "name": [
+                  "one",
+                  3
+                ],
+                "labels": [
+                  [
+                    "qux",
+                    "one"
+                  ]
+                ]
+              },
+              {
+                "name": [
+                  "two",
+                  1
+                ],
+                "labels": [
+                  [
+                    "bar",
+                    "two"
+                  ],
+                  [
+                    "baz",
+                    "two"
+                  ]
+                ]
+              },
+              {
+                "name": [
+                  "two",
+                  2
+                ],
+                "labels": [
+                  [
+                    "foo",
+                    "two"
+                  ]
+                ]
+              },
+              {
+                "name": [
+                  "two",
+                  3
+                ],
+                "labels": [
+                  [
+                    "qux",
+                    "two"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "AggCall",
+      "code_step": "df.groupby([pd.Grouper(level=1), \"A\"]).mean()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 38
+        },
+        "end": {
+          "line": 0,
+          "ch": 45
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "bar",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "one",
+              1
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "baz",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "one",
+              1
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "one",
+              2
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "qux",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "one",
+              3
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "bar",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "two",
+              1
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "baz",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "two",
+              1
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "two",
+              2
+            ]
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "qux",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": [
+              "two",
+              3
+            ]
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "B"
+          ],
+          "row_labels": [
+            [
+              "one",
+              1
+            ],
+            [
+              "one",
+              2
+            ],
+            [
+              "one",
+              3
+            ],
+            [
+              "two",
+              1
+            ],
+            [
+              "two",
+              2
+            ],
+            [
+              "two",
+              3
+            ]
+          ],
+          "data": [
+            [
+              1.0
+            ],
+            [
+              4.0
+            ],
+            [
+              6.0
+            ],
+            [
+              2.0
+            ],
+            [
+              5.0
+            ],
+            [
+              7.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

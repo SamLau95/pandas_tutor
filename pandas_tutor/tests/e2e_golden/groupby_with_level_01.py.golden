@@ -1,0 +1,392 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html\nimport pandas as pd\nimport numpy as np\nnp.random.seed(0)\n\ndf = pd.DataFrame(\n    {\n        \"A\": [\"foo\", \"bar\", \"foo\", \"bar\", \"foo\", \"bar\", \"foo\", \"foo\"],\n        \"B\": [\"one\", \"one\", \"two\", \"three\", \"two\", \"two\", \"one\", \"three\"],\n        \"C\": np.random.randn(8),\n        \"D\": np.random.randn(8),\n    }\n)\n\ndf2 = df.set_index([\"A\", \"B\"])\ndf2.groupby(level=df2.index.names.difference([\"B\"])).mean()",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "df2.groupby(level=df2.index.names.difference([\"B\"])).mean()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 3
+        },
+        "end": {
+          "line": 0,
+          "ch": 52
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "highlight",
+          "select": "column",
+          "anchor": "lhs",
+          "label": "A"
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "C",
+            "D"
+          ],
+          "row_labels": [
+            [
+              "foo",
+              "one"
+            ],
+            [
+              "bar",
+              "one"
+            ],
+            [
+              "foo",
+              "two"
+            ],
+            [
+              "bar",
+              "three"
+            ],
+            [
+              "foo",
+              "two"
+            ],
+            [
+              "bar",
+              "two"
+            ],
+            [
+              "foo",
+              "one"
+            ],
+            [
+              "foo",
+              "three"
+            ]
+          ],
+          "data": [
+            [
+              1.764052345967664,
+              -0.10321885179355784
+            ],
+            [
+              0.4001572083672233,
+              0.41059850193837233
+            ],
+            [
+              0.9787379841057392,
+              0.144043571160878
+            ],
+            [
+              2.240893199201458,
+              1.454273506962975
+            ],
+            [
+              1.8675579901499675,
+              0.7610377251469934
+            ],
+            [
+              -0.977277879876411,
+              0.12167501649282841
+            ],
+            [
+              0.9500884175255894,
+              0.44386323274542566
+            ],
+            [
+              -0.1513572082976979,
+              0.33367432737426683
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "col_names": [
+            "C",
+            "D"
+          ],
+          "row_labels": [
+            [
+              "foo",
+              "one"
+            ],
+            [
+              "bar",
+              "one"
+            ],
+            [
+              "foo",
+              "two"
+            ],
+            [
+              "bar",
+              "three"
+            ],
+            [
+              "foo",
+              "two"
+            ],
+            [
+              "bar",
+              "two"
+            ],
+            [
+              "foo",
+              "one"
+            ],
+            [
+              "foo",
+              "three"
+            ]
+          ],
+          "data": [
+            [
+              1.764052345967664,
+              -0.10321885179355784
+            ],
+            [
+              0.4001572083672233,
+              0.41059850193837233
+            ],
+            [
+              0.9787379841057392,
+              0.144043571160878
+            ],
+            [
+              2.240893199201458,
+              1.454273506962975
+            ],
+            [
+              1.8675579901499675,
+              0.7610377251469934
+            ],
+            [
+              -0.977277879876411,
+              0.12167501649282841
+            ],
+            [
+              0.9500884175255894,
+              0.44386323274542566
+            ],
+            [
+              -0.1513572082976979,
+              0.33367432737426683
+            ]
+          ],
+          "group_data": {
+            "col_names": [
+              "A"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "bar"
+                ],
+                "labels": [
+                  [
+                    "bar",
+                    "one"
+                  ],
+                  [
+                    "bar",
+                    "three"
+                  ],
+                  [
+                    "bar",
+                    "two"
+                  ]
+                ]
+              },
+              {
+                "name": [
+                  "foo"
+                ],
+                "labels": [
+                  [
+                    "foo",
+                    "one"
+                  ],
+                  [
+                    "foo",
+                    "two"
+                  ],
+                  [
+                    "foo",
+                    "two"
+                  ],
+                  [
+                    "foo",
+                    "one"
+                  ],
+                  [
+                    "foo",
+                    "three"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "AggCall",
+      "code_step": "df2.groupby(level=df2.index.names.difference([\"B\"])).mean()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 52
+        },
+        "end": {
+          "line": 0,
+          "ch": 59
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "bar",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "bar"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "bar",
+              "three"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "bar"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "bar",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "bar"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "foo"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "foo"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "two"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "foo"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "one"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "foo"
+          }
+        },
+        {
+          "illustrate": "outline",
+          "select": "row",
+          "from": {
+            "anchor": "lhs",
+            "label": [
+              "foo",
+              "three"
+            ]
+          },
+          "to": {
+            "anchor": "rhs",
+            "label": "foo"
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "col_names": [
+            "C",
+            "D"
+          ],
+          "row_labels": [
+            "bar",
+            "foo"
+          ],
+          "data": [
+            [
+              0.55459084256409,
+              0.6621823417980587
+            ],
+            [
+              1.0818159058902523,
+              0.3158800009268012
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
