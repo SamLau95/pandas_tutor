@@ -43,11 +43,16 @@
       "data_frame": {
         "lhs": {
           "type": "Series",
-          "row_labels": [
-            "Labrador Retriever",
-            "German Shepherd",
-            "Beagle"
-          ],
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "Labrador Retriever",
+              "German Shepherd",
+              "Beagle"
+            ]
+          },
           "data": [
             810.0,
             820.0,
@@ -56,9 +61,14 @@
         },
         "rhs": {
           "type": "Series",
-          "row_labels": [
-            "German Shepherd"
-          ],
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "German Shepherd"
+            ]
+          },
           "data": [
             820.0
           ]

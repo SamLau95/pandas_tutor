@@ -25,17 +25,27 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "a",
-            "b",
-            "c"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
           "data": [
             [
               1.0,
@@ -61,17 +71,27 @@
         },
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "a",
-            "b",
-            "c"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
           "data": [
             [
               1.0,
@@ -95,7 +115,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "b"
             ],
             "groups": [

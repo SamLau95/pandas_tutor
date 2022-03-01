@@ -217,55 +217,65 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "group",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28,
-            29,
-            30,
-            31,
-            32,
-            33,
-            34,
-            35,
-            36,
-            37,
-            38,
-            39
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "group",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -551,31 +561,41 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "group",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            2,
-            4,
-            8,
-            10,
-            11,
-            13,
-            16,
-            19,
-            20,
-            22,
-            24,
-            26,
-            31,
-            32,
-            33,
-            35
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "group",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              2,
+              4,
+              8,
+              10,
+              11,
+              13,
+              16,
+              19,
+              20,
+              22,
+              24,
+              26,
+              31,
+              32,
+              33,
+              35
+            ]
+          },
           "data": [
             [
               "Beagle",
@@ -910,31 +930,41 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "group",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            19,
-            24,
-            2,
-            8,
-            35,
-            33,
-            26,
-            11,
-            31,
-            4,
-            10,
-            13,
-            16,
-            20,
-            22,
-            32
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "group",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              19,
+              24,
+              2,
+              8,
+              35,
+              33,
+              26,
+              11,
+              31,
+              4,
+              10,
+              13,
+              16,
+              20,
+              22,
+              32
+            ]
+          },
           "data": [
             [
               "Shetland Sheepdog",
@@ -1077,31 +1107,41 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "breed",
-            "group",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            19,
-            24,
-            2,
-            8,
-            35,
-            33,
-            26,
-            11,
-            31,
-            4,
-            10,
-            13,
-            16,
-            20,
-            22,
-            32
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "group",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              19,
+              24,
+              2,
+              8,
+              35,
+              33,
+              26,
+              11,
+              31,
+              4,
+              10,
+              13,
+              16,
+              20,
+              22,
+              32
+            ]
+          },
           "data": [
             [
               "Shetland Sheepdog",
@@ -1217,7 +1257,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "group"
             ],
             "groups": [
@@ -1495,18 +1535,28 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "price",
-            "longevity"
-          ],
-          "row_labels": [
-            "herding",
-            "hound",
-            "non-sporting",
-            "sporting",
-            "terrier",
-            "toy"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "price",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              "group"
+            ],
+            "labels": [
+              "herding",
+              "hound",
+              "non-sporting",
+              "sporting",
+              "terrier",
+              "toy"
+            ]
+          },
           "data": [
             [
               526.0,

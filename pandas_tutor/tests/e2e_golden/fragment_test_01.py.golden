@@ -31,19 +31,34 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": []
+          },
           "data": []
         },
         "rhs": {
           "type": "Series",
-          "row_labels": [],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": []
+          },
           "data": []
         }
       }
@@ -66,7 +81,12 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
-          "row_labels": [],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": []
+          },
           "data": []
         }
       }
@@ -89,7 +109,12 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
-          "row_labels": [],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": []
+          },
           "data": []
         }
       }

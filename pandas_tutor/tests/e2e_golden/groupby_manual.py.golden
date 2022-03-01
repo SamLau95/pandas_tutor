@@ -25,18 +25,28 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "group",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "group",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -63,18 +73,28 @@
         },
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "breed",
-            "group",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "group",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -99,7 +119,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               null
             ],
             "groups": [
@@ -180,14 +200,24 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "price",
-            "longevity"
-          ],
-          "row_labels": [
-            "pg",
-            "sam"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "price",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "pg",
+              "sam"
+            ]
+          },
           "data": [
             [
               288.0,

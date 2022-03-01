@@ -31,36 +31,46 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "index",
-            "date",
-            "duration",
-            "item",
-            "month",
-            "network",
-            "network_type"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "index",
+              "date",
+              "duration",
+              "item",
+              "month",
+              "network",
+              "network_type"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18
+            ]
+          },
           "data": [
             [
               0,
@@ -237,27 +247,32 @@
         },
         "rhs": {
           "type": "Series",
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18
-          ],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18
+            ]
+          },
           "data": [
             34.429,
             13.0,
@@ -361,13 +376,18 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
-          "row_labels": [
-            8,
-            9,
-            10,
-            11,
-            12
-          ],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              8,
+              9,
+              10,
+              11,
+              12
+            ]
+          },
           "data": [
             1050.0,
             19.0,

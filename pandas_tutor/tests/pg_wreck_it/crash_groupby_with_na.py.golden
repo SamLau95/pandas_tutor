@@ -25,18 +25,28 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "a",
-            "b",
-            "c"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
           "data": [
             [
               1.0,
@@ -67,18 +77,28 @@
         },
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "a",
-            "b",
-            "c"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b",
+              "c"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
           "data": [
             [
               1.0,
@@ -107,7 +127,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "c"
             ],
             "groups": [
@@ -221,15 +241,25 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "a",
-            "b"
-          ],
-          "row_labels": [
-            -5.0,
-            4.0,
-            null
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b"
+            ]
+          },
+          "index": {
+            "names": [
+              "c"
+            ],
+            "labels": [
+              -5.0,
+              4.0,
+              null
+            ]
+          },
           "data": [
             [
               100.0,

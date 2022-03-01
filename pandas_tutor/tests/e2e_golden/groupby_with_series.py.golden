@@ -25,22 +25,32 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "date",
-            "id",
-            "pm25aqs",
-            "pm25pa"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "date",
+              "id",
+              "pm25aqs",
+              "pm25pa"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
           "data": [
             [
               "2018-11-01",
@@ -94,22 +104,32 @@
         },
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "date",
-            "id",
-            "pm25aqs",
-            "pm25pa"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "date",
+              "id",
+              "pm25aqs",
+              "pm25pa"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
           "data": [
             [
               "2018-11-01",
@@ -161,7 +181,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "date"
             ],
             "groups": [
@@ -307,14 +327,24 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "pm25aqs",
-            "pm25pa"
-          ],
-          "row_labels": [
-            "11",
-            "12"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "pm25aqs",
+              "pm25pa"
+            ]
+          },
+          "index": {
+            "names": [
+              "date"
+            ],
+            "labels": [
+              "11",
+              "12"
+            ]
+          },
           "data": [
             [
               7.4825,

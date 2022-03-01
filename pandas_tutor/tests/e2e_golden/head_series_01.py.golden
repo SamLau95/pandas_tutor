@@ -43,12 +43,17 @@
       "data_frame": {
         "lhs": {
           "type": "Series",
-          "row_labels": [
-            "a",
-            "b",
-            "c",
-            "d"
-          ],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b",
+              "c",
+              "d"
+            ]
+          },
           "data": [
             3,
             -5,
@@ -58,10 +63,15 @@
         },
         "rhs": {
           "type": "Series",
-          "row_labels": [
-            "a",
-            "b"
-          ],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b"
+            ]
+          },
           "data": [
             3,
             -5

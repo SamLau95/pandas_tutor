@@ -18,22 +18,32 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -88,22 +98,32 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "BREED",
-            "GROOMING",
-            "FOOD_COST",
-            "KIDS",
-            "SIZE"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "BREED",
+              "GROOMING",
+              "FOOD_COST",
+              "KIDS",
+              "SIZE"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
