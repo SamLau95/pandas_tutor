@@ -43,17 +43,27 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "type",
-            "price",
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            "Labrador Retriever",
-            "German Shepherd",
-            "Beagle"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "type",
+              "price",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "Labrador Retriever",
+              "German Shepherd",
+              "Beagle"
+            ]
+          },
           "data": [
             [
               "sporting",
@@ -77,15 +87,25 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "longevity",
-            "size"
-          ],
-          "row_labels": [
-            "Labrador Retriever",
-            "German Shepherd",
-            "Beagle"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "Labrador Retriever",
+              "German Shepherd",
+              "Beagle"
+            ]
+          },
           "data": [
             [
               12.04,

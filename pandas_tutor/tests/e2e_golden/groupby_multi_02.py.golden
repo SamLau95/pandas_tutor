@@ -37,22 +37,32 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -107,22 +117,32 @@
         },
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "breed",
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -175,7 +195,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "size",
               "grooming",
               "kids"
@@ -269,18 +289,28 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "food_cost"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "food_cost"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
           "data": [
             [
               466.0
@@ -305,7 +335,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "size",
               "grooming",
               "kids"
@@ -499,36 +529,48 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "food_cost"
-          ],
-          "row_labels": [
-            [
-              "large",
-              "weekly",
-              "medium"
+          "columns": {
+            "names": [
+              null
             ],
-            [
-              "medium",
-              "weekly",
-              "high"
-            ],
-            [
-              "medium",
-              "weekly",
-              "medium"
-            ],
-            [
-              "small",
-              "daily",
-              "high"
-            ],
-            [
-              "small",
-              "daily",
-              "low"
+            "labels": [
+              "food_cost"
             ]
-          ],
+          },
+          "index": {
+            "names": [
+              "size",
+              "grooming",
+              "kids"
+            ],
+            "labels": [
+              [
+                "large",
+                "weekly",
+                "medium"
+              ],
+              [
+                "medium",
+                "weekly",
+                "high"
+              ],
+              [
+                "medium",
+                "weekly",
+                "medium"
+              ],
+              [
+                "small",
+                "daily",
+                "high"
+              ],
+              [
+                "small",
+                "daily",
+                "low"
+              ]
+            ]
+          },
           "data": [
             [
               466.0

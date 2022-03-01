@@ -31,44 +31,55 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "A",
-            "B"
-          ],
-          "row_labels": [
-            [
-              "bar",
-              "one"
+          "columns": {
+            "names": [
+              null
             ],
-            [
-              "bar",
-              "two"
-            ],
-            [
-              "baz",
-              "one"
-            ],
-            [
-              "baz",
-              "two"
-            ],
-            [
-              "foo",
-              "one"
-            ],
-            [
-              "foo",
-              "two"
-            ],
-            [
-              "qux",
-              "one"
-            ],
-            [
-              "qux",
-              "two"
+            "labels": [
+              "A",
+              "B"
             ]
-          ],
+          },
+          "index": {
+            "names": [
+              "first",
+              "second"
+            ],
+            "labels": [
+              [
+                "bar",
+                "one"
+              ],
+              [
+                "bar",
+                "two"
+              ],
+              [
+                "baz",
+                "one"
+              ],
+              [
+                "baz",
+                "two"
+              ],
+              [
+                "foo",
+                "one"
+              ],
+              [
+                "foo",
+                "two"
+              ],
+              [
+                "qux",
+                "one"
+              ],
+              [
+                "qux",
+                "two"
+              ]
+            ]
+          },
           "data": [
             [
               1,
@@ -106,44 +117,55 @@
         },
         "rhs": {
           "type": "DataFrameGroupBy",
-          "col_names": [
-            "A",
-            "B"
-          ],
-          "row_labels": [
-            [
-              "bar",
-              "one"
+          "columns": {
+            "names": [
+              null
             ],
-            [
-              "bar",
-              "two"
-            ],
-            [
-              "baz",
-              "one"
-            ],
-            [
-              "baz",
-              "two"
-            ],
-            [
-              "foo",
-              "one"
-            ],
-            [
-              "foo",
-              "two"
-            ],
-            [
-              "qux",
-              "one"
-            ],
-            [
-              "qux",
-              "two"
+            "labels": [
+              "A",
+              "B"
             ]
-          ],
+          },
+          "index": {
+            "names": [
+              "first",
+              "second"
+            ],
+            "labels": [
+              [
+                "bar",
+                "one"
+              ],
+              [
+                "bar",
+                "two"
+              ],
+              [
+                "baz",
+                "one"
+              ],
+              [
+                "baz",
+                "two"
+              ],
+              [
+                "foo",
+                "one"
+              ],
+              [
+                "foo",
+                "two"
+              ],
+              [
+                "qux",
+                "one"
+              ],
+              [
+                "qux",
+                "two"
+              ]
+            ]
+          },
           "data": [
             [
               1,
@@ -179,7 +201,7 @@
             ]
           ],
           "group_data": {
-            "col_names": [
+            "columns": [
               "second",
               "A"
             ],
@@ -432,35 +454,46 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "B"
-          ],
-          "row_labels": [
-            [
-              "one",
-              1
+          "columns": {
+            "names": [
+              null
             ],
-            [
-              "one",
-              2
-            ],
-            [
-              "one",
-              3
-            ],
-            [
-              "two",
-              1
-            ],
-            [
-              "two",
-              2
-            ],
-            [
-              "two",
-              3
+            "labels": [
+              "B"
             ]
-          ],
+          },
+          "index": {
+            "names": [
+              "second",
+              "A"
+            ],
+            "labels": [
+              [
+                "one",
+                1
+              ],
+              [
+                "one",
+                2
+              ],
+              [
+                "one",
+                3
+              ],
+              [
+                "two",
+                1
+              ],
+              [
+                "two",
+                2
+              ],
+              [
+                "two",
+                3
+              ]
+            ]
+          },
           "data": [
             [
               1.0

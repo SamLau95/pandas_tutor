@@ -73,40 +73,50 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "first_name",
-            "last_name",
-            "company_name",
-            "address",
-            "city",
-            "county",
-            "postal",
-            "phone1",
-            "phone2",
-            "email",
-            "web"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "first_name",
+              "last_name",
+              "company_name",
+              "address",
+              "city",
+              "county",
+              "postal",
+              "phone1",
+              "phone2",
+              "email",
+              "web"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18
+            ]
+          },
           "data": [
             [
               "Aleshia",
@@ -359,11 +369,16 @@
         },
         "rhs": {
           "type": "Series",
-          "row_labels": [
-            3,
-            4,
-            9
-          ],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              3,
+              4,
+              9
+            ]
+          },
           "data": [
             "http://www.mcmahanbenl.co.uk",
             "http://www.champagneroom.co.uk",

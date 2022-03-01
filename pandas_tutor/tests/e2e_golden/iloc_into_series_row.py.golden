@@ -18,22 +18,32 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -88,21 +98,31 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
-          "row_labels": [
-            "Labrador Retriever",
-            "German Shepherd",
-            "Beagle",
-            "Golden Retriever",
-            "Yorkshire Terrier",
-            "Bulldog",
-            "Boxer"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "Labrador Retriever",
+              "German Shepherd",
+              "Beagle",
+              "Golden Retriever",
+              "Yorkshire Terrier",
+              "Bulldog",
+              "Boxer"
+            ]
+          },
           "data": [
             [
               "weekly",
@@ -181,12 +201,17 @@
         "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
-          "row_labels": [
-            "grooming",
-            "food_cost",
-            "kids",
-            "size"
-          ],
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
           "data": [
             "daily",
             324.0,

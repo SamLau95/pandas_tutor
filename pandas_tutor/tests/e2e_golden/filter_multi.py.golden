@@ -43,24 +43,34 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "Name",
-            "Sex",
-            "Count",
-            "Year"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Name",
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
           "data": [
             [
               "Liam",
@@ -126,15 +136,25 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "Name",
-            "Sex",
-            "Count",
-            "Year"
-          ],
-          "row_labels": [
-            5
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Name",
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              5
+            ]
+          },
           "data": [
             [
               "Emma",

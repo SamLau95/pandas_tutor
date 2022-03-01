@@ -20,13 +20,12 @@ from pandas.core.groupby.groupby import GroupBy
 Axis = t.Literal['index', 'columns']
 Slicer = t.Literal['loc', 'iloc', None]
 
-# A Label is a value that can go into a pandas Index. It's a tuple of values
+# A Label is a value that came from pandas Index. It's a tuple of values
 # if we have a multi-index, or a single value otherwise.
 #
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes, like datetimes
 Label = t.Union[int, str, tuple]
-Labels = t.Union[t.List[int], t.List[str], t.List[tuple]]
 
 HasIndex = t.Union[pd.DataFrame, pd.Series]
 
@@ -145,10 +144,10 @@ def positions_to_labels(  # noqa: F811
 
 
 def positions_to_labels(  # noqa: F811
-        positions,
-        df,
-        slicer='iloc',
-        axis='index',
+    positions,
+    df,
+    slicer: Slicer = 'iloc',
+    axis: Axis = 'index',
 ):
     '''
     convert positional indexes like [2, 3, 0] to labels.
@@ -174,7 +173,7 @@ def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=True) -> pd.Index:
     # >>> a = pd.Index([2, 2])
     # >>> a.intersection(a)
     # Index([2])
-    matches = df1.index.intersection(df2.index)
+    matches = df1.index.intersection(df2.index)  # type: ignore
     return (pd.Index([]) if
             (len(matches) == len(df1.index) and only_if_diff) else matches)
 
@@ -216,7 +215,7 @@ def ungroup(obj):  # noqa: F811
     # return groupby.transform(lambda x: x)
 
 
-def grouping_labels(groupby: GroupBy) -> Labels:
+def grouping_labels(groupby: GroupBy) -> t.List[Label]:
     '''gets ['hello', 'world'] from df.groupby(['hello', 'world'])'''
     # NOTE: when grouping by unnamed sequences, names will contain None
     # >>> full.groupby([test, test2]).grouper.names

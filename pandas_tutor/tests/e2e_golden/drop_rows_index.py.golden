@@ -31,19 +31,29 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "type",
-            "longevity"
-          ],
-          "row_labels": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "type",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",
@@ -79,18 +89,28 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "breed",
-            "type",
-            "longevity"
-          ],
-          "row_labels": [
-            0,
-            2,
-            3,
-            4,
-            5
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "type",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
           "data": [
             [
               "Labrador Retriever",

@@ -85,21 +85,31 @@
       "data_frame": {
         "lhs": {
           "type": "DataFrame",
-          "col_names": [
-            "one",
-            "two",
-            "three",
-            "four",
-            "five",
-            "timestamp"
-          ],
-          "row_labels": [
-            "a",
-            "c",
-            "e",
-            "f",
-            "h"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "one",
+              "two",
+              "three",
+              "four",
+              "five",
+              "timestamp"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "c",
+              "e",
+              "f",
+              "h"
+            ]
+          },
           "data": [
             [
               null,
@@ -145,21 +155,31 @@
         },
         "rhs": {
           "type": "DataFrame",
-          "col_names": [
-            "one",
-            "two",
-            "three",
-            "four",
-            "five",
-            "timestamp"
-          ],
-          "row_labels": [
-            "h",
-            "f",
-            "c",
-            "a",
-            "e"
-          ],
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "one",
+              "two",
+              "three",
+              "four",
+              "five",
+              "timestamp"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "h",
+              "f",
+              "c",
+              "a",
+              "e"
+            ]
+          },
           "data": [
             [
               null,

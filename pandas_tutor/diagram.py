@@ -8,12 +8,13 @@ import dataclasses
 from traceback import TracebackException
 import typing as t
 from dataclasses import field
+import pandas as pd
 
 import simplejson as json
 
 from .parse_nodes import ParseSyntaxError
 from .run import RuntimeErrorResult
-from .util import CodePosition, CodeRange, JSONScalar, Label, Labels
+from .util import CodePosition, CodeRange, JSONScalar, Label
 
 
 @dataclasses.dataclass
@@ -159,7 +160,7 @@ class TablePos:
 
 
 ##############################################################################
-# DataPair
+# DataPair and DataFrames
 ##############################################################################
 
 PrevRHS = t.Literal['prev_rhs']
@@ -179,17 +180,32 @@ class DataSpec:
 
 
 @dataclasses.dataclass
+class Index:
+    '''represents a pandas index in the serialized data'''
+    # names of each index level. unnamed levels are None
+    names: t.Tuple
+
+    # for a multi-index, the labels are a list of tuples. this matches the
+    # behavior of pd.Index.tolist()
+    labels: t.List[Label]
+
+    @classmethod
+    def from_pd(cls, index: pd.Index) -> Index:
+        return cls(names=tuple(index.names), labels=index.tolist())
+
+
+@dataclasses.dataclass
 class DFSpec(DataSpec):
     type: str = field(default='DataFrame', init=False, repr=False)
-    col_names: Labels
-    row_labels: Labels
+    columns: Index
+    index: Index
     data: t.List[t.List[JSONScalar]]
 
 
 @dataclasses.dataclass
 class SeriesSpec(DataSpec):
     type: str = field(default='Series', init=False, repr=False)
-    row_labels: Labels
+    index: Index
     data: t.List[JSONScalar]
 
 
@@ -208,7 +224,7 @@ class SeriesGroupBySpec(SeriesSpec):
 @dataclasses.dataclass
 class GroupData:
     # grouping cols, if we can pull them out
-    col_names: Labels
+    columns: t.List[Label]
     groups: t.List[Group]
 
 
@@ -217,13 +233,13 @@ class Group:
     '''a group maps between dataframe values -> labels that match'''
     # the group name is the unique combo of grouping vals, so if we do:
     # >>> dogs.groupby(['size', 'kids'])
-    # then the group names will be: ('small', 'low'), ('small', 'high'), ...
+    # then the group names will be: ['small', 'low'], ['small', 'high'], ...
     #
     # the labels appear in the same order as GroupData.col_names
     name: list
 
     # labels for all rows the group contains
-    labels: Labels
+    labels: t.List[Label]
 
 
 @dataclasses.dataclass

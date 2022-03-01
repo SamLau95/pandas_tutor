@@ -12,7 +12,7 @@ from pandas_tutor.parse_nodes import StartOfChain
 from . import util
 from .diagram import (DataPair, DataSpec, DFSpec, Diagram, ErrorOutput,
                       Explanation, Group, GroupBySpec, GroupData, ImageSpec,
-                      RuntimeErrorInChain, RuntimeErrorInSetup,
+                      Index, RuntimeErrorInChain, RuntimeErrorInSetup,
                       SeriesGroupBySpec, SeriesSpec, SyntaxErrorOutput,
                       UnhandledData)
 from .marks import make_marks
@@ -60,7 +60,6 @@ def serialize_single(result: EvalResult) -> Explanation:
     ]
 
 
-
 def serialize_pair(before: EvalResult,
                    after: EvalResult) -> t.Union[Diagram, ErrorOutput]:
     if isinstance(after, RuntimeErrorResult):
@@ -87,12 +86,12 @@ def serialize_pair(before: EvalResult,
 def serialize_step_val(step: EvalResult) -> DataSpec:
     if isinstance(step, DFResult):
         df = step.val
-        return DFSpec(col_names=df.columns.tolist(),
-                      row_labels=df.index.tolist(),
+        return DFSpec(columns=Index.from_pd(df.columns),
+                      index=Index.from_pd(df.index),
                       data=util.prep_df_data(df))
     elif isinstance(step, SeriesResult):
         series = step.val
-        return SeriesSpec(row_labels=series.index.tolist(),
+        return SeriesSpec(index=Index.from_pd(series.index),
                           data=util.prep_series_data(series))
     elif isinstance(step, GroupbyResult):
         return serialize_groupby(step.val)
@@ -121,9 +120,9 @@ def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
     ]
 
     df = util.ungroup(val)
-    group_data = GroupData(col_names=col_names, groups=groups)
-    return GroupBySpec(col_names=df.columns.tolist(),
-                       row_labels=df.index.tolist(),
+    group_data = GroupData(columns=col_names, groups=groups)
+    return GroupBySpec(columns=Index.from_pd(df.columns),
+                       index=Index.from_pd(df.index),
                        data=util.prep_df_data(df),
                        group_data=group_data)
 
@@ -138,8 +137,8 @@ def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
     ]
 
     series = util.ungroup(val)
-    group_data = GroupData(col_names=col_names, groups=groups)
-    return SeriesGroupBySpec(row_labels=series.index.tolist(),
+    group_data = GroupData(columns=col_names, groups=groups)
+    return SeriesGroupBySpec(index=Index.from_pd(series.index),
                              data=util.prep_series_data(series),
                              group_data=group_data)
 
