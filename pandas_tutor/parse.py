@@ -433,6 +433,7 @@ class SubscriptParser(ParserBase):
         if not isinstance(node, cst.Subscript):
             warn('used SubscriptParser to visit a non-subscript: '
                  f'{self.code_for(node)}')
+            return False
 
         slicer: t.Optional[str] = None
         if m.matches(node, is_loc_iloc):
@@ -562,7 +563,7 @@ class LoggingVisitor(m.MatcherDecoratableVisitor):
         if m.matches(node, whitespace):
             return False
         if self.cst_root is None:
-            self.cst_root = node
+            self.cst_root = t.cast(cst.Module, node)
             return True
 
         self.log(node)
