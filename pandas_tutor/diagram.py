@@ -110,18 +110,126 @@ class RuntimeErrorInChain(RuntimeErrorOutput):
 Explanation = t.List[t.Union[Diagram, ErrorOutput]]
 
 ##############################################################################
+# TablePos
+##############################################################################
+
+# the table we're pointing to
+Anchor = t.Literal['lhs', 'rhs']
+
+# the axis we're pointing to
+Selection = t.Literal['column', 'row']
+
+# the index level we're pointing to. None if index is not multi-level
+IndexLevel = t.Union[None, str, int]
+
+# each TablePos object is serialized as one of these
+TablePosType = t.Literal['axis', 'series', 'label', 'index_level',
+                         'index_name', 'datum']
+
+
+@dataclasses.dataclass
+class TablePos:
+    '''
+    base class that represents a position in a table or series.
+    we use this to point to:
+
+    - an single column or row
+    - a entire series
+    - a single label in the row or column index
+    - an entire level in the column or row index
+    - the name for an index level
+    - a single datum
+    '''
+    # needs to be initialized by subclass
+    type: TablePosType = field(init=False)
+
+    def __post_init__(self):
+        raise NotImplementedError('subclasses need to initialize self.type')
+
+
+@dataclasses.dataclass
+class AxisPos(TablePos):
+    """points to a single column or row for a table"""
+    anchor: Anchor
+    select: Selection
+    label: Label
+
+    def __post_init__(self):
+        self.type = 'axis'
+
+
+@dataclasses.dataclass
+class SeriesPos(TablePos):
+    """points to an entire series"""
+    anchor: Anchor
+    label: Label = field(default='pandas.Series', init=False)
+
+    def __post_init__(self):
+        self.type = 'series'
+
+
+@dataclasses.dataclass
+class LabelPos(TablePos):
+    """
+    points to a single label for a column or row. used for functions like
+    rename()
+    """
+    anchor: Anchor
+    select: Selection
+    label: Label
+    level: IndexLevel = None
+
+    def __post_init__(self):
+        self.type = 'label'
+
+
+@dataclasses.dataclass
+class IndexLevelPos(TablePos):
+    """points to a single level for the index of the column or row labels"""
+    anchor: Anchor
+    select: Selection
+    level: IndexLevel = None
+
+    def __post_init__(self):
+        self.type = 'index_level'
+
+
+@dataclasses.dataclass
+class IndexNamePos(TablePos):
+    """
+    points to the name for a level of the index of the column or row labels.
+    used for functions like rename_axis() which renames index levels
+    """
+    anchor: Anchor
+    select: Selection
+    level: IndexLevel = None
+
+    def __post_init__(self):
+        self.type = 'index_name'
+
+
+@dataclasses.dataclass
+class DatumPos(TablePos):
+    """points to a single datum in the table"""
+    anchor: Anchor
+    column: Label
+    row: Label
+
+    def __post_init__(self):
+        self.type = 'datum'
+
+
+##############################################################################
 # Mark
 ##############################################################################
 
-Selection = t.Literal['column', 'row']
-Anchor = t.Literal['lhs', 'rhs']
+# each Mark object is serialized as one of these
 MarkType = t.Literal['highlight', 'outline', 'crossout']
 
 
 @dataclasses.dataclass
 class Mark:
     illustrate: MarkType = field(init=False)
-    select: Selection
 
     def __post_init__(self):
         raise NotImplementedError(
@@ -130,8 +238,8 @@ class Mark:
 
 @dataclasses.dataclass
 class Highlight(Mark):
-    anchor: Anchor
-    label: Label
+    '''rendered as a border'''
+    pos: TablePos
 
     def __post_init__(self):
         self.illustrate = 'highlight'
@@ -139,6 +247,7 @@ class Highlight(Mark):
 
 @dataclasses.dataclass
 class Outline(Mark):
+    '''rendered as an arrow'''
     # from is a Python keyword!
     from_: TablePos
     to: TablePos
@@ -148,15 +257,12 @@ class Outline(Mark):
 
 
 @dataclasses.dataclass
-class CrossOut(Outline):
+class CrossOut(Mark):
+    '''rendered as strikethroughs'''
+    pos: TablePos
+
     def __post_init__(self):
         self.illustrate = 'crossout'
-
-
-@dataclasses.dataclass
-class TablePos:
-    anchor: Anchor
-    label: Label
 
 
 ##############################################################################
