@@ -327,7 +327,7 @@ def mark_for_subscript_into_series(
     # df.iloc[:, 0]
     col = args.get('slice2_values')
     if isinstance(col, (str, int)):
-        col = util.positions_to_labels(
+        label = util.positions_to_labels(
             col,
             df=before_df,
             slicer=step.slicer,
@@ -335,7 +335,7 @@ def mark_for_subscript_into_series(
         )
         return [
             *cols_used_for_filter,
-            Outline(from_=lhs('column', col), to=rhs_series()),
+            Outline(from_=lhs('column', label), to=rhs_series()),
             *diff_rows(before_df,
                        after_df,
                        only_if_diff=(len(cols_used_for_filter) == 0)),
