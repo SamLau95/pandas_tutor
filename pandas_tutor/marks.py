@@ -6,20 +6,25 @@ import typing as t
 import pandas as pd
 
 from . import util
-from .diagram import (Anchor, CrossOut, Highlight, Mark, Outline, Selection,
-                      TablePos)
+from .diagram import (Anchor, AxisPos, CrossOut, Highlight, LabelPos, Mark,
+                      Outline, Selection, SeriesPos)
 from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStep,
                           DropCall, EvalError, GroupByCall, HeadCall,
                           PassThroughCall, RenameCall, SortValuesCall,
-                          SubsComparison, Subscript, SubscriptEl, TailCall)
+                          SubsComparison, Subscript, SubscriptEl, TailCall,
+                          UnstackCall)
 from .run import (Arg, DFResult, EvalResult, GroupbyResult,
                   SeriesGroupbyResult, SeriesResult)
 
 
 # step comes from after.step, but we pull it out here to help with
-# the type checker
+# the type checker.
 def make_marks(step: ChainStep, before: EvalResult,
                after: EvalResult) -> t.List[Mark]:
+    '''
+    computes the marks for a given step by dispatching to the right marks
+    function. returns empty list if we don't know how to make marks.
+    '''
     if isinstance(step, EvalError):
         return no_marks()
     elif isinstance(step, PassThroughCall):
@@ -40,6 +45,8 @@ def make_marks(step: ChainStep, before: EvalResult,
         return mark_for_groupby(step, before, after)
     elif isinstance(step, AggCall):
         return mark_for_agg(step, before, after)
+    elif isinstance(step, UnstackCall):
+        return mark_for_unstack(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -104,7 +111,8 @@ def mark_for_rename(step: RenameCall, before: EvalResult,
     select = selection(step.axis)
 
     return [
-        Outline(select=select, from_=lhs(old), to=rhs(new))
+        Outline(from_=LabelPos('lhs', select, old),
+                to=LabelPos('rhs', select, new))
         for old, new in mapping.items()
     ]
 
@@ -176,13 +184,20 @@ def mark_for_agg(step: AggCall, before: EvalResult,
     for group_key, lhs_labels in groups.items():
         for label in lhs_labels:
             row_outlines.append(
+                # TODO: get selection from groupby instead of hard-coding 'row'
                 Outline(
-                    select='row',  # TODO: get selection from groupby
-                    from_=lhs(label),
-                    to=rhs(group_key),
+                    from_=lhs('row', label),
+                    to=rhs('row', group_key),
                 ))
 
     return row_outlines
+
+
+# for unstack, we're going to color the
+# counts.unstack(level=-1, fill_value=0)
+def mark_for_unstack(step: UnstackCall, before: EvalResult,
+                     after: EvalResult) -> t.List[Mark]:
+    return []
 
 
 # handler for all subscripts, like:
@@ -272,13 +287,11 @@ def mark_for_subscript_into_series(
 
     # df['kids']
     if step.slicer is None:
-        maybe_col = args.get('slice1_values')
-        if not isinstance(maybe_col, (str, int)):
+        col = args.get('slice1_values')
+        if not isinstance(col, (str, int)):
             return []
 
-        return [
-            Outline(select='column', from_=lhs(maybe_col), to=rhs_series())
-        ]
+        return [Outline(from_=lhs('column', col), to=rhs_series())]
 
     # df.loc[df["email"] > "s", "web"]
     # df.loc[:, df.iloc[0] % 2 == 0]
@@ -305,24 +318,24 @@ def mark_for_subscript_into_series(
 
         return [
             *rows_used_for_filter,
-            Outline(select='row', from_=lhs(row), to=rhs_series()),
+            Outline(from_=lhs('row', row), to=rhs_series()),
             # when slicing a row out of dataframe, the resulting series has
             # the df's column labels as the index. this means that the labels
             # are "transposed" so we don't draw arrows for this case.
         ]
 
     # df.iloc[:, 0]
-    maybe_col = args.get('slice2_values')
-    if isinstance(maybe_col, (str, int)):
-        col = util.positions_to_labels(
-            maybe_col,
+    col = args.get('slice2_values')
+    if isinstance(col, (str, int)):
+        label = util.positions_to_labels(
+            col,
             df=before_df,
             slicer=step.slicer,
             axis='columns',
         )
         return [
             *cols_used_for_filter,
-            Outline(select='column', from_=lhs(col), to=rhs_series()),
+            Outline(from_=lhs('column', label), to=rhs_series()),
             *diff_rows(before_df,
                        after_df,
                        only_if_diff=(len(cols_used_for_filter) == 0)),
@@ -375,12 +388,9 @@ def make_highlights(labels: t.Iterable,
                     select: Selection,
                     anchor: Anchor = 'lhs') -> t.List[Mark]:
     '''
-    shorthand to make a highlight for each label
+    shorthand to make a highlight for each column/row in labels
     '''
-    return [
-        Highlight(label=label, select=select, anchor=anchor)
-        for label in labels
-    ]
+    return [Highlight(AxisPos(anchor, select, label)) for label in labels]
 
 
 def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
@@ -388,7 +398,7 @@ def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
     shorthand when index values don't change, which is most of the time
     '''
     return [
-        Outline(select=select, from_=lhs(label), to=rhs(label))
+        Outline(from_=lhs(select, label), to=rhs(select, label))
         for label in labels
     ]
 
@@ -397,28 +407,24 @@ def make_crossouts(labels: t.Iterable, select: Selection) -> t.List[Mark]:
     '''
     shorthand for crossouts
     '''
-    # we haven't implemented arg anchors yet, so use a dummy value for now
-    dummy_arg_anchor = {'anchor': 'arg', 'index': 0}
-    return [
-        CrossOut(
-            select=select,
-            from_=dummy_arg_anchor,  # type: ignore
-            to=lhs(label),
-        ) for label in labels
-    ]
+    return [CrossOut(pos=lhs(select, label)) for label in labels]
 
 
-def lhs(label):
-    return TablePos('lhs', label)
+def lhs(select: Selection, label: util.Label) -> AxisPos:
+    '''shorthand for a column/row in lhs'''
+    return AxisPos('lhs', select, label)
 
 
-def rhs(label):
-    return TablePos('rhs', label)
+def rhs(select: Selection, label: util.Label) -> AxisPos:
+    '''shorthand for a column/row in rhs'''
+    return AxisPos('rhs', select, label)
 
 
-def lhs_series():
-    return lhs('pandas.Series')
+def lhs_series() -> SeriesPos:
+    '''shorthand for the lhs series'''
+    return SeriesPos('lhs')
 
 
-def rhs_series():
-    return rhs('pandas.Series')
+def rhs_series() -> SeriesPos:
+    '''shorthand for the rhs series'''
+    return SeriesPos('rhs')

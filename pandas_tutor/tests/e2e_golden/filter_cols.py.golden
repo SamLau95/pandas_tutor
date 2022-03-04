@@ -17,33 +17,42 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "b"
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "column",
             "label": "b"
           }
         },
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "d"
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "column",
             "label": "d"
           }
         },
         {
           "illustrate": "highlight",
-          "select": "row",
-          "anchor": "lhs",
-          "label": "one"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": "one"
+          }
         }
       ],
       "data_frame": {

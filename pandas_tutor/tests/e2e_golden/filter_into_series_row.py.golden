@@ -17,18 +17,23 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "row",
-          "anchor": "lhs",
-          "label": "two"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": "two"
+          }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": "one"
           },
           "to": {
+            "type": "series",
             "anchor": "rhs",
             "label": "pandas.Series"
           }

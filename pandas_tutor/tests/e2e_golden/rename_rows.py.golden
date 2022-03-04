@@ -17,26 +17,36 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "label",
             "anchor": "lhs",
-            "label": 0
+            "select": "row",
+            "label": 0,
+            "level": null
           },
           "to": {
+            "type": "label",
             "anchor": "rhs",
-            "label": "hello"
+            "select": "row",
+            "label": "hello",
+            "level": null
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "label",
             "anchor": "lhs",
-            "label": 1
+            "select": "row",
+            "label": 1,
+            "level": null
           },
           "to": {
+            "type": "label",
             "anchor": "rhs",
-            "label": "world"
+            "select": "row",
+            "label": "world",
+            "level": null
           }
         }
       ],

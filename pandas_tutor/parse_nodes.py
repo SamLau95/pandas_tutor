@@ -230,6 +230,21 @@ class DropCall(Call):
     row_expr: t.Optional[RawCode] = evals_into('row_labels')
 
 
+@dataclasses.dataclass
+class UnstackCall(Call):
+    '''
+    counts.unstack()
+    counts.unstack(level=1)
+    counts.unstack(level=[1, 2])
+    counts.unstack(level=-1, fill_value=0)
+    '''
+    fn_name = 'unstack'
+
+    level_expr: t.Optional[RawCode] = evals_into('level')
+    fill_value_expr: t.Optional[RawCode] = evals_into('fill_value')
+
+
+
 ##############################################################################
 # Subscripts
 ##############################################################################

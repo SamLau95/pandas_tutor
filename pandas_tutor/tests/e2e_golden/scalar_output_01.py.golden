@@ -17,12 +17,14 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "food_cost"
           },
           "to": {
+            "type": "series",
             "anchor": "rhs",
             "label": "pandas.Series"
           }

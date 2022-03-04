@@ -17,13 +17,10 @@
       "mapping": [
         {
           "illustrate": "crossout",
-          "select": "row",
-          "from": {
-            "anchor": "arg",
-            "index": 0
-          },
-          "to": {
+          "pos": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 1
           }
         }

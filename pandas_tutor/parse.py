@@ -28,7 +28,8 @@ from .parse_nodes import (AggCall, ApplyCall, AssignCall, Axis, ChainStatement,
                           ParseResult, ParsedModule, ParseSyntaxError,
                           PassThroughCall, RawCode, RenameCall, SortValuesCall,
                           StartOfChain, SubsComparison, Subscript, SubscriptEl,
-                          SubsEval, SubsSlice, TailCall, VerbatimStatement)
+                          SubsEval, SubsSlice, TailCall, UnstackCall,
+                          VerbatimStatement)
 from .util import CodePosition, CodeRange
 from . import util
 
@@ -89,10 +90,11 @@ is_head_or_tail = fn_matcher('head') | fn_matcher('tail')
 is_groupby = fn_matcher('groupby')
 is_apply = fn_matcher('apply')
 is_assign = fn_matcher('assign')
+is_unstack = fn_matcher('unstack')
 
 # make sure to update this whenever we add a new call to the section above
 is_parsed_call = (is_sort_values | is_drop | is_rename | is_head_or_tail
-                  | is_groupby | is_apply | is_assign)
+                  | is_groupby | is_apply | is_assign | is_unstack)
 
 is_loc_iloc = m.Subscript(value=m.Attribute(attr=m.Name('loc')
                                             | m.Name('iloc')))
@@ -408,6 +410,23 @@ class ChainParser(ParserBase):
         node = self.make_call_node(GroupByCall, cst_node, axis=axis)
         self._append(node)
 
+    @m.leave(is_unstack)
+    def make_unstack(self, cst_node):
+        level_expr = get_arg_by_position_or_keyword(cst_node.args, 0, 'level')
+        fill_value_expr = get_arg_by_position_or_keyword(
+            cst_node.args, 1, 'fill_value')
+
+        if level_expr is not None:
+            level_expr = self.code_for(level_expr.value)
+        if fill_value_expr is not None:
+            fill_value_expr = self.code_for(fill_value_expr.value)
+
+        node = self.make_call_node(UnstackCall,
+                                   cst_node,
+                                   level_expr=level_expr,
+                                   fill_value_expr=fill_value_expr)
+        self._append(node)
+
     def make_call_node(self, cls: t.Type[T], cst_node: cst.Call,
                        **kwargs) -> T:
         '''
@@ -433,6 +452,7 @@ class SubscriptParser(ParserBase):
         if not isinstance(node, cst.Subscript):
             warn('used SubscriptParser to visit a non-subscript: '
                  f'{self.code_for(node)}')
+            return False
 
         slicer: t.Optional[str] = None
         if m.matches(node, is_loc_iloc):
@@ -562,7 +582,7 @@ class LoggingVisitor(m.MatcherDecoratableVisitor):
         if m.matches(node, whitespace):
             return False
         if self.cst_root is None:
-            self.cst_root = node
+            self.cst_root = t.cast(cst.Module, node)
             return True
 
         self.log(node)

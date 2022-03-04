@@ -17,25 +17,19 @@
       "mapping": [
         {
           "illustrate": "crossout",
-          "select": "column",
-          "from": {
-            "anchor": "arg",
-            "index": 0
-          },
-          "to": {
+          "pos": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "type"
           }
         },
         {
           "illustrate": "crossout",
-          "select": "column",
-          "from": {
-            "anchor": "arg",
-            "index": 0
-          },
-          "to": {
+          "pos": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "price"
           }
         }
