@@ -17,9 +17,12 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "A"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          }
         }
       ],
       "data_frame": {
@@ -266,121 +269,145 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "bar",
               "one"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "bar"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "bar",
               "three"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "bar"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "bar",
               "two"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "bar"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "foo",
               "one"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "foo"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "foo",
               "two"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "foo"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "foo",
               "two"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "foo"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "foo",
               "one"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "foo"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": [
               "foo",
               "three"
             ]
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "foo"
           }
         }

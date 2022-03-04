@@ -17,9 +17,12 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "size"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          }
         }
       ],
       "data_frame": {
@@ -236,12 +239,14 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "food_cost"
           },
           "to": {
+            "type": "series",
             "anchor": "rhs",
             "label": "pandas.Series"
           }
@@ -328,85 +333,106 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 1
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "large"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 0
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "medium"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 3
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "medium"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 5
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "medium"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 6
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "medium"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 2
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "small"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 4
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "small"
           }
         }

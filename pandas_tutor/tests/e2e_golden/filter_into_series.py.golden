@@ -17,55 +17,69 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "email"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "email"
+          }
         },
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "web"
           },
           "to": {
+            "type": "series",
             "anchor": "rhs",
             "label": "pandas.Series"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 3
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": 3
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 4
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": 4
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 9
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": 9
           }
         }

@@ -17,9 +17,12 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": null
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": null
+          }
         }
       ],
       "data_frame": {
@@ -161,37 +164,46 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 2
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "pg"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 0
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "sam"
           }
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 1
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": "sam"
           }
         }

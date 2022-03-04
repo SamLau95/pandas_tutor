@@ -17,9 +17,12 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "b"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "b"
+          }
         }
       ],
       "data_frame": {

@@ -17,21 +17,30 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "size"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          }
         },
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "grooming"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "grooming"
+          }
         },
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "lhs",
-          "label": "kids"
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "kids"
+          }
         }
       ],
       "data_frame": {
@@ -274,13 +283,16 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "column",
             "label": "food_cost"
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "column",
             "label": "food_cost"
           }
         }
@@ -414,13 +426,16 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 1
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "large",
               "weekly",
@@ -430,13 +445,16 @@
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 0
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "medium",
               "weekly",
@@ -446,13 +464,16 @@
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 3
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "medium",
               "weekly",
@@ -462,13 +483,16 @@
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 6
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "medium",
               "weekly",
@@ -478,13 +502,16 @@
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 5
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "medium",
               "weekly",
@@ -494,13 +521,16 @@
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 2
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "small",
               "daily",
@@ -510,13 +540,16 @@
         },
         {
           "illustrate": "outline",
-          "select": "row",
           "from": {
+            "type": "axis",
             "anchor": "lhs",
+            "select": "row",
             "label": 4
           },
           "to": {
+            "type": "axis",
             "anchor": "rhs",
+            "select": "row",
             "label": [
               "small",
               "daily",

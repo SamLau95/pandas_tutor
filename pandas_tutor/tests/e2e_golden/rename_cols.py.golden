@@ -17,26 +17,36 @@
       "mapping": [
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "label",
             "anchor": "lhs",
-            "label": "breed"
+            "select": "column",
+            "label": "breed",
+            "level": null
           },
           "to": {
+            "type": "label",
             "anchor": "rhs",
-            "label": "b"
+            "select": "column",
+            "label": "b",
+            "level": null
           }
         },
         {
           "illustrate": "outline",
-          "select": "column",
           "from": {
+            "type": "label",
             "anchor": "lhs",
-            "label": "food_cost"
+            "select": "column",
+            "label": "food_cost",
+            "level": null
           },
           "to": {
+            "type": "label",
             "anchor": "rhs",
-            "label": "cost"
+            "select": "column",
+            "label": "cost",
+            "level": null
           }
         }
       ],

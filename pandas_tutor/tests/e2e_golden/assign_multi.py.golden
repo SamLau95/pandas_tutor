@@ -17,21 +17,30 @@
       "mapping": [
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "rhs",
-          "label": "daily"
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "daily"
+          }
         },
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "rhs",
-          "label": "yearly"
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "yearly"
+          }
         },
         {
           "illustrate": "highlight",
-          "select": "column",
-          "anchor": "rhs",
-          "label": "s"
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "s"
+          }
         }
       ],
       "data_frame": {
