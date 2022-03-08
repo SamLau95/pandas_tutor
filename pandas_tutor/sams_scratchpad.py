@@ -1,6 +1,6 @@
-'''
+"""
 just for myself
-'''
+"""
 # flake8: noqa
 
 import prettyprinter  # type: ignore
@@ -11,15 +11,15 @@ from .parse import parse, test_logger, test_parser
 from .run import run
 from .main import make_tutor_spec_py
 
-prettyprinter.install_extras(include=['dataclasses', 'python', 'numpy'])
+prettyprinter.install_extras(include=["dataclasses", "python", "numpy"])
 
 # https://github.com/tommikaikkonen/prettyprinter/issues/27#issuecomment-451515061
-IMPLICIT_MODULES.add('pandas_tutor.parse_nodes')
-IMPLICIT_MODULES.add('pandas_tutor.util')
+IMPLICIT_MODULES.add("pandas_tutor.parse_nodes")
+IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = 'parse_golden/nested_exprs'
+file_to_read = "parse_golden/nested_exprs"
 
 
 def p(obj):
@@ -28,7 +28,8 @@ def p(obj):
 
 if __name__ == "__main__":
     from pathlib import Path
-    code = (Path(__file__).parent / f'tests/{file_to_read}.py').read_text()
+
+    code = (Path(__file__).parent / f"tests/{file_to_read}.py").read_text()
     root = test_parser(code)
     test_logger(code)
     #     print(code)
@@ -44,4 +45,4 @@ if __name__ == "__main__":
     p(root)
     # p(run(root))
 
-    print('\n---------------------------------------------------------\n')
+    print("\n---------------------------------------------------------\n")
