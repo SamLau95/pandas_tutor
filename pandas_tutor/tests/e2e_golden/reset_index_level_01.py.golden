@@ -1,0 +1,162 @@
+{
+  "code": "# test reset_index with level arg\nimport pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\nres = (dogs\n .groupby(['size', 'grooming', 'kids'])\n [['food_cost']]\n .max()\n)\n\nres.reset_index(level=1)\n",
+  "explanation": [
+    {
+      "type": "ResetIndexCall",
+      "code_step": "res.reset_index(level=1)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 3
+        },
+        "end": {
+          "line": 0,
+          "ch": 24
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "outline",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "grooming"
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "food_cost"
+            ]
+          },
+          "index": {
+            "names": [
+              "size",
+              "grooming",
+              "kids"
+            ],
+            "labels": [
+              [
+                "large",
+                "weekly",
+                "medium"
+              ],
+              [
+                "medium",
+                "weekly",
+                "high"
+              ],
+              [
+                "medium",
+                "weekly",
+                "medium"
+              ],
+              [
+                "small",
+                "daily",
+                "high"
+              ],
+              [
+                "small",
+                "daily",
+                "low"
+              ]
+            ]
+          },
+          "data": [
+            [
+              466.0
+            ],
+            [
+              466.0
+            ],
+            [
+              466.0
+            ],
+            [
+              324.0
+            ],
+            [
+              324.0
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "grooming",
+              "food_cost"
+            ]
+          },
+          "index": {
+            "names": [
+              "size",
+              "kids"
+            ],
+            "labels": [
+              [
+                "large",
+                "medium"
+              ],
+              [
+                "medium",
+                "high"
+              ],
+              [
+                "medium",
+                "medium"
+              ],
+              [
+                "small",
+                "high"
+              ],
+              [
+                "small",
+                "low"
+              ]
+            ]
+          },
+          "data": [
+            [
+              "weekly",
+              466.0
+            ],
+            [
+              "weekly",
+              466.0
+            ],
+            [
+              "weekly",
+              466.0
+            ],
+            [
+              "daily",
+              324.0
+            ],
+            [
+              "daily",
+              324.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-'''
+"""
 node objects that parse.py creates
-'''
+"""
 from __future__ import annotations
 
 import dataclasses
@@ -10,10 +10,10 @@ from dataclasses import field
 
 from .util import Axis, CodeRange, Slicer
 
-T = t.TypeVar('T')
+T = t.TypeVar("T")
 
 # Use a distinct type to distinguish between strings that can be eval'd
-RawCode = t.NewType('RawCode', str)
+RawCode = t.NewType("RawCode", str)
 
 
 class _ParseTreeEncoder(json.JSONEncoder):
@@ -42,19 +42,22 @@ class Base:
 
 @dataclasses.dataclass
 class ParsedModule(Base):
-    '''root of parse tree'''
+    """root of parse tree"""
+
     statements: t.List[Statement]
 
 
 @dataclasses.dataclass
 class VerbatimStatement(Base):
-    '''node that we should just run, like imports'''
+    """node that we should just run, like imports"""
+
     pass
 
 
 @dataclasses.dataclass
 class ChainStatement(Base):
-    '''node that we have special parse rules for, like function chains'''
+    """node that we have special parse rules for, like function chains"""
+
     # TODO: should we distinguish between Assign and Exprs?
     chain: t.List[ChainStep]
 
@@ -64,13 +67,15 @@ Statement = t.Union[VerbatimStatement, ChainStatement]
 
 @dataclasses.dataclass
 class ChainStep(Base):
-    '''represents a step that we can visualize, or an error'''
+    """represents a step that we can visualize, or an error"""
+
     pass
 
 
 @dataclasses.dataclass
 class StartOfChain(ChainStep):
-    '''the pd in pd.pivot_table, or df in df['Name']'''
+    """the pd in pd.pivot_table, or df in df['Name']"""
+
     pass
 
 
@@ -91,79 +96,86 @@ class StartOfChain(ChainStep):
 
 @dataclasses.dataclass
 class Call(ChainStep):
-    '''base class used for typing'''
+    """base class used for typing"""
+
     pass
 
 
 def evals_into(attr: str):
+    """marks a field in a dataclass as one that should be eval'd"""
     return field(metadata=dict(evals_into=attr))
 
 
 @dataclasses.dataclass
 class SortValuesCall(Call):
-    '''
+    """
     cols = ['size', 'breed']
     df.sort_values(cols)
-    '''
-    fn_name = 'sort_values'
+    """
+
+    fn_name = "sort_values"
 
     # Expression that evaluates to labels
-    label_expr: RawCode = evals_into('labels')
+    label_expr: RawCode = evals_into("labels")
 
     # technically the axis can be an expression too...but who does that??
-    axis: Axis = 'index'
+    axis: Axis = "index"
 
 
 @dataclasses.dataclass
 class RenameCall(Call):
-    '''
+    """
     names = {'size': 'SIZE', 'food_cost': 'cost'}
     df.rename(names, axis=1)
     df.rename(axis=1, mapper=names)
     df.rename(columns=names)
     df.rename(index={'sam': 'smae'})
-    '''
-    fn_name = 'rename'
+    """
+
+    fn_name = "rename"
 
     # expression that results in a dict. can sometimes be a function, in which
     # case we need to just pass it through
-    mapping_expr: RawCode = evals_into('mapping')
+    mapping_expr: RawCode = evals_into("mapping")
 
-    axis: Axis = 'index'
+    axis: Axis = "index"
 
 
 @dataclasses.dataclass
 class HeadCall(Call):
-    '''
+    """
     df.head(5)
     df.head()
     df.head(-2)
-    '''
-    fn_name = 'head'
+    """
+
+    fn_name = "head"
 
 
 @dataclasses.dataclass
 class TailCall(Call):
-    '''
+    """
     df.tail(5)
     df.tail()
     df.tail(-2)
-    '''
-    fn_name = 'tail'
+    """
+
+    fn_name = "tail"
 
 
 @dataclasses.dataclass
 class PassThroughCall(Call):
-    '''
+    """
     call that we don't know how to draw diagram for, so we should just run it
     and keep going
-    '''
+    """
+
     fn_name: str
 
 
 @dataclasses.dataclass
 class GroupByCall(Call):
-    '''
+    """
     the labels for grouping are automatically saved into the groupby object,
     so we don't need to get them during parsing
 
@@ -171,15 +183,16 @@ class GroupByCall(Call):
     df.groupby(['region', 'id'])
     df.groupby(df['region'])
     df.groupby(lambda val: val // 10)
-    '''
-    fn_name = 'groupby'
+    """
 
-    axis: Axis = 'index'
+    fn_name = "groupby"
+
+    axis: Axis = "index"
 
 
 @dataclasses.dataclass
 class AggCall(Call):
-    '''
+    """
     catch-all for any function that happens after a groupby. note: some
     functions on groupby objects are transforms, not aggregations, e.g.
     .transform(), .apply(), cumcount(), etc. and shouldn't be parsed into an
@@ -189,8 +202,9 @@ class AggCall(Call):
     g.agg('mean')
     g.mean()
     g.std()
-    '''
-    fn_name = 'agg'
+    """
+
+    fn_name = "agg"
 
     @classmethod
     def from_passthrough_call(cls, call: PassThroughCall):
@@ -199,50 +213,67 @@ class AggCall(Call):
 
 @dataclasses.dataclass
 class ApplyCall(Call):
-    '''
+    """
     df['region'].apply(len)
-    '''
-    fn_name = 'apply'
+    """
 
-    axis: Axis = 'index'
+    fn_name = "apply"
+
+    axis: Axis = "index"
 
 
 @dataclasses.dataclass
 class AssignCall(Call):
-    '''
+    """
     df.assign(test=2)
     df.assign(temp_f=df['temp_c'] * 9 / 5 + 32)
-    '''
-    fn_name = 'assign'
+    """
+
+    fn_name = "assign"
 
     new_col_labels: t.List[str]
 
 
 @dataclasses.dataclass
 class DropCall(Call):
-    '''
+    """
     dogs.drop(columns=['type', 'price'])
     dogs.drop(['Labrador Retriever', 'Beagle'])
-    '''
-    fn_name = 'drop'
+    """
 
-    col_expr: t.Optional[RawCode] = evals_into('col_labels')
-    row_expr: t.Optional[RawCode] = evals_into('row_labels')
+    fn_name = "drop"
+
+    col_expr: t.Optional[RawCode] = evals_into("col_labels")
+    row_expr: t.Optional[RawCode] = evals_into("row_labels")
+
+
+@dataclasses.dataclass
+class ResetIndexCall(Call):
+    """
+    dogs.reset_index(level=1)
+    dogs.reset_index(level=[1, 2])
+    dogs.reset_index(level=1, drop=True)
+    """
+
+    fn_name = "reset_index"
+
+    level_expr: t.Optional[RawCode] = evals_into("level")
+    drop_expr: t.Optional[RawCode] = evals_into("drop")
 
 
 @dataclasses.dataclass
 class UnstackCall(Call):
-    '''
+    """
     counts.unstack()
     counts.unstack(level=1)
     counts.unstack(level=[1, 2])
     counts.unstack(level=-1, fill_value=0)
-    '''
-    fn_name = 'unstack'
+    """
 
-    level_expr: t.Optional[RawCode] = evals_into('level')
-    fill_value_expr: t.Optional[RawCode] = evals_into('fill_value')
+    fn_name = "unstack"
 
+    level_expr: t.Optional[RawCode] = evals_into("level")
+    fill_value_expr: t.Optional[RawCode] = evals_into("fill_value")
 
 
 ##############################################################################
@@ -252,10 +283,11 @@ class UnstackCall(Call):
 
 @dataclasses.dataclass
 class Subscript(ChainStep):
-    '''
+    """
     hard-codes two slice elements (i've never seen a third slice in pandas
     code, but i could be wrong)
-    '''
+    """
+
     slicer: Slicer
 
     slice1: SubscriptEl
@@ -264,13 +296,14 @@ class Subscript(ChainStep):
 
 @dataclasses.dataclass
 class SubsSlice(Base):
-    '''df.iloc[:3]'''
+    """df.iloc[:3]"""
+
     pass
 
 
 @dataclasses.dataclass
 class SubsComparison(Base):
-    '''
+    """
     special case for boolean expressions:
 
         df[df['Count'] > 10]
@@ -284,16 +317,18 @@ class SubsComparison(Base):
         df[mask]
 
     (those will go into EvalSlice)
-    '''
+    """
+
     # this is a list of code expressions that will each eval to one-or-more
     # labels. when parsing, we need to pull these out of each boolean mask
-    label_exprs: t.List[RawCode] = field(metadata=dict(
-        evals_into='{attr}_filter_labels'))
+    label_exprs: t.List[RawCode] = field(
+        metadata=dict(evals_into="{attr}_filter_labels")
+    )
 
 
 @dataclasses.dataclass
 class SubsEval(Base):
-    '''
+    """
     anything that evals into row/column label(s), like:
 
         df['Name']
@@ -304,8 +339,9 @@ class SubsEval(Base):
     like boolean masks that aren't caught by ComparisonSlice.
     if the result isn't a list of labels, then we should just pass it through
     and not try to visualize it
-    '''
-    expr: RawCode = field(metadata=dict(evals_into='{attr}_values'))
+    """
+
+    expr: RawCode = field(metadata=dict(evals_into="{attr}_values"))
 
 
 SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
@@ -317,17 +353,19 @@ SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
 
 @dataclasses.dataclass
 class ParseSyntaxError(ChainStep):
-    '''
+    """
     represents an error in parsing. when this happens, we should pass along the
     error for serializing. we don't run the code since libcst produces nicer
     error messages compared to Python
-    '''
+    """
+
     error_msg: str
 
 
 @dataclasses.dataclass
 class EvalError(ChainStep):
-    '''represents a step in the chain that caused a runtime error'''
+    """represents a step in the chain that caused a runtime error"""
+
     # TODO: compute code positions for errors
     @classmethod
     def from_node(cls, node: Base):
