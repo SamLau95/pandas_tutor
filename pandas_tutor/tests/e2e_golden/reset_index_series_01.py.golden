@@ -1,0 +1,225 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv)).set_index(\"breed\")\n\ndogs[\"size\"].reset_index()\n",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "dogs[\"size\"].reset_index()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 12
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "outline",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          },
+          "to": {
+            "type": "series",
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "Labrador Retriever",
+              "German Shepherd",
+              "Beagle",
+              "Golden Retriever",
+              "Yorkshire Terrier",
+              "Bulldog",
+              "Boxer"
+            ]
+          },
+          "data": [
+            [
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ],
+            [
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "daily",
+              324.0,
+              "low",
+              "small"
+            ],
+            [
+              "weekly",
+              466.0,
+              "medium",
+              "medium"
+            ],
+            [
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              "breed"
+            ],
+            "labels": [
+              "Labrador Retriever",
+              "German Shepherd",
+              "Beagle",
+              "Golden Retriever",
+              "Yorkshire Terrier",
+              "Bulldog",
+              "Boxer"
+            ]
+          },
+          "data": [
+            "medium",
+            "large",
+            "small",
+            "medium",
+            "small",
+            "medium",
+            "medium"
+          ]
+        }
+      }
+    },
+    {
+      "type": "ResetIndexCall",
+      "code_step": "dogs[\"size\"].reset_index()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 12
+        },
+        "end": {
+          "line": 0,
+          "ch": 26
+        }
+      },
+      "mapping": [
+        {
+          "illustrate": "outline",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "breed"
+          }
+        }
+      ],
+      "data_frame": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "data": [
+            [
+              "Labrador Retriever",
+              "medium"
+            ],
+            [
+              "German Shepherd",
+              "large"
+            ],
+            [
+              "Beagle",
+              "small"
+            ],
+            [
+              "Golden Retriever",
+              "medium"
+            ],
+            [
+              "Yorkshire Terrier",
+              "small"
+            ],
+            [
+              "Bulldog",
+              "medium"
+            ],
+            [
+              "Boxer",
+              "medium"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
