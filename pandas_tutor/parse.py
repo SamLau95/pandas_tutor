@@ -39,6 +39,7 @@ from .parse_nodes import (
     PassThroughCall,
     RawCode,
     RenameCall,
+    ResetIndexCall,
     SortValuesCall,
     StartOfChain,
     SubsComparison,
@@ -124,6 +125,7 @@ is_head_or_tail = fn_matcher("head") | fn_matcher("tail")
 is_groupby = fn_matcher("groupby")
 is_apply = fn_matcher("apply")
 is_assign = fn_matcher("assign")
+is_reset_index = fn_matcher("reset_index")
 is_unstack = fn_matcher("unstack")
 
 # make sure to update this whenever we add a new call to the section above
@@ -135,6 +137,7 @@ is_parsed_call = (
     | is_groupby
     | is_apply
     | is_assign
+    | is_reset_index
     | is_unstack
 )
 
@@ -471,6 +474,25 @@ class ChainParser(ParserBase):
         )
 
         node = self.make_call_node(GroupByCall, cst_node, axis=axis)
+        self._append(node)
+
+    @m.leave(is_reset_index)
+    def make_reset_index(self, cst_node):
+        level_expr = get_arg_by_position_or_keyword(cst_node.args, 0, "level")
+        drop_expr = get_arg_by_position_or_keyword(
+            cst_node.args, 1, "drop")
+
+        if level_expr is not None:
+            level_expr = self.code_for(level_expr.value)
+        if drop_expr is not None:
+            drop_expr = self.code_for(drop_expr.value)
+
+        node = self.make_call_node(
+            ResetIndexCall,
+            cst_node,
+            level_expr=level_expr,
+            drop_expr=drop_expr,
+        )
         self._append(node)
 
     @m.leave(is_unstack)

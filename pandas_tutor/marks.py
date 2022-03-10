@@ -11,6 +11,7 @@ from .diagram import (
     AxisPos,
     CrossOut,
     Highlight,
+    IndexLevelPos,
     LabelPos,
     Mark,
     Outline,
@@ -29,6 +30,7 @@ from .parse_nodes import (
     HeadCall,
     PassThroughCall,
     RenameCall,
+    ResetIndexCall,
     SortValuesCall,
     SubsComparison,
     Subscript,
@@ -75,6 +77,8 @@ def make_marks(
         return mark_for_groupby(step, before, after)
     elif isinstance(step, AggCall):
         return mark_for_agg(step, before, after)
+    elif isinstance(step, ResetIndexCall):
+        return mark_for_reset_index(step, before, after)
     elif isinstance(step, UnstackCall):
         return mark_for_unstack(step, before, after)
     elif isinstance(step, Subscript):
@@ -238,7 +242,52 @@ def mark_for_agg(
     return row_outlines
 
 
-# for unstack, we're going to color the
+# dogs.reset_index(level=[1, 2], drop=True)
+def mark_for_reset_index(
+    step: ResetIndexCall, before: EvalResult, after: EvalResult
+) -> t.List[Mark]:
+    if not (
+        isinstance(before, (DFResult, SeriesResult))
+        and isinstance(after, DFResult)
+    ):
+        return []
+    df = before.val
+    args = after.args
+
+    # if level unspecified, pandas resets all levels
+    all_levels = list(range(len(df.index.names)))
+    levels = util.maybe_wrap_in_list(args.get("level", all_levels))
+    # convert levels to integer positions
+    levels = [
+        df.index.names.index(level) if isinstance(level, str) else level
+        for level in levels
+    ]
+
+    if args.get("drop", False):
+        return [
+            CrossOut(IndexLevelPos("lhs", "column", level)) for level in levels
+        ]
+
+    # recreating the pandas defaults for unnamed index levels
+    names: t.List[str]
+    if util.is_multi(df.index):
+        names = [
+            n if n is not None else f"level_{i}"
+            for i, n in enumerate(df.index.names)
+        ]
+    else:
+        default = "index" if "index" not in df else "level_0"
+        names = [default] if df.index.name is None else [df.index.name]
+
+    return [
+        Outline(
+            IndexLevelPos("lhs", "column", level),
+            rhs("column", names[level]),
+        )
+        for level in levels
+    ]
+
+
 # counts.unstack(level=-1, fill_value=0)
 def mark_for_unstack(
     step: UnstackCall, before: EvalResult, after: EvalResult

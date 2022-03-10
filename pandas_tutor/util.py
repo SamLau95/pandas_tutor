@@ -8,6 +8,7 @@ import dataclasses
 import io
 import itertools
 import typing as t
+from typing_extensions import TypeGuard
 import warnings
 from collections import abc
 from warnings import warn
@@ -51,6 +52,11 @@ def is_list_like(obj: t.Any) -> bool:
     things to lists
     """
     return not isinstance(obj, str) and isinstance(obj, abc.Iterable)
+
+
+def maybe_wrap_in_list(obj: t.Any) -> t.List:
+    """if obj is a scalar, returns [obj]"""
+    return obj if is_list_like(obj) else [obj]
 
 
 @dataclasses.dataclass
@@ -203,6 +209,10 @@ def match_cols(
         if (len(matches) == len(df1.columns) and only_if_diff)
         else matches
     )
+
+
+def is_multi(index: pd.Index) -> TypeGuard[pd.MultiIndex]:
+    return isinstance(index, pd.MultiIndex)
 
 
 @t.overload

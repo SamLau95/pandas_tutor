@@ -250,16 +250,15 @@ class DropCall(Call):
 @dataclasses.dataclass
 class ResetIndexCall(Call):
     """
-    dogs.reset_index()
-    counts.unstack(level=1)
-    counts.unstack(level=[1, 2])
-    counts.unstack(level=-1, fill_value=0)
+    dogs.reset_index(level=1)
+    dogs.reset_index(level=[1, 2])
+    dogs.reset_index(level=1, drop=True)
     """
 
-    fn_name = "unstack"
+    fn_name = "reset_index"
 
     level_expr: t.Optional[RawCode] = evals_into("level")
-    fill_value_expr: t.Optional[RawCode] = evals_into("fill_value")
+    drop_expr: t.Optional[RawCode] = evals_into("drop")
 
 
 @dataclasses.dataclass
