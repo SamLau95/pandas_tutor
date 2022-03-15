@@ -150,7 +150,7 @@
           "from": {
             "type": "index_level",
             "anchor": "lhs",
-            "select": "column",
+            "select": "row",
             "level": 0
           },
           "to": {
