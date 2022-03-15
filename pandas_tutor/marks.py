@@ -9,12 +9,12 @@ from . import util
 from .diagram import (
     Anchor,
     AxisPos,
-    CrossOut,
-    Highlight,
+    Drop,
+    Using,
     IndexLevelPos,
     LabelPos,
     Mark,
-    Outline,
+    Map,
     Selection,
     SeriesPos,
 )
@@ -152,9 +152,7 @@ def mark_for_rename(
     select = selection(step.axis)
 
     return [
-        Outline(
-            from_=LabelPos("lhs", select, old), to=LabelPos("rhs", select, new)
-        )
+        Map(from_=LabelPos("lhs", select, old), to=LabelPos("rhs", select, new))
         for old, new in mapping.items()
     ]
 
@@ -233,7 +231,7 @@ def mark_for_agg(
         for label in lhs_labels:
             row_outlines.append(
                 # TODO: get selection from groupby instead of hard-coding 'row'
-                Outline(
+                Map(
                     from_=lhs("row", label),
                     to=rhs("row", group_key),
                 )
@@ -264,9 +262,7 @@ def mark_for_reset_index(
     ]
 
     if args.get("drop", False):
-        return [
-            CrossOut(IndexLevelPos("lhs", "column", level)) for level in levels
-        ]
+        return [Drop(IndexLevelPos("lhs", "column", level)) for level in levels]
 
     # recreating the pandas defaults for unnamed index levels
     names: t.List[str]
@@ -280,7 +276,7 @@ def mark_for_reset_index(
         names = [default] if df.index.name is None else [df.index.name]
 
     return [
-        Outline(
+        Map(
             IndexLevelPos("lhs", "column", level),
             rhs("column", names[level]),
         )
@@ -394,7 +390,7 @@ def mark_for_subscript_into_series(
         if not isinstance(col, (str, int)):
             return []
 
-        return [Outline(from_=lhs("column", col), to=rhs_series())]
+        return [Map(from_=lhs("column", col), to=rhs_series())]
 
     # df.loc[df["email"] > "s", "web"]
     # df.loc[:, df.iloc[0] % 2 == 0]
@@ -423,7 +419,7 @@ def mark_for_subscript_into_series(
 
         return [
             *rows_used_for_filter,
-            Outline(from_=lhs("row", row), to=rhs_series()),
+            Map(from_=lhs("row", row), to=rhs_series()),
             # when slicing a row out of dataframe, the resulting series has
             # the df's column labels as the index. this means that the labels
             # are "transposed" so we don't draw arrows for this case.
@@ -440,7 +436,7 @@ def mark_for_subscript_into_series(
         )
         return [
             *cols_used_for_filter,
-            Outline(from_=lhs("column", label), to=rhs_series()),
+            Map(from_=lhs("column", label), to=rhs_series()),
             *diff_rows(
                 before_df,
                 after_df,
@@ -497,7 +493,7 @@ def make_highlights(
     """
     shorthand to make a highlight for each column/row in labels
     """
-    return [Highlight(AxisPos(anchor, select, label)) for label in labels]
+    return [Using(AxisPos(anchor, select, label)) for label in labels]
 
 
 def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
@@ -505,8 +501,7 @@ def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
     shorthand when index values don't change, which is most of the time
     """
     return [
-        Outline(from_=lhs(select, label), to=rhs(select, label))
-        for label in labels
+        Map(from_=lhs(select, label), to=rhs(select, label)) for label in labels
     ]
 
 
@@ -514,7 +509,7 @@ def make_crossouts(labels: t.Iterable, select: Selection) -> t.List[Mark]:
     """
     shorthand for crossouts
     """
-    return [CrossOut(pos=lhs(select, label)) for label in labels]
+    return [Drop(pos=lhs(select, label)) for label in labels]
 
 
 def lhs(select: Selection, label: util.Label) -> AxisPos:
