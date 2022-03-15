@@ -54,7 +54,7 @@ def is_list_like(obj: t.Any) -> bool:
     return not isinstance(obj, str) and isinstance(obj, abc.Iterable)
 
 
-def maybe_wrap_in_list(obj: t.Any) -> t.List:
+def listify(obj: t.Any) -> t.List:
     """if obj is a scalar, returns [obj]"""
     return obj if is_list_like(obj) else [obj]
 
@@ -211,8 +211,21 @@ def match_cols(
     )
 
 
+def is_series(obj: t.Any) -> TypeGuard[pd.Series]:
+    return isinstance(obj, pd.Series)
+
+
+def is_dataframe(obj: t.Any) -> TypeGuard[pd.DataFrame]:
+    return isinstance(obj, pd.DataFrame)
+
+
 def is_multi(index: pd.Index) -> TypeGuard[pd.MultiIndex]:
     return isinstance(index, pd.MultiIndex)
+
+
+def level_as_int(index: pd.Index, level: str | int) -> int:
+    "converts a name of a level to the level's integer index if needed"
+    return index.names.index(level) if isinstance(level, str) else level
 
 
 @t.overload

@@ -18,6 +18,10 @@ Sophia,F,13753,2019
 '''
 
 df = pd.read_csv(io.StringIO(csv))
-counts = (df.groupby(['Year', 'Sex'])['Count'].max())
+counts = (
+    df.groupby(['Year', 'Sex'])
+    [['Count']]
+    .max()
+)
 
 counts.unstack()

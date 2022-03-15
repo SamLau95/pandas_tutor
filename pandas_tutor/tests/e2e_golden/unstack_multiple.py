@@ -1,3 +1,4 @@
+# unstack multiple unnamed levels
 import pandas as pd
 import io
 
@@ -20,4 +21,4 @@ res = (dogs
  .max()
 )
 
-res.unstack()
+res.unstack(['grooming', 2])

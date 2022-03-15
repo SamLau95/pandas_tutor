@@ -20,7 +20,7 @@
           "from": {
             "type": "index_level",
             "anchor": "lhs",
-            "select": "column",
+            "select": "row",
             "level": 0
           },
           "to": {
@@ -35,7 +35,7 @@
           "from": {
             "type": "index_level",
             "anchor": "lhs",
-            "select": "column",
+            "select": "row",
             "level": 1
           },
           "to": {
@@ -50,7 +50,7 @@
           "from": {
             "type": "index_level",
             "anchor": "lhs",
-            "select": "column",
+            "select": "row",
             "level": 2
           },
           "to": {
