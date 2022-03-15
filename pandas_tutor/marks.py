@@ -241,6 +241,8 @@ def mark_for_agg(
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
+# i don't think this works properly when the column is a multi-index, but
+# let's not worry about that for now
 def mark_for_reset_index(
     step: ResetIndexCall, before: EvalResult, after: EvalResult
 ) -> t.List[Mark]:
@@ -254,7 +256,7 @@ def mark_for_reset_index(
 
     # if level unspecified, pandas resets all levels
     all_levels = list(range(len(df.index.names)))
-    levels = util.maybe_wrap_in_list(args.get("level", all_levels))
+    levels = util.listify(args.get("level", all_levels))
     # convert levels to integer positions
     levels = [
         df.index.names.index(level) if isinstance(level, str) else level
@@ -262,7 +264,7 @@ def mark_for_reset_index(
     ]
 
     if args.get("drop", False):
-        return [Drop(IndexLevelPos("lhs", "column", level)) for level in levels]
+        return [Drop(IndexLevelPos("lhs", "row", level)) for level in levels]
 
     # recreating the pandas defaults for unnamed index levels
     names: t.List[str]
@@ -277,7 +279,7 @@ def mark_for_reset_index(
 
     return [
         Map(
-            IndexLevelPos("lhs", "column", level),
+            IndexLevelPos("lhs", "row", level),
             rhs("column", names[level]),
         )
         for level in levels
@@ -288,7 +290,31 @@ def mark_for_reset_index(
 def mark_for_unstack(
     step: UnstackCall, before: EvalResult, after: EvalResult
 ) -> t.List[Mark]:
-    return []
+    if not (
+        isinstance(before, (DFResult, SeriesResult))
+        and isinstance(after, DFResult)
+    ):
+        return []
+
+    df = before.val
+    args = after.args
+
+    if not util.is_multi(df.index):
+        return []
+
+    levels = util.listify(args.get("level", len(df.index.names) - 1))
+    levels = [util.level_as_int(df.index, level) for level in levels]
+
+    # unstacking puts the new levels **under** the existing ones
+    n_column_levels = len(df.columns.names) if util.is_dataframe(df) else 0
+
+    return [
+        Map(
+            IndexLevelPos("lhs", "row", level),
+            IndexLevelPos("rhs", "column", index_level + n_column_levels),
+        )
+        for index_level, level in enumerate(levels)
+    ]
 
 
 # handler for all subscripts, like:

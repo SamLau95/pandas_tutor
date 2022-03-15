@@ -1,0 +1,125 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = '''\nName,Sex,Count,Year\nLiam,M,19659,2020\nNoah,M,18252,2020\nOliver,M,14147,2020\nEmma,F,15581,2020\nAva,F,13084,2020\nCharlotte,F,13003,2020\nLiam,M,20555,2019\nNoah,M,19097,2019\nOliver,M,13929,2019\nEmma,F,17155,2019\nAva,F,14474,2019\nSophia,F,13753,2019\n'''\n\ndf = pd.read_csv(io.StringIO(csv))\ncounts = (\n    df.groupby(['Year', 'Sex'])\n    [['Count']]\n    .max()\n)\n\ncounts.unstack()\n",
+  "explanation": [
+    {
+      "type": "UnstackCall",
+      "code_step": "counts.unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 6
+        },
+        "end": {
+          "line": 0,
+          "ch": 16
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 1
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Count"
+            ]
+          },
+          "index": {
+            "names": [
+              "Year",
+              "Sex"
+            ],
+            "labels": [
+              [
+                2019,
+                "F"
+              ],
+              [
+                2019,
+                "M"
+              ],
+              [
+                2020,
+                "F"
+              ],
+              [
+                2020,
+                "M"
+              ]
+            ]
+          },
+          "data": [
+            [
+              17155
+            ],
+            [
+              20555
+            ],
+            [
+              15581
+            ],
+            [
+              19659
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              "Sex"
+            ],
+            "labels": [
+              [
+                "Count",
+                "F"
+              ],
+              [
+                "Count",
+                "M"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "Year"
+            ],
+            "labels": [
+              2019,
+              2020
+            ]
+          },
+          "data": [
+            [
+              17155,
+              20555
+            ],
+            [
+              15581,
+              19659
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

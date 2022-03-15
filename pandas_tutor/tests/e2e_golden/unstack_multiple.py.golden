@@ -1,0 +1,177 @@
+{
+  "code": "# unstack multiple unnamed levels\nimport pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\nres = (dogs\n .groupby(['size', 'grooming', 'kids'])\n [['food_cost']]\n .max()\n)\n\nres.unstack(['grooming', 2])",
+  "explanation": [
+    {
+      "type": "UnstackCall",
+      "code_step": "res.unstack(['grooming', 2])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 3
+        },
+        "end": {
+          "line": 0,
+          "ch": 28
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 1
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 2
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 2
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "food_cost"
+            ]
+          },
+          "index": {
+            "names": [
+              "size",
+              "grooming",
+              "kids"
+            ],
+            "labels": [
+              [
+                "large",
+                "weekly",
+                "medium"
+              ],
+              [
+                "medium",
+                "weekly",
+                "high"
+              ],
+              [
+                "medium",
+                "weekly",
+                "medium"
+              ],
+              [
+                "small",
+                "daily",
+                "high"
+              ],
+              [
+                "small",
+                "daily",
+                "low"
+              ]
+            ]
+          },
+          "data": [
+            [
+              466.0
+            ],
+            [
+              466.0
+            ],
+            [
+              466.0
+            ],
+            [
+              324.0
+            ],
+            [
+              324.0
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              "grooming",
+              "kids"
+            ],
+            "labels": [
+              [
+                "food_cost",
+                "weekly",
+                "medium"
+              ],
+              [
+                "food_cost",
+                "weekly",
+                "high"
+              ],
+              [
+                "food_cost",
+                "daily",
+                "high"
+              ],
+              [
+                "food_cost",
+                "daily",
+                "low"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "size"
+            ],
+            "labels": [
+              "large",
+              "medium",
+              "small"
+            ]
+          },
+          "data": [
+            [
+              466.0,
+              null,
+              null,
+              null
+            ],
+            [
+              466.0,
+              466.0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              324.0,
+              324.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
