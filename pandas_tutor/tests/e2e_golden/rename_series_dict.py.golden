@@ -14,9 +14,9 @@
           "ch": 34
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "label",
             "anchor": "lhs",
@@ -33,7 +33,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "label",
             "anchor": "lhs",
@@ -50,7 +50,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": {
           "type": "Series",
           "index": {

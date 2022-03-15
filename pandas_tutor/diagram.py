@@ -56,11 +56,8 @@ class Diagram:
     type: str
     code_step: str
     fragment: CodeRange
-    mapping: t.List[Mark]
-
-    # although we call this data_frame, technically it can hold any type of
-    # data, like series or groupbys
-    data_frame: DataPair
+    marks: t.List[Mark]
+    data: DataPair
 
 
 @dataclasses.dataclass
@@ -236,12 +233,14 @@ class DatumPos(TablePos):
 ##############################################################################
 
 # each Mark object is serialized as one of these
-MarkType = t.Literal["highlight", "outline", "crossout"]
+MarkType = t.Literal["using", "map", "drop"]
 
 
 @dataclasses.dataclass
 class Mark:
-    illustrate: MarkType = field(init=False)
+    """base class, don't use directly"""
+
+    type: MarkType = field(init=False)
 
     def __post_init__(self):
         raise NotImplementedError(
@@ -250,35 +249,35 @@ class Mark:
 
 
 @dataclasses.dataclass
-class Highlight(Mark):
-    """rendered as a border"""
+class Using(Mark):
+    """represents the data we used to perform an operation"""
 
     pos: TablePos
 
     def __post_init__(self):
-        self.illustrate = "highlight"
+        self.type = "using"
 
 
 @dataclasses.dataclass
-class Outline(Mark):
-    """rendered as an arrow"""
+class Map(Mark):
+    """represents data copied or mapped from lhs to rhs"""
 
     # from is a Python keyword!
     from_: TablePos
     to: TablePos
 
     def __post_init__(self):
-        self.illustrate = "outline"
+        self.type = "map"
 
 
 @dataclasses.dataclass
-class CrossOut(Mark):
-    """rendered as strikethroughs"""
+class Drop(Mark):
+    """represents data explicitly removed from the table"""
 
     pos: TablePos
 
     def __post_init__(self):
-        self.illustrate = "crossout"
+        self.type = "drop"
 
 
 ##############################################################################

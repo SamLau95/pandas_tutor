@@ -14,9 +14,9 @@
           "ch": 35
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "crossout",
+          "type": "drop",
           "pos": {
             "type": "index_level",
             "anchor": "lhs",
@@ -25,7 +25,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": {
           "type": "DataFrame",
           "columns": {

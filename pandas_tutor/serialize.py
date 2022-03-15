@@ -78,8 +78,8 @@ def serialize_single(result: EvalResult) -> Explanation:
             type=result.step.type_,
             code_step=result.step.code,
             fragment=result.fragment,
-            mapping=[],
-            data_frame=DataPair(lhs=serialize_step_val(result), rhs="no_rhs"),
+            marks=[],
+            data=DataPair(lhs=serialize_step_val(result), rhs="no_rhs"),
         )
     ]
 
@@ -108,8 +108,8 @@ def serialize_pair(
         type=step.type_,
         code_step=step.code,
         fragment=after.fragment,
-        mapping=marks,
-        data_frame=df_pair,
+        marks=marks,
+        data=df_pair,
     )
 
 

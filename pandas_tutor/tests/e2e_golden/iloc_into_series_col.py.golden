@@ -14,9 +14,9 @@
           "ch": 16
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -30,7 +30,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": {
           "type": "DataFrame",
           "columns": {

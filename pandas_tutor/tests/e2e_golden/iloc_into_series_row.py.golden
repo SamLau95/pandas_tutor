@@ -14,8 +14,8 @@
           "ch": 23
         }
       },
-      "mapping": [],
-      "data_frame": {
+      "marks": [],
+      "data": {
         "lhs": {
           "type": "DataFrame",
           "columns": {
@@ -183,9 +183,9 @@
           "ch": 31
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -199,7 +199,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
