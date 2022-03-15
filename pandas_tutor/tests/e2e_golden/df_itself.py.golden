@@ -14,8 +14,8 @@
           "ch": 4
         }
       },
-      "mapping": [],
-      "data_frame": {
+      "marks": [],
+      "data": {
         "lhs": {
           "type": "DataFrame",
           "columns": {

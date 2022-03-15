@@ -14,8 +14,8 @@
           "ch": 5
         }
       },
-      "mapping": [],
-      "data_frame": {
+      "marks": [],
+      "data": {
         "lhs": {
           "type": "Unhandled",
           "data": "<built-in function print>"

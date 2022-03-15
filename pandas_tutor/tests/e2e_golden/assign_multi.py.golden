@@ -14,9 +14,9 @@
           "ch": 35
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "highlight",
+          "type": "using",
           "pos": {
             "type": "axis",
             "anchor": "rhs",
@@ -25,7 +25,7 @@
           }
         },
         {
-          "illustrate": "highlight",
+          "type": "using",
           "pos": {
             "type": "axis",
             "anchor": "rhs",
@@ -34,7 +34,7 @@
           }
         },
         {
-          "illustrate": "highlight",
+          "type": "using",
           "pos": {
             "type": "axis",
             "anchor": "rhs",
@@ -43,7 +43,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": {
           "type": "DataFrame",
           "columns": {

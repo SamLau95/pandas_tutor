@@ -14,9 +14,9 @@
           "ch": 18
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "highlight",
+          "type": "using",
           "pos": {
             "type": "axis",
             "anchor": "lhs",
@@ -25,7 +25,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": {
           "type": "DataFrame",
           "columns": {
@@ -228,9 +228,9 @@
           "ch": 25
         }
       },
-      "mapping": [
+      "marks": [
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -245,7 +245,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -260,7 +260,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -275,7 +275,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -290,7 +290,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -305,7 +305,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -320,7 +320,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -335,7 +335,7 @@
           }
         },
         {
-          "illustrate": "outline",
+          "type": "map",
           "from": {
             "type": "axis",
             "anchor": "lhs",
@@ -350,7 +350,7 @@
           }
         }
       ],
-      "data_frame": {
+      "data": {
         "lhs": "prev_rhs",
         "rhs": {
           "type": "DataFrame",

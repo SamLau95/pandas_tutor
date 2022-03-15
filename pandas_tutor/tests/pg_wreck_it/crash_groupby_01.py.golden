@@ -14,8 +14,8 @@
           "ch": 18
         }
       },
-      "mapping": [],
-      "data_frame": {
+      "marks": [],
+      "data": {
         "lhs": {
           "type": "Series",
           "index": {
