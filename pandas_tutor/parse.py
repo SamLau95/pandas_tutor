@@ -150,7 +150,7 @@ is_boolean_slice = m.Comparison() | m.BinaryOperation(
 )
 
 
-def get_arg_by_position_or_keyword(
+def get_arg(
     args: t.Sequence[cst.Arg], position: int, keyword: t.Optional[str] = None
 ) -> t.Optional[cst.Arg]:
     """
@@ -356,17 +356,9 @@ class ChainParser(ParserBase):
 
     @m.leave(is_sort_values)
     def make_sort_values_call(self, cst_node):
-        by = get_arg_by_position_or_keyword(cst_node.args, 0, "by")
-        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, "axis")
-
-        label_expr = self.code_for(by.value) if by is not None else ""
-
-        # default sort_values uses rows
-        axis = (
-            make_axis(self.code_for(axis_arg.value))
-            if axis_arg is not None
-            else "index"
-        )
+        label_expr = self.get_arg_code(cst_node.args, 0, "by")
+        axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
+        axis = make_axis(axis_arg) if axis_arg is not None else "index"
 
         node = self.make_call_node(
             SortValuesCall, cst_node, label_expr=label_expr, axis=axis
@@ -375,33 +367,17 @@ class ChainParser(ParserBase):
 
     @m.leave(is_drop)
     def make_drop_call(self, cst_node):
-        labels = get_arg_by_position_or_keyword(cst_node.args, 0, "labels")
-        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, "axis")
-        row_expr = get_arg_by_position_or_keyword(cst_node.args, 2, "index")
-        col_expr = get_arg_by_position_or_keyword(cst_node.args, 3, "columns")
-        axis = "index"  # default
-
-        if row_expr is not None:
-            row_expr = (
-                self.code_for(row_expr.value) if row_expr is not None else ""
-            )
-        if col_expr is not None:
-            col_expr = (
-                self.code_for(col_expr.value) if col_expr is not None else ""
-            )
-
-        if axis_arg is not None:
-            axis = make_axis(self.code_for(axis_arg.value))
+        labels = self.get_arg_code(cst_node.args, 0, "labels")
+        axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
+        row_expr = self.get_arg_code(cst_node.args, 2, "index")
+        col_expr = self.get_arg_code(cst_node.args, 3, "columns")
+        axis = make_axis(axis_arg) if axis_arg is not None else "index"
 
         if labels is not None:
             if axis == "columns":
-                col_expr = (
-                    self.code_for(labels.value) if labels is not None else ""
-                )
+                col_expr = labels
             else:
-                row_expr = (
-                    self.code_for(labels.value) if labels is not None else ""
-                )
+                row_expr = labels
 
         node = self.make_call_node(
             DropCall, cst_node, col_expr=col_expr, row_expr=row_expr
@@ -410,10 +386,10 @@ class ChainParser(ParserBase):
 
     @m.leave(is_rename)
     def make_rename_call(self, cst_node):
-        mapper = get_arg_by_position_or_keyword(cst_node.args, 0, "mapper")
-        index = get_arg_by_position_or_keyword(cst_node.args, 1, "index")
-        columns = get_arg_by_position_or_keyword(cst_node.args, 2, "columns")
-        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 3, "axis")
+        mapper = get_arg(cst_node.args, 0, "mapper")
+        index = get_arg(cst_node.args, 1, "index")
+        columns = get_arg(cst_node.args, 2, "columns")
+        axis_arg = get_arg(cst_node.args, 3, "axis")
         axis = "index"  # default
 
         if index is not None:
@@ -441,10 +417,9 @@ class ChainParser(ParserBase):
     def make_apply(self, cst_node):
         # axis only available for dataframes...for series, arg 1 is some other
         # arg that we don't care about so we should be careful here
-        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, "axis")
-        axis = "index"  # default
-        if axis_arg is not None:
-            axis = make_axis(self.code_for(axis_arg.value))
+        axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
+        axis = make_axis(axis_arg) if axis_arg is not None else "index"
+
         node = self.make_call_node(ApplyCall, cst_node, axis=axis)
         self._append(node)
 
@@ -464,28 +439,16 @@ class ChainParser(ParserBase):
 
     @m.leave(is_groupby)
     def make_groupby(self, cst_node):
-        axis_arg = get_arg_by_position_or_keyword(cst_node.args, 1, "axis")
-
-        # default groupby uses rows
-        axis = (
-            make_axis(self.code_for(axis_arg.value))
-            if axis_arg is not None
-            else "index"
-        )
+        axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
+        axis = make_axis(axis_arg) if axis_arg is not None else "index"
 
         node = self.make_call_node(GroupByCall, cst_node, axis=axis)
         self._append(node)
 
     @m.leave(is_reset_index)
     def make_reset_index(self, cst_node):
-        level_expr = get_arg_by_position_or_keyword(cst_node.args, 0, "level")
-        drop_expr = get_arg_by_position_or_keyword(
-            cst_node.args, 1, "drop")
-
-        if level_expr is not None:
-            level_expr = self.code_for(level_expr.value)
-        if drop_expr is not None:
-            drop_expr = self.code_for(drop_expr.value)
+        level_expr = self.get_arg_code(cst_node.args, 0, "level")
+        drop_expr = self.get_arg_code(cst_node.args, 1, "drop")
 
         node = self.make_call_node(
             ResetIndexCall,
@@ -497,21 +460,12 @@ class ChainParser(ParserBase):
 
     @m.leave(is_unstack)
     def make_unstack(self, cst_node):
-        level_expr = get_arg_by_position_or_keyword(cst_node.args, 0, "level")
-        fill_value_expr = get_arg_by_position_or_keyword(
-            cst_node.args, 1, "fill_value"
-        )
-
-        if level_expr is not None:
-            level_expr = self.code_for(level_expr.value)
-        if fill_value_expr is not None:
-            fill_value_expr = self.code_for(fill_value_expr.value)
+        level_expr = self.get_arg_code(cst_node.args, 0, "level")
 
         node = self.make_call_node(
             UnstackCall,
             cst_node,
             level_expr=level_expr,
-            fill_value_expr=fill_value_expr,
         )
         self._append(node)
 
@@ -526,6 +480,15 @@ class ChainParser(ParserBase):
         location = CodeRange(dot.start, entire_expr.end)
 
         return self.make_node(cls, cst_node, location=location, **kwargs)
+
+    def get_arg_code(
+        self,
+        args: t.Sequence[cst.Arg],
+        position: int,
+        keyword: t.Optional[str] = None,
+    ) -> t.Optional[RawCode]:
+        arg = get_arg(args, position, keyword)
+        return arg if arg is None else self.code_for(arg.value)
 
 
 class SubscriptParser(ParserBase):
