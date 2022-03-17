@@ -1,0 +1,153 @@
+{
+  "code": "# https://github.com/SamLau95/pandas_tutor/issues/86\n# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unstack.html\n\nimport pandas as pd\nimport numpy as np\n\nindex = pd.MultiIndex.from_tuples([('one', 'a'), ('one', 'b'),\n                                   ('two', 'a'), ('two', 'b')])\ns = pd.Series(np.arange(1.0, 5.0), index=index)\n                \n# test cases (uncomment one at a time)\n# s.unstack(level=-1)\n#s.unstack(level=0)\n\n# we don't draw marks for the second unstack since it goes from\n# dataframe -> series \ns.unstack(level=0).unstack()",
+  "explanation": [
+    {
+      "type": "UnstackCall",
+      "code_step": "s.unstack(level=0).unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 0,
+          "ch": 18
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 0
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 0
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "one",
+                "a"
+              ],
+              [
+                "one",
+                "b"
+              ],
+              [
+                "two",
+                "a"
+              ],
+              [
+                "two",
+                "b"
+              ]
+            ]
+          },
+          "data": [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "one",
+              "two"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "a",
+              "b"
+            ]
+          },
+          "data": [
+            [
+              1.0,
+              3.0
+            ],
+            [
+              2.0,
+              4.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "UnstackCall",
+      "code_step": "s.unstack(level=0).unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 18
+        },
+        "end": {
+          "line": 0,
+          "ch": 28
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "one",
+                "a"
+              ],
+              [
+                "one",
+                "b"
+              ],
+              [
+                "two",
+                "a"
+              ],
+              [
+                "two",
+                "b"
+              ]
+            ]
+          },
+          "data": [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ]
+        }
+      }
+    }
+  ]
+}
