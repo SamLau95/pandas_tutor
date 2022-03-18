@@ -7,6 +7,10 @@
       "label": "tests",
       "type": "shell",
       "command": "make typecheck test",
+      "presentation": {
+        "reveal": "never",
+        "clear": true
+      },
       "problemMatcher": [],
       "group": {
         "kind": "build",

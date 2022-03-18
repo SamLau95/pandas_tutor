@@ -1,0 +1,125 @@
+{
+  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.stack.html\nimport pandas as pd\nmulticol1 = pd.MultiIndex.from_tuples([('weight', 'kg'),\n                                       ('weight', 'pounds')])\ndf_multi_level_cols1 = pd.DataFrame([[1, 2], [2, 4]],\n                                    index=['cat', 'dog'],\n                                    columns=multicol1)\ndf_multi_level_cols1.stack()",
+  "explanation": [
+    {
+      "type": "StackCall",
+      "code_step": "df_multi_level_cols1.stack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 20
+        },
+        "end": {
+          "line": 0,
+          "ch": 28
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 1
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "weight",
+                "kg"
+              ],
+              [
+                "weight",
+                "pounds"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "cat",
+              "dog"
+            ]
+          },
+          "data": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              4
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "weight"
+            ]
+          },
+          "index": {
+            "names": [
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "cat",
+                "kg"
+              ],
+              [
+                "cat",
+                "pounds"
+              ],
+              [
+                "dog",
+                "kg"
+              ],
+              [
+                "dog",
+                "pounds"
+              ]
+            ]
+          },
+          "data": [
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              2
+            ],
+            [
+              4
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

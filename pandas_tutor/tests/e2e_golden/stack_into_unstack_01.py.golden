@@ -1,0 +1,837 @@
+{
+  "code": "# https://github.com/SamLau95/pandas_tutor/issues/86\n# adapted from Thinking in Pandas\nimport pandas as pd\n\nrestaurants = pd.MultiIndex.from_tuples(\n    ((\"Diner\", (4, 2)), (\"Pandas\", (5, 4))),\n    names=[\"restaurant\", \"location\"],\n)\ninspections = pd.MultiIndex.from_tuples(\n    ((0, \"score\"), (0, \"date\"), (1, \"score\"), (1, \"date\")),\n    names=[\"inspection\", None],\n)\n\nrestaurant_inspections = pd.DataFrame(\n    [[90, \"02/18\", 100, \"05/18\"], [55, \"04/18\", 76, \"01/18\"]],\n    index=restaurants,\n    columns=inspections,\n)\n\nrestaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()\n",
+  "explanation": [
+    {
+      "type": "StackCall",
+      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 22
+        },
+        "end": {
+          "line": 0,
+          "ch": 30
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 1
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 2
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              "inspection",
+              null
+            ],
+            "labels": [
+              [
+                0,
+                "score"
+              ],
+              [
+                0,
+                "date"
+              ],
+              [
+                1,
+                "score"
+              ],
+              [
+                1,
+                "date"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "restaurant",
+              "location"
+            ],
+            "labels": [
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ]
+              ]
+            ]
+          },
+          "data": [
+            [
+              90,
+              "02/18",
+              100,
+              "05/18"
+            ],
+            [
+              55,
+              "04/18",
+              76,
+              "01/18"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              "inspection"
+            ],
+            "labels": [
+              0,
+              1
+            ]
+          },
+          "index": {
+            "names": [
+              "restaurant",
+              "location",
+              null
+            ],
+            "labels": [
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "date"
+              ],
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "score"
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date"
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "score"
+              ]
+            ]
+          },
+          "data": [
+            [
+              "02/18",
+              "05/18"
+            ],
+            [
+              90,
+              100
+            ],
+            [
+              "04/18",
+              "01/18"
+            ],
+            [
+              55,
+              76
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "StackCall",
+      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 30
+        },
+        "end": {
+          "line": 0,
+          "ch": 38
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 0
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 3
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              "restaurant",
+              "location",
+              null,
+              "inspection"
+            ],
+            "labels": [
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "date",
+                0
+              ],
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "date",
+                1
+              ],
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "score",
+                0
+              ],
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "score",
+                1
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date",
+                0
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date",
+                1
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "score",
+                0
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "score",
+                1
+              ]
+            ]
+          },
+          "data": [
+            "02/18",
+            "05/18",
+            90,
+            100,
+            "04/18",
+            "01/18",
+            55,
+            76
+          ]
+        }
+      }
+    },
+    {
+      "type": "UnstackCall",
+      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 38
+        },
+        "end": {
+          "line": 0,
+          "ch": 48
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 3
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 0
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              "inspection"
+            ],
+            "labels": [
+              0,
+              1
+            ]
+          },
+          "index": {
+            "names": [
+              "restaurant",
+              "location",
+              null
+            ],
+            "labels": [
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "date"
+              ],
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ],
+                "score"
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date"
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "score"
+              ]
+            ]
+          },
+          "data": [
+            [
+              "02/18",
+              "05/18"
+            ],
+            [
+              90,
+              100
+            ],
+            [
+              "04/18",
+              "01/18"
+            ],
+            [
+              55,
+              76
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "UnstackCall",
+      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 48
+        },
+        "end": {
+          "line": 0,
+          "ch": 58
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 2
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              "inspection",
+              null
+            ],
+            "labels": [
+              [
+                0,
+                "date"
+              ],
+              [
+                0,
+                "score"
+              ],
+              [
+                1,
+                "date"
+              ],
+              [
+                1,
+                "score"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "restaurant",
+              "location"
+            ],
+            "labels": [
+              [
+                "Diner",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ]
+              ]
+            ]
+          },
+          "data": [
+            [
+              "02/18",
+              90,
+              "05/18",
+              100
+            ],
+            [
+              "04/18",
+              55,
+              "01/18",
+              76
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "UnstackCall",
+      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 58
+        },
+        "end": {
+          "line": 0,
+          "ch": 68
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 1
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 2
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              "inspection",
+              null,
+              "location"
+            ],
+            "labels": [
+              [
+                0,
+                "date",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                0,
+                "date",
+                [
+                  5,
+                  4
+                ]
+              ],
+              [
+                0,
+                "score",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                0,
+                "score",
+                [
+                  5,
+                  4
+                ]
+              ],
+              [
+                1,
+                "date",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                1,
+                "date",
+                [
+                  5,
+                  4
+                ]
+              ],
+              [
+                1,
+                "score",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                1,
+                "score",
+                [
+                  5,
+                  4
+                ]
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "restaurant"
+            ],
+            "labels": [
+              "Diner",
+              "Pandas"
+            ]
+          },
+          "data": [
+            [
+              "02/18",
+              null,
+              90,
+              null,
+              "05/18",
+              null,
+              100,
+              null
+            ],
+            [
+              null,
+              "04/18",
+              null,
+              55,
+              null,
+              "01/18",
+              null,
+              76
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "UnstackCall",
+      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 68
+        },
+        "end": {
+          "line": 0,
+          "ch": 78
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              "inspection",
+              null,
+              "location",
+              "restaurant"
+            ],
+            "labels": [
+              [
+                0,
+                "date",
+                [
+                  4,
+                  2
+                ],
+                "Diner"
+              ],
+              [
+                0,
+                "date",
+                [
+                  4,
+                  2
+                ],
+                "Pandas"
+              ],
+              [
+                0,
+                "date",
+                [
+                  5,
+                  4
+                ],
+                "Diner"
+              ],
+              [
+                0,
+                "date",
+                [
+                  5,
+                  4
+                ],
+                "Pandas"
+              ],
+              [
+                0,
+                "score",
+                [
+                  4,
+                  2
+                ],
+                "Diner"
+              ],
+              [
+                0,
+                "score",
+                [
+                  4,
+                  2
+                ],
+                "Pandas"
+              ],
+              [
+                0,
+                "score",
+                [
+                  5,
+                  4
+                ],
+                "Diner"
+              ],
+              [
+                0,
+                "score",
+                [
+                  5,
+                  4
+                ],
+                "Pandas"
+              ],
+              [
+                1,
+                "date",
+                [
+                  4,
+                  2
+                ],
+                "Diner"
+              ],
+              [
+                1,
+                "date",
+                [
+                  4,
+                  2
+                ],
+                "Pandas"
+              ],
+              [
+                1,
+                "date",
+                [
+                  5,
+                  4
+                ],
+                "Diner"
+              ],
+              [
+                1,
+                "date",
+                [
+                  5,
+                  4
+                ],
+                "Pandas"
+              ],
+              [
+                1,
+                "score",
+                [
+                  4,
+                  2
+                ],
+                "Diner"
+              ],
+              [
+                1,
+                "score",
+                [
+                  4,
+                  2
+                ],
+                "Pandas"
+              ],
+              [
+                1,
+                "score",
+                [
+                  5,
+                  4
+                ],
+                "Diner"
+              ],
+              [
+                1,
+                "score",
+                [
+                  5,
+                  4
+                ],
+                "Pandas"
+              ]
+            ]
+          },
+          "data": [
+            "02/18",
+            null,
+            null,
+            "04/18",
+            90,
+            null,
+            null,
+            55,
+            "05/18",
+            null,
+            null,
+            "01/18",
+            100,
+            null,
+            null,
+            76
+          ]
+        }
+      }
+    }
+  ]
+}
