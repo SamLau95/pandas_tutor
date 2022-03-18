@@ -273,7 +273,20 @@ class UnstackCall(Call):
     fn_name = "unstack"
 
     level_expr: t.Optional[RawCode] = evals_into("level")
-    fill_value_expr: t.Optional[RawCode] = evals_into("fill_value")
+
+
+@dataclasses.dataclass
+class StackCall(Call):
+    """
+    counts.stack()
+    counts.stack(level=1)
+    counts.stack(level=[1, 2])
+    counts.stack(level=-1, dropna=True)
+    """
+
+    fn_name = "stack"
+
+    level_expr: t.Optional[RawCode] = evals_into("level")
 
 
 ##############################################################################

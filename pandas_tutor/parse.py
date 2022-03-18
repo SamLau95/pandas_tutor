@@ -41,6 +41,7 @@ from .parse_nodes import (
     RenameCall,
     ResetIndexCall,
     SortValuesCall,
+    StackCall,
     StartOfChain,
     SubsComparison,
     Subscript,
@@ -127,6 +128,7 @@ is_apply = fn_matcher("apply")
 is_assign = fn_matcher("assign")
 is_reset_index = fn_matcher("reset_index")
 is_unstack = fn_matcher("unstack")
+is_stack = fn_matcher("stack")
 
 # make sure to update this whenever we add a new call to the section above
 is_parsed_call = (
@@ -139,6 +141,7 @@ is_parsed_call = (
     | is_assign
     | is_reset_index
     | is_unstack
+    | is_stack
 )
 
 is_loc_iloc = m.Subscript(
@@ -464,6 +467,17 @@ class ChainParser(ParserBase):
 
         node = self.make_call_node(
             UnstackCall,
+            cst_node,
+            level_expr=level_expr,
+        )
+        self._append(node)
+
+    @m.leave(is_stack)
+    def make_stack(self, cst_node):
+        level_expr = self.get_arg_code(cst_node.args, 0, "level")
+
+        node = self.make_call_node(
+            StackCall,
             cst_node,
             level_expr=level_expr,
         )

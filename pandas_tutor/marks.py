@@ -32,6 +32,7 @@ from .parse_nodes import (
     RenameCall,
     ResetIndexCall,
     SortValuesCall,
+    StackCall,
     SubsComparison,
     Subscript,
     SubscriptEl,
@@ -81,6 +82,8 @@ def make_marks(
         return mark_for_reset_index(step, before, after)
     elif isinstance(step, UnstackCall):
         return mark_for_unstack(step, before, after)
+    elif isinstance(step, StackCall):
+        return mark_for_stack(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -299,6 +302,10 @@ def mark_for_unstack(
     df = before.val
     args = after.args
 
+    # normally, pandas unstacks the index into the columns. but when there's
+    # only one index level, pandas instead returns a series with the unstacked
+    # index levels. it's a pretty strange edge case to draw arrows for, so we
+    # don't handle it.
     if not util.is_multi(df.index):
         return []
 
@@ -312,6 +319,34 @@ def mark_for_unstack(
         Map(
             IndexLevelPos("lhs", "row", level),
             IndexLevelPos("rhs", "column", index_level + n_column_levels),
+        )
+        for index_level, level in enumerate(levels)
+    ]
+
+
+# counts.stack(level=-1, drop_na=False)
+def mark_for_stack(
+    step: StackCall, before: EvalResult, after: EvalResult
+) -> t.List[Mark]:
+    if not (
+        isinstance(before, (DFResult))
+        and isinstance(after, (DFResult, SeriesResult))
+    ):
+        return []
+
+    df = before.val
+    args = after.args
+
+    levels = util.listify(args.get("level", len(df.columns.names) - 1))
+    levels = [util.level_as_int(df.columns, level) for level in levels]
+
+    # stacking puts the new levels **after** the existing ones
+    n_index_levels = len(df.index.names)
+
+    return [
+        Map(
+            IndexLevelPos("lhs", "column", level),
+            IndexLevelPos("rhs", "row", index_level + n_index_levels),
         )
         for index_level, level in enumerate(levels)
     ]

@@ -1,0 +1,129 @@
+{
+  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.stack.html\nimport pandas as pd\n\nmulticol2 = pd.MultiIndex.from_tuples([('weight', 'kg'),\n                                       ('height', 'm')])\ndf_multi_level_cols2 = pd.DataFrame([[1.0, 2.0], [3.0, 4.0]],\n                                    index=['cat', 'dog'],\n                                    columns=multicol2)\n\ndf_multi_level_cols2.stack([0, 1])",
+  "explanation": [
+    {
+      "type": "StackCall",
+      "code_step": "df_multi_level_cols2.stack([0, 1])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 20
+        },
+        "end": {
+          "line": 0,
+          "ch": 34
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 0
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 1
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 2
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "weight",
+                "kg"
+              ],
+              [
+                "height",
+                "m"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "cat",
+              "dog"
+            ]
+          },
+          "data": [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              3.0,
+              4.0
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null,
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "cat",
+                "height",
+                "m"
+              ],
+              [
+                "cat",
+                "weight",
+                "kg"
+              ],
+              [
+                "dog",
+                "height",
+                "m"
+              ],
+              [
+                "dog",
+                "weight",
+                "kg"
+              ]
+            ]
+          },
+          "data": [
+            2.0,
+            1.0,
+            4.0,
+            3.0
+          ]
+        }
+      }
+    }
+  ]
+}
