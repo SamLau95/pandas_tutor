@@ -6,3 +6,4 @@ simplejson==3.17.5
 types-simplejson==3.17.1
 mypy==0.910
 pympler==0.9
+typing-extensions==4.1.1
