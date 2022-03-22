@@ -289,6 +289,19 @@ class StackCall(Call):
     level_expr: t.Optional[RawCode] = evals_into("level")
 
 
+@dataclasses.dataclass
+class PivotCall(Call):
+    """
+    df.pivot(index='foo', columns='bar', values='baz')
+    """
+
+    fn_name = "stack"
+
+    index_expr: t.Optional[RawCode] = evals_into("index")
+    columns_expr: t.Optional[RawCode] = evals_into("columns")
+    values_expr: t.Optional[RawCode] = evals_into("values")
+
+
 ##############################################################################
 # Subscripts
 ##############################################################################

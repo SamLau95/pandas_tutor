@@ -121,7 +121,7 @@ Anchor = t.Literal["lhs", "rhs"]
 Selection = t.Literal["column", "row"]
 
 # the index level we're pointing to. None if index is not multi-level
-IndexLevel = t.Union[None, int, str]
+IndexLevel = t.Union[None, int]
 
 # each TablePos object is serialized as one of these
 TablePosType = t.Literal[

@@ -37,6 +37,7 @@ from .parse_nodes import (
     ParsedModule,
     ParseSyntaxError,
     PassThroughCall,
+    PivotCall,
     RawCode,
     RenameCall,
     ResetIndexCall,
@@ -129,6 +130,7 @@ is_assign = fn_matcher("assign")
 is_reset_index = fn_matcher("reset_index")
 is_unstack = fn_matcher("unstack")
 is_stack = fn_matcher("stack")
+is_pivot = fn_matcher("pivot")
 
 # make sure to update this whenever we add a new call to the section above
 is_parsed_call = (
@@ -142,6 +144,7 @@ is_parsed_call = (
     | is_reset_index
     | is_unstack
     | is_stack
+    | is_pivot
 )
 
 is_loc_iloc = m.Subscript(
@@ -480,6 +483,21 @@ class ChainParser(ParserBase):
             StackCall,
             cst_node,
             level_expr=level_expr,
+        )
+        self._append(node)
+
+    @m.leave(is_pivot)
+    def make_pivot(self, cst_node: cst.Call):
+        index_expr = self.get_arg_code(cst_node.args, 0, "index")
+        columns_expr = self.get_arg_code(cst_node.args, 1, "columns")
+        values_expr = self.get_arg_code(cst_node.args, 2, "values")
+
+        node = self.make_call_node(
+            PivotCall,
+            cst_node,
+            index_expr=index_expr,
+            columns_expr=columns_expr,
+            values_expr=values_expr,
         )
         self._append(node)
 
