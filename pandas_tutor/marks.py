@@ -10,6 +10,7 @@ from .diagram import (
     Anchor,
     AxisPos,
     Drop,
+    IndexLevel,
     Using,
     IndexLevelPos,
     LabelPos,
@@ -29,6 +30,7 @@ from .parse_nodes import (
     GroupByCall,
     HeadCall,
     PassThroughCall,
+    PivotCall,
     RenameCall,
     ResetIndexCall,
     SortValuesCall,
@@ -84,6 +86,8 @@ def make_marks(
         return mark_for_unstack(step, before, after)
     elif isinstance(step, StackCall):
         return mark_for_stack(step, before, after)
+    elif isinstance(step, PivotCall):
+        return mark_for_pivot(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -352,6 +356,44 @@ def mark_for_stack(
     ]
 
 
+# df.pivot(index='foo', columns='bar', values='baz')
+def mark_for_pivot(
+    step: PivotCall, before: EvalResult, after: EvalResult
+) -> t.List[Mark]:
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+
+    df = before.val
+    args = after.args
+
+    index = util.listify(args.get("index", []))
+    columns = util.listify(args.get("columns", []))
+    values = util.listify(args.get("values", []))
+
+    # special case: when only one values column is specified, pandas
+    # doesn't keep it as a column
+    will_compress_cols = len(values) == 1
+
+    # pivoting puts the new column levels **after** the existing ones
+    n_existing_col_levels = len(df.columns.names)
+
+    marks: t.List[Mark] = []
+    # each index arg becomes a level of the new index
+    for position, name in enumerate(index):
+        marks.append(Map(lhs("column", name), rhs_index("row", position)))
+
+    # each column arg is appended as an index level into the columns
+    for position, name in enumerate(columns):
+        new_pos = (
+            position + n_existing_col_levels
+            if not will_compress_cols
+            else position
+        )
+        marks.append(Map(lhs("column", name), rhs_index("column", new_pos)))
+
+    return marks
+
+
 # handler for all subscripts, like:
 #
 # df.loc[1:5, ['Name', 'Count']]
@@ -581,6 +623,16 @@ def lhs(select: Selection, label: util.Label) -> AxisPos:
 def rhs(select: Selection, label: util.Label) -> AxisPos:
     """shorthand for a column/row in rhs"""
     return AxisPos("rhs", select, label)
+
+
+def lhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
+    """shorthand for an index level in lhs"""
+    return IndexLevelPos("lhs", select, level)
+
+
+def rhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
+    """shorthand for an index level in rhs"""
+    return IndexLevelPos("rhs", select, level)
 
 
 def lhs_series() -> SeriesPos:

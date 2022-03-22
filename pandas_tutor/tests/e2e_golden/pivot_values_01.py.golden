@@ -1,0 +1,201 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nfoo,bar,baz,zoo\none,A,1,x\none,B,2,y\none,C,3,z\ntwo,A,4,q\ntwo,B,5,w\ntwo,C,6,t\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\ndf.pivot(columns=[\"bar\"], values=[\"baz\", \"foo\"])\n",
+  "explanation": [
+    {
+      "type": "PivotCall",
+      "code_step": "df.pivot(columns=[\"bar\"], values=[\"baz\", \"foo\"])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 48
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "bar"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "foo",
+              "bar",
+              "baz",
+              "zoo"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "data": [
+            [
+              "one",
+              "A",
+              1,
+              "x"
+            ],
+            [
+              "one",
+              "B",
+              2,
+              "y"
+            ],
+            [
+              "one",
+              "C",
+              3,
+              "z"
+            ],
+            [
+              "two",
+              "A",
+              4,
+              "q"
+            ],
+            [
+              "two",
+              "B",
+              5,
+              "w"
+            ],
+            [
+              "two",
+              "C",
+              6,
+              "t"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              "bar"
+            ],
+            "labels": [
+              [
+                "baz",
+                "A"
+              ],
+              [
+                "baz",
+                "B"
+              ],
+              [
+                "baz",
+                "C"
+              ],
+              [
+                "foo",
+                "A"
+              ],
+              [
+                "foo",
+                "B"
+              ],
+              [
+                "foo",
+                "C"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "data": [
+            [
+              1,
+              null,
+              null,
+              "one",
+              null,
+              null
+            ],
+            [
+              null,
+              2,
+              null,
+              null,
+              "one",
+              null
+            ],
+            [
+              null,
+              null,
+              3,
+              null,
+              null,
+              "one"
+            ],
+            [
+              4,
+              null,
+              null,
+              "two",
+              null,
+              null
+            ],
+            [
+              null,
+              5,
+              null,
+              null,
+              "two",
+              null
+            ],
+            [
+              null,
+              null,
+              6,
+              null,
+              null,
+              "two"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
