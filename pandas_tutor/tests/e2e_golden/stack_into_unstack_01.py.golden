@@ -29,6 +29,254 @@
             "select": "row",
             "level": 2
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              0,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              0,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              0,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              0,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              1,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              1,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              1,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              1,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 1
+          }
         }
       ],
       "data": {
@@ -196,6 +444,246 @@
             "select": "row",
             "level": 3
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date",
+              0
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score",
+              0
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date",
+              0
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score",
+              0
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date",
+              1
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score",
+              1
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date",
+              1
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score",
+              1
+            ],
+            "column": "pandas.Series"
+          }
         }
       ],
       "data": {
@@ -323,7 +811,247 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 0
+            "level": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date",
+              0
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date",
+              1
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score",
+              0
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score",
+              1
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date",
+              0
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date",
+              1
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score",
+              0
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score",
+              1
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 1
           }
         }
       ],
@@ -428,7 +1156,255 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 1
+            "level": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              0,
+              "date"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "date"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              1,
+              "date"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              0,
+              "score"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ],
+              "score"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              1,
+              "score"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              0,
+              "date"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "date"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              1,
+              "date"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 0
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              0,
+              "score"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ],
+              "score"
+            ],
+            "column": 1
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              1,
+              "score"
+            ]
           }
         }
       ],
@@ -525,7 +1501,255 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 2
+            "level": 4
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              0,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Diner",
+            "column": [
+              0,
+              "date",
+              [
+                4,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              0,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Diner",
+            "column": [
+              0,
+              "score",
+              [
+                4,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              1,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Diner",
+            "column": [
+              1,
+              "date",
+              [
+                4,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Diner",
+              [
+                4,
+                2
+              ]
+            ],
+            "column": [
+              1,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Diner",
+            "column": [
+              1,
+              "score",
+              [
+                4,
+                2
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              0,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Pandas",
+            "column": [
+              0,
+              "date",
+              [
+                5,
+                4
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              0,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Pandas",
+            "column": [
+              0,
+              "score",
+              [
+                5,
+                4
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              1,
+              "date"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Pandas",
+            "column": [
+              1,
+              "date",
+              [
+                5,
+                4
+              ]
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "Pandas",
+              [
+                5,
+                4
+              ]
+            ],
+            "column": [
+              1,
+              "score"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "Pandas",
+            "column": [
+              1,
+              "score",
+              [
+                5,
+                4
+              ]
+            ]
           }
         }
       ],

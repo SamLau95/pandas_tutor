@@ -1,7 +1,8 @@
 """
 creates mark specs. here's where the magic happens!
 """
-import typing as t
+from collections.abc import Iterable
+from typing import Any, List, Optional, Union
 
 import pandas as pd
 
@@ -9,15 +10,16 @@ from . import util
 from .diagram import (
     Anchor,
     AxisPos,
+    CellPos,
     Drop,
     IndexLevel,
-    Using,
     IndexLevelPos,
     LabelPos,
-    Mark,
     Map,
+    Mark,
     Selection,
     SeriesPos,
+    Using,
 )
 from .parse_nodes import (
     AggCall,
@@ -55,7 +57,7 @@ from .run import (
 # the type checker.
 def make_marks(
     step: ChainStep, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     """
     computes the marks for a given step by dispatching to the right marks
     function. returns empty list if we don't know how to make marks.
@@ -97,7 +99,7 @@ def make_marks(
 # df.sort_values('Name')
 def mark_for_sort_values(
     step: SortValuesCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not (
         isinstance(before, (DFResult, SeriesResult))
         and isinstance(after, (DFResult, SeriesResult))
@@ -123,7 +125,7 @@ def mark_for_sort_values(
 # dogs.drop(columns=['type', 'price'])
 def mark_for_drop(
     step: DropCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not (
         isinstance(before, (DFResult, SeriesResult))
         and isinstance(after, (DFResult, SeriesResult))
@@ -149,9 +151,9 @@ def mark_for_drop(
 # df.rename(index={'sam': 'smae'})
 def mark_for_rename(
     step: RenameCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     args = after.args
-    mapping: t.Any = args.get("mapping", {})
+    mapping: Any = args.get("mapping", {})
 
     if not isinstance(mapping, dict):
         return no_marks()
@@ -167,8 +169,8 @@ def mark_for_rename(
 # df.head(2)
 # df.tail()
 def mark_for_head_or_tail(
-    step: t.Union[HeadCall, TailCall], before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+    step: Union[HeadCall, TailCall], before: EvalResult, after: EvalResult
+) -> List[Mark]:
     if not (
         isinstance(before, (DFResult, SeriesResult))
         and isinstance(after, (DFResult, SeriesResult))
@@ -180,7 +182,7 @@ def mark_for_head_or_tail(
 # df['breed'].apply(len)
 def mark_for_apply(
     step: ApplyCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if isinstance(before, DFResult) and isinstance(after, DFResult):
         df = after.val
         labels = df.index if step.axis == "index" else df.columns
@@ -203,14 +205,14 @@ def mark_for_apply(
 # dogs.assign(daily=lambda df: df['food_cost'] * 30)
 def mark_for_assign(
     step: AssignCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     return make_highlights(step.new_col_labels, "column", "rhs")
 
 
 # df.groupby('hello')
 def mark_for_groupby(
     step: GroupByCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not isinstance(after, GroupbyResult):
         return []
 
@@ -225,7 +227,7 @@ def mark_for_groupby(
 # basic heuristic: assume that group keys map to row labels of result
 def mark_for_agg(
     step: AggCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
     if not isinstance(after, (DFResult, SeriesResult)):
@@ -233,7 +235,7 @@ def mark_for_agg(
 
     groups = util.get_groups(before.val)
 
-    row_outlines: t.List[Mark] = []
+    row_outlines: List[Mark] = []
     for group_key, lhs_labels in groups.items():
         for label in lhs_labels:
             row_outlines.append(
@@ -252,7 +254,7 @@ def mark_for_agg(
 # let's not worry about that for now
 def mark_for_reset_index(
     step: ResetIndexCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not (
         isinstance(before, (DFResult, SeriesResult))
         and isinstance(after, DFResult)
@@ -264,21 +266,17 @@ def mark_for_reset_index(
     # if level unspecified, pandas resets all levels
     all_levels = list(range(len(df.index.names)))
     levels = util.listify(args.get("level", all_levels))
-    # convert levels to integer positions
-    levels = [
-        df.index.names.index(level) if isinstance(level, str) else level
-        for level in levels
-    ]
+    levels = [util.level_number(df.index, level) for level in levels]
 
     if args.get("drop", False):
         return [Drop(IndexLevelPos("lhs", "row", level)) for level in levels]
 
     # recreating the pandas defaults for unnamed index levels
-    names: t.List[str]
+    names: List[str]
     if util.is_multi(df.index):
         names = [
-            n if n is not None else f"level_{i}"
-            for i, n in enumerate(df.index.names)
+            name if name is not None else f"level_{position}"
+            for position, name in enumerate(df.index.names)
         ]
     else:
         default = "index" if "index" not in df else "level_0"
@@ -296,7 +294,7 @@ def mark_for_reset_index(
 # counts.unstack(level=-1, fill_value=0)
 def mark_for_unstack(
     step: UnstackCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not (
         isinstance(before, (DFResult, SeriesResult))
         and isinstance(after, DFResult)
@@ -307,31 +305,41 @@ def mark_for_unstack(
     args = after.args
 
     # normally, pandas unstacks the index into the columns. but when there's
-    # only one index level, pandas instead returns a series with the unstacked
-    # index levels. it's a pretty strange edge case to draw arrows for, so we
-    # don't handle it.
+    # only one index level, pandas instead transposes the dataframe, then
+    # *stacks* a level. it's a pretty strange edge case to draw arrows for, so
+    # we don't handle it.
     if not util.is_multi(df.index):
         return []
 
-    levels = util.listify(args.get("level", len(df.index.names) - 1))
-    levels = [util.level_as_int(df.index, level) for level in levels]
+    levels = util.listify(args.get("level", -1))
+    levels = [util.level_number(df.index, level) for level in levels]
 
-    # unstacking puts the new levels **under** the existing ones
-    n_column_levels = len(df.columns.names) if util.is_dataframe(df) else 0
+    columns = df.columns if util.is_dataframe(df) else pd.Index([util.SERIES])
+    n_orig_levels = len(columns)
 
-    return [
+    index_marks: List[Mark] = [
         Map(
-            IndexLevelPos("lhs", "row", level),
-            IndexLevelPos("rhs", "column", index_level + n_column_levels),
+            lhs_index("row", level),
+            # unstacking puts the new levels **under** the existing ones
+            rhs_index("column", index_level + n_orig_levels),
         )
         for index_level, level in enumerate(levels)
     ]
+
+    # for each cell: the unstacked labels move to the column index
+    cells = util.push_levels(df.index, columns, levels)
+    cell_marks: List[Mark] = [
+        Map(CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
+        for (old_row, old_col), (new_row, new_col) in cells
+    ]
+
+    return [*index_marks, *cell_marks]
 
 
 # counts.stack(level=-1, drop_na=False)
 def mark_for_stack(
     step: StackCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not (
         isinstance(before, (DFResult))
         and isinstance(after, (DFResult, SeriesResult))
@@ -342,12 +350,12 @@ def mark_for_stack(
     args = after.args
 
     levels = util.listify(args.get("level", len(df.columns.names) - 1))
-    levels = [util.level_as_int(df.columns, level) for level in levels]
+    levels = [util.level_number(df.columns, level) for level in levels]
 
     # stacking puts the new levels **after** the existing ones
     n_index_levels = len(df.index.names)
 
-    return [
+    index_marks: List[Mark] = [
         Map(
             IndexLevelPos("lhs", "column", level),
             IndexLevelPos("rhs", "row", index_level + n_index_levels),
@@ -355,11 +363,24 @@ def mark_for_stack(
         for index_level, level in enumerate(levels)
     ]
 
+    # for each cell: the unstacked labels move to the row index
+    is_series = isinstance(after, SeriesResult)
+    cells = util.push_levels(df.columns, df.index, levels)
+    cell_marks: List[Mark] = [
+        Map(
+            CellPos("lhs", old_row, old_col),
+            CellPos("rhs", new_row, new_col if not is_series else util.SERIES),
+        )
+        for (old_col, old_row), (new_col, new_row) in cells
+    ]
+
+    return [*index_marks, *cell_marks]
+
 
 # df.pivot(index='foo', columns='bar', values='baz')
 def mark_for_pivot(
     step: PivotCall, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
         return []
 
@@ -377,8 +398,8 @@ def mark_for_pivot(
     # pivoting puts the new column levels **after** the existing ones
     n_existing_col_levels = len(df.columns.names)
 
-    marks: t.List[Mark] = []
-    # each index arg becomes a level of the new index
+    marks: List[Mark] = []
+    # each index arg goes into a new index level
     for position, name in enumerate(index):
         marks.append(Map(lhs("column", name), rhs_index("row", position)))
 
@@ -402,7 +423,7 @@ def mark_for_pivot(
 # df.groupby('Sex')[['Count']]
 def mark_for_subscript(
     step: Subscript, before: EvalResult, after: EvalResult
-) -> t.List[Mark]:
+) -> List[Mark]:
     if isinstance(before, (DFResult, GroupbyResult)) and isinstance(
         after, (SeriesResult, SeriesGroupbyResult)
     ):
@@ -419,9 +440,9 @@ def mark_for_subscript(
 
 def mark_for_subscript_df_to_df(
     step: Subscript,
-    before: t.Union[DFResult, GroupbyResult],
-    after: t.Union[DFResult, GroupbyResult],
-) -> t.List[Mark]:
+    before: Union[DFResult, GroupbyResult],
+    after: Union[DFResult, GroupbyResult],
+) -> List[Mark]:
     row_slice = step.slice1
     col_slice = step.slice2
     args = after.args
@@ -453,10 +474,10 @@ def mark_for_subscript_df_to_df(
 
 
 def make_subscript_comparison_marks(
-    subs_el: t.Optional[SubscriptEl],
+    subs_el: Optional[SubscriptEl],
     labels: Arg,
     selection: Selection,
-) -> t.List[Mark]:
+) -> List[Mark]:
     """
     makes highlights for cols/rows used for filtering, if the subscript is a
     filter.
@@ -472,7 +493,7 @@ def mark_for_subscript_of_series(
     step: Subscript,
     before: SeriesResult,
     after: SeriesResult,
-) -> t.List[Mark]:
+) -> List[Mark]:
     # no special cases for comparisons since there isn't a "column" we're using
     # to filter
     return diff_rows(before.val, after.val)
@@ -480,9 +501,9 @@ def mark_for_subscript_of_series(
 
 def mark_for_subscript_into_series(
     step: Subscript,
-    before: t.Union[DFResult, GroupbyResult],
-    after: t.Union[SeriesResult, SeriesGroupbyResult],
-) -> t.List[Mark]:
+    before: Union[DFResult, GroupbyResult],
+    after: Union[SeriesResult, SeriesGroupbyResult],
+) -> List[Mark]:
     args = after.args
     before_df = util.ungroup(before.val)
     after_df = util.ungroup(after.val)
@@ -579,7 +600,7 @@ def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame, only_if_diff=True):
     return make_outlines(col_matches, "column")
 
 
-def no_marks(*args) -> t.List[Mark]:
+def no_marks(*args) -> List[Mark]:
     # print(f'Unknown mark for {step.type_}')
     return []
 
@@ -591,15 +612,15 @@ def selection(axis: Axis, other=False) -> Selection:
 
 
 def make_highlights(
-    labels: t.Iterable, select: Selection, anchor: Anchor = "lhs"
-) -> t.List[Mark]:
+    labels: Iterable, select: Selection, anchor: Anchor = "lhs"
+) -> List[Mark]:
     """
     shorthand to make a highlight for each column/row in labels
     """
     return [Using(AxisPos(anchor, select, label)) for label in labels]
 
 
-def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
+def make_outlines(labels: Iterable, select: Selection) -> List[Mark]:
     """
     shorthand when index values don't change, which is most of the time
     """
@@ -608,7 +629,7 @@ def make_outlines(labels: t.Iterable, select: Selection) -> t.List[Mark]:
     ]
 
 
-def make_crossouts(labels: t.Iterable, select: Selection) -> t.List[Mark]:
+def make_crossouts(labels: Iterable, select: Selection) -> List[Mark]:
     """
     shorthand for crossouts
     """

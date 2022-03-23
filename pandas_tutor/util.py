@@ -7,32 +7,48 @@ import base64
 import dataclasses
 import io
 import itertools
-import typing as t
-from typing_extensions import TypeGuard
 import warnings
-from collections import abc
+from collections.abc import Iterable, Sequence
+from typing import (
+    Any,
+    Dict,
+    List,
+    Literal,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+    overload,
+)
 from warnings import warn
 
 import numpy as np
 import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
+from typing_extensions import TypeGuard
 
-Axis = t.Literal["index", "columns"]
-Slicer = t.Literal["loc", "iloc", None]
+T = TypeVar("T")
+
+Axis = Literal["index", "columns"]
+Slicer = Literal["loc", "iloc", None]
 
 # A Label is a value that came from pandas Index. It's a tuple of values
 # if we have a multi-index, or a single value otherwise.
 #
 # technically dataframe labels can be all sorts of things...
 # TODO: handle other index dtypes, like datetimes
-Label = t.Union[int, str, tuple]
+Label = Union[int, str, tuple]
+LabelPair = Tuple[Label, Label]
 
-HasIndex = t.Union[pd.DataFrame, pd.Series]
+HasIndex = Union[pd.DataFrame, pd.Series]
 
-Groups = t.Dict[t.Union[str, tuple], pd.Index]
+Groups = Dict[Union[str, tuple], pd.Index]
 
-JSONScalar = t.Union[int, float, str, bool, None]
+JSONScalar = Union[int, float, str, bool, None]
+
+# placeholder column for pd.Series
+SERIES = "pandas.Series"
 
 
 def mapt(fn, *args):
@@ -45,18 +61,35 @@ def flatmap(fn, *args):
     return itertools.chain.from_iterable(map(fn, *args))
 
 
-def is_list_like(obj: t.Any) -> bool:
+def is_list_like(obj: Any) -> bool:
     """
     checks whether obj is a list-like. we need this because we don't usually
     want to do list(string), but we want to convert other types of list-like
     things to lists
     """
-    return not isinstance(obj, str) and isinstance(obj, abc.Iterable)
+    return not isinstance(obj, str) and isinstance(obj, Iterable)
 
 
-def listify(obj: t.Any) -> t.List:
+def listify(obj: Any) -> List:
     """if obj is a scalar, returns [obj]"""
     return obj if is_list_like(obj) else [obj]
+
+
+def unwrap(obj: Sequence[T]) -> Union[Sequence[T], T]:
+    """unwrap obj if single element"""
+    return obj[0] if len(obj) == 1 else obj
+
+
+def split_by(
+    seq: Sequence[T], indexes: Sequence[int]
+) -> Tuple[Tuple[T, ...], Tuple[T, ...]]:
+    """
+    returns two tuple, one with the elements at the given indexes, and one
+    with the rest of the elements.
+    """
+    # can't use sets since we need to preserve order
+    not_in = [i for i in range(len(seq)) if i not in indexes]
+    return tuple(seq[i] for i in indexes), tuple(seq[i] for i in not_in)
 
 
 @dataclasses.dataclass
@@ -138,9 +171,9 @@ class CodeRange:
 ##############################################################################
 
 
-@t.overload
+@overload
 def positions_to_labels(
-    positions: t.Union[int, Label],
+    positions: Union[int, Label],
     df: HasIndex,
     slicer: Slicer = "iloc",
     axis: Axis = "index",
@@ -148,13 +181,13 @@ def positions_to_labels(
     ...
 
 
-@t.overload
+@overload
 def positions_to_labels(  # noqa: F811
     positions: list,  # type: ignore
     df: HasIndex,
     slicer: Slicer = "iloc",
     axis: Axis = "index",
-) -> t.List[Label]:
+) -> List[Label]:
     ...
 
 
@@ -175,7 +208,7 @@ def positions_to_labels(  # noqa: F811
         warn("tried to convert column labels for a series")
         return positions
 
-    labels = t.cast(pd.Index, df.columns if axis == "columns" else df.index)
+    labels = cast(pd.Index, df.columns if axis == "columns" else df.index)
     return labels[positions]
 
 
@@ -211,11 +244,11 @@ def match_cols(
     )
 
 
-def is_series(obj: t.Any) -> TypeGuard[pd.Series]:
+def is_series(obj: Any) -> TypeGuard[pd.Series]:
     return isinstance(obj, pd.Series)
 
 
-def is_dataframe(obj: t.Any) -> TypeGuard[pd.DataFrame]:
+def is_dataframe(obj: Any) -> TypeGuard[pd.DataFrame]:
     return isinstance(obj, pd.DataFrame)
 
 
@@ -223,19 +256,53 @@ def is_multi(index: pd.Index) -> TypeGuard[pd.MultiIndex]:
     return isinstance(index, pd.MultiIndex)
 
 
-def level_as_int(index: pd.Index, level: str | int) -> int:
+def level_number(index: pd.Index, level: str | int) -> int:
     "converts a name of a level to the level's integer index if needed"
-    return index.names.index(level) if isinstance(level, str) else level
+    return (
+        index.names.index(level)
+        if isinstance(level, str)
+        else level % len(index.names)
+    )
 
 
-@t.overload
-def ungroup(obj: t.Union[SeriesGroupBy, pd.Series]) -> pd.Series:
+# pair of multi-index labels
+_MultiLabelPair = Tuple[Tuple[Label, ...], Tuple[Label, ...]]
+
+
+def push_levels(
+    from_: pd.Index, to: pd.Index, levels: List[int]
+) -> Iterable[Tuple[LabelPair, LabelPair]]:
+    """
+    pushes levels from index1 to index2. used to map cells during reshaping
+    operations. returns original and new label pairs.
+    """
+    orig_cells = list(itertools.product(from_, to))
+
+    # if we're pushing into a series, we need to handle the placeholder
+    iter_to = to if SERIES not in to else [[]]
+
+    # wrap values in tuples to make iteration easier
+    wrapped_orig = cast(
+        List[_MultiLabelPair],
+        list(itertools.product(map(listify, from_), map(listify, iter_to))),
+    )
+
+    new_cells: List[LabelPair] = []
+    for left, right in wrapped_orig:
+        move, stay = split_by(left, levels)
+        new_cells.append(mapt(unwrap, (stay, (*right, *move))))
+
+    return zip(orig_cells, new_cells)
+
+
+@overload
+def ungroup(obj: Union[SeriesGroupBy, pd.Series]) -> pd.Series:
     ...
 
 
-@t.overload
+@overload
 def ungroup(  # type: ignore # noqa: F811
-    obj: t.Union[DataFrameGroupBy, pd.DataFrame]  # noqa: F811
+    obj: Union[DataFrameGroupBy, pd.DataFrame]  # noqa: F811
 ) -> pd.DataFrame:
     ...
 
@@ -253,7 +320,7 @@ def ungroup(obj):  # noqa: F811
     # return groupby.transform(lambda x: x)
 
 
-def grouping_labels(groupby: GroupBy) -> t.List[Label]:
+def grouping_labels(groupby: GroupBy) -> List[Label]:
     """gets ['hello', 'world'] from df.groupby(['hello', 'world'])"""
     # NOTE: when grouping by unnamed sequences, names will contain None
     # >>> full.groupby([test, test2]).grouper.names
@@ -261,28 +328,28 @@ def grouping_labels(groupby: GroupBy) -> t.List[Label]:
     return groupby.grouper.names
 
 
-def get_groups(groupby: t.Union[SeriesGroupBy, DataFrameGroupBy]) -> Groups:
+def get_groups(groupby: Union[SeriesGroupBy, DataFrameGroupBy]) -> Groups:
     """
     gets mapping of group keys -> dataframe labels.
     """
     # when the group keys includes NaN, groupby.groups freaks out, so we use a
     # workaround by getting the group indices first, then recovering the labels
     try:
-        return t.cast(Groups, groupby.groups)
+        return cast(Groups, groupby.groups)
     except ValueError:
         index = ungroup(groupby).index
         groups = {
             key: index[indices] for key, indices in groupby.indices.items()
         }
-        return t.cast(Groups, groups)
+        return cast(Groups, groups)
 
 
-def is_plottable(obj: t.Any) -> bool:
+def is_plottable(obj: Any) -> bool:
     fig = obj.figure if hasattr(obj, "figure") else obj
     return hasattr(fig, "savefig")
 
 
-def base64_encode_plot(fig_or_axes: t.Any) -> str:
+def base64_encode_plot(fig_or_axes: Any) -> str:
     """
     saves plot as a gzipped, base64 encoded png
     """
@@ -300,7 +367,7 @@ def base64_encode_plot(fig_or_axes: t.Any) -> str:
         return base64.b64encode(buf.read()).decode()
 
 
-def json_scalar(obj: t.Any) -> JSONScalar:
+def json_scalar(obj: Any) -> JSONScalar:
     """
     transforms special pandas / numpy value to a value that can be
     serialized to json
@@ -324,11 +391,11 @@ def json_scalar(obj: t.Any) -> JSONScalar:
     return obj
 
 
-def prep_series_data(series: pd.Series) -> t.List[JSONScalar]:
+def prep_series_data(series: pd.Series) -> List[JSONScalar]:
     return [json_scalar(val) for val in series.to_numpy()]
 
 
-def prep_df_data(df: pd.DataFrame) -> t.List[t.List[JSONScalar]]:
+def prep_df_data(df: pd.DataFrame) -> List[List[JSONScalar]]:
     return [[json_scalar(val) for val in row] for row in df.to_numpy()]
 
 
@@ -337,7 +404,7 @@ def prep_df_data(df: pd.DataFrame) -> t.List[t.List[JSONScalar]]:
 ##############################################################################
 
 
-def mem_used(obj: t.Any) -> float:
+def mem_used(obj: Any) -> float:
     if isinstance(obj, pd.DataFrame):
         return obj.memory_usage(deep=True).sum()
     elif isinstance(obj, pd.Series):

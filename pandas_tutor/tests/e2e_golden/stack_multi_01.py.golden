@@ -44,6 +44,94 @@
             "select": "row",
             "level": 2
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "cat",
+            "column": [
+              "weight",
+              "kg"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "cat",
+              "weight",
+              "kg"
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "dog",
+            "column": [
+              "weight",
+              "kg"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "dog",
+              "weight",
+              "kg"
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "cat",
+            "column": [
+              "height",
+              "m"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "cat",
+              "height",
+              "m"
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "dog",
+            "column": [
+              "height",
+              "m"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "dog",
+              "height",
+              "m"
+            ],
+            "column": "pandas.Series"
+          }
         }
       ],
       "data": {

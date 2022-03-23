@@ -29,6 +29,90 @@
             "select": "column",
             "level": 1
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              2019,
+              "F"
+            ],
+            "column": "Count"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": 2019,
+            "column": [
+              "Count",
+              "F"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              2019,
+              "M"
+            ],
+            "column": "Count"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": 2019,
+            "column": [
+              "Count",
+              "M"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              2020,
+              "F"
+            ],
+            "column": "Count"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": 2020,
+            "column": [
+              "Count",
+              "F"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              2020,
+              "M"
+            ],
+            "column": "Count"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": 2020,
+            "column": [
+              "Count",
+              "M"
+            ]
+          }
         }
       ],
       "data": {

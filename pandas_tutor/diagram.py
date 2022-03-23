@@ -14,7 +14,7 @@ import simplejson as json
 
 from .parse_nodes import ParseSyntaxError
 from .run import RuntimeErrorResult
-from .util import CodePosition, CodeRange, JSONScalar, Label
+from .util import SERIES, CodePosition, CodeRange, JSONScalar, Label
 
 
 @dataclasses.dataclass
@@ -125,7 +125,7 @@ IndexLevel = t.Union[None, int]
 
 # each TablePos object is serialized as one of these
 TablePosType = t.Literal[
-    "axis", "series", "label", "index_level", "index_name", "datum"
+    "axis", "series", "label", "index_level", "index_name", "cell"
 ]
 
 
@@ -167,7 +167,7 @@ class SeriesPos(TablePos):
     """points to an entire series"""
 
     anchor: Anchor
-    label: Label = field(default="pandas.Series", init=False)
+    label: Label = field(default=SERIES, init=False)
 
     def __post_init__(self):
         self.type = "series"
@@ -217,15 +217,19 @@ class IndexNamePos(TablePos):
 
 
 @dataclasses.dataclass
-class DatumPos(TablePos):
-    """points to a single datum in the table"""
+class CellPos(TablePos):
+    """
+    points to a single cell in the table, which is uniquely identified by
+    the combination of column and row label.
+    """
 
     anchor: Anchor
-    column: Label
     row: Label
+    # for Series, column is util.SERIES
+    column: Label
 
     def __post_init__(self):
-        self.type = "datum"
+        self.type = "cell"
 
 
 ##############################################################################
