@@ -2,7 +2,8 @@
 creates mark specs. here's where the magic happens!
 """
 from collections.abc import Iterable
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Tuple, Union, cast
+from collections.abc import Sequence
 
 import pandas as pd
 
@@ -381,38 +382,66 @@ def mark_for_stack(
 def mark_for_pivot(
     step: PivotCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
+    # if index=[], pandas does the weird transpose + stack thing into a series
+    # which we won't try to handle
     if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
         return []
 
     df = before.val
     args = after.args
 
-    index = util.listify(args.get("index", []))
-    columns = util.listify(args.get("columns", []))
-    values = util.listify(args.get("values", []))
+    has_index = "index" in args
+    has_values = "values" in args
+    index: List[util.Label] = util.listify(args.get("index", []))
+    columns: List[util.Label] = util.listify(args.get("columns", []))
+    # default values arg is all leftover columns
+    values: List[util.Label] = util.listify(
+        args.get("values", df.columns.drop([*index, *columns]))
+    )
+    no_value_cols = len(values) == 0
 
     # special case: when only one values column is specified, pandas
-    # doesn't keep it as a column
-    will_compress_cols = len(values) == 1
+    # doesn't keep it as a column. we need has_values since pandas only drops
+    # when values is explicitly passed in.
+    will_drop_values = has_values and len(values) == 1
+    n_orig_col_levels = len(df.columns.names) if not will_drop_values else 0
 
-    # pivoting puts the new column levels **after** the existing ones
-    n_existing_col_levels = len(df.columns.names)
-
-    marks: List[Mark] = []
     # each index arg goes into a new index level
-    for position, name in enumerate(index):
-        marks.append(Map(lhs("column", name), rhs_index("row", position)))
+    index_marks = [
+        Map(lhs("column", name), rhs_index("row", position))
+        for position, name in enumerate(index)
+    ]
+
+    # special case: result is empty dataframe with new index
+    if no_value_cols:
+        return [*index_marks]
 
     # each column arg is appended as an index level into the columns
-    for position, name in enumerate(columns):
-        new_pos = (
-            position + n_existing_col_levels
-            if not will_compress_cols
-            else position
+    column_marks = [
+        Map(
+            lhs("column", name),
+            rhs_index("column", position + n_orig_col_levels),
         )
-        marks.append(Map(lhs("column", name), rhs_index("column", new_pos)))
+        for position, name in enumerate(columns)
+    ]
 
-    return marks
+    # to make cell marks, we need to pull row and column labels from the data
+    # rows themselves so the logic is tricky
+    cell_marks = []
+    for old_row, row in df.iterrows():
+        old_row = cast(util.Label, old_row)
+        # pull new row labels from row data
+        new_row = cast(util.Label, tuple(row[index]) if has_index else old_row)
+
+        # pull new col labels from row data
+        appended = tuple(row[columns])
+        for old_col in values:
+            new_col = (old_col, *appended) if not has_values else appended
+            left = CellPos("lhs", old_row, old_col)
+            right = CellPos("rhs", new_row, new_col)
+            cell_marks.append(Map(left, right))
+
+    return [*index_marks, *column_marks, *cell_marks]
 
 
 # handler for all subscripts, like:

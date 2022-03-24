@@ -14,7 +14,7 @@ import simplejson as json
 
 from .parse_nodes import ParseSyntaxError
 from .run import RuntimeErrorResult
-from .util import SERIES, CodePosition, CodeRange, JSONScalar, Label
+from .util import SERIES, CodePosition, CodeRange, JSONScalar, Label, unwrap
 
 
 @dataclasses.dataclass
@@ -230,6 +230,8 @@ class CellPos(TablePos):
 
     def __post_init__(self):
         self.type = "cell"
+        self.row = unwrap(self.row)
+        self.column = unwrap(self.column)
 
 
 ##############################################################################

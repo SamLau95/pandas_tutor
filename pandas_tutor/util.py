@@ -75,16 +75,36 @@ def listify(obj: Any) -> List:
     return obj if is_list_like(obj) else [obj]
 
 
-def unwrap(obj: Sequence[T]) -> Union[Sequence[T], T]:
+def tuplify(obj: Any) -> Tuple:
+    """if obj is a scalar, returns (obj, )"""
+    return obj if is_list_like(obj) else (obj,)
+
+
+@overload
+def unwrap(obj: Tuple[T]) -> Union[Tuple[T], T]:
+    ...
+
+
+@overload
+def unwrap(obj: List[T]) -> Union[List[T], T]:
+    ...
+
+
+@overload
+def unwrap(obj: Label) -> Label:
+    ...
+
+
+def unwrap(obj):
     """unwrap obj if single element"""
-    return obj[0] if len(obj) == 1 else obj
+    return obj if not is_list_like(obj) else obj[0] if len(obj) == 1 else obj
 
 
 def split_by(
     seq: Sequence[T], indexes: Sequence[int]
 ) -> Tuple[Tuple[T, ...], Tuple[T, ...]]:
     """
-    returns two tuple, one with the elements at the given indexes, and one
+    returns two tuples, one with the elements at the given indexes, and one
     with the rest of the elements.
     """
     # can't use sets since we need to preserve order
@@ -269,30 +289,37 @@ def level_number(index: pd.Index, level: str | int) -> int:
 _MultiLabelPair = Tuple[Tuple[Label, ...], Tuple[Label, ...]]
 
 
+def cell_labels(
+    index1: Iterable[Label], index2: Iterable[Label]
+) -> Tuple[LabelPair]:
+    """returns (row, column) labels"""
+    return tuple(itertools.product(index1, index2))  # type: ignore
+
+
 def push_levels(
-    from_: pd.Index, to: pd.Index, levels: List[int]
+    from_: Iterable[Label], to: Iterable[Label], levels: List[int]
 ) -> Iterable[Tuple[LabelPair, LabelPair]]:
     """
-    pushes levels from index1 to index2. used to map cells during reshaping
-    operations. returns original and new label pairs.
+    pushes levels from_ -> to. used to map cells during reshaping operations.
+    returns original and new label pairs.
     """
-    orig_cells = list(itertools.product(from_, to))
+    orig = cell_labels(from_, to)
 
     # if we're pushing into a series, we need to handle the placeholder
-    iter_to = to if SERIES not in to else [[]]
+    iter_to = to if SERIES not in to else [tuple()]
 
     # wrap values in tuples to make iteration easier
     wrapped_orig = cast(
         List[_MultiLabelPair],
-        list(itertools.product(map(listify, from_), map(listify, iter_to))),
+        list(itertools.product(map(tuplify, from_), map(tuplify, iter_to))),
     )
 
-    new_cells: List[LabelPair] = []
+    new: List[LabelPair] = []
     for left, right in wrapped_orig:
         move, stay = split_by(left, levels)
-        new_cells.append(mapt(unwrap, (stay, (*right, *move))))
+        new.append(mapt(unwrap, (stay, (*right, *move))))
 
-    return zip(orig_cells, new_cells)
+    return zip(orig, new)
 
 
 @overload
