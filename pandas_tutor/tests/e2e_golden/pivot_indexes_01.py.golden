@@ -59,6 +59,114 @@
             "select": "column",
             "level": 0
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": 0,
+            "column": "baz"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "x",
+              "one"
+            ],
+            "column": "A"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": 1,
+            "column": "baz"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "y",
+              "one"
+            ],
+            "column": "B"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": 2,
+            "column": "baz"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "z",
+              "one"
+            ],
+            "column": "C"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": 3,
+            "column": "baz"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "q",
+              "two"
+            ],
+            "column": "A"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": 4,
+            "column": "baz"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "w",
+              "two"
+            ],
+            "column": "B"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": 5,
+            "column": "baz"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "t",
+              "two"
+            ],
+            "column": "C"
+          }
         }
       ],
       "data": {

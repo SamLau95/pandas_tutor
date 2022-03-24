@@ -29,6 +29,90 @@
             "select": "row",
             "level": 1
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "cat",
+            "column": [
+              "weight",
+              "kg"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "cat",
+              "kg"
+            ],
+            "column": "weight"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "dog",
+            "column": [
+              "weight",
+              "kg"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "dog",
+              "kg"
+            ],
+            "column": "weight"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "cat",
+            "column": [
+              "weight",
+              "pounds"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "cat",
+              "pounds"
+            ],
+            "column": "weight"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "dog",
+            "column": [
+              "weight",
+              "pounds"
+            ]
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "dog",
+              "pounds"
+            ],
+            "column": "weight"
+          }
         }
       ],
       "data": {

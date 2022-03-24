@@ -1,9 +1,9 @@
 {
-  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nfoo,bar,baz,zoo\none,A,1,x\none,B,2,y\none,C,3,z\ntwo,A,4,q\ntwo,B,5,w\ntwo,C,6,t\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\ndf.pivot(index=\"foo\", columns=\"bar\", values=\"baz\")\n",
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nfoo,bar,baz,zoo\none,A,1,x\none,B,2,y\none,C,3,z\ntwo,A,4,q\ntwo,B,5,w\ntwo,C,6,t\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# result has multiindex for both rows and columns\ndf.pivot(index=[\"zoo\", \"foo\"], columns=\"bar\")\n",
   "explanation": [
     {
       "type": "PivotCall",
-      "code_step": "df.pivot(index=\"foo\", columns=\"bar\", values=\"baz\")",
+      "code_step": "df.pivot(index=[\"zoo\", \"foo\"], columns=\"bar\")",
       "fragment": {
         "start": {
           "line": 0,
@@ -11,7 +11,7 @@
         },
         "end": {
           "line": 0,
-          "ch": 50
+          "ch": 45
         }
       },
       "marks": [
@@ -21,7 +21,7 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "foo"
+            "label": "zoo"
           },
           "to": {
             "type": "index_level",
@@ -36,13 +36,28 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
+            "label": "foo"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
             "label": "bar"
           },
           "to": {
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 0
+            "level": 1
           }
         },
         {
@@ -56,8 +71,14 @@
           "to": {
             "type": "cell",
             "anchor": "rhs",
-            "row": "one",
-            "column": "A"
+            "row": [
+              "x",
+              "one"
+            ],
+            "column": [
+              "baz",
+              "A"
+            ]
           }
         },
         {
@@ -71,8 +92,14 @@
           "to": {
             "type": "cell",
             "anchor": "rhs",
-            "row": "one",
-            "column": "B"
+            "row": [
+              "y",
+              "one"
+            ],
+            "column": [
+              "baz",
+              "B"
+            ]
           }
         },
         {
@@ -86,8 +113,14 @@
           "to": {
             "type": "cell",
             "anchor": "rhs",
-            "row": "one",
-            "column": "C"
+            "row": [
+              "z",
+              "one"
+            ],
+            "column": [
+              "baz",
+              "C"
+            ]
           }
         },
         {
@@ -101,8 +134,14 @@
           "to": {
             "type": "cell",
             "anchor": "rhs",
-            "row": "two",
-            "column": "A"
+            "row": [
+              "q",
+              "two"
+            ],
+            "column": [
+              "baz",
+              "A"
+            ]
           }
         },
         {
@@ -116,8 +155,14 @@
           "to": {
             "type": "cell",
             "anchor": "rhs",
-            "row": "two",
-            "column": "B"
+            "row": [
+              "w",
+              "two"
+            ],
+            "column": [
+              "baz",
+              "B"
+            ]
           }
         },
         {
@@ -131,8 +176,14 @@
           "to": {
             "type": "cell",
             "anchor": "rhs",
-            "row": "two",
-            "column": "C"
+            "row": [
+              "t",
+              "two"
+            ],
+            "column": [
+              "baz",
+              "C"
+            ]
           }
         }
       ],
@@ -206,33 +257,86 @@
           "type": "DataFrame",
           "columns": {
             "names": [
+              null,
               "bar"
             ],
             "labels": [
-              "A",
-              "B",
-              "C"
+              [
+                "baz",
+                "A"
+              ],
+              [
+                "baz",
+                "B"
+              ],
+              [
+                "baz",
+                "C"
+              ]
             ]
           },
           "index": {
             "names": [
+              "zoo",
               "foo"
             ],
             "labels": [
-              "one",
-              "two"
+              [
+                "q",
+                "two"
+              ],
+              [
+                "t",
+                "two"
+              ],
+              [
+                "w",
+                "two"
+              ],
+              [
+                "x",
+                "one"
+              ],
+              [
+                "y",
+                "one"
+              ],
+              [
+                "z",
+                "one"
+              ]
             ]
           },
           "data": [
             [
-              1,
-              2,
-              3
+              4.0,
+              null,
+              null
             ],
             [
-              4,
-              5,
-              6
+              null,
+              null,
+              6.0
+            ],
+            [
+              null,
+              5.0,
+              null
+            ],
+            [
+              1.0,
+              null,
+              null
+            ],
+            [
+              null,
+              2.0,
+              null
+            ],
+            [
+              null,
+              null,
+              3.0
             ]
           ]
         }

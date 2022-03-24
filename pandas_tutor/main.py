@@ -11,14 +11,12 @@ Options:
     -l --parse_log   # Outputs parse debug output
     -c --code        # Code as a string (instead of a file)
 """
-import typing as t
 from pathlib import Path
 
 from docopt import docopt
 
 from .diagram import OutputSpec
 from .parse import parse, parse_as_json, test_logger
-from .parse_nodes import ParseSyntaxError
 from .run import run
 from .serialize import serialize
 

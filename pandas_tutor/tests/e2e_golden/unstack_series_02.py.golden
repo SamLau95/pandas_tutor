@@ -27,7 +27,79 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 0
+            "level": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "one",
+              "a"
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "a",
+            "column": "one"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "one",
+              "b"
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "b",
+            "column": "one"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "two",
+              "a"
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "a",
+            "column": "two"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "two",
+              "b"
+            ],
+            "column": "pandas.Series"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "b",
+            "column": "two"
           }
         }
       ],

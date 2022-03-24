@@ -1,0 +1,121 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nfoo,bar,baz,zoo\none,A,1,x\none,B,2,y\none,C,3,z\ntwo,A,4,q\ntwo,B,5,w\ntwo,C,6,t\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# produces an empty dataframe with original index\ndf.pivot(columns=[\"foo\", \"bar\", \"baz\", \"zoo\"])\n",
+  "explanation": [
+    {
+      "type": "PivotCall",
+      "code_step": "df.pivot(columns=[\"foo\", \"bar\", \"baz\", \"zoo\"])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 46
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "foo",
+              "bar",
+              "baz",
+              "zoo"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "data": [
+            [
+              "one",
+              "A",
+              1,
+              "x"
+            ],
+            [
+              "one",
+              "B",
+              2,
+              "y"
+            ],
+            [
+              "one",
+              "C",
+              3,
+              "z"
+            ],
+            [
+              "two",
+              "A",
+              4,
+              "q"
+            ],
+            [
+              "two",
+              "B",
+              5,
+              "w"
+            ],
+            [
+              "two",
+              "C",
+              6,
+              "t"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              "foo",
+              "bar",
+              "baz",
+              "zoo"
+            ],
+            "labels": []
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "data": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ]
+        }
+      }
+    }
+  ]
+}

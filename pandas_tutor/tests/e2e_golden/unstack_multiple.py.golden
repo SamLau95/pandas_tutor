@@ -44,6 +44,121 @@
             "select": "column",
             "level": 2
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "large",
+              "weekly",
+              "medium"
+            ],
+            "column": "food_cost"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "large",
+            "column": [
+              "food_cost",
+              "weekly",
+              "medium"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "medium",
+              "weekly",
+              "high"
+            ],
+            "column": "food_cost"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "medium",
+            "column": [
+              "food_cost",
+              "weekly",
+              "high"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "medium",
+              "weekly",
+              "medium"
+            ],
+            "column": "food_cost"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "medium",
+            "column": [
+              "food_cost",
+              "weekly",
+              "medium"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "small",
+              "daily",
+              "high"
+            ],
+            "column": "food_cost"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "small",
+            "column": [
+              "food_cost",
+              "daily",
+              "high"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": [
+              "small",
+              "daily",
+              "low"
+            ],
+            "column": "food_cost"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": "small",
+            "column": [
+              "food_cost",
+              "daily",
+              "low"
+            ]
+          }
         }
       ],
       "data": {

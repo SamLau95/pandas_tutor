@@ -29,6 +29,78 @@
             "select": "row",
             "level": 1
           }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "cat",
+            "column": "weight"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "cat",
+              "weight"
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "dog",
+            "column": "weight"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "dog",
+              "weight"
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "cat",
+            "column": "height"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "cat",
+              "height"
+            ],
+            "column": "pandas.Series"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "cell",
+            "anchor": "lhs",
+            "row": "dog",
+            "column": "height"
+          },
+          "to": {
+            "type": "cell",
+            "anchor": "rhs",
+            "row": [
+              "dog",
+              "height"
+            ],
+            "column": "pandas.Series"
+          }
         }
       ],
       "data": {
