@@ -1,9 +1,9 @@
 {
-  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nfoo,bar,baz,zoo\none,A,1,x\none,B,2,y\none,C,3,z\ntwo,A,4,q\ntwo,B,5,w\ntwo,C,6,t\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# produces an empty dataframe with two row labels\ndf.pivot(index=['foo'], columns=[\"bar\", 'baz', 'zoo'])\n",
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport io\nimport warnings\n\nimport pandas as pd\n\n# getting a weird warning that only shows up in unittest, so let's silence it\nwarnings.filterwarnings(\"ignore\", category=DeprecationWarning)\n\ncsv = \"\"\"\nfoo,bar,baz,zoo\none,A,1,x\none,B,2,y\none,C,3,z\ntwo,A,4,q\ntwo,B,5,w\ntwo,C,6,t\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# produces an empty dataframe with two row labels\ndf.pivot(index=[\"foo\"], columns=[\"bar\", \"baz\", \"zoo\"])\n",
   "explanation": [
     {
       "type": "PivotCall",
-      "code_step": "df.pivot(index=['foo'], columns=[\"bar\", 'baz', 'zoo'])",
+      "code_step": "df.pivot(index=[\"foo\"], columns=[\"bar\", \"baz\", \"zoo\"])",
       "fragment": {
         "start": {
           "line": 0,

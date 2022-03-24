@@ -4,7 +4,7 @@ import unittest
 
 from ..main import make_tutor_spec
 
-test_cases = Path(__file__).parent / 'e2e_golden'
+test_cases = Path(__file__).parent / "e2e_golden"
 
 
 class TestEndToEnd(unittest.TestCase):
@@ -12,8 +12,8 @@ class TestEndToEnd(unittest.TestCase):
 
 
 def make_test_case(test_name):
-    in_file = test_cases / f'{test_name}.py'
-    golden_file = test_cases / f'{test_name}.py.golden'
+    in_file = test_cases / f"{test_name}.py"
+    golden_file = test_cases / f"{test_name}.py.golden"
 
     def test(self: TestEndToEnd):
         self.assertTrue(in_file.exists())
@@ -33,9 +33,9 @@ def make_test_case(test_name):
 
 # make all test cases dynamically!
 for test_name in test_cases.iterdir():
-    if test_name.suffix == '.py':
-        if os.environ.get('CI', False) and test_name.stem.startswith('plot_'):
+    if test_name.suffix == ".py":
+        if os.environ.get("CI", False) and test_name.stem.startswith("plot_"):
             # skip plotting test cases since gzipping isn't deterministic
             continue
         test_case = make_test_case(test_name.stem)
-        setattr(TestEndToEnd, f'test_{test_name.stem}', test_case)
+        setattr(TestEndToEnd, f"test_{test_name.stem}", test_case)

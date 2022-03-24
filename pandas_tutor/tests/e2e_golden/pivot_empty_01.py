@@ -1,6 +1,11 @@
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects
-import pandas as pd
 import io
+import warnings
+
+import pandas as pd
+
+# getting a weird warning that only shows up in unittest, so let's silence it
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 csv = """
 foo,bar,baz,zoo
@@ -15,4 +20,4 @@ two,C,6,t
 df = pd.read_csv(io.StringIO(csv))
 
 # produces an empty dataframe with two row labels
-df.pivot(index=['foo'], columns=["bar", 'baz', 'zoo'])
+df.pivot(index=["foo"], columns=["bar", "baz", "zoo"])
