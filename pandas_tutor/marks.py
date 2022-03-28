@@ -337,12 +337,19 @@ def mark_for_unstack(
 
     # for each cell: the unstacked labels move to the column index
     cells = util.push_levels(df.index, columns, levels)
-    cell_marks: List[Mark] = [
-        Map(CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
+    pairs = [
+        (CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
         for (old_row, old_col), (new_row, new_col) in cells
     ]
+    pairs = sorted(pairs, key=by_column)
 
-    return [*index_marks, *cell_marks]
+    # group together marks that map the same column
+    cell_sets = [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=by_column)
+    ]
+
+    return [*index_marks, *cell_sets]
 
 
 # counts.stack(level=-1, drop_na=False)
@@ -375,7 +382,6 @@ def mark_for_stack(
     # for each cell: the unstacked labels move to the row index
     is_series = isinstance(after, SeriesResult)
     cells = util.push_levels(df.columns, df.index, levels)
-
     pairs = [
         (
             CellPos("lhs", old_row, old_col),
@@ -385,8 +391,7 @@ def mark_for_stack(
     ]
     pairs = sorted(pairs, key=by_row)
 
-    # group together marks that map the same row to show the reshapings on a
-    # smaller scale
+    # group together marks that map the same row
     cell_sets = [
         MapSet([Map(from_, to) for from_, to in g])
         for _, g in itertools.groupby(pairs, key=by_row)
