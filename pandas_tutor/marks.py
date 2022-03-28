@@ -1,9 +1,9 @@
 """
 creates mark specs. here's where the magic happens!
 """
+import itertools
 from collections.abc import Iterable
 from typing import Any, List, Optional, Tuple, Union, cast
-from collections.abc import Sequence
 
 import pandas as pd
 
@@ -16,6 +16,7 @@ from .diagram import (
     IndexLevel,
     IndexLevelPos,
     Map,
+    MapSet,
     Mark,
     Selection,
     SeriesPos,
@@ -374,15 +375,24 @@ def mark_for_stack(
     # for each cell: the unstacked labels move to the row index
     is_series = isinstance(after, SeriesResult)
     cells = util.push_levels(df.columns, df.index, levels)
-    cell_marks: List[Mark] = [
-        Map(
+
+    pairs = [
+        (
             CellPos("lhs", old_row, old_col),
             CellPos("rhs", new_row, new_col if not is_series else util.SERIES),
         )
         for (old_col, old_row), (new_col, new_row) in cells
     ]
+    pairs = sorted(pairs, key=by_row)
 
-    return [*index_marks, *cell_marks]
+    # group together marks that map the same row to show the reshapings on a
+    # smaller scale
+    cell_sets = [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=by_row)
+    ]
+
+    return [*index_marks, *cell_sets]
 
 
 # df.pivot(index='foo', columns='bar', values='baz')
@@ -700,3 +710,15 @@ def lhs_series() -> SeriesPos:
 def rhs_series() -> SeriesPos:
     """shorthand for the rhs series"""
     return SeriesPos("rhs")
+
+
+def by_row(pair: Tuple[CellPos, CellPos]) -> util.Label:
+    """grouper for CellPos pairs. returns the row label of the original cell"""
+    cell, _ = pair
+    return cell.row
+
+
+def by_column(pair: Tuple[CellPos, CellPos]) -> util.Label:
+    """grouper for CellPos pairs. returns the col label of the original cell"""
+    cell, _ = pair
+    return cell.column
