@@ -216,7 +216,15 @@ def mark_for_groupby(
     if not isinstance(after, GroupbyResult):
         return []
 
-    group_cols = util.grouping_labels(after.val)
+    df = before.val
+
+    # if user specifies manual groups, the groups don't come from a column in
+    # the original table
+    group_cols = [
+        label
+        for label in util.grouping_labels(after.val)
+        if label in df.columns
+    ]
     highlights = make_highlights(
         group_cols, selection(step.axis, other=True), anchor="lhs"
     )
