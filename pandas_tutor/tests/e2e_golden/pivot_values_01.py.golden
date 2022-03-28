@@ -42,7 +42,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 0,
-            "column": "A"
+            "column": [
+              "baz",
+              "A"
+            ]
           }
         },
         {
@@ -57,7 +60,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 0,
-            "column": "A"
+            "column": [
+              "foo",
+              "A"
+            ]
           }
         },
         {
@@ -72,7 +78,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 1,
-            "column": "B"
+            "column": [
+              "baz",
+              "B"
+            ]
           }
         },
         {
@@ -87,7 +96,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 1,
-            "column": "B"
+            "column": [
+              "foo",
+              "B"
+            ]
           }
         },
         {
@@ -102,7 +114,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 2,
-            "column": "C"
+            "column": [
+              "baz",
+              "C"
+            ]
           }
         },
         {
@@ -117,7 +132,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 2,
-            "column": "C"
+            "column": [
+              "foo",
+              "C"
+            ]
           }
         },
         {
@@ -132,7 +150,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 3,
-            "column": "A"
+            "column": [
+              "baz",
+              "A"
+            ]
           }
         },
         {
@@ -147,7 +168,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 3,
-            "column": "A"
+            "column": [
+              "foo",
+              "A"
+            ]
           }
         },
         {
@@ -162,7 +186,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 4,
-            "column": "B"
+            "column": [
+              "baz",
+              "B"
+            ]
           }
         },
         {
@@ -177,7 +204,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 4,
-            "column": "B"
+            "column": [
+              "foo",
+              "B"
+            ]
           }
         },
         {
@@ -192,7 +222,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 5,
-            "column": "C"
+            "column": [
+              "baz",
+              "C"
+            ]
           }
         },
         {
@@ -207,7 +240,10 @@
             "type": "cell",
             "anchor": "rhs",
             "row": 5,
-            "column": "C"
+            "column": [
+              "foo",
+              "C"
+            ]
           }
         }
       ],
