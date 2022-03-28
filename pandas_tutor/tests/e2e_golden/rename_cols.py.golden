@@ -18,35 +18,31 @@
         {
           "type": "map",
           "from": {
-            "type": "label",
+            "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "breed",
-            "level": null
+            "label": "breed"
           },
           "to": {
-            "type": "label",
+            "type": "axis",
             "anchor": "rhs",
             "select": "column",
-            "label": "b",
-            "level": null
+            "label": "b"
           }
         },
         {
           "type": "map",
           "from": {
-            "type": "label",
+            "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "food_cost",
-            "level": null
+            "label": "food_cost"
           },
           "to": {
-            "type": "label",
+            "type": "axis",
             "anchor": "rhs",
             "select": "column",
-            "label": "cost",
-            "level": null
+            "label": "cost"
           }
         }
       ],

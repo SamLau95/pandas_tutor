@@ -15,7 +15,6 @@ from .diagram import (
     Drop,
     IndexLevel,
     IndexLevelPos,
-    LabelPos,
     Map,
     Mark,
     Selection,
@@ -162,7 +161,7 @@ def mark_for_rename(
     select = selection(step.axis)
 
     return [
-        Map(from_=LabelPos("lhs", select, old), to=LabelPos("rhs", select, new))
+        Map(from_=lhs(select, old), to=rhs(select, new))
         for old, new in mapping.items()
     ]
 

@@ -18,35 +18,31 @@
         {
           "type": "map",
           "from": {
-            "type": "label",
+            "type": "axis",
             "anchor": "lhs",
             "select": "row",
-            "label": 0,
-            "level": null
+            "label": 0
           },
           "to": {
-            "type": "label",
+            "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": "hello",
-            "level": null
+            "label": "hello"
           }
         },
         {
           "type": "map",
           "from": {
-            "type": "label",
+            "type": "axis",
             "anchor": "lhs",
             "select": "row",
-            "label": 1,
-            "level": null
+            "label": 1
           },
           "to": {
-            "type": "label",
+            "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": "world",
-            "level": null
+            "label": "world"
           }
         }
       ],
