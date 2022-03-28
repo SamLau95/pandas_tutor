@@ -31,114 +31,119 @@
           }
         },
         {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": [
-              "large",
-              "weekly",
-              "medium"
-            ],
-            "column": "pandas.Series"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": [
-              "large",
-              "medium"
-            ],
-            "column": "weekly"
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": [
-              "medium",
-              "weekly",
-              "high"
-            ],
-            "column": "pandas.Series"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": [
-              "medium",
-              "high"
-            ],
-            "column": "weekly"
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": [
-              "medium",
-              "weekly",
-              "medium"
-            ],
-            "column": "pandas.Series"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": [
-              "medium",
-              "medium"
-            ],
-            "column": "weekly"
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": [
-              "small",
-              "daily",
-              "high"
-            ],
-            "column": "pandas.Series"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": [
-              "small",
-              "high"
-            ],
-            "column": "daily"
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": [
-              "small",
-              "daily",
-              "low"
-            ],
-            "column": "pandas.Series"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": [
-              "small",
-              "low"
-            ],
-            "column": "daily"
-          }
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "large",
+                  "weekly",
+                  "medium"
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "large",
+                  "medium"
+                ],
+                "column": "weekly"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "medium",
+                  "weekly",
+                  "high"
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "medium",
+                  "high"
+                ],
+                "column": "weekly"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "medium",
+                  "weekly",
+                  "medium"
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "medium",
+                  "medium"
+                ],
+                "column": "weekly"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "small",
+                  "daily",
+                  "high"
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "small",
+                  "high"
+                ],
+                "column": "daily"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "small",
+                  "daily",
+                  "low"
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "small",
+                  "low"
+                ],
+                "column": "daily"
+              }
+            }
+          ]
         }
       ],
       "data": {

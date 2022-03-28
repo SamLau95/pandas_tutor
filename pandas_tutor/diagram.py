@@ -206,7 +206,7 @@ class CellPos(TablePos):
 ##############################################################################
 
 # each Mark object is serialized as one of these
-MarkType = t.Literal["using", "map", "drop"]
+MarkType = t.Literal["using", "map", "map_set", "drop"]
 
 
 @dataclasses.dataclass
@@ -241,6 +241,20 @@ class Map(Mark):
 
     def __post_init__(self):
         self.type = "map"
+
+
+@dataclasses.dataclass
+class MapSet(Mark):
+    """
+    represents a set of Map objects. the frontend uses this to simplify the
+    visualization when there are many small marks to visualize (e.g. many
+    cell-to-cell mappings).
+    """
+
+    maps: t.List[Map]
+
+    def __post_init__(self):
+        self.type = "map_set"
 
 
 @dataclasses.dataclass

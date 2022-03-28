@@ -1,9 +1,9 @@
 """
 creates mark specs. here's where the magic happens!
 """
+import itertools
 from collections.abc import Iterable
 from typing import Any, List, Optional, Tuple, Union, cast
-from collections.abc import Sequence
 
 import pandas as pd
 
@@ -16,6 +16,7 @@ from .diagram import (
     IndexLevel,
     IndexLevelPos,
     Map,
+    MapSet,
     Mark,
     Selection,
     SeriesPos,
@@ -336,12 +337,19 @@ def mark_for_unstack(
 
     # for each cell: the unstacked labels move to the column index
     cells = util.push_levels(df.index, columns, levels)
-    cell_marks: List[Mark] = [
-        Map(CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
+    pairs = [
+        (CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
         for (old_row, old_col), (new_row, new_col) in cells
     ]
+    pairs = sorted(pairs, key=by_column)
 
-    return [*index_marks, *cell_marks]
+    # group together marks that map the same column
+    cell_sets = [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=by_column)
+    ]
+
+    return [*index_marks, *cell_sets]
 
 
 # counts.stack(level=-1, drop_na=False)
@@ -374,15 +382,22 @@ def mark_for_stack(
     # for each cell: the unstacked labels move to the row index
     is_series = isinstance(after, SeriesResult)
     cells = util.push_levels(df.columns, df.index, levels)
-    cell_marks: List[Mark] = [
-        Map(
+    pairs = [
+        (
             CellPos("lhs", old_row, old_col),
             CellPos("rhs", new_row, new_col if not is_series else util.SERIES),
         )
         for (old_col, old_row), (new_col, new_row) in cells
     ]
+    pairs = sorted(pairs, key=by_row)
 
-    return [*index_marks, *cell_marks]
+    # group together marks that map the same row
+    cell_sets = [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=by_row)
+    ]
+
+    return [*index_marks, *cell_sets]
 
 
 # df.pivot(index='foo', columns='bar', values='baz')
@@ -434,7 +449,7 @@ def mark_for_pivot(
 
     # to make cell marks, we need to pull row and column labels from the data
     # rows themselves so the logic is tricky
-    cell_marks = []
+    pairs = []
     for old_row, row in df.iterrows():
         old_row = cast(util.Label, old_row)
         # pull new row labels from row data
@@ -446,9 +461,16 @@ def mark_for_pivot(
             new_col = (old_col, *appended) if not will_drop_values else appended
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
-            cell_marks.append(Map(left, right))
+            pairs.append((left, right))
 
-    return [*index_marks, *column_marks, *cell_marks]
+    # group together marks using their original columns
+    pairs = sorted(pairs, key=by_column)
+    cell_sets = [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=by_column)
+    ]
+
+    return [*index_marks, *column_marks, *cell_sets]
 
 
 # handler for all subscripts, like:
@@ -700,3 +722,15 @@ def lhs_series() -> SeriesPos:
 def rhs_series() -> SeriesPos:
     """shorthand for the rhs series"""
     return SeriesPos("rhs")
+
+
+def by_row(pair: Tuple[CellPos, CellPos]) -> util.Label:
+    """grouper for CellPos pairs. returns the row label of the original cell"""
+    cell, _ = pair
+    return cell.row
+
+
+def by_column(pair: Tuple[CellPos, CellPos]) -> util.Label:
+    """grouper for CellPos pairs. returns the col label of the original cell"""
+    cell, _ = pair
+    return cell.column

@@ -46,220 +46,230 @@
           }
         },
         {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 0,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "one",
-            "column": [
-              "baz",
-              "A"
-            ]
-          }
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "one",
+                "column": [
+                  "baz",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "one",
+                "column": [
+                  "baz",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "one",
+                "column": [
+                  "baz",
+                  "C"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 3,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "two",
+                "column": [
+                  "baz",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 4,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "two",
+                "column": [
+                  "baz",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 5,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "two",
+                "column": [
+                  "baz",
+                  "C"
+                ]
+              }
+            }
+          ]
         },
         {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 0,
-            "column": "zoo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "one",
-            "column": [
-              "zoo",
-              "A"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 1,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "one",
-            "column": [
-              "baz",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 1,
-            "column": "zoo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "one",
-            "column": [
-              "zoo",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 2,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "one",
-            "column": [
-              "baz",
-              "C"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 2,
-            "column": "zoo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "one",
-            "column": [
-              "zoo",
-              "C"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 3,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "two",
-            "column": [
-              "baz",
-              "A"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 3,
-            "column": "zoo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "two",
-            "column": [
-              "zoo",
-              "A"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 4,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "two",
-            "column": [
-              "baz",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 4,
-            "column": "zoo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "two",
-            "column": [
-              "zoo",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 5,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "two",
-            "column": [
-              "baz",
-              "C"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 5,
-            "column": "zoo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": "two",
-            "column": [
-              "zoo",
-              "C"
-            ]
-          }
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "zoo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "one",
+                "column": [
+                  "zoo",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "zoo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "one",
+                "column": [
+                  "zoo",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "zoo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "one",
+                "column": [
+                  "zoo",
+                  "C"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 3,
+                "column": "zoo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "two",
+                "column": [
+                  "zoo",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 4,
+                "column": "zoo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "two",
+                "column": [
+                  "zoo",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 5,
+                "column": "zoo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "two",
+                "column": [
+                  "zoo",
+                  "C"
+                ]
+              }
+            }
+          ]
         }
       ],
       "data": {
