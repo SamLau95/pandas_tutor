@@ -124,9 +124,7 @@ Selection = t.Literal["column", "row"]
 IndexLevel = t.Union[None, int]
 
 # each TablePos object is serialized as one of these
-TablePosType = t.Literal[
-    "axis", "series", "label", "index_level", "index_name", "cell"
-]
+TablePosType = t.Literal["axis", "series", "index_level", "cell"]
 
 
 @dataclasses.dataclass
@@ -174,22 +172,6 @@ class SeriesPos(TablePos):
 
 
 @dataclasses.dataclass
-class LabelPos(TablePos):
-    """
-    points to a single label for a column or row. used for functions like
-    rename()
-    """
-
-    anchor: Anchor
-    select: Selection
-    label: Label
-    level: IndexLevel = None
-
-    def __post_init__(self):
-        self.type = "label"
-
-
-@dataclasses.dataclass
 class IndexLevelPos(TablePos):
     """points to a single level for the index of the column or row labels"""
 
@@ -199,21 +181,6 @@ class IndexLevelPos(TablePos):
 
     def __post_init__(self):
         self.type = "index_level"
-
-
-@dataclasses.dataclass
-class IndexNamePos(TablePos):
-    """
-    points to the name for a level of the index of the column or row labels.
-    used for functions like rename_axis() which renames index levels
-    """
-
-    anchor: Anchor
-    select: Selection
-    level: IndexLevel = None
-
-    def __post_init__(self):
-        self.type = "index_name"
 
 
 @dataclasses.dataclass

@@ -21,15 +21,6 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "second"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
             "label": "A"
           }
         }

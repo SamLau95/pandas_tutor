@@ -15,7 +15,6 @@ from .diagram import (
     Drop,
     IndexLevel,
     IndexLevelPos,
-    LabelPos,
     Map,
     Mark,
     Selection,
@@ -162,7 +161,7 @@ def mark_for_rename(
     select = selection(step.axis)
 
     return [
-        Map(from_=LabelPos("lhs", select, old), to=LabelPos("rhs", select, new))
+        Map(from_=lhs(select, old), to=rhs(select, new))
         for old, new in mapping.items()
     ]
 
@@ -217,7 +216,15 @@ def mark_for_groupby(
     if not isinstance(after, GroupbyResult):
         return []
 
-    group_cols = util.grouping_labels(after.val)
+    df = before.val
+
+    # if user specifies manual groups, the groups don't come from a column in
+    # the original table
+    group_cols = [
+        label
+        for label in util.grouping_labels(after.val)
+        if label in df.columns
+    ]
     highlights = make_highlights(
         group_cols, selection(step.axis, other=True), anchor="lhs"
     )
@@ -436,7 +443,7 @@ def mark_for_pivot(
         # pull new col labels from row data
         appended = tuple(row[columns])
         for old_col in values:
-            new_col = (old_col, *appended) if not has_values else appended
+            new_col = (old_col, *appended) if not will_drop_values else appended
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
             cell_marks.append(Map(left, right))

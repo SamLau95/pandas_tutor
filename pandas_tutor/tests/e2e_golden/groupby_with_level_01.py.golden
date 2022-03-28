@@ -14,17 +14,7 @@
           "ch": 52
         }
       },
-      "marks": [
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "A"
-          }
-        }
-      ],
+      "marks": [],
       "data": {
         "lhs": {
           "type": "DataFrame",
