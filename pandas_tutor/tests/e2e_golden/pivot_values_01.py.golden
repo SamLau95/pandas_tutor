@@ -31,220 +31,230 @@
           }
         },
         {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 0,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 0,
-            "column": [
-              "baz",
-              "A"
-            ]
-          }
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 0,
+                "column": [
+                  "baz",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 1,
+                "column": [
+                  "baz",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 2,
+                "column": [
+                  "baz",
+                  "C"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 3,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 3,
+                "column": [
+                  "baz",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 4,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 4,
+                "column": [
+                  "baz",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 5,
+                "column": "baz"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 5,
+                "column": [
+                  "baz",
+                  "C"
+                ]
+              }
+            }
+          ]
         },
         {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 0,
-            "column": "foo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 0,
-            "column": [
-              "foo",
-              "A"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 1,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 1,
-            "column": [
-              "baz",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 1,
-            "column": "foo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 1,
-            "column": [
-              "foo",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 2,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 2,
-            "column": [
-              "baz",
-              "C"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 2,
-            "column": "foo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 2,
-            "column": [
-              "foo",
-              "C"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 3,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 3,
-            "column": [
-              "baz",
-              "A"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 3,
-            "column": "foo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 3,
-            "column": [
-              "foo",
-              "A"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 4,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 4,
-            "column": [
-              "baz",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 4,
-            "column": "foo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 4,
-            "column": [
-              "foo",
-              "B"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 5,
-            "column": "baz"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 5,
-            "column": [
-              "baz",
-              "C"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "cell",
-            "anchor": "lhs",
-            "row": 5,
-            "column": "foo"
-          },
-          "to": {
-            "type": "cell",
-            "anchor": "rhs",
-            "row": 5,
-            "column": [
-              "foo",
-              "C"
-            ]
-          }
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "foo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 0,
+                "column": [
+                  "foo",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "foo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 1,
+                "column": [
+                  "foo",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "foo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 2,
+                "column": [
+                  "foo",
+                  "C"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 3,
+                "column": "foo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 3,
+                "column": [
+                  "foo",
+                  "A"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 4,
+                "column": "foo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 4,
+                "column": [
+                  "foo",
+                  "B"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 5,
+                "column": "foo"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 5,
+                "column": [
+                  "foo",
+                  "C"
+                ]
+              }
+            }
+          ]
         }
       ],
       "data": {

@@ -449,7 +449,7 @@ def mark_for_pivot(
 
     # to make cell marks, we need to pull row and column labels from the data
     # rows themselves so the logic is tricky
-    cell_marks = []
+    pairs = []
     for old_row, row in df.iterrows():
         old_row = cast(util.Label, old_row)
         # pull new row labels from row data
@@ -461,9 +461,16 @@ def mark_for_pivot(
             new_col = (old_col, *appended) if not will_drop_values else appended
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
-            cell_marks.append(Map(left, right))
+            pairs.append((left, right))
 
-    return [*index_marks, *column_marks, *cell_marks]
+    # group together marks using their original columns
+    pairs = sorted(pairs, key=by_column)
+    cell_sets = [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=by_column)
+    ]
+
+    return [*index_marks, *column_marks, *cell_sets]
 
 
 # handler for all subscripts, like:
