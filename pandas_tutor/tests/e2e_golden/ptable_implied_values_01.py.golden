@@ -1,0 +1,581 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nA,B,C,D,E\nfoo,one,small,1,2\nfoo,one,large,2,4\nfoo,one,large,2,5\nfoo,two,small,3,5\nfoo,two,small,3,6\nbar,one,large,4,6\nbar,one,small,5,8\nbar,two,small,6,9\nbar,two,large,7,9\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# D and E kept in columns, and C values become second column level\ndf.pivot_table(index=\"A\", columns=\"C\")\n",
+  "explanation": [
+    {
+      "type": "PivotTableCall",
+      "code_step": "df.pivot_table(index=\"A\", columns=\"C\")",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 38
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "C"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "C"
+          }
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 5,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "D",
+                  "large"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 8,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "D",
+                  "large"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 6,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "D",
+                  "small"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 7,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "D",
+                  "small"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 5,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "E",
+                  "large"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 8,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "E",
+                  "large"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 6,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "E",
+                  "small"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 7,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "bar",
+                "column": [
+                  "E",
+                  "small"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "D",
+                  "large"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "D",
+                  "large"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "D",
+                  "small"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 3,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "D",
+                  "small"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 4,
+                "column": "D"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "D",
+                  "small"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "E",
+                  "large"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "E",
+                  "large"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "E",
+                  "small"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 3,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "E",
+                  "small"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 4,
+                "column": "E"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": "foo",
+                "column": [
+                  "E",
+                  "small"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          },
+          "data": [
+            [
+              "foo",
+              "one",
+              "small",
+              1,
+              2
+            ],
+            [
+              "foo",
+              "one",
+              "large",
+              2,
+              4
+            ],
+            [
+              "foo",
+              "one",
+              "large",
+              2,
+              5
+            ],
+            [
+              "foo",
+              "two",
+              "small",
+              3,
+              5
+            ],
+            [
+              "foo",
+              "two",
+              "small",
+              3,
+              6
+            ],
+            [
+              "bar",
+              "one",
+              "large",
+              4,
+              6
+            ],
+            [
+              "bar",
+              "one",
+              "small",
+              5,
+              8
+            ],
+            [
+              "bar",
+              "two",
+              "small",
+              6,
+              9
+            ],
+            [
+              "bar",
+              "two",
+              "large",
+              7,
+              9
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              "C"
+            ],
+            "labels": [
+              [
+                "D",
+                "large"
+              ],
+              [
+                "D",
+                "small"
+              ],
+              [
+                "E",
+                "large"
+              ],
+              [
+                "E",
+                "small"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "A"
+            ],
+            "labels": [
+              "bar",
+              "foo"
+            ]
+          },
+          "data": [
+            [
+              5.5,
+              5.5,
+              7.5,
+              8.5
+            ],
+            [
+              2.0,
+              2.3333333333333335,
+              4.5,
+              4.333333333333333
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

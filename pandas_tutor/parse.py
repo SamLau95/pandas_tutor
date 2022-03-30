@@ -38,6 +38,7 @@ from .parse_nodes import (
     ParseSyntaxError,
     PassThroughCall,
     PivotCall,
+    PivotTableCall,
     RawCode,
     RenameCall,
     ResetIndexCall,
@@ -131,6 +132,7 @@ is_reset_index = fn_matcher("reset_index")
 is_unstack = fn_matcher("unstack")
 is_stack = fn_matcher("stack")
 is_pivot = fn_matcher("pivot")
+is_pivot_table = fn_matcher("pivot_table")
 
 # make sure to update this whenever we add a new call to the section above
 is_parsed_call = (
@@ -145,6 +147,7 @@ is_parsed_call = (
     | is_unstack
     | is_stack
     | is_pivot
+    | is_pivot_table
 )
 
 is_loc_iloc = m.Subscript(
@@ -498,6 +501,23 @@ class ChainParser(ParserBase):
             index_expr=index_expr,
             columns_expr=columns_expr,
             values_expr=values_expr,
+        )
+        self._append(node)
+
+    @m.leave(is_pivot_table)
+    def make_pivot_table(self, cst_node: cst.Call):
+        values_expr = self.get_arg_code(cst_node.args, 0, "values")
+        index_expr = self.get_arg_code(cst_node.args, 1, "index")
+        columns_expr = self.get_arg_code(cst_node.args, 2, "columns")
+        aggfunc_expr = self.get_arg_code(cst_node.args, 3, "aggfunc")
+
+        node = self.make_call_node(
+            PivotTableCall,
+            cst_node,
+            index_expr=index_expr,
+            columns_expr=columns_expr,
+            values_expr=values_expr,
+            aggfunc_expr=aggfunc_expr,
         )
         self._append(node)
 

@@ -295,11 +295,29 @@ class PivotCall(Call):
     df.pivot(index='foo', columns='bar', values='baz')
     """
 
-    fn_name = "stack"
+    fn_name = "pivot"
 
     index_expr: t.Optional[RawCode] = evals_into("index")
     columns_expr: t.Optional[RawCode] = evals_into("columns")
     values_expr: t.Optional[RawCode] = evals_into("values")
+
+
+@dataclasses.dataclass
+class PivotTableCall(Call):
+    """
+    df.pivot_table(values='D', index=['A', 'B'],
+                   columns=['C'], aggfunc=np.sum)
+    df.pivot_table(values=['D', 'E'], index=['A', 'C'],
+                   aggfunc={'D': np.mean,
+                            'E': np.mean})
+    """
+
+    fn_name = "pivot_table"
+
+    index_expr: t.Optional[RawCode] = evals_into("index")
+    columns_expr: t.Optional[RawCode] = evals_into("columns")
+    values_expr: t.Optional[RawCode] = evals_into("values")
+    aggfunc_expr: t.Optional[RawCode] = evals_into("aggfunc")
 
 
 ##############################################################################

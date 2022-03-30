@@ -10,6 +10,7 @@ import itertools
 import warnings
 from collections.abc import Iterable, Sequence
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     List,
@@ -27,6 +28,9 @@ import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
 from typing_extensions import TypeGuard
+
+if TYPE_CHECKING:
+    from pandas_tutor.diagram import MapSet, CellPos
 
 T = TypeVar("T")
 
@@ -322,6 +326,16 @@ def push_levels(
     return zip(orig, new)
 
 
+def push_level(from_: Label, to: Label, levels: List[int]) -> LabelPair:
+    """pushes levels from_ -> to for one label pair"""
+    # if we're pushing into a series, we need to handle the placeholder
+    to = to if to != SERIES else tuple()
+    left = tuplify(from_)
+    right = tuplify(to)
+    move, stay = split_by(left, levels)
+    return mapt(unwrap, (stay, (*right, *move)))
+
+
 @overload
 def ungroup(obj: Union[SeriesGroupBy, pd.Series]) -> pd.Series:
     ...
@@ -463,3 +477,23 @@ def too_much_mem_msg(mem: float):
         f"Your total data uses {mem_as_str(mem)} of memory, which exceeds "
         f"the maximum of {mem_as_str(MEM_LIMIT)} that this tool supports."
     )
+
+
+##############################################################################
+# debugging
+##############################################################################
+
+
+def print_mapsets(val: List[MapSet]) -> None:
+    for i, mapset in enumerate(val):
+        print(f"{i}:")
+        for map_mark in mapset.maps:
+            left = (
+                f"{str(map_mark.from_.row)}, "  # type: ignore
+                f"{str(map_mark.from_.column)}"  # type: ignore
+            )
+            right = (
+                f"{str(map_mark.to.row)}, "  # type: ignore
+                f"{str(map_mark.to.column)}"  # type: ignore
+            )
+            print(f"  {left} -> {right}")

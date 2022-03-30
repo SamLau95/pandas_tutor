@@ -3,7 +3,7 @@ creates mark specs. here's where the magic happens!
 """
 import itertools
 from collections.abc import Iterable
-from typing import Any, List, Optional, Tuple, Union, cast
+from typing import Any, Callable, List, Optional, Tuple, Union, cast
 
 import pandas as pd
 
@@ -34,6 +34,7 @@ from .parse_nodes import (
     HeadCall,
     PassThroughCall,
     PivotCall,
+    PivotTableCall,
     RenameCall,
     ResetIndexCall,
     SortValuesCall,
@@ -52,6 +53,7 @@ from .run import (
     SeriesGroupbyResult,
     SeriesResult,
 )
+from .util import SERIES, Label, LabelPair
 
 
 # step comes from after.step, but we pull it out here to help with
@@ -91,6 +93,8 @@ def make_marks(
         return mark_for_stack(step, before, after)
     elif isinstance(step, PivotCall):
         return mark_for_pivot(step, before, after)
+    elif isinstance(step, PivotTableCall):
+        return mark_for_pivot_table(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -116,10 +120,10 @@ def mark_for_sort_values(
     sorted_labels = df.index if step.axis == "index" else df.columns
 
     # highlight sorted cols in RHS since the LHS values aren't sorted
-    highlights = make_highlights(
+    highlights = make_usings(
         sort_by, selection(step.axis, other=True), anchor="rhs"
     )
-    outlines = make_outlines(sorted_labels, selection(step.axis))
+    outlines = make_maps(sorted_labels, selection(step.axis))
     return [*highlights, *outlines]
 
 
@@ -144,8 +148,8 @@ def mark_for_drop(
 
     # cross out dropped rows or columns
     return [
-        *make_crossouts(col_labels, "column"),
-        *make_crossouts(row_labels, "row"),
+        *make_drops(col_labels, "column"),
+        *make_drops(row_labels, "row"),
     ]
 
 
@@ -187,7 +191,7 @@ def mark_for_apply(
     if isinstance(before, DFResult) and isinstance(after, DFResult):
         df = after.val
         labels = df.index if step.axis == "index" else df.columns
-        return make_outlines(labels, selection(step.axis))
+        return make_maps(labels, selection(step.axis))
     elif isinstance(before, DFResult) and isinstance(after, SeriesResult):
         # dogs.apply(len)  -> series with column names as index
         # special case: result is transposed! but i think this is confusing to
@@ -196,7 +200,7 @@ def mark_for_apply(
         return []
     elif isinstance(before, SeriesResult) and isinstance(after, SeriesResult):
         labels = after.val.index
-        return make_outlines(labels, "row")
+        return make_maps(labels, "row")
     else:
         # TODO: handle apply on groupby objects
         return []
@@ -207,7 +211,7 @@ def mark_for_apply(
 def mark_for_assign(
     step: AssignCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
-    return make_highlights(step.new_col_labels, "column", "rhs")
+    return make_usings(step.new_col_labels, "column", "rhs")
 
 
 # df.groupby('hello')
@@ -226,7 +230,7 @@ def mark_for_groupby(
         for label in util.grouping_labels(after.val)
         if label in df.columns
     ]
-    highlights = make_highlights(
+    highlights = make_usings(
         group_cols, selection(step.axis, other=True), anchor="lhs"
     )
 
@@ -341,13 +345,8 @@ def mark_for_unstack(
         (CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
         for (old_row, old_col), (new_row, new_col) in cells
     ]
-    pairs = sorted(pairs, key=by_column)
-
     # group together marks that map the same column
-    cell_sets = [
-        MapSet([Map(from_, to) for from_, to in g])
-        for _, g in itertools.groupby(pairs, key=by_column)
-    ]
+    cell_sets = make_cell_sets(pairs, key=by_column)
 
     return [*index_marks, *cell_sets]
 
@@ -389,13 +388,8 @@ def mark_for_stack(
         )
         for (old_col, old_row), (new_col, new_row) in cells
     ]
-    pairs = sorted(pairs, key=by_row)
-
     # group together marks that map the same row
-    cell_sets = [
-        MapSet([Map(from_, to) for from_, to in g])
-        for _, g in itertools.groupby(pairs, key=by_row)
-    ]
+    cell_sets = make_cell_sets(pairs, key=by_row)
 
     return [*index_marks, *cell_sets]
 
@@ -414,10 +408,10 @@ def mark_for_pivot(
 
     has_index = "index" in args
     has_values = "values" in args
-    index: List[util.Label] = util.listify(args.get("index", []))
-    columns: List[util.Label] = util.listify(args.get("columns", []))
+    index: List[Label] = util.listify(args.get("index", []))
+    columns: List[Label] = util.listify(args.get("columns", []))
     # default values arg is all leftover columns
-    values: List[util.Label] = util.listify(
+    values: List[Label] = util.listify(
         args.get("values", df.columns.drop([*index, *columns]))
     )
     no_value_cols = len(values) == 0
@@ -451,9 +445,9 @@ def mark_for_pivot(
     # rows themselves so the logic is tricky
     pairs = []
     for old_row, row in df.iterrows():
-        old_row = cast(util.Label, old_row)
+        old_row = cast(Label, old_row)
         # pull new row labels from row data
-        new_row = cast(util.Label, tuple(row[index]) if has_index else old_row)
+        new_row = cast(Label, tuple(row[index]) if has_index else old_row)
 
         # pull new col labels from row data
         appended = tuple(row[columns])
@@ -464,11 +458,118 @@ def mark_for_pivot(
             pairs.append((left, right))
 
     # group together marks using their original columns
-    pairs = sorted(pairs, key=by_column)
-    cell_sets = [
-        MapSet([Map(from_, to) for from_, to in g])
-        for _, g in itertools.groupby(pairs, key=by_column)
+    cell_sets = make_cell_sets(pairs, key=by_column)
+
+    return [*index_marks, *column_marks, *cell_sets]
+
+
+# df.pivot(index='foo', columns='bar', values='baz')
+def mark_for_pivot_table(
+    step: PivotCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    # if index=[], pandas does the weird transpose + stack thing into a series
+    # which we won't try to handle
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+
+    df = before.val
+    after_df = after.val
+    args = after.args
+
+    has_index = "index" in args
+    has_columns = "columns" in args
+    has_values = "values" in args
+    index: List[Label] = util.listify(args.get("index", []))
+    columns: List[Label] = util.listify(args.get("columns", []))
+    # default values arg is all leftover columns
+    values: List[Label] = util.listify(
+        args.get("values", df.columns.drop([*index, *columns]))
+    )
+    aggfunc: Union[str, Callable, list, dict] = args.get("aggfunc", "mean")
+
+    # when multiple aggfuncs are specified, pandas puts the aggfuncs into
+    # another level of the column index.
+    has_multi_aggs = isinstance(aggfunc, (list, tuple)) or (
+        isinstance(aggfunc, dict)
+        and any(isinstance(val, (list, tuple)) for val in aggfunc.values())
+    )
+
+    # special case: when only one values column is specified, pandas
+    # doesn't keep it as a column. we need has_values since pandas only drops
+    # when values is explicitly passed in.
+    will_drop_values = has_values and len(values) == 1
+    no_value_cols = len(values) == 0
+    n_orig_col_levels = len(df.columns.names) if not will_drop_values else 0
+
+    # each index arg goes into a new index level
+    index_marks: List[Mark] = [
+        Map(lhs("column", name), rhs_index("row", position))
+        for position, name in enumerate(index)
     ]
+    # also highlight index columns since we're using them to group
+    index_marks += make_usings(index, "column")
+
+    # special case: result is empty dataframe with new index
+    if no_value_cols:
+        return [*index_marks]
+
+    # each column arg is appended as an index level into the columns
+    column_marks: List[Mark] = [
+        Map(
+            lhs("column", name),
+            rhs_index("column", position + n_orig_col_levels),
+        )
+        for position, name in enumerate(columns)
+    ]
+    # also highlight columns since we're using them to group
+    column_marks += make_usings(columns, "column")
+
+    # don't handle cases with multiple agg funcs since the logic is complicated
+    if has_multi_aggs:
+        return [*index_marks, *column_marks]
+
+    # internally, pandas uses a groupby + unstack to pivot so we'll follow
+    # similar logic
+    keys = [
+        label
+        for label in index + columns
+        if isinstance(label, str) and label in df.columns
+    ]
+    column_levels = list(range(len(index), len(keys)))
+    groups = util.get_groups(df.groupby(keys))
+
+    def unstack_group(labels, old_col) -> LabelPair:
+        return (
+            util.push_level(
+                labels,
+                old_col if not will_drop_values else SERIES,
+                column_levels,
+            )
+            if has_index
+            # if no index arg, there's only the column arg. pandas groups using
+            # the column arg, then *transposes* the result.
+            else (old_col, labels)
+        )
+
+    label_pairs: List[Tuple[LabelPair, LabelPair]] = [
+        ((old_row, old_col), unstack_group(labels, old_col))
+        for labels, old_rows in groups.items()
+        for old_row in old_rows
+        for old_col in values
+    ]
+    # take out cells that didn't get agg'd
+    pairs = [
+        (CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
+        for ((old_row, old_col), (new_row, new_col)) in label_pairs
+        if new_col in after_df and new_row in after_df.index
+    ]
+
+    # mapset for pivot_table() is more granular than pivot() since we want
+    # to show each individual aggregation
+    cell_sets = make_cell_sets(pairs, key=by_result_cell)
+
+    util.print_mapsets(cell_sets)
+    breakpoint()
 
     return [*index_marks, *column_marks, *cell_sets]
 
@@ -541,7 +642,7 @@ def make_subscript_comparison_marks(
     filter.
     """
     return (
-        make_highlights(labels, selection)
+        make_usings(labels, selection)
         if isinstance(subs_el, SubsComparison)
         else []
     )
@@ -646,7 +747,7 @@ def diff_rows(df1: util.HasIndex, df2: util.HasIndex, only_if_diff=True):
     special highlights.
     """
     row_matches = util.match_rows(df1, df2, only_if_diff)
-    return make_outlines(row_matches, "row")
+    return make_maps(row_matches, "row")
 
 
 def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame, only_if_diff=True):
@@ -655,7 +756,7 @@ def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame, only_if_diff=True):
     special highlights.
     """
     col_matches = util.match_cols(df1, df2, only_if_diff)
-    return make_outlines(col_matches, "column")
+    return make_maps(col_matches, "column")
 
 
 def no_marks(*args) -> List[Mark]:
@@ -669,7 +770,7 @@ def selection(axis: Axis, other=False) -> Selection:
     return "row" if axis == "index" else "column"
 
 
-def make_highlights(
+def make_usings(
     labels: Iterable, select: Selection, anchor: Anchor = "lhs"
 ) -> List[Mark]:
     """
@@ -678,7 +779,7 @@ def make_highlights(
     return [Using(AxisPos(anchor, select, label)) for label in labels]
 
 
-def make_outlines(labels: Iterable, select: Selection) -> List[Mark]:
+def make_maps(labels: Iterable, select: Selection) -> List[Mark]:
     """
     shorthand when index values don't change, which is most of the time
     """
@@ -687,19 +788,19 @@ def make_outlines(labels: Iterable, select: Selection) -> List[Mark]:
     ]
 
 
-def make_crossouts(labels: Iterable, select: Selection) -> List[Mark]:
+def make_drops(labels: Iterable, select: Selection) -> List[Mark]:
     """
     shorthand for crossouts
     """
     return [Drop(pos=lhs(select, label)) for label in labels]
 
 
-def lhs(select: Selection, label: util.Label) -> AxisPos:
+def lhs(select: Selection, label: Label) -> AxisPos:
     """shorthand for a column/row in lhs"""
     return AxisPos("lhs", select, label)
 
 
-def rhs(select: Selection, label: util.Label) -> AxisPos:
+def rhs(select: Selection, label: Label) -> AxisPos:
     """shorthand for a column/row in rhs"""
     return AxisPos("rhs", select, label)
 
@@ -724,13 +825,30 @@ def rhs_series() -> SeriesPos:
     return SeriesPos("rhs")
 
 
-def by_row(pair: Tuple[CellPos, CellPos]) -> util.Label:
+def by_row(pair: Tuple[CellPos, CellPos]) -> Label:
     """grouper for CellPos pairs. returns the row label of the original cell"""
     cell, _ = pair
     return cell.row
 
 
-def by_column(pair: Tuple[CellPos, CellPos]) -> util.Label:
+def by_column(pair: Tuple[CellPos, CellPos]) -> Label:
     """grouper for CellPos pairs. returns the col label of the original cell"""
     cell, _ = pair
     return cell.column
+
+
+def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
+    """grouper for CellPos pairs. returns the row, col pair for resulting cell"""
+    _, cell = pair
+    return cell.row, cell.column
+
+
+def make_cell_sets(
+    pairs: List[Tuple[CellPos, CellPos]], key: Callable
+) -> List[MapSet]:
+    """groups pairs by key, then makes a map set for each group"""
+    pairs = sorted(pairs, key=key)
+    return [
+        MapSet([Map(from_, to) for from_, to in g])
+        for _, g in itertools.groupby(pairs, key=key)
+    ]
