@@ -30,7 +30,7 @@ from pandas.core.groupby.groupby import GroupBy
 from typing_extensions import TypeGuard
 
 if TYPE_CHECKING:
-    from pandas_tutor.diagram import MapSet, CellPos
+    from pandas_tutor.diagram import MapSet
 
 T = TypeVar("T")
 
@@ -144,6 +144,9 @@ class CodePosition:
             else self.ch > other.ch
         )
 
+    def __str__(self):
+        return f"({self.line}:{self.ch})"
+
 
 @dataclasses.dataclass
 class CodeRange:
@@ -188,6 +191,9 @@ class CodeRange:
     def __mod__(self, pos: CodePosition):
         """self % pos is the range relative to the starting line of pos"""
         return CodeRange(self.start % pos, self.end % pos)
+
+    def __str__(self):
+        return f"{self.start} -> {self.end}"
 
 
 ##############################################################################
@@ -247,7 +253,7 @@ def match_rows(df1: HasIndex, df2: HasIndex, only_if_diff=True) -> pd.Index:
     # Index([2])
     matches = df1.index.intersection(df2.index)  # type: ignore
     return (
-        pd.Index([])
+        pd.Index([], dtype="int64")
         if (len(matches) == len(df1.index) and only_if_diff)
         else matches
     )
@@ -262,7 +268,7 @@ def match_cols(
     """
     matches = df1.columns.intersection(df2.columns)
     return (
-        pd.Index([])
+        pd.Index([], dtype="int64")
         if (len(matches) == len(df1.columns) and only_if_diff)
         else matches
     )

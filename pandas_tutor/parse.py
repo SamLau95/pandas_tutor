@@ -28,6 +28,7 @@ from .parse_nodes import (
     ApplyCall,
     AssignCall,
     Axis,
+    Call,
     ChainStatement,
     ChainStep,
     DropCall,
@@ -112,8 +113,13 @@ is_argument = m.Arg() | m.SubscriptElement()
 is_attribute_call = m.Call(func=m.Attribute())
 
 
-def fn_matcher(fn_name: str):
-    return m.Call(func=m.Attribute(attr=m.Name(fn_name)))
+def matches(call_cls: t.Type[Call]) -> m.Call:
+    # returns libcst matcher from a parse_node.Call subclass
+    return m.Call(func=m.Attribute(attr=m.Name(call_cls.fn_name)))
+
+
+# set of all parsed function calls
+parsed_calls = {cls.fn_name for cls in Call.__subclasses__()}
 
 
 def fn_name(call: cst.Call):
@@ -121,34 +127,9 @@ def fn_name(call: cst.Call):
     return func.attr.value
 
 
-is_sort_values = fn_matcher("sort_values")
-is_drop = fn_matcher("drop")
-is_rename = fn_matcher("rename")
-is_head_or_tail = fn_matcher("head") | fn_matcher("tail")
-is_groupby = fn_matcher("groupby")
-is_apply = fn_matcher("apply")
-is_assign = fn_matcher("assign")
-is_reset_index = fn_matcher("reset_index")
-is_unstack = fn_matcher("unstack")
-is_stack = fn_matcher("stack")
-is_pivot = fn_matcher("pivot")
-is_pivot_table = fn_matcher("pivot_table")
+def is_parsed_call(call: cst.Call) -> bool:
+    return fn_name(call) in parsed_calls
 
-# make sure to update this whenever we add a new call to the section above
-is_parsed_call = (
-    is_sort_values
-    | is_drop
-    | is_rename
-    | is_head_or_tail
-    | is_groupby
-    | is_apply
-    | is_assign
-    | is_reset_index
-    | is_unstack
-    | is_stack
-    | is_pivot
-    | is_pivot_table
-)
 
 is_loc_iloc = m.Subscript(
     value=m.Attribute(attr=m.Name("loc") | m.Name("iloc"))
@@ -317,8 +298,8 @@ class ChainParser(ParserBase):
         when we don't handle the function, or if the function has weird
         arguments that we can't parse.
         """
-        fn_name = cst_node.func.attr.value
-        step = self.make_call_node(PassThroughCall, cst_node, fn_name=fn_name)
+        func = cst_node.func.attr.value
+        step = self.make_call_node(PassThroughCall, cst_node, func=func)
         self._append(step)
 
     # for things in a chain, we append to chain on _leaving_ a node because of
@@ -339,7 +320,7 @@ class ChainParser(ParserBase):
 
     @m.leave(is_attribute_call)
     def make_pass_through_call(self, cst_node):
-        if m.matches(cst_node, is_parsed_call):
+        if is_parsed_call(cst_node):
             return
 
         # special case: assume any function called on a groupby is an
@@ -355,7 +336,7 @@ class ChainParser(ParserBase):
 
         self.fallback_call(cst_node)
 
-    @m.leave(is_head_or_tail)
+    @m.leave(matches(HeadCall) | matches(TailCall))
     def make_head_or_tail(self, cst_node):
         name = fn_name(cst_node)
         node = self.make_call_node(
@@ -363,7 +344,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_sort_values)
+    @m.leave(matches(SortValuesCall))
     def make_sort_values_call(self, cst_node):
         label_expr = self.get_arg_code(cst_node.args, 0, "by")
         axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
@@ -374,7 +355,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_drop)
+    @m.leave(matches(DropCall))
     def make_drop_call(self, cst_node):
         labels = self.get_arg_code(cst_node.args, 0, "labels")
         axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
@@ -393,7 +374,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_rename)
+    @m.leave(matches(RenameCall))
     def make_rename_call(self, cst_node):
         mapper = get_arg(cst_node.args, 0, "mapper")
         index = get_arg(cst_node.args, 1, "index")
@@ -422,7 +403,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_apply)
+    @m.leave(matches(ApplyCall))
     def make_apply(self, cst_node):
         # axis only available for dataframes...for series, arg 1 is some other
         # arg that we don't care about so we should be careful here
@@ -432,7 +413,7 @@ class ChainParser(ParserBase):
         node = self.make_call_node(ApplyCall, cst_node, axis=axis)
         self._append(node)
 
-    @m.leave(is_assign)
+    @m.leave(matches(AssignCall))
     def make_assign(self, cst_node: cst.Call):
         # each kwarg is a new column
         new_col_labels = [
@@ -446,7 +427,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_groupby)
+    @m.leave(matches(GroupByCall))
     def make_groupby(self, cst_node):
         axis_arg = self.get_arg_code(cst_node.args, 1, "axis")
         axis = make_axis(axis_arg) if axis_arg is not None else "index"
@@ -454,7 +435,7 @@ class ChainParser(ParserBase):
         node = self.make_call_node(GroupByCall, cst_node, axis=axis)
         self._append(node)
 
-    @m.leave(is_reset_index)
+    @m.leave(matches(ResetIndexCall))
     def make_reset_index(self, cst_node):
         level_expr = self.get_arg_code(cst_node.args, 0, "level")
         drop_expr = self.get_arg_code(cst_node.args, 1, "drop")
@@ -467,7 +448,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_unstack)
+    @m.leave(matches(UnstackCall))
     def make_unstack(self, cst_node):
         level_expr = self.get_arg_code(cst_node.args, 0, "level")
 
@@ -478,7 +459,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_stack)
+    @m.leave(matches(StackCall))
     def make_stack(self, cst_node):
         level_expr = self.get_arg_code(cst_node.args, 0, "level")
 
@@ -489,7 +470,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_pivot)
+    @m.leave(matches(PivotCall))
     def make_pivot(self, cst_node: cst.Call):
         index_expr = self.get_arg_code(cst_node.args, 0, "index")
         columns_expr = self.get_arg_code(cst_node.args, 1, "columns")
@@ -504,7 +485,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    @m.leave(is_pivot_table)
+    @m.leave(matches(PivotTableCall))
     def make_pivot_table(self, cst_node: cst.Call):
         values_expr = self.get_arg_code(cst_node.args, 0, "values")
         index_expr = self.get_arg_code(cst_node.args, 1, "index")
@@ -728,11 +709,6 @@ class LoggingVisitor(m.MatcherDecoratableVisitor):
         #       f'-> ({end.line}, {end.column})')
 
 
-test = """
-df.loc[1, 'Name']
-""".strip()
-
-
 def test_logger(code):
     print(code)
     print("\n-----\n")
@@ -752,13 +728,3 @@ def test_parser(code):
     sam = PandasParser(tree, positions)
     _ = with_meta.visit(sam)
     return sam.root
-
-
-if __name__ == "__main__":
-    from pathlib import Path
-
-    test = (
-        Path(__file__).parent / "tests/e2e_golden/sort_values_01.py"
-    ).read_text()
-    print(parse_as_json(test))
-    # log_test()

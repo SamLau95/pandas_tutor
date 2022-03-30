@@ -5,7 +5,9 @@ just for myself
 
 import prettyprinter  # type: ignore
 from prettyprinter import cpprint  # type: ignore
-from prettyprinter.prettyprinter import IMPLICIT_MODULES  # type: ignore
+from prettyprinter.prettyprinter import IMPLICIT_MODULES
+
+from pandas_tutor.parse_nodes import Call, SortValuesCall  # type: ignore
 
 from .parse import parse, test_logger, test_parser
 from .run import run
@@ -19,7 +21,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "e2e_golden/pivot_empty_01"
+file_to_read = "parse_golden/groupby_aggs"
 
 
 def p(obj):
@@ -30,7 +32,7 @@ if __name__ == "__main__":
     from pathlib import Path
 
     code = (Path(__file__).parent / f"tests/{file_to_read}.py").read_text()
-    # root = test_parser(code)
+    root = test_parser(code)
     # test_logger(code)
     #     print(code)
     #     print('\n--------------\n')
@@ -42,9 +44,9 @@ if __name__ == "__main__":
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
 
-    # p(root)
+    p(root)
     # p(run(root))
-    spec = make_tutor_spec(code)
-    p(spec)
+    # spec = make_tutor_spec(code)
+    # p(spec)
 
     print("\n---------------------------------------------------------\n")

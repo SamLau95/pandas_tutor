@@ -5,15 +5,15 @@ from __future__ import annotations
 
 import dataclasses
 import json
-import typing as t
 from dataclasses import field
+from typing import ClassVar, List, NewType, Optional, TypeVar, Union
 
 from .util import Axis, CodeRange, Slicer
 
-T = t.TypeVar("T")
+T = TypeVar("T")
 
 # Use a distinct type to distinguish between strings that can be eval'd
-RawCode = t.NewType("RawCode", str)
+RawCode = NewType("RawCode", str)
 
 
 class _ParseTreeEncoder(json.JSONEncoder):
@@ -36,7 +36,7 @@ class Base:
         return dataclasses.asdict(self)
 
     @classmethod
-    def to_json(cls, items: t.Union[t.List[Base], Base]):
+    def to_json(cls, items: Union[List[Base], Base]):
         return json.dumps(items, indent=2, cls=_ParseTreeEncoder)
 
 
@@ -44,7 +44,7 @@ class Base:
 class ParsedModule(Base):
     """root of parse tree"""
 
-    statements: t.List[Statement]
+    statements: List[Statement]
 
 
 @dataclasses.dataclass
@@ -59,10 +59,10 @@ class ChainStatement(Base):
     """node that we have special parse rules for, like function chains"""
 
     # TODO: should we distinguish between Assign and Exprs?
-    chain: t.List[ChainStep]
+    chain: List[ChainStep]
 
 
-Statement = t.Union[VerbatimStatement, ChainStatement]
+Statement = Union[VerbatimStatement, ChainStatement]
 
 
 @dataclasses.dataclass
@@ -98,7 +98,8 @@ class StartOfChain(ChainStep):
 class Call(ChainStep):
     """base class used for typing"""
 
-    pass
+    # used when parsing to match functions to Call subclasses
+    fn_name: ClassVar
 
 
 def evals_into(attr: str):
@@ -170,7 +171,8 @@ class PassThroughCall(Call):
     and keep going
     """
 
-    fn_name: str
+    fn_name = "PASS_THROUGH"
+    func: str
 
 
 @dataclasses.dataclass
@@ -204,7 +206,9 @@ class AggCall(Call):
     g.std()
     """
 
-    fn_name = "agg"
+    # don't match the actual "agg()" call since we have a special case in the
+    # parser for aggregations
+    fn_name = "AGG"
 
     @classmethod
     def from_passthrough_call(cls, call: PassThroughCall):
@@ -231,7 +235,7 @@ class AssignCall(Call):
 
     fn_name = "assign"
 
-    new_col_labels: t.List[str]
+    new_col_labels: List[str]
 
 
 @dataclasses.dataclass
@@ -243,8 +247,8 @@ class DropCall(Call):
 
     fn_name = "drop"
 
-    col_expr: t.Optional[RawCode] = evals_into("col_labels")
-    row_expr: t.Optional[RawCode] = evals_into("row_labels")
+    col_expr: Optional[RawCode] = evals_into("col_labels")
+    row_expr: Optional[RawCode] = evals_into("row_labels")
 
 
 @dataclasses.dataclass
@@ -257,8 +261,8 @@ class ResetIndexCall(Call):
 
     fn_name = "reset_index"
 
-    level_expr: t.Optional[RawCode] = evals_into("level")
-    drop_expr: t.Optional[RawCode] = evals_into("drop")
+    level_expr: Optional[RawCode] = evals_into("level")
+    drop_expr: Optional[RawCode] = evals_into("drop")
 
 
 @dataclasses.dataclass
@@ -272,7 +276,7 @@ class UnstackCall(Call):
 
     fn_name = "unstack"
 
-    level_expr: t.Optional[RawCode] = evals_into("level")
+    level_expr: Optional[RawCode] = evals_into("level")
 
 
 @dataclasses.dataclass
@@ -286,7 +290,7 @@ class StackCall(Call):
 
     fn_name = "stack"
 
-    level_expr: t.Optional[RawCode] = evals_into("level")
+    level_expr: Optional[RawCode] = evals_into("level")
 
 
 @dataclasses.dataclass
@@ -297,9 +301,9 @@ class PivotCall(Call):
 
     fn_name = "pivot"
 
-    index_expr: t.Optional[RawCode] = evals_into("index")
-    columns_expr: t.Optional[RawCode] = evals_into("columns")
-    values_expr: t.Optional[RawCode] = evals_into("values")
+    index_expr: Optional[RawCode] = evals_into("index")
+    columns_expr: Optional[RawCode] = evals_into("columns")
+    values_expr: Optional[RawCode] = evals_into("values")
 
 
 @dataclasses.dataclass
@@ -314,10 +318,10 @@ class PivotTableCall(Call):
 
     fn_name = "pivot_table"
 
-    index_expr: t.Optional[RawCode] = evals_into("index")
-    columns_expr: t.Optional[RawCode] = evals_into("columns")
-    values_expr: t.Optional[RawCode] = evals_into("values")
-    aggfunc_expr: t.Optional[RawCode] = evals_into("aggfunc")
+    index_expr: Optional[RawCode] = evals_into("index")
+    columns_expr: Optional[RawCode] = evals_into("columns")
+    values_expr: Optional[RawCode] = evals_into("values")
+    aggfunc_expr: Optional[RawCode] = evals_into("aggfunc")
 
 
 ##############################################################################
@@ -335,7 +339,7 @@ class Subscript(ChainStep):
     slicer: Slicer
 
     slice1: SubscriptEl
-    slice2: t.Optional[SubscriptEl]
+    slice2: Optional[SubscriptEl]
 
 
 @dataclasses.dataclass
@@ -365,7 +369,7 @@ class SubsComparison(Base):
 
     # this is a list of code expressions that will each eval to one-or-more
     # labels. when parsing, we need to pull these out of each boolean mask
-    label_exprs: t.List[RawCode] = field(
+    label_exprs: List[RawCode] = field(
         metadata=dict(evals_into="{attr}_filter_labels")
     )
 
@@ -388,7 +392,7 @@ class SubsEval(Base):
     expr: RawCode = field(metadata=dict(evals_into="{attr}_values"))
 
 
-SubscriptEl = t.Union[SubsSlice, SubsComparison, SubsEval]
+SubscriptEl = Union[SubsSlice, SubsComparison, SubsEval]
 
 ##############################################################################
 # Errors
@@ -416,4 +420,4 @@ class EvalError(ChainStep):
         return cls(code=node.code, location=node.location)
 
 
-ParseResult = t.Union[ParsedModule, ParseSyntaxError]
+ParseResult = Union[ParsedModule, ParseSyntaxError]
