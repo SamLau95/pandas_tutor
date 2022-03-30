@@ -477,7 +477,6 @@ def mark_for_pivot_table(
     args = after.args
 
     has_index = "index" in args
-    has_columns = "columns" in args
     has_values = "values" in args
     index: List[Label] = util.listify(args.get("index", []))
     columns: List[Label] = util.listify(args.get("columns", []))
@@ -567,9 +566,6 @@ def mark_for_pivot_table(
     # mapset for pivot_table() is more granular than pivot() since we want
     # to show each individual aggregation
     cell_sets = make_cell_sets(pairs, key=by_result_cell)
-
-    util.print_mapsets(cell_sets)
-    breakpoint()
 
     return [*index_marks, *column_marks, *cell_sets]
 

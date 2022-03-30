@@ -1,0 +1,244 @@
+{
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport numpy as np\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nA,B,C,D,E\nfoo,one,small,1,2\nfoo,one,large,2,4\nfoo,one,large,2,5\nfoo,two,small,3,5\nfoo,two,small,3,6\nbar,one,large,4,6\nbar,one,small,5,8\nbar,two,small,6,9\nbar,two,large,7,9\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# multi-agg, unsupported\ndf.pivot_table(\n    values=[\"D\", \"E\"],\n    index=[\"A\", \"C\"],\n    aggfunc={\"D\": np.mean, \"E\": [min, max, np.mean]},\n)\n",
+  "explanation": [
+    {
+      "type": "PivotTableCall",
+      "code_step": "df.pivot_table(\n    values=[\"D\", \"E\"],\n    index=[\"A\", \"C\"],\n    aggfunc={\"D\": np.mean, \"E\": [min, max, np.mean]},\n)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 4,
+          "ch": 1
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "C"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "C"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          },
+          "data": [
+            [
+              "foo",
+              "one",
+              "small",
+              1,
+              2
+            ],
+            [
+              "foo",
+              "one",
+              "large",
+              2,
+              4
+            ],
+            [
+              "foo",
+              "one",
+              "large",
+              2,
+              5
+            ],
+            [
+              "foo",
+              "two",
+              "small",
+              3,
+              5
+            ],
+            [
+              "foo",
+              "two",
+              "small",
+              3,
+              6
+            ],
+            [
+              "bar",
+              "one",
+              "large",
+              4,
+              6
+            ],
+            [
+              "bar",
+              "one",
+              "small",
+              5,
+              8
+            ],
+            [
+              "bar",
+              "two",
+              "small",
+              6,
+              9
+            ],
+            [
+              "bar",
+              "two",
+              "large",
+              7,
+              9
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null,
+              null
+            ],
+            "labels": [
+              [
+                "D",
+                "mean"
+              ],
+              [
+                "E",
+                "max"
+              ],
+              [
+                "E",
+                "mean"
+              ],
+              [
+                "E",
+                "min"
+              ]
+            ]
+          },
+          "index": {
+            "names": [
+              "A",
+              "C"
+            ],
+            "labels": [
+              [
+                "bar",
+                "large"
+              ],
+              [
+                "bar",
+                "small"
+              ],
+              [
+                "foo",
+                "large"
+              ],
+              [
+                "foo",
+                "small"
+              ]
+            ]
+          },
+          "data": [
+            [
+              5.5,
+              9.0,
+              7.5,
+              6.0
+            ],
+            [
+              5.5,
+              9.0,
+              8.5,
+              8.0
+            ],
+            [
+              2.0,
+              5.0,
+              4.5,
+              4.0
+            ],
+            [
+              2.3333333333333335,
+              6.0,
+              4.333333333333333,
+              2.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
