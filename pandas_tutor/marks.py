@@ -465,7 +465,7 @@ def mark_for_pivot(
 
 # df.pivot(index='foo', columns='bar', values='baz')
 def mark_for_pivot_table(
-    step: PivotCall, before: EvalResult, after: EvalResult
+    step: PivotTableCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
     # if index=[], pandas does the weird transpose + stack thing into a series
     # which we won't try to handle
