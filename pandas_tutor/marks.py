@@ -328,7 +328,7 @@ def mark_for_unstack(
     levels = [util.level_number(df.index, level) for level in levels]
 
     columns = df.columns if util.is_dataframe(df) else pd.Index([util.SERIES])
-    n_orig_levels = len(columns)
+    n_orig_levels = len(columns) if util.is_dataframe(df) else 0
 
     index_marks: List[Mark] = [
         Map(
@@ -495,8 +495,9 @@ def mark_for_pivot_table(
 
     # special case: when only one values column is specified, pandas
     # doesn't keep it as a column. we need has_values since pandas only drops
-    # when values is explicitly passed in.
-    will_drop_values = has_values and len(values) == 1
+    # when values is explicitly passed in. also drop values when only column
+    # levels passed in
+    will_drop_values = (has_values and len(values) == 1) or not has_index
     no_value_cols = len(values) == 0
     n_orig_col_levels = len(df.columns.names) if not will_drop_values else 0
 

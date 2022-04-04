@@ -841,7 +841,7 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 1
+            "level": 0
           }
         },
         {
