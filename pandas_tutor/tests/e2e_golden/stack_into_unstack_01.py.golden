@@ -1191,7 +1191,7 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 2
+            "level": 1
           }
         },
         {
@@ -1546,7 +1546,7 @@
             "type": "index_level",
             "anchor": "rhs",
             "select": "column",
-            "level": 4
+            "level": 2
           }
         },
         {

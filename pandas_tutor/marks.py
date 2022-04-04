@@ -328,7 +328,7 @@ def mark_for_unstack(
     levels = [util.level_number(df.index, level) for level in levels]
 
     columns = df.columns if util.is_dataframe(df) else pd.Index([util.SERIES])
-    n_orig_levels = len(columns) if util.is_dataframe(df) else 0
+    n_orig_levels = len(columns.names) if util.is_dataframe(df) else 0
 
     index_marks: List[Mark] = [
         Map(
