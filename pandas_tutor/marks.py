@@ -835,7 +835,9 @@ def by_column(pair: Tuple[CellPos, CellPos]) -> Label:
 
 
 def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
-    """grouper for CellPos pairs. returns the row, col pair for resulting cell"""
+    """
+    grouper for CellPos pairs. returns the row, col pair for resulting cell
+    """
     _, cell = pair
     return cell.row, cell.column
 

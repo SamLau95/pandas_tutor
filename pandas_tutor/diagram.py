@@ -5,16 +5,33 @@ has dataclass definitions for final JSON output.
 from __future__ import annotations
 
 import dataclasses
-from traceback import TracebackException
-import typing as t
 from dataclasses import field
-import pandas as pd
+from traceback import TracebackException
+from typing import (
+    Any,
+    List,
+    Literal,
+    Union,
+    Tuple,
+)
 
+import pandas as pd
 import simplejson as json
 
 from .parse_nodes import ParseSyntaxError
 from .run import RuntimeErrorResult
-from .util import SERIES, CodePosition, CodeRange, JSONScalar, Label, unwrap
+from .util import (
+    SERIES,
+    CodePosition,
+    CodeRange,
+    JSONScalar,
+    Label,
+    df_data,
+    index_data,
+    json_scalar,
+    series_data,
+    unwrap,
+)
 
 
 @dataclasses.dataclass
@@ -40,10 +57,10 @@ def _diagram_as_dict(dclass):
     return res
 
 
-def encode_dataclasses(obj: t.Any):
+def encode_dataclasses(obj: Any):
     if dataclasses.is_dataclass(obj):
         return dataclasses.asdict(obj, dict_factory=_diagram_as_dict)
-    return obj
+    return json_scalar(obj)
 
 
 ##############################################################################
@@ -56,7 +73,7 @@ class Diagram:
     type: str
     code_step: str
     fragment: CodeRange
-    marks: t.List[Mark]
+    marks: List[Mark]
     data: DataPair
 
 
@@ -108,23 +125,23 @@ class RuntimeErrorInChain(RuntimeErrorOutput):
     type: str = field(default="RuntimeErrorInChain", init=False, repr=False)
 
 
-Explanation = t.List[t.Union[Diagram, ErrorOutput]]
+Explanation = List[Union[Diagram, ErrorOutput]]
 
 ##############################################################################
 # TablePos
 ##############################################################################
 
 # the table we're pointing to
-Anchor = t.Literal["lhs", "rhs"]
+Anchor = Literal["lhs", "rhs"]
 
 # the axis we're pointing to
-Selection = t.Literal["column", "row"]
+Selection = Literal["column", "row"]
 
 # the index level we're pointing to. None if index is not multi-level
-IndexLevel = t.Union[None, int]
+IndexLevel = Union[None, int]
 
 # each TablePos object is serialized as one of these
-TablePosType = t.Literal["axis", "series", "index_level", "cell"]
+TablePosType = Literal["axis", "series", "index_level", "cell"]
 
 
 @dataclasses.dataclass
@@ -206,7 +223,7 @@ class CellPos(TablePos):
 ##############################################################################
 
 # each Mark object is serialized as one of these
-MarkType = t.Literal["using", "map", "map_set", "drop"]
+MarkType = Literal["using", "map", "map_set", "drop"]
 
 
 @dataclasses.dataclass
@@ -251,7 +268,7 @@ class MapSet(Mark):
     cell-to-cell mappings).
     """
 
-    maps: t.List[Map]
+    maps: List[Map]
 
     def __post_init__(self):
         self.type = "map_set"
@@ -271,14 +288,14 @@ class Drop(Mark):
 # DataPair and DataFrames
 ##############################################################################
 
-PrevRHS = t.Literal["prev_rhs"]
-NoRHS = t.Literal["no_rhs"]
+PrevRHS = Literal["prev_rhs"]
+NoRHS = Literal["no_rhs"]
 
 
 @dataclasses.dataclass
 class DataPair:
-    lhs: t.Union[DataSpec, PrevRHS]
-    rhs: t.Union[DataSpec, NoRHS]
+    lhs: Union[DataSpec, PrevRHS]
+    rhs: Union[DataSpec, NoRHS]
 
 
 @dataclasses.dataclass
@@ -293,15 +310,15 @@ class Index:
     """represents a pandas index in the serialized data"""
 
     # names of each index level. unnamed levels are None
-    names: t.Tuple
+    names: Tuple
 
     # for a multi-index, the labels are a list of tuples. this matches the
     # behavior of pd.Index.tolist()
-    labels: t.List[Label]
+    labels: List[JSONScalar]
 
     @classmethod
     def from_pd(cls, index: pd.Index) -> Index:
-        return cls(names=tuple(index.names), labels=index.tolist())
+        return cls(names=tuple(index.names), labels=index_data(index))
 
 
 @dataclasses.dataclass
@@ -309,14 +326,29 @@ class DFSpec(DataSpec):
     type: str = field(default="DataFrame", init=False, repr=False)
     columns: Index
     index: Index
-    data: t.List[t.List[JSONScalar]]
+    data: List[List[JSONScalar]]
+
+    @classmethod
+    def from_pd(cls, df: pd.DataFrame) -> DFSpec:
+        return cls(
+            columns=Index.from_pd(df.columns),
+            index=Index.from_pd(df.index),
+            data=df_data(df),
+        )
 
 
 @dataclasses.dataclass
 class SeriesSpec(DataSpec):
     type: str = field(default="Series", init=False, repr=False)
     index: Index
-    data: t.List[JSONScalar]
+    data: List[JSONScalar]
+
+    @classmethod
+    def from_pd(cls, series: pd.Series) -> SeriesSpec:
+        return cls(
+            index=Index.from_pd(series.index),
+            data=series_data(series),
+        )
 
 
 @dataclasses.dataclass
@@ -334,8 +366,8 @@ class SeriesGroupBySpec(SeriesSpec):
 @dataclasses.dataclass
 class GroupData:
     # grouping cols, if we can pull them out
-    columns: t.List[Label]
-    groups: t.List[Group]
+    columns: List[Label]
+    groups: List[Group]
 
 
 @dataclasses.dataclass
@@ -350,7 +382,7 @@ class Group:
     name: list
 
     # labels for all rows the group contains
-    labels: t.List[Label]
+    labels: List[Label]
 
 
 @dataclasses.dataclass

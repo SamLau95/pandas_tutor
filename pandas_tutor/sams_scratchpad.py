@@ -6,6 +6,8 @@ just for myself
 import prettyprinter  # type: ignore
 from prettyprinter import cpprint  # type: ignore
 from prettyprinter.prettyprinter import IMPLICIT_MODULES
+import simplejson as json
+from pandas_tutor.diagram import encode_dataclasses
 
 from pandas_tutor.parse_nodes import Call, SortValuesCall  # type: ignore
 
@@ -21,7 +23,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "parse_golden/groupby_aggs"
+file_to_read = "pg_wreck_it/df-date-indexer"
 
 
 def p(obj):
@@ -44,9 +46,9 @@ if __name__ == "__main__":
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
 
-    p(root)
+    # p(root)
     # p(run(root))
-    # spec = make_tutor_spec(code)
-    # p(spec)
+    spec = make_tutor_spec(code)
+    p(spec)
 
     print("\n---------------------------------------------------------\n")

@@ -438,11 +438,15 @@ def json_scalar(obj: Any) -> JSONScalar:
     return obj
 
 
-def prep_series_data(series: pd.Series) -> List[JSONScalar]:
+def index_data(index: pd.Index) -> List[JSONScalar]:
+    return [json_scalar(val) for val in index.to_list()]
+
+
+def series_data(series: pd.Series) -> List[JSONScalar]:
     return [json_scalar(val) for val in series.to_numpy()]
 
 
-def prep_df_data(df: pd.DataFrame) -> List[List[JSONScalar]]:
+def df_data(df: pd.DataFrame) -> List[List[JSONScalar]]:
     return [[json_scalar(val) for val in row] for row in df.to_numpy()]
 
 
