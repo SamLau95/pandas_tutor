@@ -12,11 +12,7 @@ from typing import (
     List,
     Literal,
     Union,
-    Dict,
-    Optional,
     Tuple,
-    TypeVar,
-    Callable,
 )
 
 import pandas as pd
@@ -28,15 +24,10 @@ from .util import (
     SERIES,
     CodePosition,
     CodeRange,
-    DataFrameGroupBy,
     JSONScalar,
     Label,
-    SeriesGroupBy,
     df_data,
-    get_groups,
-    grouping_labels,
     index_data,
-    is_list_like,
     json_scalar,
     series_data,
     unwrap,
