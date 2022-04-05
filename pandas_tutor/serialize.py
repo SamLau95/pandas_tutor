@@ -115,18 +115,9 @@ def serialize_pair(
 
 def serialize_step_val(step: EvalResult) -> DataSpec:
     if isinstance(step, DFResult):
-        df = step.val
-        return DFSpec(
-            columns=Index.from_pd(df.columns),
-            index=Index.from_pd(df.index),
-            data=util.prep_df_data(df),
-        )
+        return DFSpec.from_pd(step.val)
     elif isinstance(step, SeriesResult):
-        series = step.val
-        return SeriesSpec(
-            index=Index.from_pd(series.index),
-            data=util.prep_series_data(series),
-        )
+        return SeriesSpec.from_pd(step.val)
     elif isinstance(step, GroupbyResult):
         return serialize_groupby(step.val)
     elif isinstance(step, SeriesGroupbyResult):
@@ -161,7 +152,7 @@ def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:
     return GroupBySpec(
         columns=Index.from_pd(df.columns),
         index=Index.from_pd(df.index),
-        data=util.prep_df_data(df),
+        data=util.df_data(df),
         group_data=group_data,
     )
 
@@ -182,7 +173,7 @@ def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
     group_data = GroupData(columns=col_names, groups=groups)
     return SeriesGroupBySpec(
         index=Index.from_pd(series.index),
-        data=util.prep_series_data(series),
+        data=util.series_data(series),
         group_data=group_data,
     )
 
