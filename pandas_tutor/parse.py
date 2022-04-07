@@ -34,6 +34,7 @@ from .parse_nodes import (
     DropCall,
     GroupByCall,
     HeadCall,
+    MeltCall,
     ParseResult,
     ParsedModule,
     ParseSyntaxError,
@@ -499,6 +500,27 @@ class ChainParser(ParserBase):
             columns_expr=columns_expr,
             values_expr=values_expr,
             aggfunc_expr=aggfunc_expr,
+        )
+        self._append(node)
+
+    @m.leave(matches(MeltCall))
+    def make_melt(self, cst_node: cst.Call):
+        id_vars_expr = self.get_arg_code(cst_node.args, 0, "id_vars")
+        value_vars_expr = self.get_arg_code(cst_node.args, 1, "value_vars")
+        var_name_expr = self.get_arg_code(cst_node.args, 2, "var_name")
+        value_name_expr = self.get_arg_code(cst_node.args, 3, "value_name")
+        col_level_expr = self.get_arg_code(cst_node.args, 4, "col_level")
+        ignore_index_expr = self.get_arg_code(cst_node.args, 5, "ignore_index")
+
+        node = self.make_call_node(
+            MeltCall,
+            cst_node,
+            id_vars_expr=id_vars_expr,
+            value_vars_expr=value_vars_expr,
+            var_name_expr=var_name_expr,
+            value_name_expr=value_name_expr,
+            col_level_expr=col_level_expr,
+            ignore_index_expr=ignore_index_expr,
         )
         self._append(node)
 

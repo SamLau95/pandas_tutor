@@ -32,6 +32,7 @@ from .parse_nodes import (
     EvalError,
     GroupByCall,
     HeadCall,
+    MeltCall,
     PassThroughCall,
     PivotCall,
     PivotTableCall,
@@ -95,6 +96,8 @@ def make_marks(
         return mark_for_pivot(step, before, after)
     elif isinstance(step, PivotTableCall):
         return mark_for_pivot_table(step, before, after)
+    elif isinstance(step, MeltCall):
+        return mark_for_melt(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -571,6 +574,52 @@ def mark_for_pivot_table(
     return [*index_marks, *column_marks, *cell_sets]
 
 
+def mark_for_melt(
+    step: MeltCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+    df = before.val
+    args = after.args
+
+    # don't handle multi-index melt since it adds a lot of complexity
+    if util.is_multi(df.columns):
+        return []
+
+    id_vars: List[Label] = util.listify(args.get("id_vars", []))
+    # default values arg is all leftover columns
+    value_vars: List[Label] = util.listify(
+        args.get("value_vars", df.columns.drop(id_vars))
+    )
+    var_name = cast(
+        str,
+        args.get(
+            "var_name",
+            df.columns.name if df.columns.name is not None else "variable",
+        ),
+    )
+    value_name = cast(str, args.get("value_name", "value"))
+    ignore_index = args.get("ignore_index", True)
+
+    # multi-index melt adds a lot of complexity, and ignore_index=False
+    # duplicates index labels so we don't handle it
+    if util.is_multi(df.columns) or not ignore_index:
+        return []
+
+    pairs = []
+    for (row_num, row) in enumerate(df.index):
+        for (col_num, col) in enumerate(value_vars):
+            new_row = len(df) * col_num + row_num
+            pairs.append(
+                (CellPos("lhs", row, col), CellPos("rhs", new_row, var_name))
+            )
+            pairs.append(
+                (CellPos("lhs", row, col), CellPos("rhs", new_row, value_name))
+            )
+
+    return make_cell_sets(pairs, key=by_column)
+
+
 # handler for all subscripts, like:
 #
 # df.loc[1:5, ['Name', 'Count']]
@@ -844,7 +893,7 @@ def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
 
 def make_cell_sets(
     pairs: List[Tuple[CellPos, CellPos]], key: Callable
-) -> List[MapSet]:
+) -> List[Mark]:
     """groups pairs by key, then makes a map set for each group"""
     pairs = sorted(pairs, key=key)
     return [

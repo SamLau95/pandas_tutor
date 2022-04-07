@@ -324,6 +324,24 @@ class PivotTableCall(Call):
     aggfunc_expr: Optional[RawCode] = evals_into("aggfunc")
 
 
+@dataclasses.dataclass
+class MeltCall(Call):
+    """
+    df.melt(id_vars=['A'], value_vars=['B'])
+    df.melt(id_vars=['A'], value_vars=['B'],
+            var_name='myVarname', value_name='myValname')
+    """
+
+    fn_name = "melt"
+
+    id_vars_expr: Optional[RawCode] = evals_into("id_vars")
+    value_vars_expr: Optional[RawCode] = evals_into("value_vars")
+    var_name_expr: Optional[RawCode] = evals_into("var_name")
+    value_name_expr: Optional[RawCode] = evals_into("value_name")
+    col_level_expr: Optional[RawCode] = evals_into("col_level")
+    ignore_index_expr: Optional[RawCode] = evals_into("ignore_index")
+
+
 ##############################################################################
 # Subscripts
 ##############################################################################

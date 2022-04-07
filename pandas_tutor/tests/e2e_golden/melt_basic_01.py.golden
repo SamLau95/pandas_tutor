@@ -1,0 +1,311 @@
+{
+  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.melt.html\nimport pandas as pd\n\ndf = pd.DataFrame({'A': {0: 'a', 1: 'b', 2: 'c'},\n                   'B': {0: 1, 1: 3, 2: 5},\n                   'C': {0: 2, 1: 4, 2: 6}})\n\ndf.melt(id_vars='A', value_vars=['B', 'C'])\n",
+  "explanation": [
+    {
+      "type": "MeltCall",
+      "code_step": "df.melt(id_vars='A', value_vars=['B', 'C'])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 43
+        }
+      },
+      "marks": [
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "B"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 0,
+                "column": "variable"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "B"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 0,
+                "column": "value"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "B"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 1,
+                "column": "variable"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "B"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 1,
+                "column": "value"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "B"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 2,
+                "column": "variable"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "B"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 2,
+                "column": "value"
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "C"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 3,
+                "column": "variable"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 0,
+                "column": "C"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 3,
+                "column": "value"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "C"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 4,
+                "column": "variable"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 1,
+                "column": "C"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 4,
+                "column": "value"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "C"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 5,
+                "column": "variable"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": 2,
+                "column": "C"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": 5,
+                "column": "value"
+              }
+            }
+          ]
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2
+            ]
+          },
+          "data": [
+            [
+              "a",
+              1,
+              2
+            ],
+            [
+              "b",
+              3,
+              4
+            ],
+            [
+              "c",
+              5,
+              6
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "A",
+              "variable",
+              "value"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "data": [
+            [
+              "a",
+              "B",
+              1
+            ],
+            [
+              "b",
+              "B",
+              3
+            ],
+            [
+              "c",
+              "B",
+              5
+            ],
+            [
+              "a",
+              "C",
+              2
+            ],
+            [
+              "b",
+              "C",
+              4
+            ],
+            [
+              "c",
+              "C",
+              6
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
