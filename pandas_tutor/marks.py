@@ -617,10 +617,7 @@ def mark_for_melt(
                 (CellPos("lhs", row, col), CellPos("rhs", new_row, value_name))
             )
 
-    cell_sets = make_cell_sets(pairs, key=by_column)
-    util.print_mapsets(cell_sets)
-    breakpoint()
-    return cast(List[Mark], cell_sets)
+    return make_cell_sets(pairs, key=by_column)
 
 
 # handler for all subscripts, like:
@@ -896,7 +893,7 @@ def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
 
 def make_cell_sets(
     pairs: List[Tuple[CellPos, CellPos]], key: Callable
-) -> List[MapSet]:
+) -> List[Mark]:
     """groups pairs by key, then makes a map set for each group"""
     pairs = sorted(pairs, key=key)
     return [
