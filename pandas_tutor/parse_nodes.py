@@ -342,6 +342,25 @@ class MeltCall(Call):
     ignore_index_expr: Optional[RawCode] = evals_into("ignore_index")
 
 
+@dataclasses.dataclass
+class MergeCall(Call):
+    """
+    baby.merge(nyt, left_on='Name', right_on='nyt_name', how='left')
+    """
+
+    fn_name = "merge"
+
+    right_expr: Optional[RawCode] = evals_into("right")
+    how_expr: Optional[RawCode] = evals_into("how")
+    on_expr: Optional[RawCode] = evals_into("on")
+    left_on_expr: Optional[RawCode] = evals_into("left_on")
+    right_on_expr: Optional[RawCode] = evals_into("right_on")
+    left_index_expr: Optional[RawCode] = evals_into("left_index")
+    right_index_expr: Optional[RawCode] = evals_into("right_index")
+    sort_expr: Optional[RawCode] = evals_into("sort")
+    suffixes_expr: Optional[RawCode] = evals_into("suffixes")
+
+
 ##############################################################################
 # Subscripts
 ##############################################################################
