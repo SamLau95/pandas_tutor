@@ -2,11 +2,10 @@
 creates mark specs. here's where the magic happens!
 """
 import itertools
-from collections.abc import Iterable
 from typing import (
     Any,
     Callable,
-    Dict,
+    Iterable,
     List,
     Optional,
     Tuple,
@@ -673,7 +672,7 @@ def mark_for_merge(
     if left_index is not right_index:
         return []
 
-    right_index, left_row_nums, left2_row_nums = util.get_join_info(
+    res_index, left_row_nums, left2_row_nums = util.get_join_info(
         left=left, **args
     )
 
@@ -687,10 +686,11 @@ def mark_for_merge(
             *make_usings(on if on else left_on + right_on, "column", "rhs"),
         ]
     else:
-        using = (
+        using = cast(
+            List[Mark],
             [Using(lhs_index("row", i)) for i in range(left.index.nlevels)]
             + [Using(lhs2_index("row", i)) for i in range(left2.index.nlevels)]
-            + [Using(rhs_index("row", i)) for i in range(right.index.nlevels)]
+            + [Using(rhs_index("row", i)) for i in range(right.index.nlevels)],
         )
 
     # mark all rows dropped from either lhs or lhs2
@@ -713,7 +713,7 @@ def mark_for_merge(
     pairs: List[PosPair] = [
         pair
         for left_num, left2_num, right_row in zip(
-            left_row_nums, left2_row_nums, right_index
+            left_row_nums, left2_row_nums, res_index
         )
         for pair in row_pairs(left_num, left2_num, right_row)
     ]
@@ -1014,7 +1014,7 @@ def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
     return cell.row, cell.column
 
 
-def make_map_sets(pairs: List[PosPair], key: Callable) -> List[Mark]:
+def make_map_sets(pairs: Iterable[PosPair], key: Callable) -> List[Mark]:
     """groups pairs by key, then makes a map set for each group"""
     pairs = sorted(pairs, key=key)
     return [

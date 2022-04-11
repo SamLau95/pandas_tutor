@@ -5,7 +5,7 @@ serializes run.py outputs into json.
 from __future__ import annotations
 
 import types
-import typing as t
+from typing import Any, List, Tuple, TypeVar, Union
 
 from pandas_tutor.parse_nodes import MergeCall, StartOfChain
 
@@ -23,6 +23,7 @@ from .diagram import (
     GroupData,
     ImageSpec,
     Index,
+    PrevRHS,
     RuntimeErrorInChain,
     RuntimeErrorInSetup,
     SeriesGroupBySpec,
@@ -42,10 +43,10 @@ from .run import (
     SyntaxErrorResult,
 )
 
-T = t.TypeVar("T")
+T = TypeVar("T")
 
 
-def serialize(results: t.List[EvalResult]) -> Explanation:
+def serialize(results: List[EvalResult]) -> Explanation:
     if len(results) == 0:
         return []
 
@@ -87,14 +88,14 @@ def serialize_single(result: EvalResult) -> Explanation:
 
 def serialize_pair(
     before: EvalResult, after: EvalResult
-) -> t.Union[Diagram, ErrorOutput]:
+) -> Union[Diagram, ErrorOutput]:
     if isinstance(after, RuntimeErrorResult):
         return RuntimeErrorInChain.from_runtime_error_result(after)
     step = after.step
 
     marks = make_marks(step, before, after)
 
-    lhs = (
+    lhs: Union[DataSpec, PrevRHS] = (
         serialize_step_val(before)
         if isinstance(before.step, StartOfChain)
         else "prev_rhs"
@@ -102,6 +103,7 @@ def serialize_pair(
     rhs = serialize_step_val(after)
 
     # HACK: special case for merge
+    data: Union[DataTwoLHS, DataPair]
     if isinstance(step, MergeCall):
         data = DataTwoLHS(
             lhs=lhs,
@@ -185,9 +187,9 @@ def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
     )
 
 
-def serialize_image(val: t.Any) -> ImageSpec:
+def serialize_image(val: Any) -> ImageSpec:
     return ImageSpec(util.base64_encode_plot(val))
 
 
-def pairs(seq: t.List[T]) -> t.List[t.Tuple[T, T]]:
+def pairs(seq: List[T]) -> List[Tuple[T, T]]:
     return [(seq[i], seq[i + 1]) for i in range(len(seq) - 1)]

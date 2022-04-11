@@ -43,15 +43,6 @@
           }
         },
         {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "column",
-            "label": "Name"
-          }
-        },
-        {
           "type": "drop",
           "pos": {
             "type": "axis",
