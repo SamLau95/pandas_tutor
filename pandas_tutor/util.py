@@ -27,6 +27,8 @@ import numpy as np
 import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
+from pandas.core.reshape.merge import _MergeOperation
+
 from typing_extensions import TypeGuard
 
 if TYPE_CHECKING:
@@ -53,6 +55,18 @@ JSONScalar = Union[int, float, str, bool, None]
 
 # placeholder column for pd.Series
 SERIES = "pandas.Series"
+
+
+def first(iterable: Iterable[T]) -> T:
+    """the first element of an iterable."""
+    return next(iter(iterable))
+
+
+def second(iterable: Iterable[T]) -> T:
+    """the second element of an iterable."""
+    it = iter(iterable)
+    next(it)
+    return next(it)
 
 
 def mapt(fn, *args):
@@ -295,6 +309,20 @@ def level_number(index: pd.Index, level: str | int) -> int:
     )
 
 
+def first_iloc(index: pd.Index, label: Label) -> int:
+    """
+    returns the first position of a label in an index.
+    """
+    for i, lab in enumerate(index):
+        if lab == label:
+            return i
+    return -1
+
+
+##############################################################################
+# multiindex
+##############################################################################
+
 # pair of multi-index labels
 _MultiLabelPair = Tuple[Tuple[Label, ...], Tuple[Label, ...]]
 
@@ -340,6 +368,11 @@ def push_level(from_: Label, to: Label, levels: List[int]) -> LabelPair:
     right = tuplify(to)
     move, stay = split_by(left, levels)
     return mapt(unwrap, (stay, (*right, *move)))
+
+
+##############################################################################
+# groupby
+##############################################################################
 
 
 @overload
@@ -389,6 +422,32 @@ def get_groups(groupby: Union[SeriesGroupBy, DataFrameGroupBy]) -> Groups:
             key: index[indices] for key, indices in groupby.indices.items()
         }
         return cast(Groups, groups)
+
+
+##############################################################################
+# merge
+##############################################################################
+
+
+def get_join_info(*args, **kwargs) -> Tuple[pd.Index, pd.Index, pd.Index]:
+    """
+    call using same signature as pd.merge. returns (index of merged df, indexer
+    for lhs, indexer for lhs2). uses pandas internals.
+
+    >>> op = _MergeOperation(baby, nyt2, left_on='Name', right_on='nyt_name', how='left')
+    >>> join_index, left_indexer, right_indexer = op._get_join_info()
+    >>> join_index, left_indexer, right_indexer
+    (Int64Index([0, 1, 2, 3, 4], dtype='int64'),
+     array([1, 2, 3, 0, 4]),
+     array([ 1,  0,  0, -1, -1]))
+    """
+    op = _MergeOperation(*args, **kwargs)
+    return op._get_join_info()  # type: ignore
+
+
+##############################################################################
+# serializing
+##############################################################################
 
 
 def is_plottable(obj: Any) -> bool:
@@ -494,7 +553,8 @@ def too_much_mem_msg(mem: float):
 ##############################################################################
 
 
-def print_mapsets(val: List[MapSet]) -> None:
+def print_cell_sets(val: List[MapSet]) -> None:
+    """helper to print mapsets of CellPos"""
     for i, mapset in enumerate(val):
         print(f"{i}:")
         for map_mark in mapset.maps:
@@ -505,5 +565,21 @@ def print_mapsets(val: List[MapSet]) -> None:
             right = (
                 f"{str(map_mark.to.row)}, "  # type: ignore
                 f"{str(map_mark.to.column)}"  # type: ignore
+            )
+            print(f"  {left} -> {right}")
+
+
+def print_axis_sets(val: List[MapSet]) -> None:
+    """helper to print mapsets of AxisPos"""
+    for i, mapset in enumerate(val):
+        print(f"{i}:")
+        for map_mark in mapset.maps:
+            left = (
+                f"({str(map_mark.from_.anchor)}) "  # type: ignore
+                f"{str(map_mark.from_.label)}"  # type: ignore
+            )
+            right = (
+                f"({str(map_mark.to.anchor)}) "  # type: ignore
+                f"{str(map_mark.to.label)}"  # type: ignore
             )
             print(f"  {left} -> {right}")

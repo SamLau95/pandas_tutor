@@ -11,6 +11,7 @@ from typing import (
     Any,
     List,
     Literal,
+    Optional,
     Union,
     Tuple,
 )
@@ -74,7 +75,7 @@ class Diagram:
     code_step: str
     fragment: CodeRange
     marks: List[Mark]
-    data: DataPair
+    data: Union[DataPair, DataTwoLHS]
 
 
 @dataclasses.dataclass
@@ -132,7 +133,7 @@ Explanation = List[Union[Diagram, ErrorOutput]]
 ##############################################################################
 
 # the table we're pointing to
-Anchor = Literal["lhs", "rhs"]
+Anchor = Literal["lhs", "rhs", "lhs2"]
 
 # the axis we're pointing to
 Selection = Literal["column", "row"]
@@ -163,6 +164,9 @@ class TablePos:
 
     def __post_init__(self):
         raise NotImplementedError("subclasses need to initialize self.type")
+
+
+PosPair = Tuple[TablePos, TablePos]
 
 
 @dataclasses.dataclass
@@ -299,26 +303,19 @@ class DataPair:
 
 
 @dataclasses.dataclass
+class DataTwoLHS:
+    """two lhs tables, used for joins"""
+
+    lhs: Union[DataSpec, PrevRHS]
+    lhs2: DataSpec
+    rhs: DataSpec
+
+
+@dataclasses.dataclass
 class DataSpec:
     """base class for a python val we're going to serialize"""
 
     type: str
-
-
-@dataclasses.dataclass
-class Index:
-    """represents a pandas index in the serialized data"""
-
-    # names of each index level. unnamed levels are None
-    names: Tuple
-
-    # for a multi-index, the labels are a list of tuples. this matches the
-    # behavior of pd.Index.tolist()
-    labels: List[JSONScalar]
-
-    @classmethod
-    def from_pd(cls, index: pd.Index) -> Index:
-        return cls(names=tuple(index.names), labels=index_data(index))
 
 
 @dataclasses.dataclass
@@ -349,6 +346,22 @@ class SeriesSpec(DataSpec):
             index=Index.from_pd(series.index),
             data=series_data(series),
         )
+
+
+@dataclasses.dataclass
+class Index:
+    """represents a pandas index in the serialized data"""
+
+    # names of each index level. unnamed levels are None
+    names: Tuple
+
+    # for a multi-index, the labels are a list of tuples. this matches the
+    # behavior of pd.Index.tolist()
+    labels: List[JSONScalar]
+
+    @classmethod
+    def from_pd(cls, index: pd.Index) -> Index:
+        return cls(names=tuple(index.names), labels=index_data(index))
 
 
 @dataclasses.dataclass

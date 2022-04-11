@@ -2,8 +2,16 @@
 creates mark specs. here's where the magic happens!
 """
 import itertools
-from collections.abc import Iterable
-from typing import Any, Callable, List, Optional, Tuple, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+)
 
 import pandas as pd
 
@@ -18,6 +26,7 @@ from .diagram import (
     Map,
     MapSet,
     Mark,
+    PosPair,
     Selection,
     SeriesPos,
     Using,
@@ -33,6 +42,7 @@ from .parse_nodes import (
     GroupByCall,
     HeadCall,
     MeltCall,
+    MergeCall,
     PassThroughCall,
     PivotCall,
     PivotTableCall,
@@ -98,6 +108,8 @@ def make_marks(
         return mark_for_pivot_table(step, before, after)
     elif isinstance(step, MeltCall):
         return mark_for_melt(step, before, after)
+    elif isinstance(step, MergeCall):
+        return mark_for_merge(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -344,12 +356,12 @@ def mark_for_unstack(
 
     # for each cell: the unstacked labels move to the column index
     cells = util.push_levels(df.index, columns, levels)
-    pairs = [
+    pairs: List[PosPair] = [
         (CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
         for (old_row, old_col), (new_row, new_col) in cells
     ]
     # group together marks that map the same column
-    cell_sets = make_cell_sets(pairs, key=by_column)
+    cell_sets = make_map_sets(pairs, key=by_column)
 
     return [*index_marks, *cell_sets]
 
@@ -384,7 +396,7 @@ def mark_for_stack(
     # for each cell: the unstacked labels move to the row index
     is_series = isinstance(after, SeriesResult)
     cells = util.push_levels(df.columns, df.index, levels)
-    pairs = [
+    pairs: List[PosPair] = [
         (
             CellPos("lhs", old_row, old_col),
             CellPos("rhs", new_row, new_col if not is_series else util.SERIES),
@@ -392,7 +404,7 @@ def mark_for_stack(
         for (old_col, old_row), (new_col, new_row) in cells
     ]
     # group together marks that map the same row
-    cell_sets = make_cell_sets(pairs, key=by_row)
+    cell_sets = make_map_sets(pairs, key=by_row)
 
     return [*index_marks, *cell_sets]
 
@@ -461,7 +473,7 @@ def mark_for_pivot(
             pairs.append((left, right))
 
     # group together marks using their original columns
-    cell_sets = make_cell_sets(pairs, key=by_column)
+    cell_sets = make_map_sets(pairs, key=by_column)
 
     return [*index_marks, *column_marks, *cell_sets]
 
@@ -561,7 +573,7 @@ def mark_for_pivot_table(
         for old_col in values
     ]
     # take out cells that didn't get agg'd
-    pairs = [
+    pairs: List[PosPair] = [
         (CellPos("lhs", old_row, old_col), CellPos("rhs", new_row, new_col))
         for ((old_row, old_col), (new_row, new_col)) in label_pairs
         if new_col in after_df and new_row in after_df.index
@@ -569,7 +581,7 @@ def mark_for_pivot_table(
 
     # mapset for pivot_table() is more granular than pivot() since we want
     # to show each individual aggregation
-    cell_sets = make_cell_sets(pairs, key=by_result_cell)
+    cell_sets = make_map_sets(pairs, key=by_result_cell)
 
     return [*index_marks, *column_marks, *cell_sets]
 
@@ -617,7 +629,106 @@ def mark_for_melt(
                 (CellPos("lhs", row, col), CellPos("rhs", new_row, value_name))
             )
 
-    return make_cell_sets(pairs, key=by_column)
+    return make_map_sets(pairs, key=by_column)
+
+
+def mark_for_merge(
+    step: MergeCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+
+    left = before.val
+    right = after.val
+    args = after.args
+
+    left2 = cast(pd.DataFrame, args.get("right"))
+
+    has_on = "on" in args
+    # TODO: default on= is intersection of columns
+    on = util.listify(args["on"]) if has_on else None
+    left_on = (
+        on
+        if has_on
+        else util.listify(args["left_on"])
+        if "left_on" in args
+        else None
+    )
+    right_on = (
+        on
+        if has_on
+        else util.listify(args["right_on"])
+        if "right_on" in args
+        else None
+    )
+    left_index = args.get("left_index", False)
+    right_index = args.get("right_index", False)
+
+    if not isinstance(left2, pd.DataFrame):
+        return []
+
+    # don't handle cases where we join using both index and columns since that
+    # creates duplicate index labels
+    if left_index is not right_index:
+        return []
+
+    res_index, left_row_nums, left2_row_nums = util.get_join_info(
+        left=left, **args
+    )
+
+    # mark all columns used for joining
+    if left_on and right_on:
+        left_on = cast(List, left_on)  # keep mypy happy
+        right_on = cast(List, right_on)
+        using = [
+            *make_usings(left_on, "column", "lhs"),
+            *make_usings(right_on, "column", "lhs2"),
+            *make_usings(on if on else left_on + right_on, "column", "rhs"),
+        ]
+    else:
+        using = cast(
+            List[Mark],
+            [Using(lhs_index("row", i)) for i in range(left.index.nlevels)]
+            + [Using(lhs2_index("row", i)) for i in range(left2.index.nlevels)]
+            + [Using(rhs_index("row", i)) for i in range(right.index.nlevels)],
+        )
+
+    # mark all rows dropped from either lhs or lhs2
+    drops = [
+        *make_drops(left.index.difference(left_row_nums), "row", "lhs"),
+        *make_drops(left2.index.difference(left2_row_nums), "row", "lhs2"),
+    ]
+
+    def row_pairs(left_num, left2_num, right_row):
+        left_row = left.index[left_num]
+        left2_row = left2.index[left2_num]
+        if left_num != -1 and left2_num != -1:
+            yield (lhs("row", left_row), lhs2("row", left2_row))
+        if left_num != -1:
+            yield (lhs("row", left_row), rhs("row", right_row))
+        # since we're only using shading, we don't need this last case
+        # if left2_num != -1:
+        #     yield (lhs2("row", left2_row), rhs("row", right_row))
+
+    pairs: List[PosPair] = [
+        pair
+        for left_num, left2_num, right_row in zip(
+            left_row_nums, left2_row_nums, res_index
+        )
+        for pair in row_pairs(left_num, left2_num, right_row)
+    ]
+
+    def by_merge_key(pair: Tuple[AxisPos, AxisPos]):
+        pos, _ = pair
+        row = left.loc[pos.label]
+        return tuple(row.loc[left_on]) if left_on else row.name
+
+    row_sets = make_map_sets(pairs, key=by_merge_key)
+
+    # util.print_axis_sets(row_sets)
+    # breakpoint()
+
+    return [*using, *drops, *row_sets]
 
 
 # handler for all subscripts, like:
@@ -834,11 +945,13 @@ def make_maps(labels: Iterable, select: Selection) -> List[Mark]:
     ]
 
 
-def make_drops(labels: Iterable, select: Selection) -> List[Mark]:
+def make_drops(
+    labels: Iterable, select: Selection, anchor: Anchor = "lhs"
+) -> List[Mark]:
     """
     shorthand for crossouts
     """
-    return [Drop(pos=lhs(select, label)) for label in labels]
+    return [Drop(AxisPos(anchor, select, label)) for label in labels]
 
 
 def lhs(select: Selection, label: Label) -> AxisPos:
@@ -851,6 +964,11 @@ def rhs(select: Selection, label: Label) -> AxisPos:
     return AxisPos("rhs", select, label)
 
 
+def lhs2(select: Selection, label: Label) -> AxisPos:
+    """shorthand for a column/row in lhs2"""
+    return AxisPos("lhs2", select, label)
+
+
 def lhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
     """shorthand for an index level in lhs"""
     return IndexLevelPos("lhs", select, level)
@@ -859,6 +977,11 @@ def lhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
 def rhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
     """shorthand for an index level in rhs"""
     return IndexLevelPos("rhs", select, level)
+
+
+def lhs2_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
+    """shorthand for an index level in lhs2"""
+    return IndexLevelPos("lhs2", select, level)
 
 
 def lhs_series() -> SeriesPos:
@@ -891,9 +1014,7 @@ def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
     return cell.row, cell.column
 
 
-def make_cell_sets(
-    pairs: List[Tuple[CellPos, CellPos]], key: Callable
-) -> List[Mark]:
+def make_map_sets(pairs: Iterable[PosPair], key: Callable) -> List[Mark]:
     """groups pairs by key, then makes a map set for each group"""
     pairs = sorted(pairs, key=key)
     return [

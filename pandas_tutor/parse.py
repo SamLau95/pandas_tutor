@@ -35,6 +35,7 @@ from .parse_nodes import (
     GroupByCall,
     HeadCall,
     MeltCall,
+    MergeCall,
     ParseResult,
     ParsedModule,
     ParseSyntaxError,
@@ -521,6 +522,33 @@ class ChainParser(ParserBase):
             value_name_expr=value_name_expr,
             col_level_expr=col_level_expr,
             ignore_index_expr=ignore_index_expr,
+        )
+        self._append(node)
+
+    @m.leave(matches(MergeCall))
+    def make_merge(self, cst_node: cst.Call):
+        right_expr = self.get_arg_code(cst_node.args, 0, "right")
+        how_expr = self.get_arg_code(cst_node.args, 1, "how")
+        on_expr = self.get_arg_code(cst_node.args, 2, "on")
+        left_on_expr = self.get_arg_code(cst_node.args, 3, "left_on")
+        right_on_expr = self.get_arg_code(cst_node.args, 4, "right_on")
+        left_index_expr = self.get_arg_code(cst_node.args, 5, "left_index")
+        right_index_expr = self.get_arg_code(cst_node.args, 6, "right_index")
+        sort_expr = self.get_arg_code(cst_node.args, 7, "sort")
+        suffixes_expr = self.get_arg_code(cst_node.args, 8, "suffixes")
+
+        node = self.make_call_node(
+            MergeCall,
+            cst_node,
+            right_expr=right_expr,
+            how_expr=how_expr,
+            on_expr=on_expr,
+            left_on_expr=left_on_expr,
+            right_on_expr=right_on_expr,
+            left_index_expr=left_index_expr,
+            right_index_expr=right_index_expr,
+            sort_expr=sort_expr,
+            suffixes_expr=suffixes_expr,
         )
         self._append(node)
 

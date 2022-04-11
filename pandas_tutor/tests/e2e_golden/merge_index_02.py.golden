@@ -1,0 +1,158 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nName,Sex,Count,Year\nNoah,M,18252,2020\nJulius,M,960,2020\nKaren,M,6,2020\nKaren,F,325,2020\nNoah,F,305,2020\n\"\"\"\n\ncsv2 = \"\"\"\nnyt_name,category\nKaren,boomer\nJulius,mythology\nFreya,mythology\n\"\"\"\n\nbaby = pd.read_csv(io.StringIO(csv))\nnyt = pd.read_csv(io.StringIO(csv2))\n\nbaby2 = baby.set_index(\"Name\")\n\n# when right doesn't use index, we can get duplicate index vals, so we don't\n# handle\nbaby2.merge(nyt, left_index=True, right_on=\"nyt_name\")\n",
+  "explanation": [
+    {
+      "type": "MergeCall",
+      "code_step": "baby2.merge(nyt, left_index=True, right_on=\"nyt_name\")",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 5
+        },
+        "end": {
+          "line": 0,
+          "ch": 54
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              "Name"
+            ],
+            "labels": [
+              "Noah",
+              "Julius",
+              "Karen",
+              "Karen",
+              "Noah"
+            ]
+          },
+          "data": [
+            [
+              "M",
+              18252,
+              2020
+            ],
+            [
+              "M",
+              960,
+              2020
+            ],
+            [
+              "M",
+              6,
+              2020
+            ],
+            [
+              "F",
+              325,
+              2020
+            ],
+            [
+              "F",
+              305,
+              2020
+            ]
+          ]
+        },
+        "lhs2": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "nyt_name",
+              "category"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2
+            ]
+          },
+          "data": [
+            [
+              "Karen",
+              "boomer"
+            ],
+            [
+              "Julius",
+              "mythology"
+            ],
+            [
+              "Freya",
+              "mythology"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year",
+              "nyt_name",
+              "category"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              0,
+              0
+            ]
+          },
+          "data": [
+            [
+              "M",
+              960,
+              2020,
+              "Julius",
+              "mythology"
+            ],
+            [
+              "M",
+              6,
+              2020,
+              "Karen",
+              "boomer"
+            ],
+            [
+              "F",
+              325,
+              2020,
+              "Karen",
+              "boomer"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
