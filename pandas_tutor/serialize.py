@@ -7,13 +7,14 @@ from __future__ import annotations
 import types
 import typing as t
 
-from pandas_tutor.parse_nodes import StartOfChain
+from pandas_tutor.parse_nodes import MergeCall, StartOfChain
 
 from . import util
 from .diagram import (
     DataPair,
     DataSpec,
     DFSpec,
+    DataTwoLHS,
     Diagram,
     ErrorOutput,
     Explanation,
@@ -93,23 +94,29 @@ def serialize_pair(
 
     marks = make_marks(step, before, after)
 
-    # this serializes every df twice when we should only do it once.
-    # TODO: optimize this
-    df_pair = DataPair(
-        lhs=(
-            serialize_step_val(before)
-            if isinstance(before.step, StartOfChain)
-            else "prev_rhs"
-        ),
-        rhs=serialize_step_val(after),
+    lhs = (
+        serialize_step_val(before)
+        if isinstance(before.step, StartOfChain)
+        else "prev_rhs"
     )
+    rhs = serialize_step_val(after)
+
+    # HACK: special case for merge
+    if isinstance(step, MergeCall):
+        data = DataTwoLHS(
+            lhs=lhs,
+            lhs2=DFSpec.from_pd(after.args["right"]),  # type: ignore
+            rhs=rhs,
+        )
+    else:
+        data = DataPair(lhs=lhs, rhs=rhs)
 
     return Diagram(
         type=step.type_,
         code_step=step.code,
         fragment=after.fragment,
         marks=marks,
-        data=df_pair,
+        data=data,
     )
 
 

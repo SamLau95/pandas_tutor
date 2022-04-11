@@ -644,14 +644,26 @@ def mark_for_merge(
     args = after.args
 
     left2 = cast(pd.DataFrame, args.get("right"))
-    how = args.get("how", "inner")
-    on = util.listify(args["on"]) if "on" in args else None
-    left_on = util.listify(args["left_on"]) if "left_on" in args else None
-    right_on = util.listify(args["right_on"]) if "right_on" in args else None
+
+    has_on = "on" in args
+    # TODO: default on= is intersection of columns
+    on = util.listify(args["on"]) if has_on else None
+    left_on = (
+        on
+        if has_on
+        else util.listify(args["left_on"])
+        if "left_on" in args
+        else None
+    )
+    right_on = (
+        on
+        if has_on
+        else util.listify(args["right_on"])
+        if "right_on" in args
+        else None
+    )
     left_index = args.get("left_index", False)
     right_index = args.get("right_index", False)
-    sort = args.get("sort", False)
-    suffixes = args.get("suffixes", ("_x", "_y"))
 
     if not isinstance(left2, pd.DataFrame):
         return []
@@ -662,16 +674,7 @@ def mark_for_merge(
         return []
 
     right_index, left_row_nums, left2_row_nums = util.get_join_info(
-        left,
-        left2,
-        how=how,
-        on=on,
-        left_on=left_on,
-        right_on=right_on,
-        left_index=left_index,
-        right_index=right_index,
-        sort=sort,
-        suffixes=suffixes,
+        left=left, **args
     )
 
     # mark all columns used for joining
@@ -681,7 +684,7 @@ def mark_for_merge(
         using = [
             *make_usings(left_on, "column", "lhs"),
             *make_usings(right_on, "column", "lhs2"),
-            *make_usings(left_on + right_on, "column", "rhs"),
+            *make_usings(on if on else left_on + right_on, "column", "rhs"),
         ]
     else:
         using = (
@@ -696,8 +699,6 @@ def mark_for_merge(
         *make_drops(left2.index.difference(left2_row_nums), "row", "lhs2"),
     ]
 
-    row_groups = _merge_row_groups(left_row_nums, left2_row_nums)
-
     def row_pairs(left_num, left2_num, right_row):
         left_row = left.index[left_num]
         left2_row = left2.index[left2_num]
@@ -705,8 +706,9 @@ def mark_for_merge(
             yield (lhs("row", left_row), lhs2("row", left2_row))
         if left_num != -1:
             yield (lhs("row", left_row), rhs("row", right_row))
-        if left2_num != -1:
-            yield (lhs2("row", left2_row), rhs("row", right_row))
+        # since we're only using shading, we don't need this last case
+        # if left2_num != -1:
+        #     yield (lhs2("row", left2_row), rhs("row", right_row))
 
     pairs: List[PosPair] = [
         pair
@@ -718,34 +720,15 @@ def mark_for_merge(
 
     def by_merge_key(pair: Tuple[AxisPos, AxisPos]):
         pos, _ = pair
-        df = left if pos.anchor == "lhs" else left2
-        key = left_on if pos.anchor == "lhs" else right_on
-        row = df.loc[pos.label]
-        return row.loc[key] if key else row.name
+        row = left.loc[pos.label]
+        return tuple(row.loc[left_on]) if left_on else row.name
 
     row_sets = make_map_sets(pairs, key=by_merge_key)
 
-    util.print_axis_sets(row_sets)
-    breakpoint()
+    # util.print_axis_sets(row_sets)
+    # breakpoint()
 
     return [*using, *drops, *row_sets]
-
-
-def _merge_row_groups(left: pd.Index, left2: pd.Index) -> Dict[Label, int]:
-    """
-    returns mapping from left row numbers to their merge group. when a merge
-    does a cross product, we need to put all the cross product rows together.
-    """
-    row_groups = {}
-    current_group = 0
-    last_lhs2_set = set()
-    for (row, group) in itertools.groupby(zip(left, left2), key=util.first):
-        lhs2_set = {util.second(g) for g in group}
-        if lhs2_set != last_lhs2_set:
-            current_group += 1
-        row_groups[row] = current_group
-        last_lhs2_set = lhs2_set
-    return row_groups
 
 
 # handler for all subscripts, like:

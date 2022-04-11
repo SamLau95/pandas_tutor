@@ -75,7 +75,7 @@ class Diagram:
     code_step: str
     fragment: CodeRange
     marks: List[Mark]
-    data: DataPair
+    data: Union[DataPair, DataTwoLHS]
 
 
 @dataclasses.dataclass
