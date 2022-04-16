@@ -30,6 +30,6 @@ def make_test_case(test_name):
 
 # make all test cases dynamically!
 for test_name in test_cases.iterdir():
-    if test_name.suffix == '.py':
+    if test_name.suffix == '.py' and test_name.name != '__init__.py':
         test_case = make_test_case(test_name.stem)
         setattr(TestParse, f'test_{test_name.stem}', test_case)
