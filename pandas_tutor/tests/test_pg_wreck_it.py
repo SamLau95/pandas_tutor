@@ -53,7 +53,7 @@ def make_test_case(test_name):
 
 # make all test cases dynamically!
 for test_name in test_cases.iterdir():
-    if test_name.suffix == '.py':
+    if test_name.suffix == '.py' and test_name.name != '__init__.py':
         if os.environ.get('CI', False) and test_name.stem.startswith('plot_'):
             # skip plotting test cases since gzipping isn't deterministic
             continue

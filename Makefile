@@ -24,3 +24,23 @@ typecheck: ## Type checks everything
 watch: ## reruns typecheck and tests on file change
 	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) |\
 		xargs -0 -n 1 -I {} sh -c "echo {} && $(MAKE) typecheck test"
+
+
+# PG - make a self-contained wheel to be able to deploy to pyodide (or
+# elsewhere!) using bundled-package-dependencies.tar.gz, which should
+# bundle up all relevant dependencies except for pandas (which is
+# provided by pyodide)
+pyodide_setup:
+	rm -rf bundled-package-dependencies/
+	tar -zxvf bundled-package-dependencies.tar.gz
+	mv bundled-package-dependencies/* .
+	rmdir bundled-package-dependencies/
+
+# need to first run 'make pyodide_setup' (TODO: encode directly in Makefile as a dependency)
+# and requires 'pip install wheel' in your current python environment
+pyodide_build:
+	rm -rf build/
+	python setup.py bdist_wheel
+
+pyodide_clean:
+	rm -rf build/ dist/ bundled-package-dependencies/ bundled-package-dependencies.txt docopt/ libcst/ mypy_extensions/ pandastutor.egg-info/ pympler/ simplejson/ typing_extensions/ typing_inspect/
