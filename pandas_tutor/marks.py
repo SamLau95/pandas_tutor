@@ -673,7 +673,11 @@ def mark_for_merge(
         return []
 
     res_index, left_row_nums, left2_row_nums = util.get_join_info(
-        left=left, **args
+        # df.merge has sort=False as default, but get_join_info has sort=True
+        # as default.
+        left=left,
+        sort=False,
+        **args,
     )
 
     # mark all columns used for joining
@@ -695,20 +699,23 @@ def mark_for_merge(
 
     # mark all rows dropped from either lhs or lhs2
     drops = [
-        *make_drops(left.index.difference(left_row_nums), "row", "lhs"),
-        *make_drops(left2.index.difference(left2_row_nums), "row", "lhs2"),
+        *make_drops(_dropped_labels(left.index, left_row_nums), "row", "lhs"),
+        *make_drops(
+            _dropped_labels(left2.index, left2_row_nums), "row", "lhs2"
+        ),
     ]
 
-    def row_pairs(left_num, left2_num, right_row):
-        left_row = left.index[left_num]
-        left2_row = left2.index[left2_num]
-        if left_num != -1 and left2_num != -1:
-            yield (lhs("row", left_row), lhs2("row", left2_row))
+    def row_pairs(left_num: int, left2_num: int, right_row: Label):
+        left_row = cast(Label, left.index[left_num])
+        left2_row = cast(Label, left2.index[left2_num])
         if left_num != -1:
             yield (lhs("row", left_row), rhs("row", right_row))
-        # since we're only using shading, we don't need this last case
-        # if left2_num != -1:
-        #     yield (lhs2("row", left2_row), rhs("row", right_row))
+        if left2_num != -1:
+            yield (lhs2("row", left2_row), rhs("row", right_row))
+        # don't actually need this last case since if lhs -> rhs and lhs2 ->
+        # rhs, we automatically have lhs and lhs2 in mapset together
+        # if left_num != -1 and left2_num != -1:
+        #     yield (lhs("row", left_row), lhs2("row", left2_row))
 
     pairs: List[PosPair] = [
         pair
@@ -718,10 +725,14 @@ def mark_for_merge(
         for pair in row_pairs(left_num, left2_num, right_row)
     ]
 
+    # the merge key is a tuple of row values or an index label from lhs or lhs2
     def by_merge_key(pair: Tuple[AxisPos, AxisPos]):
+        # pair is always {lhs, lhs2} -> rhs
         pos, _ = pair
-        row = left.loc[pos.label]
-        return tuple(row.loc[left_on]) if left_on else row.name
+        df = left if pos.anchor == "lhs" else left2
+        key = left_on if pos.anchor == "lhs" else right_on
+        row = df.loc[pos.label]
+        return tuple(row.loc[key]) if key else row.name
 
     row_sets = make_map_sets(pairs, key=by_merge_key)
 
@@ -729,6 +740,11 @@ def mark_for_merge(
     # breakpoint()
 
     return [*using, *drops, *row_sets]
+
+
+def _dropped_labels(index: pd.Index, row_nums: pd.Index) -> pd.Index:
+    dropped = pd.RangeIndex(len(index)).difference(row_nums)
+    return index[dropped]
 
 
 # handler for all subscripts, like:
