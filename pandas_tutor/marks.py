@@ -58,6 +58,7 @@ from .parse_nodes import (
 )
 from .run import (
     Arg,
+    Args,
     DFResult,
     EvalResult,
     GroupbyResult,
@@ -642,7 +643,10 @@ def mark_for_merge(
     right = after.val
     args = after.args
 
-    left2 = cast(pd.DataFrame, args.get("right"))
+    left2_arg = _get_left2_arg(args)
+    if left2_arg is None:
+        return []
+    left2: pd.DataFrame = left2_arg
 
     has_on = "on" in args
     # TODO: default on= is intersection of columns
@@ -663,9 +667,6 @@ def mark_for_merge(
     )
     left_index = args.get("left_index", False)
     right_index = args.get("right_index", False)
-
-    if not isinstance(left2, pd.DataFrame):
-        return []
 
     # don't handle cases where we join using both index and columns since that
     # creates duplicate index labels
@@ -740,6 +741,15 @@ def mark_for_merge(
     # breakpoint()
 
     return [*using, *drops, *row_sets]
+
+
+def _get_left2_arg(args: Args) -> Optional[pd.DataFrame]:
+    left2_arg = args.get("right")
+
+    # merge with a series treats the series as a 1-column dataframe
+    if isinstance(left2_arg, pd.Series):
+        left2_arg = left2_arg.to_frame()
+    return left2_arg if isinstance(left2_arg, pd.DataFrame) else None
 
 
 def _dropped_labels(index: pd.Index, row_nums: pd.Index) -> pd.Index:
