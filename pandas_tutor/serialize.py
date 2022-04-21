@@ -7,6 +7,8 @@ from __future__ import annotations
 import types
 from typing import Any, List, Tuple, TypeVar, Union
 
+import pandas as pd
+
 from pandas_tutor.parse_nodes import MergeCall, StartOfChain
 
 from . import util
@@ -107,7 +109,7 @@ def serialize_pair(
     if isinstance(step, MergeCall):
         data = DataTwoLHS(
             lhs=lhs,
-            lhs2=DFSpec.from_pd(after.args["right"]),  # type: ignore
+            lhs2=serialize_pd_val(after.args["right"]),
             rhs=rhs,
         )
     else:
@@ -123,25 +125,32 @@ def serialize_pair(
 
 
 def serialize_step_val(step: EvalResult) -> DataSpec:
-    if isinstance(step, DFResult):
-        return DFSpec.from_pd(step.val)
-    elif isinstance(step, SeriesResult):
-        return SeriesSpec.from_pd(step.val)
-    elif isinstance(step, GroupbyResult):
-        return serialize_groupby(step.val)
-    elif isinstance(step, SeriesGroupbyResult):
-        return serialize_seriesgroupby(step.val)
-    elif isinstance(step, ImageResult):
+    """
+    if we have an EvalResult, use this for serializing so that we can handle
+    special results like images
+    """
+    if isinstance(step, ImageResult):
         return serialize_image(step.val)
+    return serialize_pd_val(step.val)
+
+
+def serialize_pd_val(val: Any) -> DataSpec:
+    if isinstance(val, pd.DataFrame):
+        return DFSpec.from_pd(val)
+    if isinstance(val, pd.Series):
+        return SeriesSpec.from_pd(val)
+    if isinstance(val, util.DataFrameGroupBy):
+        return serialize_groupby(val)
+    if isinstance(val, util.SeriesGroupBy):
+        return serialize_seriesgroupby(val)
+
+    if isinstance(val, types.ModuleType):
+        # take off module path from the module output, otherwise tests
+        # don't work in CI
+        data = f"<module '{val.__name__}'>"
     else:
-        val = step.val
-        if isinstance(val, types.ModuleType):
-            # take off module path from the module output, otherwise tests
-            # don't work in CI
-            data = f"<module '{val.__name__}'>"
-        else:
-            data = repr(val)
-        return UnhandledData(data=data)
+        data = repr(val)
+    return UnhandledData(data=data)
 
 
 def serialize_groupby(val: util.DataFrameGroupBy) -> GroupBySpec:

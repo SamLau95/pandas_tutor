@@ -1,5 +1,5 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nName,Sex,Count,Year\nNoah,M,18252,2020\nJulius,M,960,2020\nKaren,M,6,2020\nNoah,F,305,2020\n\"\"\"\n\ncsv2 = \"\"\"\nnyt_name,category\nKaren,boomer\nJulius,mythology\nFreya,mythology\n\"\"\"\n\nbaby = pd.read_csv(io.StringIO(csv))\nnyt = pd.read_csv(io.StringIO(csv2))\n\nbaby2 = baby.set_index(\"Name\")\nnyt2 = nyt.set_index(\"nyt_name\")\n\n# tests index args\nbaby2.merge(nyt2, left_index=True, right_index=True)\n",
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nName,Sex,Count,Year\nNoah,M,18252,2020\nJulius,M,960,2020\nKaren,M,6,2020\n\"\"\"\n\ncsv2 = \"\"\"\nnyt_name,category\nKaren,boomer\nJulius,mythology\nFreya,mythology\n\"\"\"\n\nbaby = pd.read_csv(io.StringIO(csv))\nnyt = pd.read_csv(io.StringIO(csv2))\n\nbaby2 = baby.set_index(\"Name\")\nnyt2 = nyt.set_index(\"nyt_name\")\n\n# tests index args\nbaby2.merge(nyt2, left_index=True, right_index=True)\n",
   "explanation": [
     {
       "type": "MergeCall",
@@ -48,24 +48,6 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "row",
-            "label": "Julius"
-          }
-        },
-        {
-          "type": "drop",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": "Karen"
-          }
-        },
-        {
-          "type": "drop",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
             "label": "Noah"
           }
         },
@@ -76,24 +58,6 @@
             "anchor": "lhs2",
             "select": "row",
             "label": "Freya"
-          }
-        },
-        {
-          "type": "drop",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs2",
-            "select": "row",
-            "label": "Julius"
-          }
-        },
-        {
-          "type": "drop",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs2",
-            "select": "row",
-            "label": "Karen"
           }
         },
         {
@@ -109,7 +73,7 @@
               },
               "to": {
                 "type": "axis",
-                "anchor": "lhs2",
+                "anchor": "rhs",
                 "select": "row",
                 "label": "Julius"
               }
@@ -118,7 +82,7 @@
               "type": "map",
               "from": {
                 "type": "axis",
-                "anchor": "lhs",
+                "anchor": "lhs2",
                 "select": "row",
                 "label": "Julius"
               },
@@ -144,7 +108,7 @@
               },
               "to": {
                 "type": "axis",
-                "anchor": "lhs2",
+                "anchor": "rhs",
                 "select": "row",
                 "label": "Karen"
               }
@@ -153,7 +117,7 @@
               "type": "map",
               "from": {
                 "type": "axis",
-                "anchor": "lhs",
+                "anchor": "lhs2",
                 "select": "row",
                 "label": "Karen"
               },
@@ -187,8 +151,7 @@
             "labels": [
               "Noah",
               "Julius",
-              "Karen",
-              "Noah"
+              "Karen"
             ]
           },
           "data": [
@@ -205,11 +168,6 @@
             [
               "M",
               6,
-              2020
-            ],
-            [
-              "F",
-              305,
               2020
             ]
           ]

@@ -73,7 +73,7 @@
               },
               "to": {
                 "type": "axis",
-                "anchor": "lhs2",
+                "anchor": "rhs",
                 "select": "row",
                 "label": 1
               }
@@ -82,7 +82,7 @@
               "type": "map",
               "from": {
                 "type": "axis",
-                "anchor": "lhs",
+                "anchor": "lhs2",
                 "select": "row",
                 "label": 1
               },
@@ -90,7 +90,7 @@
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 0
+                "label": 1
               }
             }
           ]
@@ -108,39 +108,24 @@
               },
               "to": {
                 "type": "axis",
-                "anchor": "lhs2",
+                "anchor": "rhs",
                 "select": "row",
-                "label": 0
+                "label": 2
               }
             },
             {
               "type": "map",
               "from": {
                 "type": "axis",
-                "anchor": "lhs",
+                "anchor": "lhs2",
                 "select": "row",
-                "label": 2
+                "label": 0
               },
               "to": {
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 1
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
-                "label": 3
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "lhs2",
-                "select": "row",
-                "label": 0
+                "label": 2
               }
             },
             {
@@ -155,7 +140,22 @@
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 2
+                "label": 3
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
               }
             }
           ]
@@ -175,7 +175,7 @@
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 3
+                "label": 0
               }
             },
             {
