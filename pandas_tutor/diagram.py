@@ -11,7 +11,6 @@ from typing import (
     Any,
     List,
     Literal,
-    Optional,
     Union,
     Tuple,
 )

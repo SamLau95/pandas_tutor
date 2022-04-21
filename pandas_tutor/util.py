@@ -434,7 +434,8 @@ def get_join_info(*args, **kwargs) -> Tuple[pd.Index, pd.Index, pd.Index]:
     call using same signature as pd.merge. returns (index of merged df, indexer
     for lhs, indexer for lhs2). uses pandas internals.
 
-    >>> op = _MergeOperation(baby, nyt2, left_on='Name', right_on='nyt_name', how='left')
+    >>> op = _MergeOperation(baby, nyt2,
+    ...                      left_on='Name', right_on='nyt_name', how='left')
     >>> join_index, left_indexer, right_indexer = op._get_join_info()
     >>> join_index, left_indexer, right_indexer
     (Int64Index([0, 1, 2, 3, 4], dtype='int64'),

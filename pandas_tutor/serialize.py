@@ -35,13 +35,9 @@ from .diagram import (
 )
 from .marks import make_marks
 from .run import (
-    DFResult,
     EvalResult,
-    GroupbyResult,
     ImageResult,
     RuntimeErrorResult,
-    SeriesGroupbyResult,
-    SeriesResult,
     SyntaxErrorResult,
 )
 
