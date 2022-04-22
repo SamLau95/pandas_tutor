@@ -649,7 +649,6 @@ def mark_for_merge(
     left2: pd.DataFrame = left2_arg
 
     has_on = "on" in args
-    # TODO: default on= is intersection of columns
     on = util.listify(args["on"]) if has_on else None
     left_on = (
         on
@@ -665,8 +664,13 @@ def mark_for_merge(
         if "right_on" in args
         else None
     )
+
     left_index = args.get("left_index", False)
     right_index = args.get("right_index", False)
+
+    if not (on or left_on or right_on or left_index or right_index):
+        # default on= is intersection of columns
+        on = left_on = right_on = list(left.columns.intersection(left2.columns))
 
     # don't handle cases where we join using both index and columns since that
     # creates duplicate index labels
@@ -733,6 +737,9 @@ def mark_for_merge(
         df = left if pos.anchor == "lhs" else left2
         key = left_on if pos.anchor == "lhs" else right_on
         row = df.loc[pos.label]
+        # if pos.label is duplicated, row is a dataframe
+        if isinstance(row, pd.DataFrame):
+            row = row.iloc[0]
         return tuple(row.loc[key]) if key else row.name
 
     row_sets = make_map_sets(pairs, key=by_merge_key)

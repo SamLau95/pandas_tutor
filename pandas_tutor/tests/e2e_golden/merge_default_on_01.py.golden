@@ -1,0 +1,377 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nName,Sex,Count,Year\nNoah,M,18252,2020\nJulius,M,960,2020\nKaren,M,6,2020\nNoah,F,305,2020\n\"\"\"\n\nbaby = pd.read_csv(io.StringIO(csv)).set_index(\"Name\")\n\nbaby.merge(baby)\n",
+  "explanation": [
+    {
+      "type": "MergeCall",
+      "code_step": "baby.merge(baby)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 16
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Sex"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Count"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Year"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs2",
+            "select": "column",
+            "label": "Sex"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs2",
+            "select": "column",
+            "label": "Count"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs2",
+            "select": "column",
+            "label": "Year"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "Sex"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "Count"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "Year"
+          }
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Karen"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 2
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": "Karen"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Julius"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 1
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": "Julius"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Noah"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 0
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": "Noah"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 0
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Noah"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": "Noah"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            }
+          ]
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              "Name"
+            ],
+            "labels": [
+              "Noah",
+              "Julius",
+              "Karen",
+              "Noah"
+            ]
+          },
+          "data": [
+            [
+              "M",
+              18252,
+              2020
+            ],
+            [
+              "M",
+              960,
+              2020
+            ],
+            [
+              "M",
+              6,
+              2020
+            ],
+            [
+              "F",
+              305,
+              2020
+            ]
+          ]
+        },
+        "lhs2": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              "Name"
+            ],
+            "labels": [
+              "Noah",
+              "Julius",
+              "Karen",
+              "Noah"
+            ]
+          },
+          "data": [
+            [
+              "M",
+              18252,
+              2020
+            ],
+            [
+              "M",
+              960,
+              2020
+            ],
+            [
+              "M",
+              6,
+              2020
+            ],
+            [
+              "F",
+              305,
+              2020
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "data": [
+            [
+              "M",
+              18252,
+              2020
+            ],
+            [
+              "M",
+              960,
+              2020
+            ],
+            [
+              "M",
+              6,
+              2020
+            ],
+            [
+              "F",
+              305,
+              2020
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

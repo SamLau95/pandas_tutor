@@ -6,9 +6,6 @@ to build a wheel, run this command, (important: make sure to rm -rf the build
 cache):
 
 rm -rf build/; python setup.py bdist_wheel
-
-
-TODO: maybe i don't need so many '# type: ignore' to stop mypy here? :0
 """
 # type: ignore
 
