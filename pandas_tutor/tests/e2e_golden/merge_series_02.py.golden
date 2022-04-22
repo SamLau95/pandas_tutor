@@ -1,0 +1,20 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nName,Sex,Count,Year\nNoah,M,18252,2020\nJulius,M,960,2020\nKaren,M,6,2020\nKaren,F,325,2020\nNoah,F,305,2020\n\"\"\"\n\ncsv2 = \"\"\"\nnyt_name,category\nKaren,boomer\nJulius,mythology\nKaren,boomer2\nFreya,mythology\n\"\"\"\n\nbaby = pd.read_csv(io.StringIO(csv))\nnyt = pd.read_csv(io.StringIO(csv2))[\"nyt_name\"].rename(None)\n\n# check that merging with unnamed series causes a pandas error but doesn't\n# crash the backend\nbaby.merge(nyt)\n",
+  "explanation": [
+    {
+      "type": "RuntimeErrorInChain",
+      "code_step": "baby.merge(nyt)",
+      "message": "ValueError: Cannot merge a Series without a name\n",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 15
+        }
+      }
+    }
+  ]
+}
