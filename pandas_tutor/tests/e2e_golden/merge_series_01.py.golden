@@ -27,10 +27,9 @@
         {
           "type": "using",
           "pos": {
-            "type": "axis",
+            "type": "series",
             "anchor": "lhs2",
-            "select": "column",
-            "label": "nyt_name"
+            "label": "pandas.Series"
           }
         },
         {

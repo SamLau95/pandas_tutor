@@ -643,7 +643,7 @@ def mark_for_merge(
     right = after.val
     args = after.args
 
-    left2_arg = _get_left2_arg(args)
+    left2_arg, left2_is_series = _get_left2_arg(args)
     if left2_arg is None:
         return []
     left2: pd.DataFrame = left2_arg
@@ -689,9 +689,17 @@ def mark_for_merge(
     if left_on and right_on:
         left_on = cast(List, left_on)  # keep mypy happy
         right_on = cast(List, right_on)
+
+        lhs2_usings = (
+            make_usings(right_on, "column", "lhs2")
+            if not left2_is_series
+            # special case to handle lhs2 series
+            else [Using(lhs2_series())]
+        )
+
         using = [
             *make_usings(left_on, "column", "lhs"),
-            *make_usings(right_on, "column", "lhs2"),
+            *lhs2_usings,
             *make_usings(on if on else left_on + right_on, "column", "rhs"),
         ]
     else:
@@ -750,13 +758,13 @@ def mark_for_merge(
     return [*using, *drops, *row_sets]
 
 
-def _get_left2_arg(args: Args) -> Optional[pd.DataFrame]:
+def _get_left2_arg(args: Args) -> Tuple[Optional[pd.DataFrame], bool]:
     left2_arg = args.get("right")
 
     # merge with a series treats the series as a 1-column dataframe
     if isinstance(left2_arg, pd.Series):
-        left2_arg = left2_arg.to_frame()
-    return left2_arg if isinstance(left2_arg, pd.DataFrame) else None
+        return (left2_arg.to_frame(), True)
+    return (left2_arg if isinstance(left2_arg, pd.DataFrame) else None, False)
 
 
 def _dropped_labels(index: pd.Index, row_nums: pd.Index) -> pd.Index:
@@ -1025,6 +1033,11 @@ def lhs_series() -> SeriesPos:
 def rhs_series() -> SeriesPos:
     """shorthand for the rhs series"""
     return SeriesPos("rhs")
+
+
+def lhs2_series() -> SeriesPos:
+    """shorthand for the lhs2 series"""
+    return SeriesPos("lhs2")
 
 
 def by_row(pair: Tuple[CellPos, CellPos]) -> Label:
