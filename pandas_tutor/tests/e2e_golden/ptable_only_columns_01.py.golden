@@ -16,6 +16,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "C"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 0
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "axis",
@@ -28,15 +46,6 @@
             "anchor": "rhs",
             "select": "column",
             "level": 0
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "C"
           }
         },
         {

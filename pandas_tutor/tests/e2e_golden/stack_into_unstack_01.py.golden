@@ -16,6 +16,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 1
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 2
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "index_level",
@@ -441,6 +459,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "column",
+            "level": 0
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 3
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "index_level",
@@ -830,6 +866,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 3
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 0
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "index_level",
@@ -1179,6 +1233,24 @@
         }
       },
       "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 2
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        },
         {
           "type": "map",
           "from": {
@@ -1534,6 +1606,24 @@
         }
       },
       "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 2
+          }
+        },
         {
           "type": "map",
           "from": {

@@ -6,6 +6,7 @@ from typing import (
     Any,
     Callable,
     Iterable,
+    Iterator,
     List,
     Optional,
     Tuple,
@@ -29,6 +30,7 @@ from .diagram import (
     PosPair,
     Selection,
     SeriesPos,
+    TablePos,
     Using,
 )
 from .parse_nodes import (
@@ -347,12 +349,13 @@ def mark_for_unstack(
     n_orig_levels = len(columns.names) if util.is_dataframe(df) else 0
 
     index_marks: List[Mark] = [
-        Map(
+        mark
+        for index_level, level in enumerate(levels)
+        for mark in using_and_map(
             lhs_index("row", level),
             # unstacking puts the new levels **under** the existing ones
             rhs_index("column", index_level + n_orig_levels),
         )
-        for index_level, level in enumerate(levels)
     ]
 
     # for each cell: the unstacked labels move to the column index
@@ -383,15 +386,16 @@ def mark_for_stack(
     levels = util.listify(args.get("level", len(df.columns.names) - 1))
     levels = [util.level_number(df.columns, level) for level in levels]
 
-    # stacking puts the new levels **after** the existing ones
     n_index_levels = len(df.index.names)
 
     index_marks: List[Mark] = [
-        Map(
+        mark
+        for index_level, level in enumerate(levels)
+        for mark in using_and_map(
             IndexLevelPos("lhs", "column", level),
+            # stacking puts the new levels **after** the existing ones
             IndexLevelPos("rhs", "row", index_level + n_index_levels),
         )
-        for index_level, level in enumerate(levels)
     ]
 
     # for each cell: the unstacked labels move to the row index
@@ -438,10 +442,12 @@ def mark_for_pivot(
     will_drop_values = has_values and len(values) == 1
     n_orig_col_levels = len(df.columns.names) if not will_drop_values else 0
 
-    # each index arg goes into a new index level
     index_marks = [
-        Map(lhs("column", name), rhs_index("row", position))
+        mark
         for position, name in enumerate(index)
+        for mark in using_and_map(
+            lhs("column", name), rhs_index("row", position)
+        )
     ]
 
     # special case: result is empty dataframe with new index
@@ -518,12 +524,13 @@ def mark_for_pivot_table(
     n_orig_col_levels = len(df.columns.names) if not will_drop_values else 0
 
     # each index arg goes into a new index level
-    index_marks: List[Mark] = [
-        Map(lhs("column", name), rhs_index("row", position))
+    index_marks = [
+        mark
         for position, name in enumerate(index)
+        for mark in using_and_map(
+            lhs("column", name), rhs_index("row", position)
+        )
     ]
-    # also highlight index columns since we're using them to group
-    index_marks += make_usings(index, "column")
 
     # special case: result is empty dataframe with new index
     if no_value_cols:
@@ -531,14 +538,13 @@ def mark_for_pivot_table(
 
     # each column arg is appended as an index level into the columns
     column_marks: List[Mark] = [
-        Map(
+        mark
+        for position, name in enumerate(columns)
+        for mark in using_and_map(
             lhs("column", name),
             rhs_index("column", position + n_orig_col_levels),
         )
-        for position, name in enumerate(columns)
     ]
-    # also highlight columns since we're using them to group
-    column_marks += make_usings(columns, "column")
 
     # don't handle cases with multiple agg funcs since the logic is complicated
     if has_multi_aggs:
@@ -993,6 +999,11 @@ def make_drops(
     shorthand for crossouts
     """
     return [Drop(AxisPos(anchor, select, label)) for label in labels]
+
+
+def using_and_map(left_pos: TablePos, right_pos: TablePos) -> List[Mark]:
+    """Map left to right and Using both"""
+    return [Using(left_pos), Using(right_pos), Map(left_pos, right_pos)]
 
 
 def lhs(select: Selection, label: Label) -> AxisPos:
