@@ -16,6 +16,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "axis",
@@ -31,6 +49,24 @@
           }
         },
         {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "C"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "axis",
@@ -43,24 +79,6 @@
             "anchor": "rhs",
             "select": "row",
             "level": 1
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "A"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "C"
           }
         }
       ],

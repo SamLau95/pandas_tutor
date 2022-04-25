@@ -16,6 +16,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "A"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "axis",
@@ -36,7 +54,16 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "A"
+            "label": "C"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 0
           }
         },
         {
@@ -52,15 +79,6 @@
             "anchor": "rhs",
             "select": "column",
             "level": 0
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "C"
           }
         },
         {
