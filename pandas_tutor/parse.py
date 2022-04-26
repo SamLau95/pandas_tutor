@@ -325,16 +325,17 @@ class ChainParser(ParserBase):
         if is_parsed_call(cst_node):
             return
 
-        # special case: assume any function called on a groupby is an
-        # aggregation, so make an AggCall.
-        #
-        # TODO: don't do this for non-aggregating funcs like .transform()
+        # special case: make an AggCall if the last call was a GroupBy and
+        # we're using an agg function
         if len(self._chain) > 1:
             last = self._chain[-1]
             if isinstance(last, GroupByCall):
-                node = self.make_call_node(AggCall, cst_node)
-                self._append(node)
-                return
+                func_name: str = cst_node.func.attr.value
+                if func_name in AggCall.agg_funcs:
+                    node = self.make_call_node(AggCall, cst_node)
+                    self._append(node)
+                    return
+        # TODO: handle transforming functions like `.transform`
 
         self.fallback_call(cst_node)
 

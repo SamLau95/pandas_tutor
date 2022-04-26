@@ -25,6 +25,7 @@ from warnings import warn
 
 import numpy as np
 import pandas as pd
+import pandas.core.groupby.base
 from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
 from pandas.core.reshape.merge import _MergeOperation
@@ -33,6 +34,9 @@ from typing_extensions import TypeGuard
 
 if TYPE_CHECKING:
     from pandas_tutor.diagram import MapSet
+
+# functions that aggregate groups together
+pd_agg_funcs: List[str] = pandas.core.groupby.base.reduction_kernels
 
 T = TypeVar("T")
 
