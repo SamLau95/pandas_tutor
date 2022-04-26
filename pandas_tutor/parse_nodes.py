@@ -8,7 +8,7 @@ import json
 from dataclasses import field
 from typing import ClassVar, List, NewType, Optional, TypeVar, Union
 
-from .util import Axis, CodeRange, Slicer
+from .util import Axis, CodeRange, Slicer, pd_agg_funcs
 
 T = TypeVar("T")
 
@@ -197,7 +197,7 @@ class AggCall(Call):
     """
     catch-all for any function that happens after a groupby. note: some
     functions on groupby objects are transforms, not aggregations, e.g.
-    .transform(), .apply(), cumcount(), etc. and shouldn't be parsed into an
+    .transform(), .apply(), .cumcount(), etc. and shouldn't be parsed into an
     AggCall
 
     g = df.groupby('region')
@@ -209,6 +209,9 @@ class AggCall(Call):
     # don't match the actual "agg()" call since we have a special case in the
     # parser for aggregations
     fn_name = "AGG"
+
+    # exhaustive list of aggregation functions from GroupBy objects
+    agg_funcs = ["agg", "aggregate", *pd_agg_funcs]
 
     @classmethod
     def from_passthrough_call(cls, call: PassThroughCall):

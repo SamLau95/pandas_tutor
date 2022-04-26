@@ -1,13 +1,13 @@
 {
   "type_": "ParsedModule",
-  "code": "(dogs\n .groupby('grooming')\n .agg('mean')\n)\n",
+  "code": "(dogs\n .groupby('grooming')\n .agg('mean')\n)\n\n(dogs\n .groupby('grooming')\n .var()\n)\n\n# should not be parsed into an AggCall\n(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)\n",
   "location": {
     "start": {
       "line": 0,
       "ch": 0
     },
     "end": {
-      "line": 4,
+      "line": 15,
       "ch": 0
     }
   },
@@ -68,6 +68,125 @@
               "ch": 13
             }
           }
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "(dogs\n .groupby('grooming')\n .var()\n)",
+      "location": {
+        "start": {
+          "line": 5,
+          "ch": 0
+        },
+        "end": {
+          "line": 8,
+          "ch": 1
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "dogs",
+          "location": {
+            "start": {
+              "line": 5,
+              "ch": 1
+            },
+            "end": {
+              "line": 5,
+              "ch": 5
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "dogs\n .groupby('grooming')",
+          "location": {
+            "start": {
+              "line": 6,
+              "ch": 1
+            },
+            "end": {
+              "line": 6,
+              "ch": 21
+            }
+          },
+          "axis": "index"
+        },
+        {
+          "type_": "AggCall",
+          "code": "(dogs\n .groupby('grooming')\n .var()\n)",
+          "location": {
+            "start": {
+              "line": 7,
+              "ch": 1
+            },
+            "end": {
+              "line": 7,
+              "ch": 7
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)",
+      "location": {
+        "start": {
+          "line": 11,
+          "ch": 0
+        },
+        "end": {
+          "line": 14,
+          "ch": 1
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "dogs",
+          "location": {
+            "start": {
+              "line": 11,
+              "ch": 1
+            },
+            "end": {
+              "line": 11,
+              "ch": 5
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "dogs\n .groupby('grooming')",
+          "location": {
+            "start": {
+              "line": 12,
+              "ch": 1
+            },
+            "end": {
+              "line": 12,
+              "ch": 21
+            }
+          },
+          "axis": "index"
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)",
+          "location": {
+            "start": {
+              "line": 13,
+              "ch": 1
+            },
+            "end": {
+              "line": 13,
+              "ch": 40
+            }
+          },
+          "func": "transform"
         }
       ]
     }

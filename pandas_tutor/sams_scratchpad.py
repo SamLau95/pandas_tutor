@@ -23,7 +23,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "pg_wreck_it/df-date-indexer"
+file_to_read = "parse_golden/groupby_aggs"
 
 
 def p(obj):
@@ -46,9 +46,9 @@ if __name__ == "__main__":
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
 
-    # p(root)
+    p(root)
     # p(run(root))
-    spec = make_tutor_spec(code)
-    p(spec)
+    # spec = make_tutor_spec(code)
+    # p(spec)
 
     print("\n---------------------------------------------------------\n")
