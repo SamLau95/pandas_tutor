@@ -455,11 +455,12 @@ def mark_for_pivot(
 
     # each column arg is appended as an index level into the columns
     column_marks = [
-        Map(
+        mark
+        for position, name in enumerate(columns)
+        for mark in using_and_map(
             lhs("column", name),
             rhs_index("column", position + n_orig_col_levels),
         )
-        for position, name in enumerate(columns)
     ]
 
     # to make cell marks, we need to pull row and column labels from the data

@@ -16,6 +16,24 @@
       },
       "marks": [
         {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "bar"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "column",
+            "level": 1
+          }
+        },
+        {
           "type": "map",
           "from": {
             "type": "axis",
