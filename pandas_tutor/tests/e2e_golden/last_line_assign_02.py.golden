@@ -1,0 +1,475 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n# tests that assignment chain on the last line is visualized\ndogs = dogs.head(5).sort_values(\"breed\").query(\"food_cost > 400\")\n",
+  "explanation": [
+    {
+      "type": "HeadCall",
+      "code_step": "dogs = dogs.head(5).sort_values(\"breed\").query(\"food_cost > 400\")",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 11
+        },
+        "end": {
+          "line": 0,
+          "ch": 19
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "data": [
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Beagle",
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ],
+            [
+              "Golden Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Yorkshire Terrier",
+              "daily",
+              324.0,
+              "low",
+              "small"
+            ],
+            [
+              "Bulldog",
+              "weekly",
+              466.0,
+              "medium",
+              "medium"
+            ],
+            [
+              "Boxer",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "data": [
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Beagle",
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ],
+            [
+              "Golden Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Yorkshire Terrier",
+              "daily",
+              324.0,
+              "low",
+              "small"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "SortValuesCall",
+      "code_step": "dogs = dogs.head(5).sort_values(\"breed\").query(\"food_cost > 400\")",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 19
+        },
+        "end": {
+          "line": 0,
+          "ch": 40
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "breed"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              2,
+              1,
+              3,
+              0,
+              4
+            ]
+          },
+          "data": [
+            [
+              "Beagle",
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ],
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Golden Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Yorkshire Terrier",
+              "daily",
+              324.0,
+              "low",
+              "small"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "PassThroughCall",
+      "code_step": "dogs = dogs.head(5).sort_values(\"breed\").query(\"food_cost > 400\")",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 40
+        },
+        "end": {
+          "line": 0,
+          "ch": 65
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              3,
+              0
+            ]
+          },
+          "data": [
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Golden Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

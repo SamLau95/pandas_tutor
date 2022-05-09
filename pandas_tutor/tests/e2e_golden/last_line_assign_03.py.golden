@@ -1,0 +1,4 @@
+{
+  "code": "import numpy as np\nimport pandas as pd\n\ndates = pd.date_range(\"20130101\", periods=6)\n\ndf = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list(\"ABCD\"))\n\ndf2 = df.copy()\n\n# should NOT be parsed as a subscript\ndf2[\"E\"] = [\"one\", \"one\", \"two\", \"three\", \"four\", \"three\"]\n",
+  "explanation": []
+}
