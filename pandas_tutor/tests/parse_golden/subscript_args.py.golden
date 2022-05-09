@@ -272,7 +272,7 @@
       ]
     },
     {
-      "type_": "VerbatimStatement",
+      "type_": "ChainStatement",
       "code": "col = 'Name'",
       "location": {
         "start": {
@@ -283,7 +283,8 @@
           "line": 8,
           "ch": 12
         }
-      }
+      },
+      "chain": []
     },
     {
       "type_": "ChainStatement",
@@ -350,7 +351,7 @@
       ]
     },
     {
-      "type_": "VerbatimStatement",
+      "type_": "ChainStatement",
       "code": "mask = df['Count'] > 10",
       "location": {
         "start": {
@@ -361,7 +362,54 @@
           "line": 11,
           "ch": 23
         }
-      }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 11,
+              "ch": 7
+            },
+            "end": {
+              "line": 11,
+              "ch": 9
+            }
+          }
+        },
+        {
+          "type_": "Subscript",
+          "code": "df['Count']",
+          "location": {
+            "start": {
+              "line": 11,
+              "ch": 9
+            },
+            "end": {
+              "line": 11,
+              "ch": 18
+            }
+          },
+          "slicer": null,
+          "slice1": {
+            "type_": "SubsEval",
+            "code": "'Count'",
+            "location": {
+              "start": {
+                "line": 11,
+                "ch": 10
+              },
+              "end": {
+                "line": 11,
+                "ch": 17
+              }
+            },
+            "expr": "'Count'"
+          },
+          "slice2": null
+        }
+      ]
     },
     {
       "type_": "ChainStatement",

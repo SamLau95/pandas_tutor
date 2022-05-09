@@ -1,0 +1,196 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n# tests that an assignment on the last line is visualized\ndogs = dogs.head(3)\n",
+  "explanation": [
+    {
+      "type": "HeadCall",
+      "code_step": "dogs = dogs.head(3)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 11
+        },
+        "end": {
+          "line": 0,
+          "ch": 19
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "data": [
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Beagle",
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ],
+            [
+              "Golden Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Yorkshire Terrier",
+              "daily",
+              324.0,
+              "low",
+              "small"
+            ],
+            [
+              "Bulldog",
+              "weekly",
+              466.0,
+              "medium",
+              "medium"
+            ],
+            [
+              "Boxer",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2
+            ]
+          },
+          "data": [
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Beagle",
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

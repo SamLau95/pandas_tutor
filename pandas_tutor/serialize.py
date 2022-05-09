@@ -103,7 +103,13 @@ def serialize_pair(
     # HACK: special case for merge and join
     data: Union[DataTwoLHS, DataPair]
     if isinstance(step, (MergeCall, JoinCall)):
-        lhs2 = after.args.get("right") or after.args.get("other")
+        lhs2 = (
+            after.args["right"]
+            if "right" in after.args
+            else after.args["other"]
+            if "other" in after.args
+            else None
+        )
         data = DataTwoLHS(
             lhs=lhs,
             lhs2=serialize_pd_val(lhs2),

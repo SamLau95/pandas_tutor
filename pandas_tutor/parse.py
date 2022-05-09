@@ -88,28 +88,37 @@ def parse_as_json(code: str) -> str:
 
 # Any statement from:
 # https://libcst.readthedocs.io/en/latest/nodes.html#statements
-# that we don't process and should just execute verbatim, like
-# import pandas as pd
-is_verbatim_stmt = (
-    m.AnnAssign()
-    | m.Assign()
-    | m.Assert()
-    | m.Del()
-    | m.Global()
-    | m.Import()
-    | m.ImportFrom()
-    | m.Nonlocal()
-    | m.Raise()
-    | m.ClassDef()
-    | m.For()
-    | m.FunctionDef()
-    | m.If()
-    | m.Try()
-    | m.While()
-    | m.With()
-)
+# that we don't process and should just execute verbatim, like:
+#
+# >>> import pandas as pd
+#
+# we actually don't need this variable anymore since we'll just use an else:
+# statement in our top-level visitor
+#
+# is_verbatim_stmt = (
+#     m.AnnAssign()
+#     | m.AugAssign()
+#     | m.Assert()
+#     | m.Del()
+#     | m.Global()
+#     | m.Import()
+#     | m.ImportFrom()
+#     | m.Nonlocal()
+#     | m.Raise()
+#     | m.ClassDef()
+#     | m.For()
+#     | m.FunctionDef()
+#     | m.If()
+#     | m.Try()
+#     | m.While()
+#     | m.With()
+# )
 
-is_chain_stmt = m.Expr()
+# parse expressions and assignments into chains
+#
+# NOTE: need to update this if we want handle annotated assignments
+# (x: int = 5) or augmenting assignments (x += 5)
+is_chain_stmt = m.Expr() | m.Assign()
 
 # Used to ensure that we don't recurse into nested calls / subscripts
 is_argument = m.Arg() | m.SubscriptElement()
@@ -250,12 +259,12 @@ class PandasParser(ParserBase):
 
         statements = []
         for stmt in stmts.body:
-            if m.matches(stmt, is_verbatim_stmt):
-                statements.append(self.make_verbatim_stmt(stmt))
-            elif m.matches(stmt, is_chain_stmt):
+            if m.matches(stmt, is_chain_stmt):
                 chain = ChainParser.from_parent(self)
                 stmt.visit(chain)
                 statements.append(chain.node)
+            else:
+                statements.append(self.make_verbatim_stmt(stmt))
         return statements
 
     def make_verbatim_stmt(self, cst_node):
@@ -278,6 +287,7 @@ class ChainParser(ParserBase):
 
     def on_visit(self, cst_node):
         if not hasattr(self, "node"):
+            # we only reach this on the very first visit
             if not isinstance(cst_node, cst.BaseSmallStatement):
                 warn(
                     "used ChainParser to visit a non-statement: "
@@ -285,9 +295,13 @@ class ChainParser(ParserBase):
                 )
             self.node = self.make_node(ChainStatement, cst_node, chain=[])
 
-        # skip all arguments so we don't recurse into nested function calls and
-        # subscripts
-        return not m.matches(cst_node, is_argument)
+        return not (
+            # skip all arguments so we don't recurse into nested function calls and
+            # subscripts
+            m.matches(cst_node, is_argument)
+            # also skip the lhs of the = for assignments
+            or isinstance(cst_node, cst.AssignTarget)
+        )
 
     def leave_Subscript(self, cst_node: cst.Subscript):
         # special case: use separate parser for subscripts since they require

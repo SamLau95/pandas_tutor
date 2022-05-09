@@ -24,7 +24,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "parse_golden/groupby_aggs"
+file_to_read = "parse_golden/assignment_last_line_01"
 
 
 def p(obj):

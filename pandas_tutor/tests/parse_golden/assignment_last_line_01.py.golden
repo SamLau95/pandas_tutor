@@ -1,0 +1,120 @@
+{
+  "type_": "ParsedModule",
+  "code": "# test that last expr is parsed into chain even if it's an assignmment\ngrouped = df.groupby(\"class\")\n\n# test for multiple assignments\ngrouped = test = df.groupby(\"class\")\n\n# we don't parse annotated assignments\ngrouped: pd.DataFrame = df.groupby(\"class\")\n",
+  "location": {
+    "start": {
+      "line": 0,
+      "ch": 0
+    },
+    "end": {
+      "line": 8,
+      "ch": 0
+    }
+  },
+  "statements": [
+    {
+      "type_": "ChainStatement",
+      "code": "grouped = df.groupby(\"class\")",
+      "location": {
+        "start": {
+          "line": 1,
+          "ch": 0
+        },
+        "end": {
+          "line": 1,
+          "ch": 29
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 1,
+              "ch": 10
+            },
+            "end": {
+              "line": 1,
+              "ch": 12
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "df.groupby(\"class\")",
+          "location": {
+            "start": {
+              "line": 1,
+              "ch": 12
+            },
+            "end": {
+              "line": 1,
+              "ch": 29
+            }
+          },
+          "axis": "index"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "grouped = test = df.groupby(\"class\")",
+      "location": {
+        "start": {
+          "line": 4,
+          "ch": 0
+        },
+        "end": {
+          "line": 4,
+          "ch": 36
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 4,
+              "ch": 17
+            },
+            "end": {
+              "line": 4,
+              "ch": 19
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "df.groupby(\"class\")",
+          "location": {
+            "start": {
+              "line": 4,
+              "ch": 19
+            },
+            "end": {
+              "line": 4,
+              "ch": 36
+            }
+          },
+          "axis": "index"
+        }
+      ]
+    },
+    {
+      "type_": "VerbatimStatement",
+      "code": "grouped: pd.DataFrame = df.groupby(\"class\")",
+      "location": {
+        "start": {
+          "line": 7,
+          "ch": 0
+        },
+        "end": {
+          "line": 7,
+          "ch": 43
+        }
+      }
+    }
+  ]
+}
