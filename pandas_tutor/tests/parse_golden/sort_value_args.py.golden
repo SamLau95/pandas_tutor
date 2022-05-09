@@ -59,7 +59,7 @@
       ]
     },
     {
-      "type_": "VerbatimStatement",
+      "type_": "ChainStatement",
       "code": "cols = ['size', 'breed']",
       "location": {
         "start": {
@@ -70,7 +70,8 @@
           "line": 7,
           "ch": 24
         }
-      }
+      },
+      "chain": []
     },
     {
       "type_": "ChainStatement",

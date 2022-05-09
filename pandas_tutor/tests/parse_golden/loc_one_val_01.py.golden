@@ -27,7 +27,7 @@
       }
     },
     {
-      "type_": "VerbatimStatement",
+      "type_": "ChainStatement",
       "code": "df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
       "location": {
         "start": {
@@ -38,7 +38,38 @@
           "line": 7,
           "ch": 59
         }
-      }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "pd",
+          "location": {
+            "start": {
+              "line": 2,
+              "ch": 5
+            },
+            "end": {
+              "line": 2,
+              "ch": 7
+            }
+          }
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
+          "location": {
+            "start": {
+              "line": 2,
+              "ch": 7
+            },
+            "end": {
+              "line": 7,
+              "ch": 59
+            }
+          },
+          "func": "DataFrame"
+        }
+      ]
     },
     {
       "type_": "ChainStatement",
