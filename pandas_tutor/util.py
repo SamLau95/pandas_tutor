@@ -13,6 +13,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Hashable,
     List,
     Literal,
     Tuple,
@@ -33,7 +34,7 @@ from pandas.core.reshape.merge import _MergeOperation
 from typing_extensions import TypeGuard
 
 if TYPE_CHECKING:
-    from pandas_tutor.diagram import MapSet
+    from pandas_tutor.diagram import MapSet  # noqa: F401
 
 # functions that aggregate groups together
 pd_agg_funcs: List[str] = pandas.core.groupby.base.reduction_kernels
@@ -45,10 +46,7 @@ Slicer = Literal["loc", "iloc", None]
 
 # A Label is a value that came from pandas Index. It's a tuple of values
 # if we have a multi-index, or a single value otherwise.
-#
-# technically dataframe labels can be all sorts of things...
-# TODO: handle other index dtypes, like datetimes
-Label = Union[int, str, tuple]
+Label = Hashable
 LabelPair = Tuple[Label, Label]
 
 HasIndex = Union[pd.DataFrame, pd.Series]
@@ -298,6 +296,10 @@ def is_series(obj: Any) -> TypeGuard[pd.Series]:
 
 def is_dataframe(obj: Any) -> TypeGuard[pd.DataFrame]:
     return isinstance(obj, pd.DataFrame)
+
+
+def is_pd(obj: Any) -> TypeGuard[Union[pd.DataFrame, pd.Series]]:
+    return is_series(obj) or is_dataframe(obj)
 
 
 def is_multi(index: pd.Index) -> TypeGuard[pd.MultiIndex]:
@@ -551,40 +553,3 @@ def too_much_mem_msg(mem: float):
         f"Your total data uses {mem_as_str(mem)} of memory, which exceeds "
         f"the maximum of {mem_as_str(MEM_LIMIT)} that this tool supports."
     )
-
-
-##############################################################################
-# debugging
-##############################################################################
-
-
-def print_cell_sets(val: List[MapSet]) -> None:
-    """helper to print mapsets of CellPos"""
-    for i, mapset in enumerate(val):
-        print(f"{i}:")
-        for map_mark in mapset.maps:
-            left = (
-                f"{str(map_mark.from_.row)}, "  # type: ignore
-                f"{str(map_mark.from_.column)}"  # type: ignore
-            )
-            right = (
-                f"{str(map_mark.to.row)}, "  # type: ignore
-                f"{str(map_mark.to.column)}"  # type: ignore
-            )
-            print(f"  {left} -> {right}")
-
-
-def print_axis_sets(val: List[MapSet]) -> None:
-    """helper to print mapsets of AxisPos"""
-    for i, mapset in enumerate(val):
-        print(f"{i}:")
-        for map_mark in mapset.maps:
-            left = (
-                f"({str(map_mark.from_.anchor)}) "  # type: ignore
-                f"{str(map_mark.from_.label)}"  # type: ignore
-            )
-            right = (
-                f"({str(map_mark.to.anchor)}) "  # type: ignore
-                f"{str(map_mark.to.label)}"  # type: ignore
-            )
-            print(f"  {left} -> {right}")
