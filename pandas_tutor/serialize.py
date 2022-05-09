@@ -9,7 +9,7 @@ from typing import Any, List, Tuple, TypeVar, Union
 
 import pandas as pd
 
-from pandas_tutor.parse_nodes import MergeCall, StartOfChain
+from pandas_tutor.parse_nodes import JoinCall, MergeCall, StartOfChain
 
 from . import util
 from .diagram import (
@@ -100,12 +100,13 @@ def serialize_pair(
     )
     rhs = serialize_step_val(after)
 
-    # HACK: special case for merge
+    # HACK: special case for merge and join
     data: Union[DataTwoLHS, DataPair]
-    if isinstance(step, MergeCall):
+    if isinstance(step, (MergeCall, JoinCall)):
+        lhs2 = after.args.get("right") or after.args.get("other")
         data = DataTwoLHS(
             lhs=lhs,
-            lhs2=serialize_pd_val(after.args["right"]),
+            lhs2=serialize_pd_val(lhs2),
             rhs=rhs,
         )
     else:

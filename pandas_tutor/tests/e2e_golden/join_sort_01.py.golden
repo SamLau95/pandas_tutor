@@ -183,6 +183,38 @@
             ]
           ]
         },
+        "lhs2": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "category"
+            ]
+          },
+          "index": {
+            "names": [
+              "nyt_name"
+            ],
+            "labels": [
+              "Karen",
+              "Julius",
+              "Freya"
+            ]
+          },
+          "data": [
+            [
+              "boomer"
+            ],
+            [
+              "mythology"
+            ],
+            [
+              "mythology"
+            ]
+          ]
+        },
         "rhs": {
           "type": "DataFrame",
           "columns": {

@@ -5,7 +5,7 @@ from typing import List, Optional, Sequence, Tuple, Union, cast
 import pandas as pd
 from pandas_tutor import util
 from pandas_tutor.diagram import AxisPos, Mark, PosPair, Using
-from pandas_tutor.marks.mark_utils import (
+from pandas_tutor.marks.mark_utils import (  # noqa: F401
     lhs,
     lhs2,
     lhs2_index,
