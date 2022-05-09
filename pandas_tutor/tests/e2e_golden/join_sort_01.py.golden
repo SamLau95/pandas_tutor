@@ -1,0 +1,233 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nName,Sex,Count,Year\nNoah,M,18252,2020\nJulius,M,960,2020\nKaren,F,325,2020\n\"\"\"\n\ncsv2 = \"\"\"\nnyt_name,category\nKaren,boomer\nJulius,mythology\nFreya,mythology\n\"\"\"\n\nbaby = pd.read_csv(io.StringIO(csv)).set_index(\"Name\")\nnyt = pd.read_csv(io.StringIO(csv2)).set_index(\"nyt_name\")\n\n# tests that output is right when sort=True\nbaby.join(nyt, sort=True)\n",
+  "explanation": [
+    {
+      "type": "JoinCall",
+      "code_step": "baby.join(nyt, sort=True)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 25
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "lhs2",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 0
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs2",
+            "select": "row",
+            "label": "Freya"
+          }
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Julius"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": "Julius"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": "Julius"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": "Julius"
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Karen"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": "Karen"
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": "Karen"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": "Karen"
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": "Noah"
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": "Noah"
+              }
+            }
+          ]
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year"
+            ]
+          },
+          "index": {
+            "names": [
+              "Name"
+            ],
+            "labels": [
+              "Noah",
+              "Julius",
+              "Karen"
+            ]
+          },
+          "data": [
+            [
+              "M",
+              18252,
+              2020
+            ],
+            [
+              "M",
+              960,
+              2020
+            ],
+            [
+              "F",
+              325,
+              2020
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Sex",
+              "Count",
+              "Year",
+              "category"
+            ]
+          },
+          "index": {
+            "names": [
+              "Name"
+            ],
+            "labels": [
+              "Julius",
+              "Karen",
+              "Noah"
+            ]
+          },
+          "data": [
+            [
+              "M",
+              960,
+              2020,
+              "mythology"
+            ],
+            [
+              "F",
+              325,
+              2020,
+              "boomer"
+            ],
+            [
+              "M",
+              18252,
+              2020,
+              null
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

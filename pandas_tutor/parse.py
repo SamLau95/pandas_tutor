@@ -23,6 +23,9 @@ import libcst as cst
 import libcst.matchers as m
 import libcst.metadata as cstm
 
+from pandas_tutor import util
+from pandas_tutor.util import CodePosition, CodeRange
+
 from .parse_nodes import (
     AggCall,
     ApplyCall,
@@ -34,10 +37,11 @@ from .parse_nodes import (
     DropCall,
     GroupByCall,
     HeadCall,
+    JoinCall,
     MeltCall,
     MergeCall,
-    ParseResult,
     ParsedModule,
+    ParseResult,
     ParseSyntaxError,
     PassThroughCall,
     PivotCall,
@@ -57,8 +61,6 @@ from .parse_nodes import (
     UnstackCall,
     VerbatimStatement,
 )
-from .util import CodePosition, CodeRange
-from . import util
 
 T = t.TypeVar("T")
 
@@ -550,6 +552,23 @@ class ChainParser(ParserBase):
             right_index_expr=right_index_expr,
             sort_expr=sort_expr,
             suffixes_expr=suffixes_expr,
+        )
+        self._append(node)
+
+    @m.leave(matches(JoinCall))
+    def make_join(self, cst_node: cst.Call):
+        other_expr = self.get_arg_code(cst_node.args, 0, "other")
+        on_expr = self.get_arg_code(cst_node.args, 1, "on")
+        how_expr = self.get_arg_code(cst_node.args, 2, "how")
+        sort_expr = self.get_arg_code(cst_node.args, 5, "sort")
+
+        node = self.make_call_node(
+            JoinCall,
+            cst_node,
+            other_expr=other_expr,
+            on_expr=on_expr,
+            how_expr=how_expr,
+            sort_expr=sort_expr,
         )
         self._append(node)
 

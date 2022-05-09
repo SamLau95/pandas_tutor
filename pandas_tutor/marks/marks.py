@@ -13,7 +13,7 @@ from typing import (
 
 import pandas as pd
 
-from .merge import mark_for_merge
+from .merge import mark_for_join, mark_for_merge
 
 from .mark_utils import (
     diff_rows,
@@ -54,6 +54,7 @@ from pandas_tutor.parse_nodes import (
     EvalError,
     GroupByCall,
     HeadCall,
+    JoinCall,
     MeltCall,
     MergeCall,
     PassThroughCall,
@@ -123,6 +124,8 @@ def make_marks(
         return mark_for_melt(step, before, after)
     elif isinstance(step, MergeCall):
         return mark_for_merge(step, before, after)
+    elif isinstance(step, JoinCall):
+        return mark_for_join(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:

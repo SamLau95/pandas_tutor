@@ -1,6 +1,6 @@
 """marks for join operations, like merge() and join()"""
 
-from typing import List, Optional, Sequence, Tuple, TypedDict, Union, cast
+from typing import List, Optional, Sequence, Tuple, Union, cast
 
 import pandas as pd
 from pandas_tutor import util
@@ -15,10 +15,11 @@ from pandas_tutor.marks.mark_utils import (
     make_drops,
     make_map_sets,
     make_usings,
+    print_axis_sets,
     rhs,
     rhs_index,
 )
-from pandas_tutor.parse_nodes import MergeCall
+from pandas_tutor.parse_nodes import JoinCall, MergeCall
 from pandas_tutor.run import Args, DFResult, EvalResult, SeriesResult
 from pandas_tutor.util import Label
 
@@ -63,6 +64,49 @@ def mark_for_merge(
         right_on_orig=right_on_orig,
         left_index=left_index,
         right_index=right_index,
+        sort=sort,
+    )
+
+
+def mark_for_join(
+    step: JoinCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+
+    left = before.val
+    right = after.val
+    args = after.args
+    left2 = args.get("other")
+
+    # note that .join() uses a *left join* by default, not inner
+    how: str = cast(str, args.get("how", "left"))
+    on_orig = args.get("on")
+
+    # sort=False as default is important to match behavior of pd.join() since
+    # get_join_info() has sort=True
+    sort: bool = cast(bool, args.get("sort", False))
+
+    # .join() can technically take a *list* of dataframes to join with, but we
+    # only handle the single dataframe case
+    if not util.is_pd(left2):
+        return []
+
+    # recreate pandas join() logic from pd.Dataframe._join_compat()
+
+    if how == "cross":
+        return _merge_marks(
+            left, left2, right, how=how, on_orig=on_orig, sort=sort
+        )
+
+    return _merge_marks(
+        left,
+        left2,
+        right,
+        how=how,
+        left_on_orig=on_orig,
+        left_index=on_orig is None,
+        right_index=True,
         sort=sort,
     )
 
@@ -122,6 +166,13 @@ def _merge_marks(
         right_index=right_index,
         sort=sort,
     )
+    # a left join on the indexes keeps the same index as the left df, and
+    # pandas sets left_row_nums=None.
+    if left_row_nums is None:
+        left_row_nums = pd.RangeIndex(len(left))
+    # same deal for right joins
+    if left2_row_nums is None:
+        left2_row_nums = pd.RangeIndex(len(left2))
 
     # mark all columns used for joining
     if left_on and right_on:
@@ -199,7 +250,7 @@ def _merge_marks(
 
     row_sets = make_map_sets(pairs, key=by_merge_key)
 
-    # util.print_axis_sets(row_sets)
+    # print_axis_sets(row_sets)
     # breakpoint()
 
     return [*using, *drops, *row_sets]

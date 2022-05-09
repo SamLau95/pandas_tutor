@@ -8,7 +8,7 @@ import json
 from dataclasses import field
 from typing import ClassVar, List, NewType, Optional, TypeVar, Union
 
-from .util import Axis, CodeRange, Slicer, pd_agg_funcs
+from pandas_tutor.util import Axis, CodeRange, Slicer, pd_agg_funcs
 
 T = TypeVar("T")
 
@@ -362,6 +362,20 @@ class MergeCall(Call):
     right_index_expr: Optional[RawCode] = evals_into("right_index")
     sort_expr: Optional[RawCode] = evals_into("sort")
     suffixes_expr: Optional[RawCode] = evals_into("suffixes")
+
+
+@dataclasses.dataclass
+class JoinCall(Call):
+    """
+    baby.join(nyt, on='Name', how='inner', sort=True)
+    """
+
+    fn_name = "join"
+
+    other_expr: Optional[RawCode] = evals_into("other")
+    on_expr: Optional[RawCode] = evals_into("on")
+    how_expr: Optional[RawCode] = evals_into("how")
+    sort_expr: Optional[RawCode] = evals_into("sort")
 
 
 ##############################################################################
