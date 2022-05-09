@@ -1,11 +1,9 @@
 """
 creates mark specs. here's where the magic happens!
 """
-import itertools
 from typing import (
     Any,
     Callable,
-    Iterable,
     List,
     Optional,
     Tuple,
@@ -15,28 +13,42 @@ from typing import (
 
 import pandas as pd
 
-from . import util
-from .diagram import (
-    Anchor,
-    AxisPos,
+from .merge import mark_for_merge
+
+from .mark_utils import (
+    diff_rows,
+    diff_cols,
+    no_marks,
+    selection,
+    make_usings,
+    make_maps,
+    make_drops,
+    using_and_map,
+    lhs,
+    rhs,
+    lhs_index,
+    rhs_index,
+    rhs_series,
+    by_row,
+    by_column,
+    by_result_cell,
+    make_map_sets,
+)
+
+from pandas_tutor import util
+from pandas_tutor.diagram import (
     CellPos,
     Drop,
-    IndexLevel,
     IndexLevelPos,
     Map,
-    MapSet,
     Mark,
     PosPair,
     Selection,
-    SeriesPos,
-    TablePos,
-    Using,
 )
-from .parse_nodes import (
+from pandas_tutor.parse_nodes import (
     AggCall,
     ApplyCall,
     AssignCall,
-    Axis,
     ChainStep,
     DropCall,
     EvalError,
@@ -57,16 +69,15 @@ from .parse_nodes import (
     TailCall,
     UnstackCall,
 )
-from .run import (
+from pandas_tutor.run import (
     Arg,
-    Args,
     DFResult,
     EvalResult,
     GroupbyResult,
     SeriesGroupbyResult,
     SeriesResult,
 )
-from .util import SERIES, Label, LabelPair
+from pandas_tutor.util import SERIES, Label, LabelPair
 
 
 # step comes from after.step, but we pull it out here to help with
@@ -639,145 +650,6 @@ def mark_for_melt(
     return make_map_sets(pairs, key=by_column)
 
 
-def mark_for_merge(
-    step: MergeCall, before: EvalResult, after: EvalResult
-) -> List[Mark]:
-    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
-        return []
-
-    left = before.val
-    right = after.val
-    args = after.args
-
-    left2_arg, left2_is_series = _get_left2_arg(args)
-    if left2_arg is None:
-        return []
-    left2: pd.DataFrame = left2_arg
-
-    has_on = "on" in args
-    on = util.listify(args["on"]) if has_on else None
-    left_on = (
-        on
-        if has_on
-        else util.listify(args["left_on"])
-        if "left_on" in args
-        else None
-    )
-    right_on = (
-        on
-        if has_on
-        else util.listify(args["right_on"])
-        if "right_on" in args
-        else None
-    )
-
-    left_index = args.get("left_index", False)
-    right_index = args.get("right_index", False)
-
-    if not (on or left_on or right_on or left_index or right_index):
-        # default on= is intersection of columns
-        on = left_on = right_on = list(left.columns.intersection(left2.columns))
-
-    # don't handle cases where we join using both index and columns since that
-    # creates duplicate index labels
-    if left_index is not right_index:
-        return []
-
-    res_index, left_row_nums, left2_row_nums = util.get_join_info(
-        # df.merge has sort=False as default, but get_join_info has sort=True
-        # as default.
-        left=left,
-        sort=False,
-        **args,
-    )
-
-    # mark all columns used for joining
-    if left_on and right_on:
-        left_on = cast(List, left_on)  # keep mypy happy
-        right_on = cast(List, right_on)
-
-        lhs2_usings = (
-            make_usings(right_on, "column", "lhs2")
-            if not left2_is_series
-            # special case to handle lhs2 series
-            else [Using(lhs2_series())]
-        )
-
-        using = [
-            *make_usings(left_on, "column", "lhs"),
-            *lhs2_usings,
-            *make_usings(on if on else left_on + right_on, "column", "rhs"),
-        ]
-    else:
-        using = cast(
-            List[Mark],
-            [Using(lhs_index("row", i)) for i in range(left.index.nlevels)]
-            + [Using(lhs2_index("row", i)) for i in range(left2.index.nlevels)]
-            + [Using(rhs_index("row", i)) for i in range(right.index.nlevels)],
-        )
-
-    # mark all rows dropped from either lhs or lhs2
-    drops = [
-        *make_drops(_dropped_labels(left.index, left_row_nums), "row", "lhs"),
-        *make_drops(
-            _dropped_labels(left2.index, left2_row_nums), "row", "lhs2"
-        ),
-    ]
-
-    def row_pairs(left_num: int, left2_num: int, right_row: Label):
-        left_row = cast(Label, left.index[left_num])
-        left2_row = cast(Label, left2.index[left2_num])
-        if left_num != -1:
-            yield (lhs("row", left_row), rhs("row", right_row))
-        if left2_num != -1:
-            yield (lhs2("row", left2_row), rhs("row", right_row))
-        # don't actually need this last case since if lhs -> rhs and lhs2 ->
-        # rhs, we automatically have lhs and lhs2 in mapset together
-        # if left_num != -1 and left2_num != -1:
-        #     yield (lhs("row", left_row), lhs2("row", left2_row))
-
-    pairs: List[PosPair] = [
-        pair
-        for left_num, left2_num, right_row in zip(
-            left_row_nums, left2_row_nums, res_index
-        )
-        for pair in row_pairs(left_num, left2_num, right_row)
-    ]
-
-    # the merge key is a tuple of row values or an index label from lhs or lhs2
-    def by_merge_key(pair: Tuple[AxisPos, AxisPos]):
-        # pair is always {lhs, lhs2} -> rhs
-        pos, _ = pair
-        df = left if pos.anchor == "lhs" else left2
-        key = left_on if pos.anchor == "lhs" else right_on
-        row = df.loc[pos.label]
-        # if pos.label is duplicated, row is a dataframe
-        if isinstance(row, pd.DataFrame):
-            row = row.iloc[0]
-        return tuple(row.loc[key]) if key else row.name
-
-    row_sets = make_map_sets(pairs, key=by_merge_key)
-
-    # util.print_axis_sets(row_sets)
-    # breakpoint()
-
-    return [*using, *drops, *row_sets]
-
-
-def _get_left2_arg(args: Args) -> Tuple[Optional[pd.DataFrame], bool]:
-    left2_arg = args.get("right")
-
-    # merge with a series treats the series as a 1-column dataframe
-    if isinstance(left2_arg, pd.Series):
-        return (left2_arg.to_frame(), True)
-    return (left2_arg if isinstance(left2_arg, pd.DataFrame) else None, False)
-
-
-def _dropped_labels(index: pd.Index, row_nums: pd.Index) -> pd.Index:
-    dropped = pd.RangeIndex(len(index)).difference(row_nums)
-    return index[dropped]
-
-
 # handler for all subscripts, like:
 #
 # df.loc[1:5, ['Name', 'Count']]
@@ -932,149 +804,3 @@ def mark_for_subscript_into_series(
         ]
 
     return []
-
-
-def diff_dfs(df1: pd.DataFrame, df2: pd.DataFrame):
-    """
-    when we just want to draw arrows between different rows and cols without
-    special highlights. only outputs when there is at least one mismatching row
-    / col
-    """
-    rows = diff_rows(df1, df2)
-    cols = diff_cols(df1, df2)
-    return [*cols, *rows]
-
-
-def diff_rows(df1: util.HasIndex, df2: util.HasIndex, only_if_diff=True):
-    """
-    when we just want to draw arrows between different rows and cols without
-    special highlights.
-    """
-    row_matches = util.match_rows(df1, df2, only_if_diff)
-    return make_maps(row_matches, "row")
-
-
-def diff_cols(df1: pd.DataFrame, df2: pd.DataFrame, only_if_diff=True):
-    """
-    when we just want to draw arrows between different rows and cols without
-    special highlights.
-    """
-    col_matches = util.match_cols(df1, df2, only_if_diff)
-    return make_maps(col_matches, "column")
-
-
-def no_marks(*args) -> List[Mark]:
-    # print(f'Unknown mark for {step.type_}')
-    return []
-
-
-def selection(axis: Axis, other=False) -> Selection:
-    if other:
-        return "column" if axis == "index" else "row"
-    return "row" if axis == "index" else "column"
-
-
-def make_usings(
-    labels: Iterable, select: Selection, anchor: Anchor = "lhs"
-) -> List[Mark]:
-    """
-    shorthand to make a highlight for each column/row in labels
-    """
-    return [Using(AxisPos(anchor, select, label)) for label in labels]
-
-
-def make_maps(labels: Iterable, select: Selection) -> List[Mark]:
-    """
-    shorthand when index values don't change, which is most of the time
-    """
-    return [
-        Map(from_=lhs(select, label), to=rhs(select, label)) for label in labels
-    ]
-
-
-def make_drops(
-    labels: Iterable, select: Selection, anchor: Anchor = "lhs"
-) -> List[Mark]:
-    """
-    shorthand for crossouts
-    """
-    return [Drop(AxisPos(anchor, select, label)) for label in labels]
-
-
-def using_and_map(left_pos: TablePos, right_pos: TablePos) -> List[Mark]:
-    """Map left to right and Using both"""
-    return [Using(left_pos), Using(right_pos), Map(left_pos, right_pos)]
-
-
-def lhs(select: Selection, label: Label) -> AxisPos:
-    """shorthand for a column/row in lhs"""
-    return AxisPos("lhs", select, label)
-
-
-def rhs(select: Selection, label: Label) -> AxisPos:
-    """shorthand for a column/row in rhs"""
-    return AxisPos("rhs", select, label)
-
-
-def lhs2(select: Selection, label: Label) -> AxisPos:
-    """shorthand for a column/row in lhs2"""
-    return AxisPos("lhs2", select, label)
-
-
-def lhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
-    """shorthand for an index level in lhs"""
-    return IndexLevelPos("lhs", select, level)
-
-
-def rhs_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
-    """shorthand for an index level in rhs"""
-    return IndexLevelPos("rhs", select, level)
-
-
-def lhs2_index(select: Selection, level: IndexLevel) -> IndexLevelPos:
-    """shorthand for an index level in lhs2"""
-    return IndexLevelPos("lhs2", select, level)
-
-
-def lhs_series() -> SeriesPos:
-    """shorthand for the lhs series"""
-    return SeriesPos("lhs")
-
-
-def rhs_series() -> SeriesPos:
-    """shorthand for the rhs series"""
-    return SeriesPos("rhs")
-
-
-def lhs2_series() -> SeriesPos:
-    """shorthand for the lhs2 series"""
-    return SeriesPos("lhs2")
-
-
-def by_row(pair: Tuple[CellPos, CellPos]) -> Label:
-    """grouper for CellPos pairs. returns the row label of the original cell"""
-    cell, _ = pair
-    return cell.row
-
-
-def by_column(pair: Tuple[CellPos, CellPos]) -> Label:
-    """grouper for CellPos pairs. returns the col label of the original cell"""
-    cell, _ = pair
-    return cell.column
-
-
-def by_result_cell(pair: Tuple[CellPos, CellPos]) -> LabelPair:
-    """
-    grouper for CellPos pairs. returns the row, col pair for resulting cell
-    """
-    _, cell = pair
-    return cell.row, cell.column
-
-
-def make_map_sets(pairs: Iterable[PosPair], key: Callable) -> List[Mark]:
-    """groups pairs by key, then makes a map set for each group"""
-    pairs = sorted(pairs, key=key)
-    return [
-        MapSet([Map(from_, to) for from_, to in g])
-        for _, g in itertools.groupby(pairs, key=key)
-    ]

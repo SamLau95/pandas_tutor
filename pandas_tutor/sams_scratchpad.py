@@ -1,6 +1,7 @@
 """
 just for myself
 """
+# type: ignore
 # flake8: noqa
 
 import prettyprinter  # type: ignore
