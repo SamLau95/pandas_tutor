@@ -1,0 +1,107 @@
+{
+  "code": "# https://github.com/SamLau95/pandas_tutor/issues/32\n# https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html\nimport pandas as pd\nimport numpy as np\nnp.random.seed(0) # uncomment if you want deterministic outputs\ns = pd.Series([1, 3, 5, np.nan, 6, 8])\ndates = pd.date_range(\"20130101\", periods=6)\ndf = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list(\"ABCD\"))\n\ndf.loc[dates[1]] # <-- is this an example of a nested expression? there's no arrows here",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "df.loc[dates[1]]",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 16
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "2013-01-01 00:00:00",
+              "2013-01-02 00:00:00",
+              "2013-01-03 00:00:00",
+              "2013-01-04 00:00:00",
+              "2013-01-05 00:00:00",
+              "2013-01-06 00:00:00"
+            ]
+          },
+          "data": [
+            [
+              1.764052345967664,
+              0.4001572083672233,
+              0.9787379841057392,
+              2.240893199201458
+            ],
+            [
+              1.8675579901499675,
+              -0.977277879876411,
+              0.9500884175255894,
+              -0.1513572082976979
+            ],
+            [
+              -0.10321885179355784,
+              0.41059850193837233,
+              0.144043571160878,
+              1.454273506962975
+            ],
+            [
+              0.7610377251469934,
+              0.12167501649282841,
+              0.44386323274542566,
+              0.33367432737426683
+            ],
+            [
+              1.4940790731576061,
+              -0.20515826376580087,
+              0.31306770165090136,
+              -0.8540957393017248
+            ],
+            [
+              -2.5529898158340787,
+              0.6536185954403606,
+              0.8644361988595057,
+              -0.7421650204064419
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "data": [
+            1.8675579901499675,
+            -0.977277879876411,
+            0.9500884175255894,
+            -0.1513572082976979
+          ]
+        }
+      }
+    }
+  ]
+}
