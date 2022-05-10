@@ -1,0 +1,263 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs.set_index([\"breed\", \"size\"], append=True)\n",
+  "explanation": [
+    {
+      "type": "SetIndexCall",
+      "code_step": "dogs.set_index([\"breed\", \"size\"], append=True)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 46
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "breed"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "breed"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 1
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          },
+          "to": {
+            "type": "index_level",
+            "anchor": "rhs",
+            "select": "row",
+            "level": 2
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "grooming",
+              "food_cost",
+              "kids",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "data": [
+            [
+              "Labrador Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "German Shepherd",
+              "weekly",
+              466.0,
+              "medium",
+              "large"
+            ],
+            [
+              "Beagle",
+              "daily",
+              324.0,
+              "high",
+              "small"
+            ],
+            [
+              "Golden Retriever",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ],
+            [
+              "Yorkshire Terrier",
+              "daily",
+              324.0,
+              "low",
+              "small"
+            ],
+            [
+              "Bulldog",
+              "weekly",
+              466.0,
+              "medium",
+              "medium"
+            ],
+            [
+              "Boxer",
+              "weekly",
+              466.0,
+              "high",
+              "medium"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "grooming",
+              "food_cost",
+              "kids"
+            ]
+          },
+          "index": {
+            "names": [
+              null,
+              "breed",
+              "size"
+            ],
+            "labels": [
+              [
+                0,
+                "Labrador Retriever",
+                "medium"
+              ],
+              [
+                1,
+                "German Shepherd",
+                "large"
+              ],
+              [
+                2,
+                "Beagle",
+                "small"
+              ],
+              [
+                3,
+                "Golden Retriever",
+                "medium"
+              ],
+              [
+                4,
+                "Yorkshire Terrier",
+                "small"
+              ],
+              [
+                5,
+                "Bulldog",
+                "medium"
+              ],
+              [
+                6,
+                "Boxer",
+                "medium"
+              ]
+            ]
+          },
+          "data": [
+            [
+              "weekly",
+              466.0,
+              "high"
+            ],
+            [
+              "weekly",
+              466.0,
+              "medium"
+            ],
+            [
+              "daily",
+              324.0,
+              "high"
+            ],
+            [
+              "weekly",
+              466.0,
+              "high"
+            ],
+            [
+              "daily",
+              324.0,
+              "low"
+            ],
+            [
+              "weekly",
+              466.0,
+              "medium"
+            ],
+            [
+              "weekly",
+              466.0,
+              "high"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -62,6 +62,7 @@ from pandas_tutor.parse_nodes import (
     PivotTableCall,
     RenameCall,
     ResetIndexCall,
+    SetIndexCall,
     SortValuesCall,
     StackCall,
     SubsComparison,
@@ -112,6 +113,8 @@ def make_marks(
         return mark_for_agg(step, before, after)
     elif isinstance(step, ResetIndexCall):
         return mark_for_reset_index(step, before, after)
+    elif isinstance(step, SetIndexCall):
+        return mark_for_set_index(step, before, after)
     elif isinstance(step, UnstackCall):
         return mark_for_unstack(step, before, after)
     elif isinstance(step, StackCall):
@@ -332,6 +335,30 @@ def mark_for_reset_index(
             rhs("column", names[level]),
         )
         for level in levels
+    ]
+
+
+def mark_for_set_index(
+    step: SetIndexCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not (isinstance(before, DFResult) and isinstance(after, DFResult)):
+        return []
+    df = before.val
+    args = after.args
+
+    keys = args.get("keys", [])
+    append = args.get("append", False)
+
+    # if append=True, pandas appends new index levels after old levels
+    n_orig_levels = len(df.index.names) if append else 0
+
+    return [
+        mark
+        for index_level, level in enumerate(keys)
+        for mark in using_and_map(
+            lhs("column", level),
+            rhs_index("row", index_level + n_orig_levels),
+        )
     ]
 
 
