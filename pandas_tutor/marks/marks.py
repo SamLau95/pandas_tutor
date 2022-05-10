@@ -346,7 +346,7 @@ def mark_for_set_index(
     df = before.val
     args = after.args
 
-    keys = args.get("keys", [])
+    keys = util.listify(args.get("keys", []))
     append = args.get("append", False)
 
     # if append=True, pandas appends new index levels after old levels

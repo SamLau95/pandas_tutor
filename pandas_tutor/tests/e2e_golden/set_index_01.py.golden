@@ -21,7 +21,7 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "b"
+            "label": "breed"
           }
         },
         {
@@ -39,145 +39,13 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "b"
+            "label": "breed"
           },
           "to": {
             "type": "index_level",
             "anchor": "rhs",
             "select": "row",
             "level": 0
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "r"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 1
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "r"
-          },
-          "to": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 1
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "e"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 2
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "e"
-          },
-          "to": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 2
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "e"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 3
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "e"
-          },
-          "to": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 3
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "d"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 4
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "d"
-          },
-          "to": {
-            "type": "index_level",
-            "anchor": "rhs",
-            "select": "row",
-            "level": 4
           }
         }
       ],
