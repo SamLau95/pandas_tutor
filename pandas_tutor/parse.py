@@ -49,6 +49,7 @@ from .parse_nodes import (
     RawCode,
     RenameCall,
     ResetIndexCall,
+    SetIndexCall,
     SortValuesCall,
     StackCall,
     StartOfChain,
@@ -296,8 +297,8 @@ class ChainParser(ParserBase):
             self.node = self.make_node(ChainStatement, cst_node, chain=[])
 
         return not (
-            # skip all arguments so we don't recurse into nested function calls and
-            # subscripts
+            # skip all arguments so we don't recurse into nested function calls
+            # and subscripts
             m.matches(cst_node, is_argument)
             # also skip the lhs of the = for assignments
             or isinstance(cst_node, cst.AssignTarget)
@@ -464,6 +465,19 @@ class ChainParser(ParserBase):
             cst_node,
             level_expr=level_expr,
             drop_expr=drop_expr,
+        )
+        self._append(node)
+
+    @m.leave(matches(SetIndexCall))
+    def make_set_index(self, cst_node):
+        keys_expr = self.get_arg_code(cst_node.args, 0, "keys")
+        append_expr = self.get_arg_code(cst_node.args, 2, "append")
+
+        node = self.make_call_node(
+            SetIndexCall,
+            cst_node,
+            keys_expr=keys_expr,
+            append_expr=append_expr,
         )
         self._append(node)
 

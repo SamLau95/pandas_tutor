@@ -269,6 +269,20 @@ class ResetIndexCall(Call):
 
 
 @dataclasses.dataclass
+class SetIndexCall(Call):
+    """
+    dogs.set_index('breed', drop=False)
+    dogs.set_index('breed', append=True)
+    """
+
+    fn_name = "set_index"
+
+    keys_expr: Optional[RawCode] = evals_into("keys")
+    # we don't need to track the drop arg
+    append_expr: Optional[RawCode] = evals_into("append")
+
+
+@dataclasses.dataclass
 class UnstackCall(Call):
     """
     counts.unstack()
