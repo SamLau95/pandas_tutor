@@ -1,11 +1,10 @@
 import contextlib
 import io
 import os
-import sys
 import unittest
 from pathlib import Path
 
-from ..main import make_tutor_spec
+from pandas_tutor.__main__ import make_tutor_spec
 
 test_cases = Path(__file__).parent / 'pg_wreck_it'
 

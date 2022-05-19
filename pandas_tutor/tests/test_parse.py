@@ -3,7 +3,7 @@ import unittest
 import json
 from dataclasses import asdict
 
-from ..parse import parse
+from pandas_tutor.parse import parse
 
 test_cases = Path(__file__).parent / 'parse_golden'
 

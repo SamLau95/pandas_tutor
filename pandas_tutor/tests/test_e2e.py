@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import unittest
 
-from ..main import make_tutor_spec
+from pandas_tutor.__main__ import make_tutor_spec
 
 test_cases = Path(__file__).parent / "e2e_golden"
 
