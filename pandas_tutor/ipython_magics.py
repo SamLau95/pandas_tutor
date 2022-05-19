@@ -2,12 +2,10 @@
 defines %%python_tutor magic
 """
 
-from typing import Any, Dict
 from IPython.core.magic import (
     Magics,
     cell_magic,
     magics_class,
-    needs_local_scope,
 )
 from IPython.display import HTML, Javascript, display
 
