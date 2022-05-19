@@ -11,10 +11,17 @@ rm -rf build/; python setup.py bdist_wheel
 
 from setuptools import setup, find_packages
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
+# note that we don't put requirements.txt into the install_requires list
+# since for the website we'll bundle the dependencies directly into the wheel.
+# other environments will have to run pip install -r requirements.txt manually.
+
 # maybe helpful? https://setuptools.pypa.io/en/latest/userguide/datafiles.html
 setup(
-    name="pandastutor",
-    version="1.0",
+    name="pandas_tutor",
+    version="2.0.0",
     packages=find_packages(),
     package_data={
         "": ["*.golden"]

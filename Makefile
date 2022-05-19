@@ -25,6 +25,20 @@ watch: ## reruns typecheck and tests on file change
 	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) |\
 		xargs -0 -n 1 -I {} sh -c "echo {} && $(MAKE) typecheck test"
 
+build: ## makes wheel for pypi
+	python -m build
+
+clean: ## removes pypi built files
+	rm -rf build/ dist/
+
+# to install package from test pypi:
+# pip install --index-url https://test.pypi.org/simple/ --no-deps pandas_tutor
+test_publish: ## uploads wheel to test pypi
+	python -m twine upload --repository testpypi dist/*
+
+
+publish: ## uploads wheel to REAL pypi
+	python -m twine upload dist/*
 
 # PG - make a self-contained wheel to be able to deploy to pyodide (or
 # elsewhere!) using bundled-package-dependencies.tar.gz, which should

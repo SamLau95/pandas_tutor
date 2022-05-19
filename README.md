@@ -1,1 +1,3 @@
-takes pandas code and outputs json for some hard-coded methods!
+# pandas_tutor
+
+takes pandas code and outputs json

@@ -1,2 +1,4 @@
 -r requirements.txt
 prettyprinter==0.18.0
+wheel
+build

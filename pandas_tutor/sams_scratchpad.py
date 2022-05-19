@@ -14,7 +14,7 @@ from pandas_tutor.parse_nodes import Call, SortValuesCall  # type: ignore
 
 from .parse import parse, test_logger, test_parser
 from .run import run
-from .main import make_tutor_spec, make_tutor_spec_py
+from .__main__ import make_tutor_spec, make_tutor_spec_py
 
 prettyprinter.install_extras(include=["dataclasses", "python", "numpy"])
 

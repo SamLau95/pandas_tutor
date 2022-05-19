@@ -1,9 +1,9 @@
 """
-functions that put everything together
+runs pandas_tutor backend
 
 Usage:
-    main.py FILE ... [--output] [--parse_only] [--parse_log]
-    main.py -c CODE
+    pandas_tutor FILE ... [--output] [--parse_only] [--parse_log]
+    pandas_tutor -c CODE
 
 Options:
     -o --output      # Outputs specs to files named {input_file}.golden
