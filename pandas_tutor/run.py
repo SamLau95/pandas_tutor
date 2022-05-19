@@ -86,13 +86,17 @@ class UnhandledResult(EvalResult):
     val: t.Any
 
 
-def run(root: ParseResult) -> t.List[EvalResult]:
+def run(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
+    """
+    runs parsed code. in ipython, we pass in the shell object so we can
+    run user code in their namespace.
+    """
     # since we send JSON to stdout, we'll send user code's stdout to stderr.
     with contextlib.redirect_stdout(sys.stderr):
-        return run_code(root)
+        return run_code(root, ipython_shell)
 
 
-def run_code(root: ParseResult) -> t.List[EvalResult]:
+def run_code(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
     if isinstance(root, ParseSyntaxError):
         return [
             SyntaxErrorResult(
@@ -109,8 +113,11 @@ def run_code(root: ParseResult) -> t.List[EvalResult]:
     if not isinstance(last_expr, ChainStatement):
         return []
 
-    # now let's run stuff dangerously!
-    user_globals = setup_user_globals()
+    # grab user local vars from ipython shell if possible, otherwise initialize
+    # a new globals dict
+    user_globals = (
+        setup_user_globals() if ipython_shell is None else ipython_shell.user_ns
+    )
 
     for stmt in setup_stmts:
         try:

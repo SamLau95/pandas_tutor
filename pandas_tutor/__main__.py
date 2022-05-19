@@ -30,6 +30,17 @@ def make_tutor_spec(code: str) -> str:
     return spec.to_json()
 
 
+def make_tutor_spec_ipython(code: str, ipython_shell) -> str:
+    """
+    when we run in ipython, we need to execute code using ipython's namespace
+    """
+    root = parse(code)
+    eval_results = run(root, ipython_shell)
+    explanation = serialize(eval_results)
+    spec = OutputSpec(code=code, explanation=explanation)
+    return spec.to_json()
+
+
 def make_tutor_spec_py(code: str) -> OutputSpec:
     """Keeps serialized output as a Python object for testing"""
     root = parse(code)
