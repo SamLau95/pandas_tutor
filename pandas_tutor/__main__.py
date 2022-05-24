@@ -11,6 +11,7 @@ Options:
     -l --parse_log   # Outputs parse debug output
     -c --code        # Code as a string (instead of a file)
 """
+
 from pathlib import Path
 
 from docopt import docopt
