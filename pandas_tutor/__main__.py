@@ -79,9 +79,9 @@ if __name__ == "__main__":
         print(spec_fn(code))
     if not args["--output"]:
         for filename in args["FILE"]:
-            print(spec_from_file(filename, spec_fn))
+            print(spec_from_file(filename, spec_fn)) # type: ignore
     else:
         for filename in args["FILE"]:
-            spec = spec_from_file(filename, spec_fn)
+            spec = spec_from_file(filename, spec_fn) # type: ignore
             out_filename = Path(filename + ".golden")
             write_spec_to_file(spec, out_filename)

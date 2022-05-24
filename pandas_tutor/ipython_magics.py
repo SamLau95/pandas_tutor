@@ -20,7 +20,7 @@ _load_wst_bundle = """
 <script>
 console.log("initializing pandas_tutor js")
 </script>
-"""
+"""  # noqa: E501
 
 # displays each time a cell with %%pandas_tutor is run
 _viz_html = """

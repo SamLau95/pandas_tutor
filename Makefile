@@ -33,11 +33,11 @@ clean: ## removes pypi built files
 
 # to install package from test pypi:
 # pip install --index-url https://test.pypi.org/simple/ --no-deps pandas_tutor
-test_publish: ## uploads wheel to test pypi
+test_publish: build ## uploads wheel to test pypi
 	python -m twine upload --repository testpypi dist/*
 
 
-publish: ## uploads wheel to REAL pypi
+publish: build ## uploads wheel to REAL pypi
 	python -m twine upload dist/*
 
 # PG - make a self-contained wheel to be able to deploy to pyodide (or
