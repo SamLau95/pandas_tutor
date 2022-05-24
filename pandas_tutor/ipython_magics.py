@@ -51,6 +51,9 @@ class PandasTutorMagics(Magics):
         make_viz = _viz_html.format(viz_id=viz_id, spec=spec_json)
         display(HTML(make_viz))
 
+        # increment so that each cell gets a unique css id
+        self.viz_count += 1
+
     # %%pt is an alias for %%pandas_tutor
     @cell_magic
     def pt(self, line: str, cell: str):
