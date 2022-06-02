@@ -17,10 +17,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # note that we don't put requirements.txt into the install_requires list
-# since for the website we'll bundle the dependencies directly into the wheel.
-# other environments will have to run pip install -r requirements.txt manually.
+# since we bundle the dependencies directly into the wheel.
 
-# maybe helpful? https://setuptools.pypa.io/en/latest/userguide/datafiles.html
 setup(
     name="pandas_tutor",
     version=version,
