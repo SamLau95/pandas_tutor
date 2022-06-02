@@ -7,16 +7,11 @@ from __future__ import annotations
 import dataclasses
 from dataclasses import field
 from traceback import TracebackException
-from typing import (
-    Any,
-    List,
-    Literal,
-    Union,
-    Tuple,
-)
+from typing import Any, List, Tuple, Union
 
 import pandas as pd
 import simplejson as json
+from typing_extensions import Literal
 
 from .parse_nodes import ParseSyntaxError
 from .run import RuntimeErrorResult

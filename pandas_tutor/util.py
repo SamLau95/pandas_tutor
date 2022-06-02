@@ -15,7 +15,6 @@ from typing import (
     Dict,
     Hashable,
     List,
-    Literal,
     Tuple,
     TypeVar,
     Union,
@@ -31,7 +30,8 @@ from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
 from pandas.core.reshape.merge import _MergeOperation
 
-from typing_extensions import TypeGuard
+# Literal only added in Python 3.8
+from typing_extensions import Literal, TypeGuard
 
 if TYPE_CHECKING:
     from pandas_tutor.diagram import MapSet  # noqa: F401
