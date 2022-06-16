@@ -302,6 +302,10 @@ def is_pd(obj: Any) -> TypeGuard[Union[pd.DataFrame, pd.Series]]:
     return is_series(obj) or is_dataframe(obj)
 
 
+def is_groupby(obj: Any) -> TypeGuard[Union[DataFrameGroupBy, SeriesGroupBy]]:
+    return isinstance(obj, (DataFrameGroupBy, SeriesGroupBy))
+
+
 def is_multi(index: pd.Index) -> TypeGuard[pd.MultiIndex]:
     return isinstance(index, pd.MultiIndex)
 

@@ -1,4 +1,5 @@
 -r requirements.txt
+babypandas==0.1.6
 prettyprinter==0.18.0
 wheel
 build

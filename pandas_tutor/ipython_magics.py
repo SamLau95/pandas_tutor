@@ -12,11 +12,13 @@ from IPython.display import HTML, display
 
 from pandas_tutor.__main__ import make_tutor_spec_ipython
 
+wsembed_bundle_url = "https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.2022-06-12-release.js"  # noqa: E501
+
 # runs on initial load to load the wst js library
 #
 # loads the global variable createWsvFromPandasTrace
-_load_wst_bundle = """
-<script type="text/javascript" src="https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.js"></script>
+_load_wst_bundle = f"""
+<script type="text/javascript" src="{wsembed_bundle_url}"></script>
 <script>
 console.log("initializing pandas_tutor js")
 </script>
