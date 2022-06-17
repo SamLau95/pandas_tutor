@@ -52,6 +52,7 @@ from pandas_tutor.parse_nodes import (
     ChainStep,
     DropCall,
     EvalError,
+    GetCall,
     GroupByCall,
     HeadCall,
     JoinCall,
@@ -95,6 +96,8 @@ def make_marks(
         return no_marks()
     elif isinstance(step, PassThroughCall):
         return no_marks()
+    elif isinstance(step, GetCall):
+        return mark_for_get(step, before, after)
     elif isinstance(step, SortValuesCall):
         return mark_for_sort_values(step, before, after)
     elif isinstance(step, DropCall):
@@ -133,6 +136,33 @@ def make_marks(
         return mark_for_subscript(step, before, after)
     else:
         return no_marks()
+
+
+# df.get(['Name'])
+def mark_for_get(
+    step: GetCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not (
+        isinstance(before, (DFResult, SeriesResult))
+        and isinstance(after, (DFResult, SeriesResult))
+    ):
+        return []
+    args = after.args
+    labels = util.listify(args.get("labels", []))
+
+    if isinstance(before, DFResult) and isinstance(after, DFResult):
+        return diff_cols(before.val, after.val)
+    elif isinstance(before, SeriesResult) and isinstance(after, SeriesResult):
+        return diff_rows(before.val, after.val)
+    elif isinstance(before, DFResult) and isinstance(after, SeriesResult):
+        label = labels[0]
+        return (
+            [Map(from_=lhs("column", label), to=rhs_series())]
+            if label in before.val.columns
+            else []
+        )
+    else:
+        return []
 
 
 # df.sort_values('Name')
