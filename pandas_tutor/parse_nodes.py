@@ -108,6 +108,20 @@ def evals_into(attr: str):
 
 
 @dataclasses.dataclass
+class GetCall(Call):
+    """
+    df.get('size')
+    df.get(['size', 'breed'])
+    df.get(['size', 'breed'], default=False)
+    """
+
+    fn_name = "get"
+
+    # Expression that evaluates to labels
+    labels_expr: RawCode = evals_into("labels")
+
+
+@dataclasses.dataclass
 class SortValuesCall(Call):
     """
     cols = ['size', 'breed']

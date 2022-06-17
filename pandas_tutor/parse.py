@@ -35,6 +35,7 @@ from .parse_nodes import (
     ChainStatement,
     ChainStep,
     DropCall,
+    GetCall,
     GroupByCall,
     HeadCall,
     JoinCall,
@@ -361,6 +362,17 @@ class ChainParser(ParserBase):
         name = fn_name(cst_node)
         node = self.make_call_node(
             HeadCall if name == "head" else TailCall, cst_node
+        )
+        self._append(node)
+
+    @m.leave(matches(GetCall))
+    def make_get_call(self, cst_node):
+        labels_expr = self.get_arg_code(cst_node.args, 0, "key")
+
+        node = self.make_call_node(
+            GetCall,
+            cst_node,
+            labels_expr=labels_expr,
         )
         self._append(node)
 
