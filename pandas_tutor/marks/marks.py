@@ -151,9 +151,9 @@ def mark_for_get(
     labels = util.listify(args.get("labels", []))
 
     if isinstance(before, DFResult) and isinstance(after, DFResult):
-        return diff_cols(before.val, after.val)
+        return diff_cols(before.val, after.val, only_if_diff=False)
     elif isinstance(before, SeriesResult) and isinstance(after, SeriesResult):
-        return diff_rows(before.val, after.val)
+        return diff_rows(before.val, after.val, only_if_diff=False)
     elif isinstance(before, DFResult) and isinstance(after, SeriesResult):
         label = labels[0]
         return (
@@ -245,7 +245,7 @@ def mark_for_head_or_tail(
         and isinstance(after, (DFResult, SeriesResult))
     ):
         return []
-    return diff_rows(before.val, after.val)
+    return diff_rows(before.val, after.val, only_if_diff=False)
 
 
 # df['breed'].apply(len)

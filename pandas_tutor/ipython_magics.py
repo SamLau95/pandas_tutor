@@ -10,7 +10,7 @@ from IPython.core.magic import (
 )
 from IPython.display import HTML, display
 
-from pandas_tutor.__main__ import make_tutor_spec_ipython
+import pandas_tutor.__main__ as pt
 
 wsembed_bundle_url = "https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.2022-06-12-release.js"  # noqa: E501
 
@@ -45,7 +45,7 @@ class PandasTutorMagics(Magics):
     @cell_magic
     def pandas_tutor(self, line: str, cell: str):
         # inherits self.shell from Magics parent class
-        spec = make_tutor_spec_ipython(cell, self.shell)
+        spec = pt.make_tutor_spec_ipython(cell, self.shell)
         # need to double wrap so that quotes and \n are escaped
         spec_json = json.dumps(spec)
 
