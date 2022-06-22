@@ -1,4 +1,20 @@
 -r requirements.txt
+
+# These packages are required for pandas_tutor to run but we bundle them
+# directly into the library inline
+
+# NOTE: libcst v0.4.0 includes binary extensions to handle Python 3.11 code, so
+# if we want to upgrade we need to make sure it works with pyodide.
+# https://github.com/Instagram/LibCST/blob/main/CHANGELOG.md#040---2022-01-12
+libcst==0.3.21
+docopt==0.6.2
+simplejson==3.17.5
+types-simplejson==3.17.1
+mypy==0.910
+pympler==0.9
+typing-extensions==4.1.1
+
+# These packages are used for packaging and testing
 babypandas==0.1.6
 prettyprinter==0.18.0
 wheel
