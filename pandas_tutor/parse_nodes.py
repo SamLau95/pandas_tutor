@@ -407,6 +407,30 @@ class JoinCall(Call):
 
 
 ##############################################################################
+# boolean expressions
+##############################################################################
+
+
+@dataclasses.dataclass
+class BoolExprStep(ChainStep):
+    """
+    matches top-level boolean expressions.
+    as a heuristic, we assume that the left side of the expr is the only thing
+    we care about visualizing. so these cases will visualize properly:
+
+    df['Sex'] == 'M'
+    (df['Count'] > 13000) & (df['Count'] < 15000)
+
+    but not these:
+
+    'M' == df['Sex']
+    (13000 < df['Count']) & (15000 > df['Count'])
+    """
+
+    pass
+
+
+##############################################################################
 # Subscripts
 ##############################################################################
 

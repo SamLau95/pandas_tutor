@@ -1,0 +1,164 @@
+{
+  "code": "import pandas as pd\n\ndf = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])\n\n# boolean expr using .get()\n((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))\n",
+  "explanation": [
+    {
+      "type": "BoolExprStep",
+      "code_step": "((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 1,
+          "ch": 26
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "series",
+            "anchor": "lhs",
+            "label": "pandas.Series"
+          },
+          "to": {
+            "type": "series",
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "data": [
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            false,
+            false
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "data": [
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "type": "BoolExprStep",
+      "code_step": "((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
+        },
+        "end": {
+          "line": 2,
+          "ch": 23
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "series",
+            "anchor": "lhs",
+            "label": "pandas.Series"
+          },
+          "to": {
+            "type": "series",
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "data": [
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      }
+    }
+  ]
+}

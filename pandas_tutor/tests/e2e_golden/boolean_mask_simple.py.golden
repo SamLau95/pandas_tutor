@@ -1,0 +1,100 @@
+{
+  "code": "import pandas as pd\n\ndf = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])\n\n# tests that we draw top-level boolean expressions\ndf['Count'] > 13000\n",
+  "explanation": [
+    {
+      "type": "BoolExprStep",
+      "code_step": "df['Count'] > 13000",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 0
+        },
+        "end": {
+          "line": 0,
+          "ch": 19
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "series",
+            "anchor": "lhs",
+            "label": "pandas.Series"
+          },
+          "to": {
+            "type": "series",
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "data": [
+            19659,
+            18252,
+            14147,
+            13034,
+            12541,
+            15581,
+            13084,
+            13003,
+            12976,
+            12704
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "data": [
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            false,
+            false
+          ]
+        }
+      }
+    }
+  ]
+}
