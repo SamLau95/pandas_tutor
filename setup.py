@@ -11,7 +11,7 @@ rm -rf build/; python setup.py bdist_wheel
 
 from setuptools import setup, find_packages
 
-version = "2.0.1"
+version = "2.0.2dev0"
 
 # These packages are installed during pip install.
 # Only packages that AREN'T bundled inline need to be listed here.
