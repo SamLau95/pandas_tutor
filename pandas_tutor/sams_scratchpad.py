@@ -24,7 +24,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "parse_golden/assignment_last_line_01"
+file_to_read = "parse_golden/boolean_mask_01"
 
 
 def p(obj):
@@ -36,6 +36,7 @@ if __name__ == "__main__":
 
     code = (Path(__file__).parent / f"tests/{file_to_read}.py").read_text()
     root = test_parser(code)
+    p(root)
     # test_logger(code)
     #     print(code)
     #     print('\n--------------\n')
@@ -47,7 +48,6 @@ if __name__ == "__main__":
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
 
-    p(root)
     # p(run(root))
     # spec = make_tutor_spec(code)
     # p(spec)

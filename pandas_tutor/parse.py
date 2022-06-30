@@ -31,6 +31,7 @@ from .parse_nodes import (
     ApplyCall,
     AssignCall,
     Axis,
+    BoolExprStep,
     Call,
     ChainStatement,
     ChainStep,
@@ -88,34 +89,6 @@ def parse_as_json(code: str) -> str:
     return ParsedModule.to_json(node)
 
 
-# Any statement from:
-# https://libcst.readthedocs.io/en/latest/nodes.html#statements
-# that we don't process and should just execute verbatim, like:
-#
-# >>> import pandas as pd
-#
-# we actually don't need this variable anymore since we'll just use an else:
-# statement in our top-level visitor
-#
-# is_verbatim_stmt = (
-#     m.AnnAssign()
-#     | m.AugAssign()
-#     | m.Assert()
-#     | m.Del()
-#     | m.Global()
-#     | m.Import()
-#     | m.ImportFrom()
-#     | m.Nonlocal()
-#     | m.Raise()
-#     | m.ClassDef()
-#     | m.For()
-#     | m.FunctionDef()
-#     | m.If()
-#     | m.Try()
-#     | m.While()
-#     | m.With()
-# )
-
 # parse expressions and assignments into chains
 #
 # NOTE: need to update this if we want handle annotated assignments
@@ -124,6 +97,12 @@ is_chain_stmt = m.Expr() | m.Assign()
 
 # Used to ensure that we don't recurse into nested calls / subscripts
 is_argument = m.Arg() | m.SubscriptElement()
+
+# we also shouldn't recurse into boolean expressions, like:
+#
+# s1 | s2
+# df['a'] < 5
+is_bool_expr = m.BinaryOperation() | m.Comparison()
 
 is_attribute_call = m.Call(func=m.Attribute())
 
@@ -233,9 +212,15 @@ class ParserBase(m.MatcherDecoratableVisitor):
         return CodeRange(start, end)
 
     def make_node(
-        self, cls: t.Type[T], cst_node: cst.CSTNode, location=None, **kwargs
+        self,
+        cls: t.Type[T],
+        cst_node: cst.CSTNode,
+        code=None,
+        location=None,
+        **kwargs,
     ) -> T:
-        code = self.code_for(cst_node)
+        if code is None:
+            code = self.code_for(cst_node)
         if location is None:
             location = self.location(cst_node)
         return cls(code=code, location=location, **kwargs)  # type: ignore
@@ -296,6 +281,16 @@ class ChainParser(ParserBase):
                     f"{self.code_for(cst_node)}"
                 )
             self.node = self.make_node(ChainStatement, cst_node, chain=[])
+
+        # special case for top-level comparison-exprs to make sure we don't
+        # recurse into them
+        if m.matches(cst_node, is_bool_expr):
+            bool_expr_parser = BoolExprParser.from_parent(self)
+            cst_node.visit(bool_expr_parser)
+            for step in bool_expr_parser.steps:
+                self._append(step)
+            # don't recurse down rest of tree
+            return False
 
         return not (
             # skip all arguments so we don't recurse into nested function calls
@@ -634,6 +629,75 @@ class ChainParser(ParserBase):
         return arg if arg is None else self.code_for(arg.value)
 
 
+class BoolExprParser(ParserBase):
+    """
+    special parser for boolean expressions, stores resulting steps in
+    self.steps
+
+    the key idea is to parse only one level deep to avoid making super
+    complicated diagrams. so expressions like this one:
+
+    ((df.get('Count') > 13000) &
+     (df.get('Count') < 15000) &
+     (df.get('Sex') == 'M'))
+
+    get parsed into 3 steps, not 5. if users want to look at the inner
+    comparisons, they should visualize those separately
+
+    the big assumption is that boolean expressions can only appear at the start
+    of a function call chain, not in the middle.
+    """
+
+    steps: t.List[ChainStep]
+
+    def on_visit(self, cst_node):
+        self.steps = []
+
+        if m.matches(cst_node, m.BinaryOperation()):
+            self.parse_binary_op(cst_node)
+        elif m.matches(cst_node, m.Comparison()):
+            self.parse_comparison(cst_node)
+        else:
+            warn(
+                "used BoolExprParser to visit a non-boolean expr: "
+                f"{self.code_for(cst_node)}"
+            )
+
+        # don't use libcst to recurse
+        return False
+
+    # boolean exprs are guaranteed to be at the start of a chain since we
+    # don't recurse into them in ChainParser, so we need to make a
+    # StartOfChain node even though we'll use the lhs attribute to make
+    # diagrams instead.
+
+    # matches '|' and '&' operators
+    def parse_binary_op(self, cst_node: cst.BinaryOperation):
+        if not m.matches(cst_node.left, m.BinaryOperation()):
+            self.steps.append(self.make_node(StartOfChain, cst_node.left))
+        else:
+            self.parse_binary_op(t.cast(cst.BinaryOperation, cst_node.left))
+
+        self.steps.append(self.make_node(BoolExprStep, cst_node))
+
+    # comparisons don't need to recurse
+    def parse_comparison(self, cst_node: cst.Comparison):
+        self.steps.append(self.make_node(StartOfChain, cst_node.left))
+        start = self.location(cst_node.left)
+
+        # each comp is just the ' > 13000' part of the expr, so we need to make
+        # sure the lhs is also in code for execution
+        current_code = self.code_for(cst_node.left)
+        for comp in cst_node.comparisons:
+            end = self.location(comp)
+            current_code += self.code_for(comp)
+            self.steps.append(
+                self.make_node(
+                    BoolExprStep, comp, code=current_code, location=start | end
+                )
+            )
+
+
 class SubscriptParser(ParserBase):
     """
     special parser for subscript expressions, stores resulting node in
@@ -756,8 +820,24 @@ class ExtractLiteralIndexes(ParserBase):
     def leave_Subscript(self, cst_node):
         self._depth -= 1
 
+    def visit_Call(self, cst_node):
+        self._depth += 1
+
+    def leave_Call(self, cst_node):
+        self._depth -= 1
+
     @m.visit(m.Index())
     def record_index(self, cst_node: cst.Index):
+        if self._is_nested:
+            return
+
+        val = cst_node.value
+        if isinstance(val, (cst.BaseString, cst.BaseNumber, cst.Name)):
+            self.labels.append(self.code_for(val))
+
+    @m.call_if_inside(matches(GetCall))
+    @m.leave(m.Arg())
+    def record_get_arg(self, cst_node: cst.Arg):
         if self._is_nested:
             return
 

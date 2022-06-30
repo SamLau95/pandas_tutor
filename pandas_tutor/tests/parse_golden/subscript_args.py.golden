@@ -366,7 +366,7 @@
       "chain": [
         {
           "type_": "StartOfChain",
-          "code": "df",
+          "code": "df['Count']",
           "location": {
             "start": {
               "line": 11,
@@ -374,40 +374,23 @@
             },
             "end": {
               "line": 11,
-              "ch": 9
+              "ch": 18
             }
           }
         },
         {
-          "type_": "Subscript",
-          "code": "df['Count']",
+          "type_": "BoolExprStep",
+          "code": "df['Count'] > 10",
           "location": {
             "start": {
               "line": 11,
-              "ch": 9
+              "ch": 7
             },
             "end": {
               "line": 11,
-              "ch": 18
+              "ch": 23
             }
-          },
-          "slicer": null,
-          "slice1": {
-            "type_": "SubsEval",
-            "code": "'Count'",
-            "location": {
-              "start": {
-                "line": 11,
-                "ch": 10
-              },
-              "end": {
-                "line": 11,
-                "ch": 17
-              }
-            },
-            "expr": "'Count'"
-          },
-          "slice2": null
+          }
         }
       ]
     },

@@ -18,6 +18,7 @@ from .merge import mark_for_join, mark_for_merge
 from .mark_utils import (
     diff_rows,
     diff_cols,
+    lhs_series,
     no_marks,
     selection,
     make_usings,
@@ -49,6 +50,7 @@ from pandas_tutor.parse_nodes import (
     AggCall,
     ApplyCall,
     AssignCall,
+    BoolExprStep,
     ChainStep,
     DropCall,
     EvalError,
@@ -132,6 +134,8 @@ def make_marks(
         return mark_for_merge(step, before, after)
     elif isinstance(step, JoinCall):
         return mark_for_join(step, before, after)
+    elif isinstance(step, BoolExprStep):
+        return mark_for_bool_expr(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
     else:
@@ -708,6 +712,19 @@ def mark_for_melt(
             )
 
     return make_map_sets(pairs, key=by_column)
+
+
+# (df['Count'] > 13000) & (df['Count'] < 15000)
+# (df.get('Count') > 13000) & (df.get('Sex') == 'M')
+def mark_for_bool_expr(
+    step: BoolExprStep, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not (
+        isinstance(before, SeriesResult) and isinstance(after, SeriesResult)
+    ):
+        return []
+
+    return [Map(from_=lhs_series(), to=rhs_series())]
 
 
 # handler for all subscripts, like:

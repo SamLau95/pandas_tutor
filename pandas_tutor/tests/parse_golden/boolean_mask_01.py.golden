@@ -1,0 +1,388 @@
+{
+  "type_": "ParsedModule",
+  "code": "import pandas as pd\n\ndf = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])\n\n# tests that top-level boolean expressions are parsed\ndf['Count'] > 13000\n\n# and combinations of boolean expressions\n(df['Count'] > 13000) & (df['Count'] < 15000)\n\n# boolean expr + method calls after\n((df['Count'] > 13000) & (df['Sex'] == 'M')).sort_values()\n\n# boolean expr using .get()\n((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))\n\n# boolean expr using another function besides get shouldn't parse labels\ndf.sort_values('Count') > 13000\n\n# subscripts should NOT get parsed as boolean exprs\ndf[df['Count'] > 13000]\n",
+  "location": {
+    "start": {
+      "line": 0,
+      "ch": 0
+    },
+    "end": {
+      "line": 28,
+      "ch": 0
+    }
+  },
+  "statements": [
+    {
+      "type_": "VerbatimStatement",
+      "code": "import pandas as pd",
+      "location": {
+        "start": {
+          "line": 0,
+          "ch": 0
+        },
+        "end": {
+          "line": 0,
+          "ch": 19
+        }
+      }
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df = pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
+      "location": {
+        "start": {
+          "line": 2,
+          "ch": 0
+        },
+        "end": {
+          "line": 7,
+          "ch": 59
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "pd",
+          "location": {
+            "start": {
+              "line": 2,
+              "ch": 5
+            },
+            "end": {
+              "line": 2,
+              "ch": 7
+            }
+          }
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "pd.DataFrame([('Liam', 'M', 19659, 2020), ('Noah', 'M', 18252, 2020),\n                   ('Oliver', 'M', 14147, 2020), ('Elijah', 'M', 13034, 2020),\n                   ('William', 'M', 12541, 2020), ('Emma', 'F', 15581, 2020),\n                   ('Ava', 'F', 13084, 2020), ('Charlotte', 'F', 13003, 2020),\n                   ('Sophia', 'F', 12976, 2020), ('Amelia', 'F', 12704, 2020)],\n                  columns=['Name', 'Sex', 'Count', 'Year'])",
+          "location": {
+            "start": {
+              "line": 2,
+              "ch": 7
+            },
+            "end": {
+              "line": 7,
+              "ch": 59
+            }
+          },
+          "func": "DataFrame"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df['Count'] > 13000",
+      "location": {
+        "start": {
+          "line": 10,
+          "ch": 0
+        },
+        "end": {
+          "line": 10,
+          "ch": 19
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df['Count']",
+          "location": {
+            "start": {
+              "line": 10,
+              "ch": 0
+            },
+            "end": {
+              "line": 10,
+              "ch": 11
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "df['Count'] > 13000",
+          "location": {
+            "start": {
+              "line": 10,
+              "ch": 0
+            },
+            "end": {
+              "line": 10,
+              "ch": 19
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "(df['Count'] > 13000) & (df['Count'] < 15000)",
+      "location": {
+        "start": {
+          "line": 13,
+          "ch": 0
+        },
+        "end": {
+          "line": 13,
+          "ch": 45
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "(df['Count'] > 13000)",
+          "location": {
+            "start": {
+              "line": 13,
+              "ch": 1
+            },
+            "end": {
+              "line": 13,
+              "ch": 20
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "(df['Count'] > 13000) & (df['Count'] < 15000)",
+          "location": {
+            "start": {
+              "line": 13,
+              "ch": 0
+            },
+            "end": {
+              "line": 13,
+              "ch": 45
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "((df['Count'] > 13000) & (df['Sex'] == 'M')).sort_values()",
+      "location": {
+        "start": {
+          "line": 16,
+          "ch": 0
+        },
+        "end": {
+          "line": 16,
+          "ch": 58
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "(df['Count'] > 13000)",
+          "location": {
+            "start": {
+              "line": 16,
+              "ch": 2
+            },
+            "end": {
+              "line": 16,
+              "ch": 21
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "((df['Count'] > 13000) & (df['Sex'] == 'M'))",
+          "location": {
+            "start": {
+              "line": 16,
+              "ch": 1
+            },
+            "end": {
+              "line": 16,
+              "ch": 43
+            }
+          }
+        },
+        {
+          "type_": "SortValuesCall",
+          "code": "((df['Count'] > 13000) & (df['Sex'] == 'M')).sort_values()",
+          "location": {
+            "start": {
+              "line": 16,
+              "ch": 44
+            },
+            "end": {
+              "line": 16,
+              "ch": 58
+            }
+          },
+          "label_expr": null,
+          "axis": "index"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))",
+      "location": {
+        "start": {
+          "line": 19,
+          "ch": 0
+        },
+        "end": {
+          "line": 21,
+          "ch": 24
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "(df.get('Count') > 13000)",
+          "location": {
+            "start": {
+              "line": 19,
+              "ch": 2
+            },
+            "end": {
+              "line": 19,
+              "ch": 25
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "(df.get('Count') > 13000) &\n (df.get('Count') < 15000)",
+          "location": {
+            "start": {
+              "line": 19,
+              "ch": 1
+            },
+            "end": {
+              "line": 20,
+              "ch": 26
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))",
+          "location": {
+            "start": {
+              "line": 19,
+              "ch": 1
+            },
+            "end": {
+              "line": 21,
+              "ch": 23
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df.sort_values('Count') > 13000",
+      "location": {
+        "start": {
+          "line": 24,
+          "ch": 0
+        },
+        "end": {
+          "line": 24,
+          "ch": 31
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df.sort_values('Count')",
+          "location": {
+            "start": {
+              "line": 24,
+              "ch": 0
+            },
+            "end": {
+              "line": 24,
+              "ch": 23
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "df.sort_values('Count') > 13000",
+          "location": {
+            "start": {
+              "line": 24,
+              "ch": 0
+            },
+            "end": {
+              "line": 24,
+              "ch": 31
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df[df['Count'] > 13000]",
+      "location": {
+        "start": {
+          "line": 27,
+          "ch": 0
+        },
+        "end": {
+          "line": 27,
+          "ch": 23
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 27,
+              "ch": 0
+            },
+            "end": {
+              "line": 27,
+              "ch": 2
+            }
+          }
+        },
+        {
+          "type_": "Subscript",
+          "code": "df[df['Count'] > 13000]",
+          "location": {
+            "start": {
+              "line": 27,
+              "ch": 2
+            },
+            "end": {
+              "line": 27,
+              "ch": 23
+            }
+          },
+          "slicer": null,
+          "slice1": {
+            "type_": "SubsComparison",
+            "code": "df['Count'] > 13000",
+            "location": {
+              "start": {
+                "line": 27,
+                "ch": 3
+              },
+              "end": {
+                "line": 27,
+                "ch": 22
+              }
+            },
+            "label_exprs": [
+              "'Count'"
+            ]
+          },
+          "slice2": null
+        }
+      ]
+    }
+  ]
+}

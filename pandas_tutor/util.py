@@ -491,10 +491,11 @@ def json_scalar(obj: Any) -> JSONScalar:
     """
     if pd.isnull(obj):
         return None
-    if isinstance(obj, np.integer):
-        return int(obj)
-    if isinstance(obj, np.floating):
-        return float(obj)
+    # we need to convert numpy types to python types since our json library
+    # doesn't handle it natively. if we forget about a type, we run into a
+    # circular reference error during dumps()
+    if isinstance(obj, (np.integer, np.bool_, np.floating)):
+        return obj.item()
     if isinstance(obj, np.ndarray):
         return obj.tolist()
     if isinstance(obj, pd.Timestamp) or isinstance(obj, pd.Timedelta):
