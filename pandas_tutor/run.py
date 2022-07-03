@@ -174,6 +174,15 @@ def run_code(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
     # https://github.com/SamLau95/pandas_tutor/issues/42
     for result in eval_results:
         result.step.code = last_expr.code
+
+    # now, let's exec the last statement in case it defines a variable that the
+    # user will use later in their notebook
+    try:
+        exec(last_expr.code, user_globals)
+    except Exception:
+        # we handle errors in the last expr above
+        pass
+
     return eval_results
 
 
