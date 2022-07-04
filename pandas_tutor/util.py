@@ -537,15 +537,16 @@ def df_data(df: pd.DataFrame) -> List[List[JSONScalar]]:
 
 
 def mem_used(obj: Any) -> float:
-    if isinstance(obj, pd.DataFrame):
-        return obj.memory_usage(deep=True).sum()
-    elif isinstance(obj, pd.Series):
-        return obj.memory_usage(deep=True)
-    else:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        if isinstance(obj, pd.DataFrame):
+            return obj.memory_usage(deep=True).sum()
+        elif isinstance(obj, pd.Series):
+            return obj.memory_usage(deep=True)
+        else:
             from pympler.asizeof import asizeof
-        return asizeof(obj)
+
+            return asizeof(obj)
 
 
 KB = 2**10
