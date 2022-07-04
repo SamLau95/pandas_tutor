@@ -1,0 +1,106 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nPlayer,Position,Team,Salary\nStephen Curry,PG,Golden State Warriors,45780966\nRussell Westbrook,PG,Los Angeles Lakers,44211146\nJames Harden,PG,Brooklyn Nets,43848000\nLeBron James,SF,Los Angeles Lakers,41180544\nKevin Durant,PF,Brooklyn Nets,40918900\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv)).set_index('Player')\n\n# we draw arrows into scalar outputs\ndf.loc[\"LeBron James\", \"Salary\"]\n",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "df.loc[\"LeBron James\", \"Salary\"]",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 32
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": "LeBron James"
+          },
+          "to": {
+            "type": "scalar",
+            "anchor": "rhs"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Salary"
+          },
+          "to": {
+            "type": "scalar",
+            "anchor": "rhs"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Position",
+              "Team",
+              "Salary"
+            ]
+          },
+          "index": {
+            "names": [
+              "Player"
+            ],
+            "labels": [
+              "Stephen Curry",
+              "Russell Westbrook",
+              "James Harden",
+              "LeBron James",
+              "Kevin Durant"
+            ]
+          },
+          "data": [
+            [
+              "PG",
+              "Golden State Warriors",
+              45780966
+            ],
+            [
+              "PG",
+              "Los Angeles Lakers",
+              44211146
+            ],
+            [
+              "PG",
+              "Brooklyn Nets",
+              43848000
+            ],
+            [
+              "SF",
+              "Los Angeles Lakers",
+              41180544
+            ],
+            [
+              "PF",
+              "Brooklyn Nets",
+              40918900
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "Scalar",
+          "py_type": "<class 'numpy.int64'>",
+          "data": "41180544"
+        }
+      }
+    }
+  ]
+}

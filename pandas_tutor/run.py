@@ -28,8 +28,9 @@ from .parse_nodes import (
     Subscript,
 )
 
-# technically args can be anything...but most of the time it'll be labels
-Arg = t.Union[str, list]
+# argument to a function. technically can be anything...but most of the time
+# it'll be labels
+Arg = t.Any
 
 Args = t.Dict[str, Arg]
 
@@ -51,6 +52,11 @@ class DFResult(EvalResult):
 @dataclasses.dataclass
 class SeriesResult(EvalResult):
     val: pd.Series
+
+
+@dataclasses.dataclass
+class ScalarResult(EvalResult):
+    val: t.Any
 
 
 @dataclasses.dataclass
@@ -210,6 +216,8 @@ def make_result(
         return DFResult(step, fragment, args, val)
     elif isinstance(val, pd.Series):
         return SeriesResult(step, fragment, args, val)
+    elif util.is_scalar(val):
+        return ScalarResult(step, fragment, args, val)
     elif util.is_plottable(val):
         return ImageResult(step, fragment, args, val)
     else:
