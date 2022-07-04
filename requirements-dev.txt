@@ -1,7 +1,8 @@
 -r requirements.txt
 
-# pin pandas version for CI
+# pin pandas and numpy version for CI
 pandas==1.3.1
+numpy==1.20.3
 
 # These packages are required for pandas_tutor to run but we bundle them
 # directly into the library inline
