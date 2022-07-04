@@ -302,6 +302,16 @@ def is_pd(obj: Any) -> TypeGuard[Union[pd.DataFrame, pd.Series]]:
     return is_series(obj) or is_dataframe(obj)
 
 
+def is_scalar(obj: Any) -> TypeGuard[Any]:
+    # np.generic is base class for ALL numpy scalars
+    return isinstance(obj, np.generic) or isinstance(
+        # this list isn't comprehensive (e.g. bytes, bytearray) but it covers
+        # most use cases for pandas
+        obj,
+        (int, float, str, list, tuple, range, dict, set, frozenset),
+    )
+
+
 def is_groupby(obj: Any) -> TypeGuard[Union[DataFrameGroupBy, SeriesGroupBy]]:
     return isinstance(obj, (DataFrameGroupBy, SeriesGroupBy))
 

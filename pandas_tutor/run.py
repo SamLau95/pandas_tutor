@@ -54,6 +54,11 @@ class SeriesResult(EvalResult):
 
 
 @dataclasses.dataclass
+class ScalarResult(EvalResult):
+    val: t.Any
+
+
+@dataclasses.dataclass
 class GroupbyResult(EvalResult):
     val: util.DataFrameGroupBy
 
@@ -210,6 +215,8 @@ def make_result(
         return DFResult(step, fragment, args, val)
     elif isinstance(val, pd.Series):
         return SeriesResult(step, fragment, args, val)
+    elif util.is_scalar(val):
+        return ScalarResult(step, fragment, args, val)
     elif util.is_plottable(val):
         return ImageResult(step, fragment, args, val)
     else:

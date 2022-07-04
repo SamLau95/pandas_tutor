@@ -136,7 +136,7 @@ Selection = Literal["column", "row"]
 IndexLevel = Union[None, int]
 
 # each TablePos object is serialized as one of these
-TablePosType = Literal["axis", "series", "index_level", "cell"]
+TablePosType = Literal["axis", "series", "index_level", "cell", "scalar"]
 
 
 @dataclasses.dataclass
@@ -203,6 +203,8 @@ class CellPos(TablePos):
     """
     points to a single cell in the table, which is uniquely identified by
     the combination of column and row label.
+
+    NOTE: currently unused
     """
 
     anchor: Anchor
@@ -214,6 +216,18 @@ class CellPos(TablePos):
         self.type = "cell"
         self.row = unwrap(self.row)
         self.column = unwrap(self.column)
+
+
+@dataclasses.dataclass
+class ScalarPos(TablePos):
+    """
+    points to a Python or NumPy scalar value, like the number 42
+    """
+
+    anchor: Anchor
+
+    def __post_init__(self):
+        self.type = "scalar"
 
 
 ##############################################################################
@@ -399,6 +413,17 @@ class ImageSpec(DataSpec):
     type: str = field(default="Image", init=False, repr=False)
     data: str
 
+
+@dataclasses.dataclass
+class ScalarSpec(DataSpec):
+    """encodes a scalar"""
+
+    type: str = field(default="Scalar", init=False, repr=False)
+
+    # records the original type of the object, like "np.int64"
+    py_type: str
+
+    data: str
 
 @dataclasses.dataclass
 class UnhandledData(DataSpec):

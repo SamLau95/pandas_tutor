@@ -28,6 +28,7 @@ from .diagram import (
     PrevRHS,
     RuntimeErrorInChain,
     RuntimeErrorInSetup,
+    ScalarSpec,
     SeriesGroupBySpec,
     SeriesSpec,
     SyntaxErrorOutput,
@@ -38,6 +39,7 @@ from .run import (
     EvalResult,
     ImageResult,
     RuntimeErrorResult,
+    ScalarResult,
     SyntaxErrorResult,
 )
 
@@ -134,6 +136,8 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
     """
     if isinstance(step, ImageResult):
         return serialize_image(step.val)
+    if isinstance(step, ScalarResult):
+        return serialize_scalar(step.val)
     return serialize_pd_val(step.val)
 
 
@@ -201,6 +205,13 @@ def serialize_seriesgroupby(val: util.SeriesGroupBy) -> SeriesGroupBySpec:
 
 def serialize_image(val: Any) -> ImageSpec:
     return ImageSpec(util.base64_encode_plot(val))
+
+
+def serialize_scalar(val: Any) -> ScalarSpec:
+    py_type = str(type(val))
+    # use str() on value so that the frontend can just display it
+    data = str(util.json_scalar(val))
+    return ScalarSpec(py_type=py_type, data=data)
 
 
 def pairs(seq: List[T]) -> List[Tuple[T, T]]:

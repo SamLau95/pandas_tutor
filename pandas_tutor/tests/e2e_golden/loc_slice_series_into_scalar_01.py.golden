@@ -1,0 +1,63 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nPlayer,Position,Team,Salary\nStephen Curry,PG,Golden State Warriors,45780966\nRussell Westbrook,PG,Los Angeles Lakers,44211146\nJames Harden,PG,Brooklyn Nets,43848000\nLeBron James,SF,Los Angeles Lakers,41180544\nKevin Durant,PF,Brooklyn Nets,40918900\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv)).set_index(\"Player\")\n\nseries = df[\"Salary\"]\nseries[\"Kevin Durant\"]\n",
+  "explanation": [
+    {
+      "type": "Subscript",
+      "code_step": "series[\"Kevin Durant\"]",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 6
+        },
+        "end": {
+          "line": 0,
+          "ch": 22
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": "Kevin Durant"
+          },
+          "to": {
+            "type": "scalar",
+            "anchor": "rhs"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              "Player"
+            ],
+            "labels": [
+              "Stephen Curry",
+              "Russell Westbrook",
+              "James Harden",
+              "LeBron James",
+              "Kevin Durant"
+            ]
+          },
+          "data": [
+            45780966,
+            44211146,
+            43848000,
+            41180544,
+            40918900
+          ]
+        },
+        "rhs": {
+          "type": "Scalar",
+          "py_type": "<class 'numpy.int64'>",
+          "data": "40918900"
+        }
+      }
+    }
+  ]
+}

@@ -20,6 +20,7 @@ from .mark_utils import (
     diff_cols,
     lhs_series,
     no_marks,
+    rhs_scalar,
     selection,
     make_usings,
     make_maps,
@@ -79,6 +80,7 @@ from pandas_tutor.run import (
     DFResult,
     EvalResult,
     GroupbyResult,
+    ScalarResult,
     SeriesGroupbyResult,
     SeriesResult,
 )
@@ -733,6 +735,9 @@ def mark_for_bool_expr(
 # df.iloc[2:5, 1:4]
 # df[df['Count'] > 10000]
 # df.groupby('Sex')[['Count']]
+#
+# the hard part is that subscripts are used for all kinds of pandas objects, so
+# we need another big if statement to handle the different combinations of types
 def mark_for_subscript(
     step: Subscript, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
@@ -746,6 +751,12 @@ def mark_for_subscript(
         after, (DFResult, GroupbyResult)
     ):
         return mark_for_subscript_df_to_df(step, before, after)
+    # pandas doesn't allow getting scalars out of groupbys directly, so we just
+    # need to check for df or series
+    elif isinstance(before, (DFResult, SeriesResult)) and isinstance(
+        after, ScalarResult
+    ):
+        return mark_for_subscript_into_scalar(step, before, after)
     else:
         return []
 
@@ -881,3 +892,40 @@ def mark_for_subscript_into_series(
         ]
 
     return []
+
+
+def mark_for_subscript_into_scalar(
+    step: Subscript, before: Union[DFResult, SeriesResult], after: ScalarResult
+) -> List[Mark]:
+    # a scalar either came from a dataframe (row and col arrow) or a series
+    # (row arrow only).
+    args = after.args
+    slicer = step.slicer
+    is_series = isinstance(before, SeriesResult)
+
+    # convert iloc indexes into labels
+    slice1_val = args.get("slice1_values")
+    slice1 = cast(
+        Label,
+        util.positions_to_labels(
+            slice1_val, df=before.val, slicer=slicer, axis="index"
+        ),
+    )
+
+    if is_series:
+        return [
+            Map(lhs("row", slice1), rhs_scalar()),
+        ]
+
+    slice2 = args.get("slice2_values")
+    slice2 = cast(
+        Label,
+        util.positions_to_labels(
+            slice2, df=before.val, slicer=slicer, axis="columns"
+        ),
+    )
+
+    return [
+        Map(lhs("row", slice1), rhs_scalar()),
+        Map(lhs("column", slice2), rhs_scalar()),
+    ]

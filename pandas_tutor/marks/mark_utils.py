@@ -18,6 +18,7 @@ from ..diagram import (
     MapSet,
     Mark,
     PosPair,
+    ScalarPos,
     Selection,
     SeriesPos,
     TablePos,
@@ -142,6 +143,16 @@ def rhs_series() -> SeriesPos:
 def lhs2_series() -> SeriesPos:
     """shorthand for the lhs2 series"""
     return SeriesPos("lhs2")
+
+
+def lhs_scalar() -> ScalarPos:
+    """shorthand for the lhs scalar"""
+    return ScalarPos("lhs")
+
+
+def rhs_scalar() -> ScalarPos:
+    """shorthand for the rhs scalar"""
+    return ScalarPos("rhs")
 
 
 def by_row(pair: Tuple[CellPos, CellPos]) -> Label:
