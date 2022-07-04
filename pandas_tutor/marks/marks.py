@@ -905,11 +905,10 @@ def mark_for_subscript_into_scalar(
 
     # convert iloc indexes into labels
     slice1_val = args.get("slice1_values")
-    slice1 = cast(
-        Label,
-        util.positions_to_labels(
-            slice1_val, df=before.val, slicer=slicer, axis="index"
-        ),
+    if not isinstance(slice1_val, Label):
+        return []
+    slice1 = util.positions_to_labels(
+        slice1_val, df=before.val, slicer=slicer, axis="index"
     )
 
     if is_series:
@@ -917,12 +916,11 @@ def mark_for_subscript_into_scalar(
             Map(lhs("row", slice1), rhs_scalar()),
         ]
 
-    slice2 = args.get("slice2_values")
-    slice2 = cast(
-        Label,
-        util.positions_to_labels(
-            slice2, df=before.val, slicer=slicer, axis="columns"
-        ),
+    slice2_val = args.get("slice2_values")
+    if not isinstance(slice2_val, Label):
+        return []
+    slice2 = util.positions_to_labels(
+        slice2_val, df=before.val, slicer=slicer, axis="columns"
     )
 
     return [

@@ -219,7 +219,7 @@ class CodeRange:
 
 @overload
 def positions_to_labels(
-    positions: Union[int, Label],
+    positions: Label,
     df: HasIndex,
     slicer: Slicer = "iloc",
     axis: Axis = "index",

@@ -156,7 +156,8 @@
       "data": {
         "lhs": "prev_rhs",
         "rhs": {
-          "type": "Unhandled",
+          "type": "Scalar",
+          "py_type": "<class 'float'>",
           "data": "425.42857142857144"
         }
       }

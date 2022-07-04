@@ -28,8 +28,9 @@ from .parse_nodes import (
     Subscript,
 )
 
-# technically args can be anything...but most of the time it'll be labels
-Arg = t.Union[str, list]
+# argument to a function. technically can be anything...but most of the time
+# it'll be labels
+Arg = t.Any
 
 Args = t.Dict[str, Arg]
 

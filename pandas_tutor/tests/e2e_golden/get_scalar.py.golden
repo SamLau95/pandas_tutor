@@ -43,8 +43,9 @@
           ]
         },
         "rhs": {
-          "type": "Unhandled",
-          "data": "'Labrador Retriever'"
+          "type": "Scalar",
+          "py_type": "<class 'str'>",
+          "data": "Labrador Retriever"
         }
       }
     }
