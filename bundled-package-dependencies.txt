@@ -1,0 +1,52 @@
+Apr 2022
+Philip Guo
+
+bundling as many dependencies as possible here to both pin their
+versions and to make it easier to create a self-contained wheel for
+deployment to pyodide/webassembly.
+
+---
+
+pandas_tutor/requirements.txt currently shows these dependencies:
+
+pandas==1.3.1
+libcst==0.3.21
+docopt==0.6.2
+prettyprinter==0.18.0
+simplejson==3.17.5
+types-simplejson==3.17.1
+mypy==0.910
+pympler==0.9
+typing-extensions==4.1.1
+
+
+i installed them in a fresh virtual environment (venv) and then manually
+copied them over into the pandas_tutor/ directory. then i whittled them
+down to save space. some of the things i did manually (i don't remember
+all of them):
+
+- i cut out pandas since that requires precompiled C libraries so it
+  won't work out-of-the-box in pyodide/webassembly (but fortunately
+  pyodide has its own version of pandas!)
+- i cut out prettyprinter since it takes up a lot of space (over 1MB)
+  and also depends on a few other packages. and we don't really need it
+- cut out test directories from libcst and simplejson (maybe some
+  others) to both save space and to not trigger unittest to run them
+- cut out *.so files (precompiled C libraries) from simplejson (and maye
+  some others) since those won't work in pyodide/webassembly. i think
+  those packages still work without *.so since the C versions are just
+  optimizations (and it will fall back on a slower pure-python version)
+- some small packages like docopt are actually just a single .py file,
+  like docopt.py. to get it working, i had to move it into its own
+  directory and rename it as __init__.py, like docopt.py ->
+  docopt/__init__.py
+- there's probably some other stuff i'm forgetting too!
+
+---
+June 2022
+
+sam took the contents of bundled-package-dependencies.tar.gz and
+directly copied them into the repo, so i can now get rid of 
+bundled-package-dependencies.tar.gz ...
+
+https://github.com/SamLau95/pandas_tutor/commit/33fe534f2507aa1e5ef13142b3a68b685e93281f
