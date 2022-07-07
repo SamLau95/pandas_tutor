@@ -18,6 +18,26 @@ if util.in_dev():
 else:
     wsembed_bundle_url = "https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.2022-07-06-release.js"  # noqa: E501
 
+# colors from https://colorbrewer2.org/#type=qualitative&scheme=Set1&n=9
+display_options = json.dumps(
+    {
+        "nohover": True,
+        "colorPalette": [
+            "#e41a1c",
+            "#377eb8",
+            "#4daf4a",
+            "#984ea3",
+            "#ff7f00",
+            "#a65628",
+            "#f781bf",
+            "#999999",
+        ],
+        "maxDisplayRows": 7,
+        "maxDisplayCols": 5,
+    }
+)
+
+
 # runs on initial load to load the wst js library
 #
 # HACK: use setTimeout to avoid race condition with loading pandas tutor JS
@@ -50,8 +70,6 @@ class PandasTutorMagics(Magics):
 
     viz_count = 0
 
-    display_options = json.dumps({"nohover": True, "maxDisplayRows": 7})
-
     def __init__(self, shell, **kwargs):
         super().__init__(shell, **kwargs)
         display(HTML(_load_wst_bundle))
@@ -65,7 +83,7 @@ class PandasTutorMagics(Magics):
 
         viz_id = f"pt-viz-{self.viz_count}"
         make_viz = _viz_html.format(
-            viz_id=viz_id, spec=spec_json, options=self.display_options
+            viz_id=viz_id, spec=spec_json, options=display_options
         )
         display(HTML(make_viz))
 
