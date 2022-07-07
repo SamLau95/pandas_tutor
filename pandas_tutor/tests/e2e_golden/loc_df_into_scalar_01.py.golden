@@ -18,23 +18,10 @@
         {
           "type": "map",
           "from": {
-            "type": "axis",
+            "type": "cell",
             "anchor": "lhs",
-            "select": "row",
-            "label": "LeBron James"
-          },
-          "to": {
-            "type": "scalar",
-            "anchor": "rhs"
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "Salary"
+            "row": "LeBron James",
+            "column": "Salary"
           },
           "to": {
             "type": "scalar",
