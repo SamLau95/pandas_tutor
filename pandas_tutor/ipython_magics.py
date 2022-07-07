@@ -20,11 +20,19 @@ else:
 
 # runs on initial load to load the wst js library
 #
-# loads the global variable createWsvFromPandasTrace
+# HACK: use setTimeout to avoid race condition with loading pandas tutor JS
 _load_wst_bundle = f"""
 <script type="text/javascript" src="{wsembed_bundle_url}"></script>
 <script>
 console.log("initializing pandas_tutor js")
+
+function drawWsv(viz_id, spec, options) {{
+  if (typeof createWsvFromPandasTrace === 'undefined') {{
+    setTimeout(() => drawWsv(viz_id, spec, options), 2000) // retry in 2 seconds
+    return
+  }}
+  createWsvFromPandasTrace(viz_id, spec, options)
+}}
 </script>
 """  # noqa: E501
 
@@ -32,7 +40,7 @@ console.log("initializing pandas_tutor js")
 _viz_html = """
 <div class="pt-viz" id="{viz_id}"></div>
 <script>
-createWsvFromPandasTrace('#{viz_id}', {spec});
+drawWsv('#{viz_id}', {spec}, {options});
 </script>
 """
 
@@ -54,7 +62,7 @@ class PandasTutorMagics(Magics):
         spec_json = json.dumps(spec)
 
         viz_id = f"pt-viz-{self.viz_count}"
-        make_viz = _viz_html.format(viz_id=viz_id, spec=spec_json)
+        make_viz = _viz_html.format(viz_id=viz_id, spec=spec_json, options={})
         display(HTML(make_viz))
 
         # increment so that each cell gets a unique css id
