@@ -50,6 +50,8 @@ class PandasTutorMagics(Magics):
 
     viz_count = 0
 
+    display_options = json.dumps({"nohover": True, "maxDisplayRows": 7})
+
     def __init__(self, shell, **kwargs):
         super().__init__(shell, **kwargs)
         display(HTML(_load_wst_bundle))
@@ -62,7 +64,9 @@ class PandasTutorMagics(Magics):
         spec_json = json.dumps(spec)
 
         viz_id = f"pt-viz-{self.viz_count}"
-        make_viz = _viz_html.format(viz_id=viz_id, spec=spec_json, options={})
+        make_viz = _viz_html.format(
+            viz_id=viz_id, spec=spec_json, options=self.display_options
+        )
         display(HTML(make_viz))
 
         # increment so that each cell gets a unique css id
