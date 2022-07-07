@@ -673,7 +673,12 @@ class BoolExprParser(ParserBase):
 
     # matches '|' and '&' operators
     def parse_binary_op(self, cst_node: cst.BinaryOperation):
-        if not m.matches(cst_node.left, m.BinaryOperation()):
+        # when parsing multiple binary ops, we want to draw the first step as a
+        # comparison, then each subsequent step as a binary op.
+        if m.matches(cst_node.left, m.Comparison()):
+            self.parse_comparison(t.cast(cst.Comparison, cst_node.left))
+        # fallback when we don't know what to do with the left side
+        elif not m.matches(cst_node.left, m.BinaryOperation()):
             self.steps.append(self.make_node(StartOfChain, cst_node.left))
         else:
             self.parse_binary_op(t.cast(cst.BinaryOperation, cst_node.left))

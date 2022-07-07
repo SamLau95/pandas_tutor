@@ -7,11 +7,11 @@
       "fragment": {
         "start": {
           "line": 0,
-          "ch": 1
+          "ch": 2
         },
         "end": {
-          "line": 1,
-          "ch": 26
+          "line": 0,
+          "ch": 25
         }
       },
       "marks": [
@@ -50,6 +50,38 @@
             ]
           },
           "data": [
+            19659,
+            18252,
+            14147,
+            13034,
+            12541,
+            15581,
+            13084,
+            13003,
+            12976,
+            12704
+          ]
+        },
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "data": [
             true,
             true,
             true,
@@ -61,7 +93,39 @@
             false,
             false
           ]
+        }
+      }
+    },
+    {
+      "type": "BoolExprStep",
+      "code_step": "((df.get('Count') > 13000) &\n (df.get('Count') < 15000) &\n (df.get('Sex') == 'M'))",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 1
         },
+        "end": {
+          "line": 1,
+          "ch": 26
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "series",
+            "anchor": "lhs",
+            "label": "pandas.Series"
+          },
+          "to": {
+            "type": "series",
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
         "rhs": {
           "type": "Series",
           "index": {

@@ -131,7 +131,21 @@
       "chain": [
         {
           "type_": "StartOfChain",
-          "code": "(df['Count'] > 13000)",
+          "code": "df['Count']",
+          "location": {
+            "start": {
+              "line": 13,
+              "ch": 1
+            },
+            "end": {
+              "line": 13,
+              "ch": 12
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "df['Count'] > 13000",
           "location": {
             "start": {
               "line": 13,
@@ -175,7 +189,21 @@
       "chain": [
         {
           "type_": "StartOfChain",
-          "code": "(df['Count'] > 13000)",
+          "code": "df['Count']",
+          "location": {
+            "start": {
+              "line": 16,
+              "ch": 2
+            },
+            "end": {
+              "line": 16,
+              "ch": 13
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "df['Count'] > 13000",
           "location": {
             "start": {
               "line": 16,
@@ -235,7 +263,21 @@
       "chain": [
         {
           "type_": "StartOfChain",
-          "code": "(df.get('Count') > 13000)",
+          "code": "df.get('Count')",
+          "location": {
+            "start": {
+              "line": 19,
+              "ch": 2
+            },
+            "end": {
+              "line": 19,
+              "ch": 17
+            }
+          }
+        },
+        {
+          "type_": "BoolExprStep",
+          "code": "df.get('Count') > 13000",
           "location": {
             "start": {
               "line": 19,
