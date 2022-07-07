@@ -203,8 +203,6 @@ class CellPos(TablePos):
     """
     points to a single cell in the table, which is uniquely identified by
     the combination of column and row label.
-
-    NOTE: currently unused
     """
 
     anchor: Anchor
@@ -424,6 +422,7 @@ class ScalarSpec(DataSpec):
     py_type: str
 
     data: str
+
 
 @dataclasses.dataclass
 class UnhandledData(DataSpec):

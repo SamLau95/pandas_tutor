@@ -924,6 +924,5 @@ def mark_for_subscript_into_scalar(
     )
 
     return [
-        Map(lhs("row", slice1), rhs_scalar()),
-        Map(lhs("column", slice2), rhs_scalar()),
+        Map(CellPos("lhs", slice1, slice2), rhs_scalar()),
     ]
