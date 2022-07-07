@@ -8,10 +8,11 @@ cache):
 rm -rf build/; python setup.py bdist_wheel
 """
 # type: ignore
+from pathlib import Path
 
 from setuptools import setup, find_packages
 
-version = "2.0.2dev0"
+version = Path("pandas_tutor/__version__.py").read_text().split('"')[1]
 
 # These packages are installed during pip install.
 # Only packages that AREN'T bundled inline need to be listed here.

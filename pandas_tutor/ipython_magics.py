@@ -11,8 +11,12 @@ from IPython.core.magic import (
 from IPython.display import HTML, display
 
 import pandas_tutor.__main__ as pt
+import pandas_tutor.util as util
 
-wsembed_bundle_url = "https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.2022-06-12-release.js"  # noqa: E501
+if util.in_dev():
+    wsembed_bundle_url = "https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.js"  # noqa: E501
+else:
+    wsembed_bundle_url = "https://cokapi.com/wst-pg-devel/wst/wsapp/frontend/build/wsembed.bundle.2022-06-12-release.js"  # noqa: E501
 
 # runs on initial load to load the wst js library
 #

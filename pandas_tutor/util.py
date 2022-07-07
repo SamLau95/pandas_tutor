@@ -30,6 +30,8 @@ from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
 from pandas.core.reshape.merge import _MergeOperation
 
+from pandas_tutor.__version__ import __version__
+
 # Literal only added in Python 3.8
 from typing_extensions import Literal, TypeGuard
 
@@ -57,6 +59,10 @@ JSONScalar = Union[int, float, str, bool, None]
 
 # placeholder column for pd.Series
 SERIES = "pandas.Series"
+
+
+def in_dev() -> bool:
+    return "dev" in __version__
 
 
 def first(iterable: Iterable[T]) -> T:
