@@ -1,5 +1,5 @@
 """
-defines %%python_tutor magic
+defines %%pandas_tutor magic
 """
 import ast
 import json
@@ -83,7 +83,7 @@ class PandasTutorMagics(Magics):
 
     viz_count = 0
 
-    display_options = {
+    display_options: dict = {
         "nohover": True,
         "maxDisplayRows": 7,
         "maxDisplayCols": 5,

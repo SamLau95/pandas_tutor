@@ -1,0 +1,356 @@
+{
+  "code": "import babypandas as bpd\n\nphones = bpd.DataFrame().assign(\n    Model=['iPhone 13', 'iPhone 13 Pro Max', 'Samsung Galaxy Z Flip', 'Pixel 5a'],\n    Price=[799, 1099, 999, 449],\n    Screen=[6.1, 6.7, 6.7, 6.3]\n)\n\ninventory = bpd.DataFrame().assign(\n    Handset=['iPhone 13 Pro Max', 'iPhone 13', 'Pixel 5a', 'iPhone 13'],\n    Units=[50, 40, 10, 100],\n    Store=['Westfield UTC', 'Westfield UTC', 'Fashion Valley', 'Downtown']\n)\n\nphones.merge(inventory, left_on='Model', right_on='Handset')\n\n",
+  "explanation": [
+    {
+      "type": "MergeCall",
+      "code_step": "phones.merge(inventory, left_on='Model', right_on='Handset')",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 6
+        },
+        "end": {
+          "line": 0,
+          "ch": 60
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Model"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs2",
+            "select": "column",
+            "label": "Handset"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "Model"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "Handset"
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 3
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 2
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 0
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 1
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 0
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 1
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 3
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 1
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 2
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 2
+              }
+            }
+          ]
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Model",
+              "Price",
+              "Screen"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "data": [
+            [
+              "iPhone 13",
+              799,
+              6.1
+            ],
+            [
+              "iPhone 13 Pro Max",
+              1099,
+              6.7
+            ],
+            [
+              "Samsung Galaxy Z Flip",
+              999,
+              6.7
+            ],
+            [
+              "Pixel 5a",
+              449,
+              6.3
+            ]
+          ]
+        },
+        "lhs2": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Handset",
+              "Units",
+              "Store"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "data": [
+            [
+              "iPhone 13 Pro Max",
+              50,
+              "Westfield UTC"
+            ],
+            [
+              "iPhone 13",
+              40,
+              "Westfield UTC"
+            ],
+            [
+              "Pixel 5a",
+              10,
+              "Fashion Valley"
+            ],
+            [
+              "iPhone 13",
+              100,
+              "Downtown"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Model",
+              "Price",
+              "Screen",
+              "Handset",
+              "Units",
+              "Store"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "data": [
+            [
+              "iPhone 13",
+              799,
+              6.1,
+              "iPhone 13",
+              40,
+              "Westfield UTC"
+            ],
+            [
+              "iPhone 13",
+              799,
+              6.1,
+              "iPhone 13",
+              100,
+              "Downtown"
+            ],
+            [
+              "iPhone 13 Pro Max",
+              1099,
+              6.7,
+              "iPhone 13 Pro Max",
+              50,
+              "Westfield UTC"
+            ],
+            [
+              "Pixel 5a",
+              449,
+              6.3,
+              "Pixel 5a",
+              10,
+              "Fashion Valley"
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

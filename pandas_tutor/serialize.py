@@ -142,6 +142,11 @@ def serialize_step_val(step: EvalResult) -> DataSpec:
 
 
 def serialize_pd_val(val: Any) -> DataSpec:
+    # HACK: special case for babypandas: pull original pd object out. we need
+    # this here and in run.py since this handles the merge case where there are
+    # two lhs values
+    val = util.get_pd_from_babypandas(val)
+
     if isinstance(val, pd.DataFrame):
         return DFSpec.from_pd(val)
     if isinstance(val, pd.Series):

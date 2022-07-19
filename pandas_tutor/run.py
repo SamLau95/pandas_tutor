@@ -161,14 +161,6 @@ def run_code(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
             eval_results.append(err_result)
             break
 
-        # special case for babypandas: pull original pd object out
-        val = (
-            val._pd
-            if hasattr(val, "_pd")
-            and (util.is_pd(val._pd) or util.is_groupby(val._pd))
-            else val
-        )
-
         result = make_result(step, fragment, args, val, last_val)
         eval_results.append(result)
         last_val = val
@@ -201,6 +193,9 @@ def make_result(
     val: t.Any,
     last_val: t.Any,
 ) -> EvalResult:
+    # HACK: special case for babypandas: pull original pd object out
+    val = util.get_pd_from_babypandas(val)
+
     if (
         isinstance(step, PassThroughCall)
         and isinstance(last_val, (util.DataFrameGroupBy, util.SeriesGroupBy))

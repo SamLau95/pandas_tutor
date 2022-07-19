@@ -296,6 +296,18 @@ def match_cols(
     )
 
 
+def get_pd_from_babypandas(val: Any) -> Any:
+    """
+    gets original pd value out of a babypandas object. if it's not a
+    babypandas object, returns the value itself
+    """
+    return (
+        val._pd
+        if hasattr(val, "_pd") and (is_pd(val._pd) or is_groupby(val._pd))
+        else val
+    )
+
+
 def is_series(obj: Any) -> TypeGuard[pd.Series]:
     return isinstance(obj, pd.Series)
 

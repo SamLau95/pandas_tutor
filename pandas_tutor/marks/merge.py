@@ -38,7 +38,8 @@ def mark_for_merge(
     left = before.val
     right = after.val
     args = after.args
-    left2 = args.get("right")
+    # HACK: need to unwrap bpd objects since we don't handle in run.py
+    left2 = util.get_pd_from_babypandas(args.get("right"))
 
     how: str = cast(str, args.get("how", "inner"))
     on_orig = args.get("on")
@@ -77,7 +78,8 @@ def mark_for_join(
     left = before.val
     right = after.val
     args = after.args
-    left2 = args.get("other")
+    # HACK: need to unwrap bpd objects since we don't handle in run.py
+    left2 = util.get_pd_from_babypandas(args.get("other"))
 
     # note that .join() uses a *left join* by default, not inner
     how: str = cast(str, args.get("how", "left"))
