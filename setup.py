@@ -19,7 +19,7 @@ version = Path("pandas_tutor/__version__.py").read_text().split('"')[1]
 install_requires = [
     "pandas>=1.3,<2.0",
     "mypy-extensions==0.4.3",
-    "typing-extensions==4.1.1",
+    "typing-extensions>=4.1,<5.0",
 ]
 
 with open("README.md", "r", encoding="utf-8") as fh:

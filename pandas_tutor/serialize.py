@@ -108,9 +108,7 @@ def serialize_pair(
         lhs2 = (
             after.args["right"]
             if "right" in after.args
-            else after.args["other"]
-            if "other" in after.args
-            else None
+            else after.args["other"] if "other" in after.args else None
         )
         data = DataTwoLHS(
             lhs=lhs,

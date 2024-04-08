@@ -1,6 +1,7 @@
 """
 just for myself
 """
+
 # type: ignore
 # flake8: noqa
 
@@ -24,7 +25,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "parse_golden/boolean_mask_01"
+file_to_read = "e2e_golden/groupby_multi_01"
 
 
 def p(obj):
@@ -35,8 +36,8 @@ if __name__ == "__main__":
     from pathlib import Path
 
     code = (Path(__file__).parent / f"tests/{file_to_read}.py").read_text()
-    root = test_parser(code)
-    p(root)
+    # root = test_parser(code)
+    # p(root)
     # test_logger(code)
     #     print(code)
     #     print('\n--------------\n')
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     #         rhs['data'] = len(rhs['data'])
 
     # p(run(root))
-    # spec = make_tutor_spec(code)
-    # p(spec)
+    spec = make_tutor_spec_py(code)
+    p(spec)
 
     print("\n---------------------------------------------------------\n")

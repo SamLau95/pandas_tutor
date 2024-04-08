@@ -69,9 +69,7 @@ if __name__ == "__main__":
     spec_fn = (
         test_logger
         if args["--parse_log"]
-        else parse_as_json
-        if args["--parse_only"]
-        else make_tutor_spec
+        else parse_as_json if args["--parse_only"] else make_tutor_spec
     )
 
     if args["--code"]:
