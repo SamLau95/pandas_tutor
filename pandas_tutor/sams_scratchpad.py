@@ -8,10 +8,11 @@ just for myself
 import prettyprinter  # type: ignore
 from prettyprinter import cpprint  # type: ignore
 from prettyprinter.prettyprinter import IMPLICIT_MODULES
+from pandas_tutor.serialize import serialize
 import simplejson as json
 from pandas_tutor.diagram import encode_dataclasses
 
-from pandas_tutor.parse_nodes import Call, SortValuesCall  # type: ignore
+from pandas_tutor.parse_nodes import Call, HeadCall, SortValuesCall  # type: ignore
 
 from .parse import parse, test_logger, test_parser
 from .run import run
@@ -25,7 +26,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "e2e_golden/groupby_multi_01"
+file_to_read = "e2e_golden/head_01"
 
 
 def p(obj):
@@ -36,6 +37,11 @@ if __name__ == "__main__":
     from pathlib import Path
 
     code = (Path(__file__).parent / f"tests/{file_to_read}.py").read_text()
+    root = parse(code)
+    # breakpoint()
+    eval_results = run(root)
+    explanation = serialize(eval_results)
+    # spec = OutputSpec(code=code, explanation=explanation)
     # root = test_parser(code)
     # p(root)
     # test_logger(code)
@@ -50,7 +56,7 @@ if __name__ == "__main__":
     #         rhs['data'] = len(rhs['data'])
 
     # p(run(root))
-    spec = make_tutor_spec_py(code)
-    p(spec)
+    # spec = make_tutor_spec_py(code)
+    p(eval_results)
 
     print("\n---------------------------------------------------------\n")

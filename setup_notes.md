@@ -11,3 +11,5 @@
    1. This errored out because windows can't run scripts...so we started all
       over using WSL.
 7. after doing everything in WSL, things work perfectly!
+
+hello world
