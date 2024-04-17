@@ -12,4 +12,4 @@
       over using WSL.
 7. after doing everything in WSL, things work perfectly!
 
-hello world
+hello world, this is a test!
