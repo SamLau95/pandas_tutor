@@ -1,13 +1,13 @@
 {
   "type_": "ParsedModule",
-  "code": "(dogs\n .groupby('grooming')\n .agg('mean')\n)\n\n(dogs\n .groupby('grooming')\n .var()\n)\n\n# should not be parsed into an AggCall\n(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)\n",
+  "code": "(dogs\n .groupby('grooming')\n .agg('mean')\n)\n\n(dogs\n .groupby('grooming')\n .var()\n)\n\n# Note that this is an agg but we have to handle it at runtime, not parse time\n(dogs\n .groupby('grooming')\n ['weight']\n .var()\n)\n\n# should not be parsed into an AggCall\n(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)\n",
   "location": {
     "start": {
       "line": 0,
       "ch": 0
     },
     "end": {
-      "line": 15,
+      "line": 22,
       "ch": 0
     }
   },
@@ -132,14 +132,14 @@
     },
     {
       "type_": "ChainStatement",
-      "code": "(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)",
+      "code": "(dogs\n .groupby('grooming')\n ['weight']\n .var()\n)",
       "location": {
         "start": {
           "line": 11,
           "ch": 0
         },
         "end": {
-          "line": 14,
+          "line": 15,
           "ch": 1
         }
       },
@@ -174,8 +174,8 @@
           "axis": "index"
         },
         {
-          "type_": "PassThroughCall",
-          "code": "(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)",
+          "type_": "Subscript",
+          "code": "dogs\n .groupby('grooming')\n ['weight']",
           "location": {
             "start": {
               "line": 13,
@@ -183,6 +183,97 @@
             },
             "end": {
               "line": 13,
+              "ch": 11
+            }
+          },
+          "slicer": null,
+          "slice1": {
+            "type_": "SubsEval",
+            "code": "'weight'",
+            "location": {
+              "start": {
+                "line": 13,
+                "ch": 2
+              },
+              "end": {
+                "line": 13,
+                "ch": 10
+              }
+            },
+            "expr": "'weight'"
+          },
+          "slice2": null
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "(dogs\n .groupby('grooming')\n ['weight']\n .var()\n)",
+          "location": {
+            "start": {
+              "line": 14,
+              "ch": 1
+            },
+            "end": {
+              "line": 14,
+              "ch": 7
+            }
+          },
+          "func": "var"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)",
+      "location": {
+        "start": {
+          "line": 18,
+          "ch": 0
+        },
+        "end": {
+          "line": 21,
+          "ch": 1
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "dogs",
+          "location": {
+            "start": {
+              "line": 18,
+              "ch": 1
+            },
+            "end": {
+              "line": 18,
+              "ch": 5
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "dogs\n .groupby('grooming')",
+          "location": {
+            "start": {
+              "line": 19,
+              "ch": 1
+            },
+            "end": {
+              "line": 19,
+              "ch": 21
+            }
+          },
+          "axis": "index"
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "(dogs\n .groupby('grooming')\n .transform(lambda x: x.max() - x.min())\n)",
+          "location": {
+            "start": {
+              "line": 20,
+              "ch": 1
+            },
+            "end": {
+              "line": 20,
               "ch": 40
             }
           },
