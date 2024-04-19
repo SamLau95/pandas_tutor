@@ -373,7 +373,7 @@ def mark_for_reset_index(
         for level in levels
     ]
 
-
+# dogs.set_index('price')
 def mark_for_set_index(
     step: SetIndexCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
