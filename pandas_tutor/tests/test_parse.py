@@ -5,7 +5,7 @@ from dataclasses import asdict
 
 from pandas_tutor.parse import parse
 
-test_cases = Path(__file__).parent / 'parse_golden'
+test_cases = Path(__file__).parent / "parse_golden"
 
 
 class TestParse(unittest.TestCase):
@@ -14,8 +14,8 @@ class TestParse(unittest.TestCase):
 
 
 def make_test_case(test_name):
-    in_file = test_cases / f'{test_name}.py'
-    golden_file = test_cases / f'{test_name}.py.golden'
+    in_file = test_cases / f"{test_name}.py"
+    golden_file = test_cases / f"{test_name}.py.golden"
 
     def test(self: TestParse):
         self.assertTrue(in_file.exists())
@@ -29,7 +29,8 @@ def make_test_case(test_name):
 
 
 # make all test cases dynamically!
+# TODO: Use @pytest.mark.parametrize instead of this hack
 for test_name in test_cases.iterdir():
-    if test_name.suffix == '.py' and test_name.name != '__init__.py':
+    if test_name.suffix == ".py" and test_name.name != "__init__.py":
         test_case = make_test_case(test_name.stem)
-        setattr(TestParse, f'test_{test_name.stem}', test_case)
+        setattr(TestParse, f"test_{test_name.stem}", test_case)
