@@ -5,6 +5,10 @@ CONTENT = pandas_tutor
 
 sam_cmd = python -m pandas_tutor.sams_scratchpad # && echo "\n------------------\n"
 
+# add Chris make
+chris:
+	python -m pandas_tutor.chris_scratchpad
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
