@@ -75,6 +75,7 @@ from pandas_tutor.parse_nodes import (
     SubscriptEl,
     TailCall,
     UnstackCall,
+    GroupByFilterCall
 )
 from pandas_tutor.run import (
     Arg,
@@ -141,9 +142,25 @@ def make_marks(
         return mark_for_bool_expr(step, before, after)
     elif isinstance(step, Subscript):
         return mark_for_subscript(step, before, after)
+    elif isinstance(step, GroupByFilterCall):
+        return mark_for_groupby_filter(step, before, after)
     else:
         return no_marks()
 
+#df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
+def mark_for_groupby_filter(step: GroupByFilterCall, before: EvalResult, after: EvalResult) -> List[Mark]:
+    if not isinstance(before, GroupbyResult):
+        return []
+    if not isinstance(after, DFResult):
+        return []
+    
+    # get the arrows from lhs to rhs
+    before_val = before.val.__dict__['obj']
+    arrow = diff_rows(before_val, after.val, only_if_diff=False)
+
+    # get the cross out from lhs
+
+    return arrow
 
 # df.get(['Name'])
 def mark_for_get(
