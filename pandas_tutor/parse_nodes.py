@@ -1,6 +1,7 @@
 """
 node objects that parse.py creates
 """
+
 from __future__ import annotations
 
 import dataclasses
@@ -207,17 +208,22 @@ class GroupByCall(Call):
 
 
 @dataclasses.dataclass
-class AggCall(Call):
+class GroupByAggCall(Call):
     """
-    catch-all for any function that happens after a groupby. note: some
-    functions on groupby objects are transforms, not aggregations, e.g.
+    catch-all for any aggregation function that happens after a groupby. note:
+    some functions on groupby objects are transforms, not aggregations, e.g.
     .transform(), .apply(), .cumcount(), etc. and shouldn't be parsed into an
     AggCall
 
-    g = df.groupby('region')
-    g.agg('mean')
-    g.mean()
-    g.std()
+    the tricky thing about agg calls (and filter, transform, etc.) is that these
+    methods exist on both dataframe and dataframegroupby objects. that means
+    that at parse time, we don't know if we're dealing with e.g. the dataframe
+    mean() method or the groupby mean() method. to handle this, we need to
+    create PassThroughCalls for these methods, and then in run.py, we'll call
+    cls.from_passthrough_call to convert the PassThroughCalls into the correct
+    type.
+
+    g = df.groupby('region') g.agg('mean') g.mean() g.std()
     """
 
     # don't match the actual "agg()" call since we have a special case in the

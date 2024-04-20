@@ -56,7 +56,7 @@
           "axis": "index"
         },
         {
-          "type_": "AggCall",
+          "type_": "GroupByAggCall",
           "code": "(dogs\n .groupby('grooming')\n .agg('mean')\n)",
           "location": {
             "start": {
@@ -115,7 +115,7 @@
           "axis": "index"
         },
         {
-          "type_": "AggCall",
+          "type_": "GroupByAggCall",
           "code": "(dogs\n .groupby('grooming')\n .var()\n)",
           "location": {
             "start": {

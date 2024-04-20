@@ -318,7 +318,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "(dogs\n .groupby('size')\n ['food_cost']\n .mean()\n)",
       "fragment": {
         "start": {

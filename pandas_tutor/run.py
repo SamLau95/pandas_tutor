@@ -16,7 +16,7 @@ import pandas as pd
 
 from . import util
 from .parse_nodes import (
-    AggCall,
+    GroupByAggCall,
     ChainStatement,
     ChainStep,
     CodeRange,
@@ -122,7 +122,9 @@ def run_code(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
     # grab user local vars from ipython shell if possible, otherwise initialize
     # a new globals dict
     user_globals = (
-        setup_user_globals() if ipython_shell is None else ipython_shell.user_ns
+        setup_user_globals()
+        if ipython_shell is None
+        else ipython_shell.user_ns
     )
 
     for stmt in setup_stmts:
@@ -184,24 +186,27 @@ def run_code(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
     return eval_results
 
 
-# need the last_val for the special case where we have an agg that doesn't show
-# up immediately after a groupby, like dogs.groupby(...)['...'].mean().
+# need the previous_val for the special case where we have an
+# agg/filter/transform that doesn't show up immediately after a groupby, like
+# dogs.groupby(...)['...'].mean().
 def make_result(
     step: ChainStep,
     fragment: CodeRange,
     args: Args,
     val: t.Any,
-    last_val: t.Any,
+    previous_val: t.Any,
 ) -> EvalResult:
     # HACK: special case for babypandas: pull original pd object out
     val = util.get_pd_from_babypandas(val)
 
     if (
         isinstance(step, PassThroughCall)
-        and isinstance(last_val, (util.DataFrameGroupBy, util.SeriesGroupBy))
+        and isinstance(
+            previous_val, (util.DataFrameGroupBy, util.SeriesGroupBy)
+        )
         and isinstance(val, (pd.DataFrame, pd.Series))
     ):
-        step = AggCall.from_passthrough_call(step)
+        step = GroupByAggCall.from_passthrough_call(step)
 
     if isinstance(val, util.DataFrameGroupBy):
         return GroupbyResult(step, fragment, args, val)
@@ -228,7 +233,9 @@ def setup_user_globals():
 
     user_globals = {}
 
-    user_globals.update({"__name__": "__main__", "__builtins__": user_builtins})
+    user_globals.update(
+        {"__name__": "__main__", "__builtins__": user_builtins}
+    )
 
     return user_globals
 
