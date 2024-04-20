@@ -1,0 +1,272 @@
+{
+  "type_": "ParsedModule",
+  "code": "# these will all get parsed into PassThroughCalls since we can only robustly\n# create GroupbyFilerCalls during runtime analysis, so this test isn't really\n# testing that much, but oh well!\n\n(dogs\n .groupby('size')\n .filter(lambda df: df.shape[0] > 2)\n)\n\n(dogs\n .groupby('size')\n .filter(lambda df: df.shape[0] > 2, dropna=False)\n)\n\n# no groupby, so it shouldn't get parsed into a GroupByFilterCall\ndf.filter(items=['one', 'three'])\n\n# can't handle this at parse time, so we'll just pass it through\n(dogs\n .groupby('size')\n ['weight']\n .filter(lambda x: x.shape[0] > 2, dropna=False)\n)",
+  "location": {
+    "start": {
+      "line": 0,
+      "ch": 0
+    },
+    "end": {
+      "line": 23,
+      "ch": 0
+    }
+  },
+  "statements": [
+    {
+      "type_": "ChainStatement",
+      "code": "(dogs\n .groupby('size')\n .filter(lambda df: df.shape[0] > 2)\n)",
+      "location": {
+        "start": {
+          "line": 4,
+          "ch": 0
+        },
+        "end": {
+          "line": 7,
+          "ch": 1
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "dogs",
+          "location": {
+            "start": {
+              "line": 4,
+              "ch": 1
+            },
+            "end": {
+              "line": 4,
+              "ch": 5
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "dogs\n .groupby('size')",
+          "location": {
+            "start": {
+              "line": 5,
+              "ch": 1
+            },
+            "end": {
+              "line": 5,
+              "ch": 17
+            }
+          },
+          "axis": "index"
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "(dogs\n .groupby('size')\n .filter(lambda df: df.shape[0] > 2)\n)",
+          "location": {
+            "start": {
+              "line": 6,
+              "ch": 1
+            },
+            "end": {
+              "line": 6,
+              "ch": 36
+            }
+          },
+          "func": "filter"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "(dogs\n .groupby('size')\n .filter(lambda df: df.shape[0] > 2, dropna=False)\n)",
+      "location": {
+        "start": {
+          "line": 9,
+          "ch": 0
+        },
+        "end": {
+          "line": 12,
+          "ch": 1
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "dogs",
+          "location": {
+            "start": {
+              "line": 9,
+              "ch": 1
+            },
+            "end": {
+              "line": 9,
+              "ch": 5
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "dogs\n .groupby('size')",
+          "location": {
+            "start": {
+              "line": 10,
+              "ch": 1
+            },
+            "end": {
+              "line": 10,
+              "ch": 17
+            }
+          },
+          "axis": "index"
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "(dogs\n .groupby('size')\n .filter(lambda df: df.shape[0] > 2, dropna=False)\n)",
+          "location": {
+            "start": {
+              "line": 11,
+              "ch": 1
+            },
+            "end": {
+              "line": 11,
+              "ch": 50
+            }
+          },
+          "func": "filter"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "df.filter(items=['one', 'three'])",
+      "location": {
+        "start": {
+          "line": 15,
+          "ch": 0
+        },
+        "end": {
+          "line": 15,
+          "ch": 33
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "df",
+          "location": {
+            "start": {
+              "line": 15,
+              "ch": 0
+            },
+            "end": {
+              "line": 15,
+              "ch": 2
+            }
+          }
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "df.filter(items=['one', 'three'])",
+          "location": {
+            "start": {
+              "line": 15,
+              "ch": 2
+            },
+            "end": {
+              "line": 15,
+              "ch": 33
+            }
+          },
+          "func": "filter"
+        }
+      ]
+    },
+    {
+      "type_": "ChainStatement",
+      "code": "(dogs\n .groupby('size')\n ['weight']\n .filter(lambda x: x.shape[0] > 2, dropna=False)\n)",
+      "location": {
+        "start": {
+          "line": 18,
+          "ch": 0
+        },
+        "end": {
+          "line": 22,
+          "ch": 1
+        }
+      },
+      "chain": [
+        {
+          "type_": "StartOfChain",
+          "code": "dogs",
+          "location": {
+            "start": {
+              "line": 18,
+              "ch": 1
+            },
+            "end": {
+              "line": 18,
+              "ch": 5
+            }
+          }
+        },
+        {
+          "type_": "GroupByCall",
+          "code": "dogs\n .groupby('size')",
+          "location": {
+            "start": {
+              "line": 19,
+              "ch": 1
+            },
+            "end": {
+              "line": 19,
+              "ch": 17
+            }
+          },
+          "axis": "index"
+        },
+        {
+          "type_": "Subscript",
+          "code": "dogs\n .groupby('size')\n ['weight']",
+          "location": {
+            "start": {
+              "line": 20,
+              "ch": 1
+            },
+            "end": {
+              "line": 20,
+              "ch": 11
+            }
+          },
+          "slicer": null,
+          "slice1": {
+            "type_": "SubsEval",
+            "code": "'weight'",
+            "location": {
+              "start": {
+                "line": 20,
+                "ch": 2
+              },
+              "end": {
+                "line": 20,
+                "ch": 10
+              }
+            },
+            "expr": "'weight'"
+          },
+          "slice2": null
+        },
+        {
+          "type_": "PassThroughCall",
+          "code": "(dogs\n .groupby('size')\n ['weight']\n .filter(lambda x: x.shape[0] > 2, dropna=False)\n)",
+          "location": {
+            "start": {
+              "line": 21,
+              "ch": 1
+            },
+            "end": {
+              "line": 21,
+              "ch": 48
+            }
+          },
+          "func": "filter"
+        }
+      ]
+    }
+  ]
+}

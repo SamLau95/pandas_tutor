@@ -217,7 +217,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "(dogs\n .groupby('grooming')\n .agg('mean')\n)",
       "fragment": {
         "start": {
