@@ -1,5 +1,4 @@
-# requirements for local development. includes things like black, jupyterlab,
-# etc.
+# requirements for CI, e.g. github actions that run the test suite
 -r requirements.txt
 
 # pin pandas version for CI
@@ -24,6 +23,5 @@ typing-extensions==4.1.1
 
 # These packages are used for packaging and testing
 babypandas==0.1.6
-prettyprinter==0.18.0
 wheel
 build
