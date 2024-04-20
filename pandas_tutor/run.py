@@ -21,6 +21,7 @@ from .parse_nodes import (
     ChainStep,
     CodeRange,
     EvalError,
+    GroupByFilterCall,
     ParseResult,
     ParseSyntaxError,
     PassThroughCall,
@@ -199,6 +200,8 @@ def make_result(
     # HACK: special case for babypandas: pull original pd object out
     val = util.get_pd_from_babypandas(val)
 
+    # special cases for agg / filter / transform / apply calls that happen to
+    # groupby objects, which we can only correctly detect during runtime
     if (
         isinstance(step, PassThroughCall)
         and isinstance(
@@ -206,7 +209,10 @@ def make_result(
         )
         and isinstance(val, (pd.DataFrame, pd.Series))
     ):
-        step = GroupByAggCall.from_passthrough_call(step)
+        if step.func == "filter":
+            step = GroupByFilterCall.from_passthrough_call(step)
+        elif step.func in GroupByAggCall.agg_funcs:
+            step = GroupByAggCall.from_passthrough_call(step)
 
     if isinstance(val, util.DataFrameGroupBy):
         return GroupbyResult(step, fragment, args, val)

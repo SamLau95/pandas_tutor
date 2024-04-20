@@ -239,6 +239,33 @@ class GroupByAggCall(Call):
 
 
 @dataclasses.dataclass
+class GroupByFilterCall(Call):
+    """
+    like GroupByAggCall, we can only correctly detect these during runtime
+    analysis, so we'll create these run.py, not parse.py
+
+    g = dogs.groupby('size')
+    g.filter(lambda df: df.shape[0] > 2)
+    g.filter(lambda df: df.shape[0] > 2, dropna=True)
+    g['weight'].filter(lambda x: x.mean() > 30, dropna=False)
+    """
+
+    # don't match the actual "filter()" call since we'll create these during
+    # runtime analysis
+    fn_name = "FILTER"
+
+    # since we can't properly parse groupby + filter calls in parse.py, we won't
+    # be able to parse out the dropna argument either. however, we can still
+    # make a reasonable visualization without this argument, so we'll skip it
+    # for now.
+    # dropna_expr: Optional[RawCode] = evals_into("dropna")
+
+    @classmethod
+    def from_passthrough_call(cls, call: PassThroughCall):
+        return cls(code=call.code, location=call.location)
+
+
+@dataclasses.dataclass
 class ApplyCall(Call):
     """
     df['region'].apply(len)

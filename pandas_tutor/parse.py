@@ -38,6 +38,7 @@ from .parse_nodes import (
     DropCall,
     GetCall,
     GroupByCall,
+    GroupByFilterCall,
     HeadCall,
     JoinCall,
     MeltCall,

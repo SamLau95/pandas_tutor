@@ -27,3 +27,6 @@ babypandas==0.1.6
 prettyprinter==0.18.0
 wheel
 build
+
+# nice-to-have packages for development
+black==24.3.0
