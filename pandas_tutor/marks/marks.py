@@ -164,7 +164,7 @@ def mark_for_groupby_filter(step: GroupByFilterCall, before: EvalResult, after: 
     rows_to_drop = before_label.difference(after_label)
     cross = make_drops(rows_to_drop, "row")
     breakpoint()
-    return arrow
+    return [*arrow, *cross]
 
 # df.get(['Name'])
 def mark_for_get(
