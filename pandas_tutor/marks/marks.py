@@ -159,7 +159,11 @@ def mark_for_groupby_filter(step: GroupByFilterCall, before: EvalResult, after: 
     arrow = diff_rows(before_val, after.val, only_if_diff=False)
 
     # get the cross out from lhs
-
+    before_label = set(before_val.index)
+    after_label = set(after.val.index)
+    rows_to_drop = before_label.difference(after_label)
+    cross = make_drops(rows_to_drop, "row")
+    breakpoint()
     return arrow
 
 # df.get(['Name'])
@@ -233,7 +237,7 @@ def mark_for_drop(
     row_labels = args.get("row_labels", [])
     if not util.is_list_like(row_labels):
         row_labels = [row_labels]
-
+    breakpoint()
     # cross out dropped rows or columns
     return [
         *make_drops(col_labels, "column"),
