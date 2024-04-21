@@ -1110,4 +1110,6 @@ Maltese,toy,12.25,small,5.0
 
 dogs = pd.read_csv(io.StringIO(csv))
 
-dogs.groupby('breed').sum()
+# dogs.groupby('breed').sum()
+# dogs.sort_values('breed').head(20)
+dogs.assign(**pd.get_dummies(dogs['breed'], prefix='breed')).sort_values('breed').head(20)

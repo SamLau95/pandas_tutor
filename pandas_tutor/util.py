@@ -570,6 +570,7 @@ def mem_used(obj: Any) -> float:
 KB = 2**10
 MB = 2**20
 MEM_LIMIT = 1 * MB
+# MEM_LIMIT = 0.15 * MB
 
 
 def mem_as_str(mem: float) -> str:
