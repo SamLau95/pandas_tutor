@@ -42,6 +42,7 @@ from .run import (
     ScalarResult,
     SyntaxErrorResult,
 )
+from .shrink import shrink_memory
 
 T = TypeVar("T")
 
@@ -50,17 +51,21 @@ def serialize(results: List[EvalResult]) -> Explanation:
     if len(results) == 0:
         return []
 
-    # stop if results use too much memory
-    total_mem_used = sum(util.mem_used(result.val) for result in results)
-    if total_mem_used > util.MEM_LIMIT:
-        result = results[-1]
-        return [
-            RuntimeErrorInChain(
-                code_step=result.step.code,
-                message=util.too_much_mem_msg(total_mem_used),
-                fragment=result.fragment,
-            )
-        ]
+    # # stop if results use too much memory
+    # total_mem_used = sum(util.mem_used(result.val) for result in results)
+    # breakpoint()
+    # if total_mem_used > util.MEM_LIMIT:
+    #     result = results[-1]
+    #     return [
+    #         RuntimeErrorInChain(
+    #             code_step=result.step.code,
+    #             message=util.too_much_mem_msg(total_mem_used),
+    #             fragment=result.fragment,
+    #         )
+    #     ]
+        
+    # remove rows if we have too much memory
+    results = shrink_memory(results)
 
     if len(results) == 1:
         # happens when user inputs `df` without a function call, or when
@@ -68,7 +73,6 @@ def serialize(results: List[EvalResult]) -> Explanation:
         return serialize_single(results[0])
 
     return [serialize_pair(before, after) for before, after in pairs(results)]
-
 
 def serialize_single(result: EvalResult) -> Explanation:
     if isinstance(result, SyntaxErrorResult):
