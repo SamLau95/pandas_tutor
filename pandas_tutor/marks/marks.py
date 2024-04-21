@@ -1,6 +1,7 @@
 """
 creates mark specs. here's where the magic happens!
 """
+
 from typing import (
     Any,
     Callable,
@@ -48,7 +49,7 @@ from pandas_tutor.diagram import (
     Selection,
 )
 from pandas_tutor.parse_nodes import (
-    AggCall,
+    GroupByAggCall,
     ApplyCall,
     AssignCall,
     BoolExprStep,
@@ -116,7 +117,7 @@ def make_marks(
         return mark_for_assign(step, before, after)
     elif isinstance(step, GroupByCall):
         return mark_for_groupby(step, before, after)
-    elif isinstance(step, AggCall):
+    elif isinstance(step, GroupByAggCall):
         return mark_for_agg(step, before, after)
     elif isinstance(step, ResetIndexCall):
         return mark_for_reset_index(step, before, after)
@@ -309,7 +310,7 @@ def mark_for_groupby(
 
 # basic heuristic: assume that group keys map to row labels of result
 def mark_for_agg(
-    step: AggCall, before: EvalResult, after: EvalResult
+    step: GroupByAggCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
     if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
@@ -551,7 +552,9 @@ def mark_for_pivot(
         # pull new col labels from row data
         appended = tuple(row[columns])
         for old_col in values:
-            new_col = (old_col, *appended) if not will_drop_values else appended
+            new_col = (
+                (old_col, *appended) if not will_drop_values else appended
+            )
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
             pairs.append((left, right))
@@ -703,8 +706,8 @@ def mark_for_melt(
         return []
 
     pairs = []
-    for (row_num, row) in enumerate(df.index):
-        for (col_num, col) in enumerate(value_vars):
+    for row_num, row in enumerate(df.index):
+        for col_num, col in enumerate(value_vars):
             new_row = len(df) * col_num + row_num
             pairs.append(
                 (CellPos("lhs", row, col), CellPos("rhs", new_row, var_name))

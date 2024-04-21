@@ -166,7 +166,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "x.groupby(by=[\"c\"], dropna=False).sum()",
       "fragment": {
         "start": {

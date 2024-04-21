@@ -1,5 +1,5 @@
 """
-just for myself
+just for Guoxuan
 """
 
 # type: ignore
@@ -9,7 +9,7 @@ import prettyprinter  # type: ignore
 from prettyprinter import cpprint  # type: ignore
 from prettyprinter.prettyprinter import IMPLICIT_MODULES
 import simplejson as json
-from pandas_tutor.diagram import encode_dataclasses
+#from pandas_tutor.diagram import encode_dataclasses
 
 from pandas_tutor.parse_nodes import Call, SortValuesCall  # type: ignore
 
@@ -22,12 +22,10 @@ prettyprinter.install_extras(include=["dataclasses", "python", "numpy"])
 # https://github.com/tommikaikkonen/prettyprinter/issues/27#issuecomment-451515061
 IMPLICIT_MODULES.add("pandas_tutor.parse_nodes")
 IMPLICIT_MODULES.add("pandas_tutor.util")
-IMPLICIT_MODULES.add("pandas_tutor.diagram")
 
 shorten_df = True
 
-file_to_read = "parse_golden/groupby_filter"
-# file_to_read = "e2e_golden/groupby_filter_01"
+file_to_read = "e2e_golden/groupby_multi_01"
 
 
 def p(obj):
@@ -51,11 +49,8 @@ if __name__ == "__main__":
     #         lhs['data'] = len(lhs['data'])
     #         rhs['data'] = len(rhs['data'])
 
-    root = parse(code)
-    p(root)
-
     # p(run(root))
-    # spec = make_tutor_spec_py(code)
-    # p(spec)
+    spec = make_tutor_spec_py(code)
+    p(spec)
 
     print("\n---------------------------------------------------------\n")

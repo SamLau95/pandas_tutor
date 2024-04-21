@@ -411,7 +411,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "(dogs\n .groupby(['size', 'grooming', 'kids'])\n [['food_cost']]\n .max()\n)",
       "fragment": {
         "start": {
