@@ -160,10 +160,10 @@ def mark_for_groupby_filter(step: GroupByFilterCall, before: EvalResult, after: 
 
     # get the cross out from lhs
     before_label = set(before_val.index)
+    # find indices of dropped rows when dropna=False
     after_label = set(after.val[after.val.notna().any(axis=1)].index)
     rows_to_drop = before_label.difference(after_label)
     cross = make_drops(rows_to_drop, "row")
-    breakpoint()
     return [*arrow, *cross]
 
 # df.get(['Name'])
