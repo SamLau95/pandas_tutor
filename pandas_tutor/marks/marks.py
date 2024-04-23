@@ -147,7 +147,7 @@ def make_marks(
     else:
         return no_marks()
 
-#df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
+# df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
 def mark_for_groupby_filter(step: GroupByFilterCall, before: EvalResult, after: EvalResult) -> List[Mark]:
     if not isinstance(before, GroupbyResult):
         return []
