@@ -252,6 +252,9 @@ def _merge_marks(
 
     row_sets = make_map_sets(pairs, key=by_merge_key)
 
+    # print_axis_sets(row_sets)
+    # breakpoint()
+
     return [*using, *drops, *row_sets]
 
 
