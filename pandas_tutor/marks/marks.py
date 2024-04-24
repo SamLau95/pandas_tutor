@@ -58,6 +58,7 @@ from pandas_tutor.parse_nodes import (
     EvalError,
     GetCall,
     GroupByCall,
+    GroupByFilterCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -85,7 +86,7 @@ from pandas_tutor.run import (
     SeriesGroupbyResult,
     SeriesResult,
 )
-from pandas_tutor.util import SERIES, Label, LabelPair
+from pandas_tutor.util import SERIES, Label, LabelPair, ungroup
 
 
 # step comes from after.step, but we pull it out here to help with
@@ -119,6 +120,8 @@ def make_marks(
         return mark_for_groupby(step, before, after)
     elif isinstance(step, GroupByAggCall):
         return mark_for_agg(step, before, after)
+    elif isinstance(step, GroupByFilterCall):
+        return mark_for_groupby_filter(step, before, after)
     elif isinstance(step, ResetIndexCall):
         return mark_for_reset_index(step, before, after)
     elif isinstance(step, SetIndexCall):
@@ -331,6 +334,30 @@ def mark_for_agg(
             )
 
     return row_outlines
+
+
+# df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
+def mark_for_groupby_filter(
+    step: GroupByFilterCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not isinstance(before, GroupbyResult):
+        return []
+    if not isinstance(after, DFResult):
+        return []
+
+    # get the arrows from lhs to rhs
+    before_val = ungroup(before.val)
+    arrows = diff_rows(before_val, after.val, only_if_diff=False)
+
+    # .filter() can either drop rows from the dataframe entirely (dropna=True)
+    # or replace entire rows with NaN (dropna=False).
+    # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
+    before_label = set(before_val.index)
+    after_label = set(after.val[after.val.notna().any(axis=1)].index)
+    # rows_to_drop = before_label.difference(after_label)
+    rows_to_drop = before_label - after_label
+    crossouts = make_drops(rows_to_drop, "row")
+    return [*arrows, *crossouts]
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
