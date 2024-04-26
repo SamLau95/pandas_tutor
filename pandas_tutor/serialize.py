@@ -43,6 +43,7 @@ from .run import (
     SyntaxErrorResult,
 )
 from .shrink import shrink_memory
+from .reduce import reduce_memory
 
 T = TypeVar("T")
 
@@ -63,9 +64,10 @@ def serialize(results: List[EvalResult]) -> Explanation:
     #             fragment=result.fragment,
     #         )
     #     ]
-        
+
     # remove rows if we have too much memory
-    results = shrink_memory(results)
+    # Commented out for importance decisions
+    # results = shrink_memory(results)
 
     if len(results) == 1:
         # happens when user inputs `df` without a function call, or when
@@ -73,6 +75,7 @@ def serialize(results: List[EvalResult]) -> Explanation:
         return serialize_single(results[0])
 
     return [serialize_pair(before, after) for before, after in pairs(results)]
+
 
 def serialize_single(result: EvalResult) -> Explanation:
     if isinstance(result, SyntaxErrorResult):
@@ -97,13 +100,21 @@ def serialize_pair(
         return RuntimeErrorInChain.from_runtime_error_result(after)
     step = after.step
 
+    # Copy to reset at the end
+    before_copy = before.val
+    after_copy = after.val
+
+    before.val, after.val = reduce_memory(before.val, after.val, step)
+
     marks = make_marks(step, before, after)
 
-    lhs: Union[DataSpec, PrevRHS] = (
-        serialize_step_val(before)
-        if isinstance(before.step, StartOfChain)
-        else "prev_rhs"
-    )
+    # lhs: Union[DataSpec, PrevRHS] = (
+    #     serialize_step_val(before)
+    #     if isinstance(before.step, StartOfChain)
+    #     else "prev_rhs"
+    # )
+
+    lhs = serialize_step_val(before)
     rhs = serialize_step_val(after)
 
     # HACK: special case for merge and join
@@ -121,6 +132,9 @@ def serialize_pair(
         )
     else:
         data = DataPair(lhs=lhs, rhs=rhs)
+
+    before.val = before_copy
+    after.val = after_copy
 
     return Diagram(
         type=step.type_,
