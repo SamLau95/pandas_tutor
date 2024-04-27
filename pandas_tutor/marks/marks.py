@@ -341,32 +341,27 @@ def mark_for_groupby_filter(
     step: GroupByFilterCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
     # Groupby DataFrame -> DataFrame
-    if isinstance(before, GroupbyResult) and isinstance(after, DFResult):
-        # get the arrows from lhs to rhs
-        before_label = ungroup(before.val)
-        arrows = diff_rows(before_label, after.val, only_if_diff=False)
-        # .filter() can either drop rows from the dataframe entirely (dropna=True)
-        # or replace entire rows with NaN (dropna=False).
-        # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
-        before_label = set(before_label.index)
-        after_label = set(after.val[after.val.notna().any(axis=1)].index)
-        rows_to_drop = before_label - after_label
-        crossouts = make_drops(rows_to_drop, "row")
-        return [*arrows, *crossouts]
-    # Groupby Series -> Series
-    elif isinstance(before, SeriesGroupbyResult) and isinstance(
-        after, SeriesResult
-    ):
-        before_label = ungroup(before.val)
-        arrows = diff_rows(before_label, after.val, only_if_diff=False)
-
-        before_label = set(before_label.index)
-        after_label = set(after.val[after.val.notna()].index)
-        rows_to_drop = before_label - after_label
-        crossouts = make_drops(rows_to_drop, "row")
-        return [*arrows, *crossouts]
-    else:
+    if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
+    if not isinstance(after, (DFResult, SeriesResult)):
+        return []
+
+    # get the arrows from lhs to rhs
+    before_label = ungroup(before.val)
+    arrows = diff_rows(before_label, after.val, only_if_diff=False)
+    # .filter() can either drop rows from the dataframe entirely (dropna=True)
+    # or replace entire rows with NaN (dropna=False).
+    # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
+    before_label = set(before_label.index)
+
+    # Sereies results doesn't have axis
+    if isinstance(after, SeriesResult):
+        after_label = set(after.val[after.val.notna()].index)
+    else:
+        after_label = set(after.val[after.val.notna().any(axis=1)].index)
+    rows_to_drop = before_label - after_label
+    crossouts = make_drops(rows_to_drop, "row")
+    return [*arrows, *crossouts]
 
 
 # dogs.reset_index(level=[1, 2], drop=True)

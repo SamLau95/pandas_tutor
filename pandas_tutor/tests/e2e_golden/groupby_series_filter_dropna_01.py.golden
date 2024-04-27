@@ -1,0 +1,526 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\ndogs = dogs[[\"breed\", \"size\", \"longevity\"]].sort_values(\"size\")\n\ndogs.groupby(\"size\")[\"longevity\"].filter(lambda s: s.mean() > 12, dropna=False)\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "dogs.groupby(\"size\")[\"longevity\"].filter(lambda s: s.mean() > 12, dropna=False)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 20
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "size",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              0,
+              3,
+              5,
+              6,
+              7,
+              2,
+              4
+            ]
+          },
+          "data": [
+            [
+              "German",
+              "large",
+              9.73
+            ],
+            [
+              "Labrador",
+              "medium",
+              12.04
+            ],
+            [
+              "Golden",
+              "medium",
+              12.04
+            ],
+            [
+              "Bulldog",
+              "medium",
+              6.29
+            ],
+            [
+              "Boxer",
+              "medium",
+              8.81
+            ],
+            [
+              "Poodle",
+              "medium",
+              11.95
+            ],
+            [
+              "Beagle",
+              "small",
+              12.3
+            ],
+            [
+              "Yorkshire",
+              "small",
+              12.6
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "size",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              0,
+              3,
+              5,
+              6,
+              7,
+              2,
+              4
+            ]
+          },
+          "data": [
+            [
+              "German",
+              "large",
+              9.73
+            ],
+            [
+              "Labrador",
+              "medium",
+              12.04
+            ],
+            [
+              "Golden",
+              "medium",
+              12.04
+            ],
+            [
+              "Bulldog",
+              "medium",
+              6.29
+            ],
+            [
+              "Boxer",
+              "medium",
+              8.81
+            ],
+            [
+              "Poodle",
+              "medium",
+              11.95
+            ],
+            [
+              "Beagle",
+              "small",
+              12.3
+            ],
+            [
+              "Yorkshire",
+              "small",
+              12.6
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "size"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium"
+                ],
+                "labels": [
+                  0,
+                  3,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "Subscript",
+      "code_step": "dogs.groupby(\"size\")[\"longevity\"].filter(lambda s: s.mean() > 12, dropna=False)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 20
+        },
+        "end": {
+          "line": 0,
+          "ch": 33
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "series",
+            "anchor": "rhs",
+            "label": "pandas.Series"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "SeriesGroupBy",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              0,
+              3,
+              5,
+              6,
+              7,
+              2,
+              4
+            ]
+          },
+          "data": [
+            9.73,
+            12.04,
+            12.04,
+            6.29,
+            8.81,
+            11.95,
+            12.3,
+            12.6
+          ],
+          "group_data": {
+            "columns": [
+              "size"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium"
+                ],
+                "labels": [
+                  0,
+                  3,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByFilterCall",
+      "code_step": "dogs.groupby(\"size\")[\"longevity\"].filter(lambda s: s.mean() > 12, dropna=False)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 33
+        },
+        "end": {
+          "line": 0,
+          "ch": 79
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 5
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 5
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 6
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 7
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 5
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              0,
+              3,
+              5,
+              6,
+              7,
+              2,
+              4
+            ]
+          },
+          "data": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            12.3,
+            12.6
+          ]
+        }
+      }
+    }
+  ]
+}
