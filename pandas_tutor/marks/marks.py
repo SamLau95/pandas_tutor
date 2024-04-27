@@ -340,24 +340,33 @@ def mark_for_agg(
 def mark_for_groupby_filter(
     step: GroupByFilterCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
-    if not isinstance(before, GroupbyResult):
-        return []
-    if not isinstance(after, DFResult):
-        return []
+    # Groupby DataFrame -> DataFrame
+    if isinstance(before, GroupbyResult) and isinstance(after, DFResult):
+        # get the arrows from lhs to rhs
+        before_label = ungroup(before.val)
+        arrows = diff_rows(before_label, after.val, only_if_diff=False)
+        # .filter() can either drop rows from the dataframe entirely (dropna=True)
+        # or replace entire rows with NaN (dropna=False).
+        # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
+        before_label = set(before_label.index)
+        after_label = set(after.val[after.val.notna().any(axis=1)].index)
+        rows_to_drop = before_label - after_label
+        crossouts = make_drops(rows_to_drop, "row")
+        return [*arrows, *crossouts]
+    # Groupby Series -> Series
+    elif isinstance(before, SeriesGroupbyResult) and isinstance(
+        after, SeriesResult
+    ):
+        before_label = ungroup(before.val)
+        arrows = diff_rows(before_label, after.val, only_if_diff=False)
 
-    # get the arrows from lhs to rhs
-    before_val = ungroup(before.val)
-    arrows = diff_rows(before_val, after.val, only_if_diff=False)
-
-    # .filter() can either drop rows from the dataframe entirely (dropna=True)
-    # or replace entire rows with NaN (dropna=False).
-    # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
-    before_label = set(before_val.index)
-    after_label = set(after.val[after.val.notna().any(axis=1)].index)
-    # rows_to_drop = before_label.difference(after_label)
-    rows_to_drop = before_label - after_label
-    crossouts = make_drops(rows_to_drop, "row")
-    return [*arrows, *crossouts]
+        before_label = set(before_label.index)
+        after_label = set(after.val[after.val.notna()].index)
+        rows_to_drop = before_label - after_label
+        crossouts = make_drops(rows_to_drop, "row")
+        return [*arrows, *crossouts]
+    else:
+        return []
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
@@ -579,9 +588,7 @@ def mark_for_pivot(
         # pull new col labels from row data
         appended = tuple(row[columns])
         for old_col in values:
-            new_col = (
-                (old_col, *appended) if not will_drop_values else appended
-            )
+            new_col = (old_col, *appended) if not will_drop_values else appended
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
             pairs.append((left, right))
