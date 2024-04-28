@@ -74,8 +74,8 @@ def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
     else: # don't know what to do, so just do nothing
         before_imp, after_imp = before, after
 
-    before_main = grab_important(before_imp, before)
-    after_main = grab_important(after_imp, after)
+    before_main = priortiy_pos(before_imp)
+    after_main = priortiy_pos(after_imp)
 
     # Indicate the rows you want to keep from after.val because before.val was already ripped from?
     # Gonna need some flag to indicate that it's the first in the chain and to edit the LHS
@@ -106,28 +106,14 @@ def assess_small(val: t.Any) -> bool:
         )
 
 
-def grab_important(important_score: tuple, obj : t.Any):
-    """return top MAX_ROWs based on importance as boolean index"""
-    # grab top values
-    # grab head & tail
-    row_score = important_score[0]
-    col_score = important_score[1]
-    
-    key_rows = [i[0] for i in sorted(row_score.items(), key= lambda item: item[1], reverse=True)[:MAX_ROWS]]
-    if isinstance(obj, pd.DataFrame):
-        # get the most important row and columns names
-        key_columns = [i[0] for i in sorted(col_score.items(), key= lambda item: item[1], reverse=True)[:MAX_ROWS]]
-        return key_rows, key_columns
-
-    return key_rows
-
-
-def final_filter(val: t.Any, limit: pd.Index) -> t.Any:
+def final_filter(val: t.Any, limit: np.array) -> t.Any:
     """Return the final filtered value"""
     if isinstance(val, pd.DataFrame):
-        return val.loc[limit]
+        breakpoint()
+        return val.iloc[limit[0], limit[1]]
     elif isinstance(val, pd.Series):
-        return val.loc[limit]
+        breakpoint()
+        return val.iloc[limit[0]]
     elif isinstance(val, pd.Index):
         return None # val[bool_index] 
     elif isinstance(
@@ -154,56 +140,63 @@ def reduce_for_get(
     Return an importance score for each row
     
     """
-    # find shared cols
+    # initialize importance metrics
+    # the metric is going be an nested array of len 2
+    before_metric = initialize_metrics(*before.shape) if isinstance(before, pd.DataFrame) else initialize_metrics(len(before), None)
+    after_metric = initialize_metrics(*after.shape) if isinstance(after, pd.DataFrame) else initialize_metrics(len(after), None)
 
+
+    # find the column called by the get method
     get_call = eval(step.labels_expr)
-    get_col = [get_call] if isinstance(get_call, str) else get_call
-
+    share_col = [get_call] if isinstance(get_call, str) else get_call
 
     if isinstance(before, pd.DataFrame) and isinstance(after, pd.DataFrame):
-        # initialize importance metric through dictionary
-        befo_main_row = initialize_index_score(before)
-        befo_main_col = initialize_col_score(before)
-        afte_main_row = initialize_index_score(after)
-        afte_main_col = initialize_col_score(after)
-
-
-        # increase their priortiy score
-        improve_priority(befo_main_col, get_col)
-        improve_priority(afte_main_col, get_col)
-
-        return ((befo_main_row, befo_main_col), (afte_main_row, afte_main_col))
-
+        improve_priority(after_metric[1], get_position(after, share_col, False))
+        improve_priority(before_metric[1], get_position(before, share_col, False))
+    
     elif isinstance(before, pd.Series) and isinstance(after, pd.Series):
-        befo_main_row = initialize_index_score(before)
-        afte_main_row = initialize_index_score(after)
+        pass # do nothing
 
-        return ((befo_main_row, None), (afte_main_row, None))
     elif isinstance(before, pd.DataFrame) and isinstance(after, pd.Series):
-        befo_main_row = initialize_index_score(before)
-        befo_main_col = initialize_col_score(before)
 
-        afte_main_row = initialize_index_score(after)
-        return ((befo_main_row, befo_main_col), (afte_main_row, None))
-    else:
-        return ((None, None), (None, None))
-
-def initialize_index_score(obj : t.Union[pd.DataFrame, pd.Series]) -> dict:
-    default_index_score = np.zeros(len(obj.index))
-    default_index_score[:HEAD_COUNTS] = 1
-    default_index_score[-TAIL_COUNTS:] = 1
-
-    return {index: score for index, score in zip(obj.index, default_index_score)}
-
-def initialize_col_score(obj : t.Union[pd.DataFrame, pd.Series]) -> dict:
-    default_col_score = np.zeros(len(obj.columns))
-    default_col_score[:HEAD_COUNTS] = 1
-    default_col_score[-TAIL_COUNTS:] = 1
-
-    return {index: score for index, score in zip(obj.columns, default_col_score)}
+        # increase the importance score of the before dataframe
+        improve_priority(before_metric[1], get_position(before, share_col, False))
+ 
+    return before_metric, after_metric
 
 
 
-def improve_priority(score : dict, improve_eles : t.Any) -> None:
-    for ele in improve_eles:
-        score[ele] += 1
+def initialize_metrics(row, col):
+    col_metric = col
+    if col != None:
+        col_metric = np.zeros(col)
+        col_metric[:HEAD_COUNTS] = 1
+        col_metric[-TAIL_COUNTS:] = 1
+    row_metric = np.zeros(row)
+    row_metric[:HEAD_COUNTS] = 1
+    row_metric[-TAIL_COUNTS:] = 1
+    return (row_metric, col_metric)
+
+
+def improve_priority(metric : np.array, improve_pos: np.array) -> None:
+    metric[improve_pos] += 1
+
+
+def get_position(obj : t.Union[pd.DataFrame, pd.Series], vals, index : bool):
+    if isinstance(obj, pd.DataFrame):
+        if index:
+            return [obj.index.get_loc(val) for val in vals]
+        return [obj.columns.get_loc(val) for val in vals]
+    return [obj.index.get_loc(val) for val in vals]
+
+def priortiy_pos(metrics: np.array):
+    positions = []
+    for metric in metrics:
+        if metric is not None:
+            priority_metric = sorted(enumerate(metric), key = lambda ele : ele[1], reverse=True)[:MAX_ROWS]
+            priortiy_index = [val[0] for val in priority_metric]
+            positions.append(sorted(priortiy_index))
+        else:
+            positions.append(None)
+
+    return positions

@@ -105,11 +105,7 @@ def serialize_pair(
     before_copy = before.val
     after_copy = after.val
 
-    print(before)
-    print(after)
     before.val, after.val = reduce_memory(before.val, after.val, step)
-
-
 
     marks = make_marks(step, before, after)
 
@@ -138,9 +134,9 @@ def serialize_pair(
     else:
         data = DataPair(lhs=lhs, rhs=rhs)
 
-
     before.val = before_copy
     after.val = after_copy
+
 
     return Diagram(
         type=step.type_,

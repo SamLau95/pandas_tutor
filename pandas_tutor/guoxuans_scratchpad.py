@@ -25,8 +25,8 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "e2e_golden/groupby_multi_01"
-
+file_to_read = "e2e_golden/get_one_col"
+file_to_read = "guoxuan_test/get_limit_col"
 
 def p(obj):
     cpprint(obj, indent=2, ribbon_width=80)
