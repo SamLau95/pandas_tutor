@@ -1,6 +1,7 @@
 """
 just for myself
 """
+
 # type: ignore
 # flake8: noqa
 
