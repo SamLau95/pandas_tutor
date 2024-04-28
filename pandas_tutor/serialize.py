@@ -100,6 +100,7 @@ def serialize_pair(
         return RuntimeErrorInChain.from_runtime_error_result(after)
     step = after.step
 
+
     # Copy to reset at the end
     before_copy = before.val
     after_copy = after.val
@@ -135,6 +136,7 @@ def serialize_pair(
 
     before.val = before_copy
     after.val = after_copy
+
 
     return Diagram(
         type=step.type_,

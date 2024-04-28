@@ -4,9 +4,16 @@ Remove rows to fit in RAM
 
 import pandas as pd
 import typing as t
+import numpy as np
 
 from pandas_tutor.run import (
+    Arg,
+    DFResult,
     EvalResult,
+    GroupbyResult,
+    ScalarResult,
+    SeriesGroupbyResult,
+    SeriesResult,
 )
 
 from .diagram import (
@@ -45,29 +52,30 @@ from pandas_tutor.parse_nodes import (
 )
 
 MAX_ROWS = 100
+HEAD_COUNTS = 5
+TAIL_COUNTS = 5
 
 
 def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
+    # Decide how many rows we want at the top and bottom
+    head_size = MAX_ROWS // 10
 
     if assess_small(before) and assess_small(after):
         return before, after
 
-    # Decide how many rows we want at the top and bottom
-    head_size = MAX_ROWS // 10
-
-    # LOGIC HERE
-    # initialize before & after importance for type hinting
-
+    # based on the step kind
+    # assign importance score to both row and col
     if isinstance(step, EvalError):
         ...  # handle error
     elif isinstance(step, PassThroughCall):
         ...  # handle passthrough
     elif isinstance(step, GetCall):
         before_imp, after_imp = reduce_for_get(before, after, step)
-    ...
+    else: # don't know what to do, so just do nothing
+        before_imp, after_imp = before, after
 
-    before_bool = grab_important(before_imp)
-    after_bool = grab_important(after_imp)
+    before_main = priortiy_pos(before_imp)
+    after_main = priortiy_pos(after_imp)
 
     # Indicate the rows you want to keep from after.val because before.val was already ripped from?
     # Gonna need some flag to indicate that it's the first in the chain and to edit the LHS
@@ -75,7 +83,7 @@ def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
     #     before = before.head(1)
     #     after = after.head(1)
 
-    return final_filter(before, before_bool), final_filter(after, after_bool)
+    return final_filter(before, before_main), final_filter(after, after_main)
 
 
 def assess_small(val: t.Any) -> bool:
@@ -98,31 +106,22 @@ def assess_small(val: t.Any) -> bool:
         )
 
 
-def grab_important(importance_index: pd.Index) -> pd.Index:
-    """return top MAX_ROWs based on importance as boolean index"""
-    # grab top values
-    # grab head & tail
-    return ...
-
-
-def grab_head_tail(val: t.Any) -> pd.Series:
-    return
-
-
-def final_filter(val: t.Any, bool_index: pd.Index) -> t.Any:
+def final_filter(val: t.Any, limit: np.array) -> t.Any:
     """Return the final filtered value"""
     if isinstance(val, pd.DataFrame):
-        return val[bool_index]
+        breakpoint()
+        return val.iloc[limit[0], limit[1]]
     elif isinstance(val, pd.Series):
-        return val[bool_index]
+        breakpoint()
+        return val.iloc[limit[0]]
     elif isinstance(val, pd.Index):
-        return val[bool_index]
+        return None # val[bool_index] 
     elif isinstance(
         val, util.DataFrameGroupBy
     ):  # might be wrong, I'm thinking val.obj[bool_index]
-        return val.filter(bool_index)
+        return None #val.filter(bool_index)
     elif isinstance(val, util.SeriesGroupBy):  # might be wrong
-        return val.filter(bool_index)
+        return None #val.filter(bool_index)
     else:
         return NotImplementedError(
             f"Type {type(val)} not implemented in final_filter"
@@ -130,10 +129,74 @@ def final_filter(val: t.Any, bool_index: pd.Index) -> t.Any:
 
 
 # df.get(['Name'])
+# df.get('Name')
+# df.get(['Name1', 'Name2'])
 def reduce_for_get(
     before: t.Any, after: t.Any, step: GetCall
 ) -> t.Tuple[pd.Index, pd.Index]:
-    """Return an importance score for each row"""
-    # Logic to rank the importance of each row
+    """
+    take in 
+    
+    Return an importance score for each row
+    
+    """
+    # initialize importance metrics
+    # the metric is going be an nested array of len 2
+    before_metric = initialize_metrics(*before.shape) if isinstance(before, pd.DataFrame) else initialize_metrics(len(before), None)
+    after_metric = initialize_metrics(*after.shape) if isinstance(after, pd.DataFrame) else initialize_metrics(len(after), None)
 
-    return
+
+    # find the column called by the get method
+    get_call = eval(step.labels_expr)
+    share_col = [get_call] if isinstance(get_call, str) else get_call
+
+    if isinstance(before, pd.DataFrame) and isinstance(after, pd.DataFrame):
+        improve_priority(after_metric[1], get_position(after, share_col, False))
+        improve_priority(before_metric[1], get_position(before, share_col, False))
+    
+    elif isinstance(before, pd.Series) and isinstance(after, pd.Series):
+        pass # do nothing
+
+    elif isinstance(before, pd.DataFrame) and isinstance(after, pd.Series):
+
+        # increase the importance score of the before dataframe
+        improve_priority(before_metric[1], get_position(before, share_col, False))
+ 
+    return before_metric, after_metric
+
+
+
+def initialize_metrics(row, col):
+    col_metric = col
+    if col != None:
+        col_metric = np.zeros(col)
+        col_metric[:HEAD_COUNTS] = 1
+        col_metric[-TAIL_COUNTS:] = 1
+    row_metric = np.zeros(row)
+    row_metric[:HEAD_COUNTS] = 1
+    row_metric[-TAIL_COUNTS:] = 1
+    return (row_metric, col_metric)
+
+
+def improve_priority(metric : np.array, improve_pos: np.array) -> None:
+    metric[improve_pos] += 1
+
+
+def get_position(obj : t.Union[pd.DataFrame, pd.Series], vals, index : bool):
+    if isinstance(obj, pd.DataFrame):
+        if index:
+            return [obj.index.get_loc(val) for val in vals]
+        return [obj.columns.get_loc(val) for val in vals]
+    return [obj.index.get_loc(val) for val in vals]
+
+def priortiy_pos(metrics: np.array):
+    positions = []
+    for metric in metrics:
+        if metric is not None:
+            priority_metric = sorted(enumerate(metric), key = lambda ele : ele[1], reverse=True)[:MAX_ROWS]
+            priortiy_index = [val[0] for val in priority_metric]
+            positions.append(sorted(priortiy_index))
+        else:
+            positions.append(None)
+
+    return positions
