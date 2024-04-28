@@ -217,7 +217,7 @@ def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
 
 def priority_pos(imp_matrix: ImportanceMatrix) -> list[int]:
     positions = []
-    for dim in imp_matrix:
+    for dim in dataclasses.astuple(imp_matrix):
         if dim is not None:
             priority_matrix = sorted(
                 enumerate(dim), key=lambda ele: ele[1], reverse=True
