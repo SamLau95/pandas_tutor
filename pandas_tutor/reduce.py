@@ -71,11 +71,11 @@ def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
         ...  # handle passthrough
     elif isinstance(step, GetCall):
         before_imp, after_imp = reduce_for_get(before, after, step)
-    else: # don't know what to do, so just do nothing
+    else:  # don't know what to do, so just do nothing
         before_imp, after_imp = before, after
 
-    before_main = priortiy_pos(before_imp)
-    after_main = priortiy_pos(after_imp)
+    before_main = priority_pos(before_imp)
+    after_main = priority_pos(after_imp)
 
     # Indicate the rows you want to keep from after.val because before.val was already ripped from?
     # Gonna need some flag to indicate that it's the first in the chain and to edit the LHS
@@ -115,13 +115,13 @@ def final_filter(val: t.Any, limit: np.array) -> t.Any:
         breakpoint()
         return val.iloc[limit[0]]
     elif isinstance(val, pd.Index):
-        return None # val[bool_index] 
+        return None  # val[bool_index]
     elif isinstance(
         val, util.DataFrameGroupBy
     ):  # might be wrong, I'm thinking val.obj[bool_index]
-        return None #val.filter(bool_index)
+        return None  # val.filter(bool_index)
     elif isinstance(val, util.SeriesGroupBy):  # might be wrong
-        return None #val.filter(bool_index)
+        return None  # val.filter(bool_index)
     else:
         return NotImplementedError(
             f"Type {type(val)} not implemented in final_filter"
@@ -135,38 +135,48 @@ def reduce_for_get(
     before: t.Any, after: t.Any, step: GetCall
 ) -> t.Tuple[pd.Index, pd.Index]:
     """
-    take in 
-    
+    take in
+
     Return an importance score for each row
-    
+
     """
     # initialize importance metrics
     # the metric is going be an nested array of len 2
-    before_metric = initialize_metrics(*before.shape) if isinstance(before, pd.DataFrame) else initialize_metrics(len(before), None)
-    after_metric = initialize_metrics(*after.shape) if isinstance(after, pd.DataFrame) else initialize_metrics(len(after), None)
-
+    before_matrix = (
+        initialize_matrix(*before.shape)
+        if isinstance(before, pd.DataFrame)
+        else initialize_matrix(len(before), None)
+    )
+    after_matrix = (
+        initialize_matrix(*after.shape)
+        if isinstance(after, pd.DataFrame)
+        else initialize_matrix(len(after), None)
+    )
 
     # find the column called by the get method
     get_call = eval(step.labels_expr)
     share_col = [get_call] if isinstance(get_call, str) else get_call
 
     if isinstance(before, pd.DataFrame) and isinstance(after, pd.DataFrame):
-        improve_priority(after_metric[1], get_position(after, share_col, False))
-        improve_priority(before_metric[1], get_position(before, share_col, False))
-    
+        improve_priority(after_matrix[1], get_position(after, share_col, False))
+        improve_priority(
+            before_matrix[1], get_position(before, share_col, False)
+        )
+
     elif isinstance(before, pd.Series) and isinstance(after, pd.Series):
-        pass # do nothing
+        pass  # do nothing
 
     elif isinstance(before, pd.DataFrame) and isinstance(after, pd.Series):
 
         # increase the importance score of the before dataframe
-        improve_priority(before_metric[1], get_position(before, share_col, False))
- 
-    return before_metric, after_metric
+        improve_priority(
+            before_matrix[1], get_position(before, share_col, False)
+        )
+
+    return before_matrix, after_matrix
 
 
-
-def initialize_metrics(row, col):
+def initialize_matrix(row, col):
     col_metric = col
     if col != None:
         col_metric = np.zeros(col)
@@ -178,22 +188,25 @@ def initialize_metrics(row, col):
     return (row_metric, col_metric)
 
 
-def improve_priority(metric : np.array, improve_pos: np.array) -> None:
+def improve_priority(metric: np.array, improve_pos: np.array) -> None:
     metric[improve_pos] += 1
 
 
-def get_position(obj : t.Union[pd.DataFrame, pd.Series], vals, index : bool):
+def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
     if isinstance(obj, pd.DataFrame):
         if index:
             return [obj.index.get_loc(val) for val in vals]
         return [obj.columns.get_loc(val) for val in vals]
     return [obj.index.get_loc(val) for val in vals]
 
-def priortiy_pos(metrics: np.array):
+
+def priority_pos(metrics: np.array):
     positions = []
     for metric in metrics:
         if metric is not None:
-            priority_metric = sorted(enumerate(metric), key = lambda ele : ele[1], reverse=True)[:MAX_ROWS]
+            priority_metric = sorted(
+                enumerate(metric), key=lambda ele: ele[1], reverse=True
+            )[:MAX_ROWS]
             priortiy_index = [val[0] for val in priority_metric]
             positions.append(sorted(priortiy_index))
         else:
