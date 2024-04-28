@@ -59,6 +59,7 @@ from pandas_tutor.parse_nodes import (
     GetCall,
     GroupByCall,
     GroupByFilterCall,
+    GroupByTransformCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -122,6 +123,8 @@ def make_marks(
         return mark_for_agg(step, before, after)
     elif isinstance(step, GroupByFilterCall):
         return mark_for_groupby_filter(step, before, after)
+    elif isinstance(step, GroupByTransformCall):
+        return mark_for_groupby_transform(step, before, after)
     elif isinstance(step, ResetIndexCall):
         return mark_for_reset_index(step, before, after)
     elif isinstance(step, SetIndexCall):
@@ -360,6 +363,17 @@ def mark_for_groupby_filter(
     return [*arrows, *crossouts]
 
 
+def mark_for_groupby_transform(
+    step: GroupByTransformCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not isinstance(before, GroupbyResult):
+        return []
+    if not isinstance(after, SeriesResult):
+        return []
+
+    return []
+
+
 # dogs.reset_index(level=[1, 2], drop=True)
 # i don't think this works properly when the column is a multi-index, but
 # let's not worry about that for now
@@ -579,9 +593,7 @@ def mark_for_pivot(
         # pull new col labels from row data
         appended = tuple(row[columns])
         for old_col in values:
-            new_col = (
-                (old_col, *appended) if not will_drop_values else appended
-            )
+            new_col = (old_col, *appended) if not will_drop_values else appended
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
             pairs.append((left, right))
