@@ -266,6 +266,26 @@ class GroupByFilterCall(Call):
 
 
 @dataclasses.dataclass
+class GroupByTransformCall(Call):
+    """
+    like GroupByAggCall, we can only correctly detect these during runtime
+    analysis, so we'll create these run.py, not parse.py
+
+    g = dogs.groupby('size')
+    g.transform(lambda df: df - df.mean())
+    g['weight'].transform(lambda x: x - x.mean())
+    """
+
+    # don't match the actual "transform()" call since we'll create these during
+    # runtime analysis
+    fn_name = "TRANSFORM"
+
+    @classmethod
+    def from_passthrough_call(cls, call: PassThroughCall):
+        return cls(code=call.code, location=call.location)
+
+
+@dataclasses.dataclass
 class ApplyCall(Call):
     """
     df['region'].apply(len)

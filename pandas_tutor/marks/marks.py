@@ -59,6 +59,7 @@ from pandas_tutor.parse_nodes import (
     GetCall,
     GroupByCall,
     GroupByFilterCall,
+    GroupByTransformCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -122,6 +123,8 @@ def make_marks(
         return mark_for_agg(step, before, after)
     elif isinstance(step, GroupByFilterCall):
         return mark_for_groupby_filter(step, before, after)
+    elif isinstance(step, GroupByTransformCall):
+        return mark_for_groupby_transform(step, before, after)
     elif isinstance(step, ResetIndexCall):
         return mark_for_reset_index(step, before, after)
     elif isinstance(step, SetIndexCall):
@@ -363,6 +366,17 @@ def mark_for_groupby_filter(
     rows_to_drop = before_label - after_label
     crossouts = make_drops(rows_to_drop, "row")
     return [*arrows, *crossouts]
+
+
+def mark_for_groupby_transform(
+    step: GroupByTransformCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not isinstance(before, GroupbyResult):
+        return []
+    if not isinstance(after, SeriesResult):
+        return []
+
+    return []
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
