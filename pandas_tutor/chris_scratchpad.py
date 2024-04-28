@@ -28,7 +28,7 @@ IMPLICIT_MODULES.add("pandas_tutor.util")
 
 shorten_df = True
 
-file_to_read = "memory_test"
+file_to_read = "guoxuan_test/get_limit_col"
 
 
 def p(obj):
