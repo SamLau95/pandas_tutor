@@ -5,6 +5,7 @@ Remove rows to fit in RAM
 import pandas as pd
 import typing as t
 import numpy as np
+import dataclasses
 
 from pandas_tutor.run import (
     Arg,
@@ -56,6 +57,12 @@ HEAD_COUNTS = 5
 TAIL_COUNTS = 5
 
 
+@dataclasses.dataclass
+class ImportanceMatrix:
+    rows: np.array
+    cols: np.array
+
+
 def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
     # Decide how many rows we want at the top and bottom
     head_size = MAX_ROWS // 10
@@ -65,6 +72,9 @@ def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
 
     # based on the step kind
     # assign importance score to both row and col
+    before_imp: ImportanceMatrix
+    after_imp: ImportanceMatrix
+
     if isinstance(step, EvalError):
         ...  # handle error
     elif isinstance(step, PassThroughCall):
@@ -133,7 +143,7 @@ def final_filter(val: t.Any, limit: np.array) -> t.Any:
 # df.get(['Name1', 'Name2'])
 def reduce_for_get(
     before: t.Any, after: t.Any, step: GetCall
-) -> t.Tuple[pd.Index, pd.Index]:
+) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]:
     """
     take in
 
@@ -158,9 +168,11 @@ def reduce_for_get(
     share_col = [get_call] if isinstance(get_call, str) else get_call
 
     if isinstance(before, pd.DataFrame) and isinstance(after, pd.DataFrame):
-        improve_priority(after_matrix[1], get_position(after, share_col, False))
         improve_priority(
-            before_matrix[1], get_position(before, share_col, False)
+            after_matrix.cols, get_position(after, share_col, False)
+        )
+        improve_priority(
+            before_matrix.cols, get_position(before, share_col, False)
         )
 
     elif isinstance(before, pd.Series) and isinstance(after, pd.Series):
@@ -170,26 +182,29 @@ def reduce_for_get(
 
         # increase the importance score of the before dataframe
         improve_priority(
-            before_matrix[1], get_position(before, share_col, False)
+            before_matrix.cols, get_position(before, share_col, False)
         )
 
     return before_matrix, after_matrix
 
 
-def initialize_matrix(row, col):
-    col_metric = col
+### Importance Matrix Functions ###
+
+
+def initialize_matrix(row: int, col: t.Union[int, None]) -> ImportanceMatrix:
+    col_matrix = col
     if col != None:
-        col_metric = np.zeros(col)
-        col_metric[:HEAD_COUNTS] = 1
-        col_metric[-TAIL_COUNTS:] = 1
-    row_metric = np.zeros(row)
-    row_metric[:HEAD_COUNTS] = 1
-    row_metric[-TAIL_COUNTS:] = 1
-    return (row_metric, col_metric)
+        col_matrix = np.zeros(col)
+        col_matrix[:HEAD_COUNTS] = 1
+        col_matrix[-TAIL_COUNTS:] = 1
+    row_matrix = np.zeros(row)
+    row_matrix[:HEAD_COUNTS] = 1
+    row_matrix[-TAIL_COUNTS:] = 1
+    return ImportanceMatrix(row_matrix, col_matrix)
 
 
-def improve_priority(metric: np.array, improve_pos: np.array) -> None:
-    metric[improve_pos] += 1
+def improve_priority(matrix: np.array, improve_pos: np.array) -> None:
+    matrix[improve_pos] += 1
 
 
 def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
@@ -200,15 +215,15 @@ def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
     return [obj.index.get_loc(val) for val in vals]
 
 
-def priority_pos(metrics: np.array):
+def priority_pos(imp_matrix: ImportanceMatrix) -> list[int]:
     positions = []
-    for metric in metrics:
-        if metric is not None:
-            priority_metric = sorted(
-                enumerate(metric), key=lambda ele: ele[1], reverse=True
+    for dim in imp_matrix:
+        if dim is not None:
+            priority_matrix = sorted(
+                enumerate(dim), key=lambda ele: ele[1], reverse=True
             )[:MAX_ROWS]
-            priortiy_index = [val[0] for val in priority_metric]
-            positions.append(sorted(priortiy_index))
+            priority_index = [val[0] for val in priority_matrix]
+            positions.append(sorted(priority_index))
         else:
             positions.append(None)
 
