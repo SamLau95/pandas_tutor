@@ -100,11 +100,16 @@ def serialize_pair(
         return RuntimeErrorInChain.from_runtime_error_result(after)
     step = after.step
 
+
     # Copy to reset at the end
     before_copy = before.val
     after_copy = after.val
 
+    print(before)
+    print(after)
     before.val, after.val = reduce_memory(before.val, after.val, step)
+
+
 
     marks = make_marks(step, before, after)
 
@@ -132,6 +137,7 @@ def serialize_pair(
         )
     else:
         data = DataPair(lhs=lhs, rhs=rhs)
+
 
     before.val = before_copy
     after.val = after_copy
