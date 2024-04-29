@@ -143,9 +143,8 @@ def assess_small(val: t.Any) -> bool:
         return len(val) < MAX_ROWS and len(val.columns) < MAX_ROWS
     elif isinstance(val, pd.Series):
         return len(val) < MAX_ROWS
-    elif isinstance(
-        val, pd.Index
-    ):  # Chris doesn't know exactly when Index occurs
+    elif isinstance(val, pd.Index):
+        # Chris doesn't know exactly when Index occurs
         return len(val) < MAX_ROWS
     elif isinstance(val, util.DataFrameGroupBy):
         return val.size().sum() < MAX_ROWS and val.obj.shape[1] < MAX_ROWS
@@ -182,15 +181,39 @@ def final_filter(val: t.Any, limit: np.array) -> t.Any:
 ### Importance Matrix Functions ###
 
 
-def initialize_matrix(row: int, col: t.Union[int, None]) -> ImportanceMatrix:
+def initialize_matrix(val: t.Any) -> ImportanceMatrix:
+    # TODO: put the type-checking in here.
+    row: int
+    col: t.Union[int, None]
+
+    if isinstance(val, pd.DataFrame):
+        row, col = val.shape
+    elif isinstance(val, pd.Series):
+        row = len(val)
+        col = None
+    elif isinstance(val, pd.Index):
+        row = len(val)
+        col = None
+    elif isinstance(val, util.DataFrameGroupBy):
+        row, col = val.obj.shape
+    elif isinstance(val, util.SeriesGroupBy):
+        row = len(val.obj)
+        col = None
+    else:
+        return NotImplementedError(
+            f"Type {type(val)} not implemented in initialize_matrix"
+        )
+
     col_matrix = col
     if col != None:
         col_matrix = np.zeros(col)
         col_matrix[:HEAD_COUNTS] = 1
         col_matrix[-TAIL_COUNTS:] = 1
+
     row_matrix = np.zeros(row)
     row_matrix[:HEAD_COUNTS] = 1
     row_matrix[-TAIL_COUNTS:] = 1
+
     return ImportanceMatrix(row_matrix, col_matrix)
 
 
@@ -238,16 +261,8 @@ def reduce_for_get(
     """
     # initialize importance metrics
     # the metric is going be an nested array of len 2
-    before_matrix = (
-        initialize_matrix(*before.shape)
-        if isinstance(before, pd.DataFrame)
-        else initialize_matrix(len(before), None)
-    )
-    after_matrix = (
-        initialize_matrix(*after.shape)
-        if isinstance(after, pd.DataFrame)
-        else initialize_matrix(len(after), None)
-    )
+    before_matrix = initialize_matrix(before)
+    after_matrix = initialize_matrix(after)
 
     # find the column called by the get method
     get_call = eval(step.labels_expr)
