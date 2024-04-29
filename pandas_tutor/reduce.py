@@ -33,6 +33,7 @@ from pandas_tutor.parse_nodes import (
     EvalError,
     GetCall,
     GroupByCall,
+    GroupByFilterCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -76,13 +77,53 @@ def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
     after_imp: ImportanceMatrix
 
     if isinstance(step, EvalError):
-        ...  # handle error
+        ...  # TODO: handle error
     elif isinstance(step, PassThroughCall):
-        ...  # handle passthrough
+        ...  # TODO: handle passthrough
     elif isinstance(step, GetCall):
         before_imp, after_imp = reduce_for_get(before, after, step)
-    else:  # don't know what to do, so just do nothing
-        before_imp, after_imp = before, after
+    # elif isinstance(step, SortValuesCall):
+    #     before_imp, after_imp = reduce_for_sort_values(before, after, step)
+    # elif isinstance(step, DropCall):
+    #     before_imp, after_imp = reduce_for_drop(before, after, step)
+    # elif isinstance(step, RenameCall):
+    #     before_imp, after_imp = reduce_for_rename(before, after, step)
+    # elif isinstance(step, HeadCall) or isinstance(step, TailCall):
+    #     before_imp, after_imp = reduce_for_head_or_tail(before, after, step)
+    # elif isinstance(step, ApplyCall):
+    #     before_imp, after_imp = reduce_for_apply(before, after, step)
+    # elif isinstance(step, AssignCall):
+    #     before_imp, after_imp = reduce_for_assign(before, after, step)
+    # elif isinstance(step, GroupByCall):
+    #     before_imp, after_imp = reduce_for_groupby(before, after, step)
+    # elif isinstance(step, GroupByAggCall):
+    #     before_imp, after_imp = reduce_for_agg(before, after, step)
+    # elif isinstance(step, GroupByFilterCall):
+    #     before_imp, after_imp = reduce_for_groupby_filter(before, after, step)
+    # elif isinstance(step, ResetIndexCall):
+    #     before_imp, after_imp = reduce_for_reset_index(before, after, step)
+    # elif isinstance(step, SetIndexCall):
+    #     before_imp, after_imp = reduce_for_set_index(before, after, step)
+    # elif isinstance(step, UnstackCall):
+    #     before_imp, after_imp = reduce_for_unstack(before, after, step)
+    # elif isinstance(step, StackCall):
+    #     before_imp, after_imp = reduce_for_stack(before, after, step)
+    # elif isinstance(step, PivotCall):
+    #     before_imp, after_imp = reduce_for_pivot(before, after, step)
+    # elif isinstance(step, PivotTableCall):
+    #     before_imp, after_imp = reduce_for_pivot_table(before, after, step)
+    # elif isinstance(step, MeltCall):
+    #     before_imp, after_imp = reduce_for_melt(before, after, step)
+    # elif isinstance(step, MergeCall):
+    #     before_imp, after_imp = reduce_for_merge(before, after, step)
+    # elif isinstance(step, JoinCall):
+    #     before_imp, after_imp = reduce_for_join(before, after, step)
+    # elif isinstance(step, BoolExprStep):
+    #     before_imp, after_imp = reduce_for_bool_expr(before, after, step)
+    # elif isinstance(step, Subscript):
+    #     before_imp, after_imp = reduce_for_subscript(before, after, step)
+    else:  # TODO: handle other cases
+        return before, after
 
     before_main = priority_pos(before_imp)
     after_main = priority_pos(after_imp)
@@ -138,6 +179,51 @@ def final_filter(val: t.Any, limit: np.array) -> t.Any:
         )
 
 
+### Importance Matrix Functions ###
+
+
+def initialize_matrix(row: int, col: t.Union[int, None]) -> ImportanceMatrix:
+    col_matrix = col
+    if col != None:
+        col_matrix = np.zeros(col)
+        col_matrix[:HEAD_COUNTS] = 1
+        col_matrix[-TAIL_COUNTS:] = 1
+    row_matrix = np.zeros(row)
+    row_matrix[:HEAD_COUNTS] = 1
+    row_matrix[-TAIL_COUNTS:] = 1
+    return ImportanceMatrix(row_matrix, col_matrix)
+
+
+def improve_priority(matrix: np.array, improve_pos: np.array) -> None:
+    matrix[improve_pos] += 1
+
+
+def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
+    if isinstance(obj, pd.DataFrame):
+        if index:
+            return [obj.index.get_loc(val) for val in vals]
+        return [obj.columns.get_loc(val) for val in vals]
+    return [obj.index.get_loc(val) for val in vals]
+
+
+def priority_pos(imp_matrix: ImportanceMatrix) -> list[int]:
+    positions = []
+    for dim in dataclasses.astuple(imp_matrix):
+        if dim is not None:
+            priority_matrix = sorted(
+                enumerate(dim), key=lambda ele: ele[1], reverse=True
+            )[:MAX_ROWS]
+            priority_index = [val[0] for val in priority_matrix]
+            positions.append(sorted(priority_index))
+        else:
+            positions.append(None)
+
+    return positions
+
+
+### Reduce Functions ###
+
+
 # df.get(['Name'])
 # df.get('Name')
 # df.get(['Name1', 'Name2'])
@@ -188,43 +274,101 @@ def reduce_for_get(
     return before_matrix, after_matrix
 
 
-### Importance Matrix Functions ###
+# def reduce_for_sort_values(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
 
 
-def initialize_matrix(row: int, col: t.Union[int, None]) -> ImportanceMatrix:
-    col_matrix = col
-    if col != None:
-        col_matrix = np.zeros(col)
-        col_matrix[:HEAD_COUNTS] = 1
-        col_matrix[-TAIL_COUNTS:] = 1
-    row_matrix = np.zeros(row)
-    row_matrix[:HEAD_COUNTS] = 1
-    row_matrix[-TAIL_COUNTS:] = 1
-    return ImportanceMatrix(row_matrix, col_matrix)
+# def reduce_for_drop(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
 
 
-def improve_priority(matrix: np.array, improve_pos: np.array) -> None:
-    matrix[improve_pos] += 1
+# def reduce_for_rename(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
 
 
-def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
-    if isinstance(obj, pd.DataFrame):
-        if index:
-            return [obj.index.get_loc(val) for val in vals]
-        return [obj.columns.get_loc(val) for val in vals]
-    return [obj.index.get_loc(val) for val in vals]
+# def reduce_for_head_or_tail(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
 
 
-def priority_pos(imp_matrix: ImportanceMatrix) -> list[int]:
-    positions = []
-    for dim in dataclasses.astuple(imp_matrix):
-        if dim is not None:
-            priority_matrix = sorted(
-                enumerate(dim), key=lambda ele: ele[1], reverse=True
-            )[:MAX_ROWS]
-            priority_index = [val[0] for val in priority_matrix]
-            positions.append(sorted(priority_index))
-        else:
-            positions.append(None)
+# def reduce_for_apply(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
 
-    return positions
+
+# def reduce_for_assign(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_groupby(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_agg(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_groupby_filter(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_reset_index(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_set_index(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_unstack(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_stack(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_pivot(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_pivot_table(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_melt(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_merge(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_join(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_bool_expr(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+
+
+# def reduce_for_subscript(
+#     before: t.Any, after: t.Any, step: GetCall
+# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
