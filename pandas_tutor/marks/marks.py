@@ -340,7 +340,6 @@ def mark_for_agg(
 def mark_for_groupby_filter(
     step: GroupByFilterCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
-    # Groupby DataFrame -> DataFrame
     if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
     if not isinstance(after, (DFResult, SeriesResult)):
@@ -349,12 +348,14 @@ def mark_for_groupby_filter(
     # get the arrows from lhs to rhs
     before_label = ungroup(before.val)
     arrows = diff_rows(before_label, after.val, only_if_diff=False)
-    # .filter() can either drop rows from the dataframe entirely (dropna=True)
-    # or replace entire rows with NaN (dropna=False).
-    # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
+    # .filter() can either drop rows from the dataframe entirely
+    # (dropna=True) or replace entire rows with NaN (dropna=False). In
+    # both cases, we should cross out the rows in LHS that didn't make
+    # it into RHS.
     before_label = set(before_label.index)
 
-    # Sereies results doesn't have axis
+    # Series doesn't have columns (SeriesResult doesn't have axis 1), so
+    # we don't need .any(axis=1)
     if isinstance(after, SeriesResult):
         after_label = set(after.val[after.val.notna()].index)
     else:
