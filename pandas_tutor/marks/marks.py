@@ -343,35 +343,45 @@ def mark_for_agg(
 def mark_for_groupby_filter(
     step: GroupByFilterCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
-    if not isinstance(before, GroupbyResult):
+    if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
-    if not isinstance(after, DFResult):
+    if not isinstance(after, (DFResult, SeriesResult)):
         return []
 
     # get the arrows from lhs to rhs
-    before_val = ungroup(before.val)
-    arrows = diff_rows(before_val, after.val, only_if_diff=False)
+    before_label = ungroup(before.val)
+    arrows = diff_rows(before_label, after.val, only_if_diff=False)
+    # .filter() can either drop rows from the dataframe entirely
+    # (dropna=True) or replace entire rows with NaN (dropna=False). In
+    # both cases, we should cross out the rows in LHS that didn't make
+    # it into RHS.
+    before_label = set(before_label.index)
 
-    # .filter() can either drop rows from the dataframe entirely (dropna=True)
-    # or replace entire rows with NaN (dropna=False).
-    # In both cases, we should cross out the rows in LHS that didn't make it into RHS.
-    before_label = set(before_val.index)
-    after_label = set(after.val[after.val.notna().any(axis=1)].index)
-    # rows_to_drop = before_label.difference(after_label)
+    # Series doesn't have columns (SeriesResult doesn't have axis 1), so
+    # we don't need .any(axis=1)
+    if isinstance(after, SeriesResult):
+        after_label = set(after.val[after.val.notna()].index)
+    else:
+        after_label = set(after.val[after.val.notna().any(axis=1)].index)
     rows_to_drop = before_label - after_label
     crossouts = make_drops(rows_to_drop, "row")
     return [*arrows, *crossouts]
 
 
+# dogs.groupby("size").transform(lambda s: s.mean())
 def mark_for_groupby_transform(
     step: GroupByTransformCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
-    if not isinstance(before, GroupbyResult):
+    if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
-    if not isinstance(after, SeriesResult):
+    if not isinstance(after, (DFResult, SeriesResult)):
         return []
 
-    return []
+    before_val = ungroup(before.val)
+    after_val = after.val
+    arrows = diff_rows(before_val, after_val, only_if_diff=False)
+
+    return [*arrows]
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
