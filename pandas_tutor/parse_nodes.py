@@ -265,6 +265,24 @@ class GroupByFilterCall(Call):
         return cls(code=call.code, location=call.location)
 
 
+class GroupByApplyCall(Call):
+    """
+    g = dogs.groupby('size')
+    g.apply(lambda x: x['weight'].mean())
+    g.apply(lambda x: x['weight'].mean(), axis=1)
+    g['weight'].apply(lambda x: x.mean())
+    """
+
+    fn_name = "APPLY"
+
+    # axis is optional, but we need to know if it's present to visualize
+    # axis: Axis = "index"
+
+    @classmethod
+    def from_passthrough_call(cls, call: PassThroughCall):
+        return cls(code=call.code, location=call.location)
+
+
 @dataclasses.dataclass
 class GroupByTransformCall(Call):
     """

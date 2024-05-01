@@ -16,11 +16,13 @@ import pandas as pd
 
 from . import util
 from .parse_nodes import (
+    ApplyCall,
     GroupByAggCall,
     ChainStatement,
     ChainStep,
     CodeRange,
     EvalError,
+    GroupByApplyCall,
     GroupByFilterCall,
     GroupByTransformCall,
     ParseResult,
@@ -202,18 +204,21 @@ def make_result(
     # special cases for agg / filter / transform / apply calls that happen to
     # groupby objects, which we can only correctly detect during runtime
     if (
-        isinstance(step, PassThroughCall)
-        and isinstance(
-            previous_val, (util.DataFrameGroupBy, util.SeriesGroupBy)
-        )
+        # isinstance(step, PassThroughCall) and
+        isinstance(previous_val, (util.DataFrameGroupBy, util.SeriesGroupBy))
         and isinstance(val, (pd.DataFrame, pd.Series))
     ):
-        if step.func == "filter":
-            step = GroupByFilterCall.from_passthrough_call(step)
-        elif step.func == "transform":
-            step = GroupByTransformCall.from_passthrough_call(step)
-        elif step.func in GroupByAggCall.agg_funcs:
-            step = GroupByAggCall.from_passthrough_call(step)
+        # .apply is already identified as an ApplyCall,
+        # so we need a special case to check if the before is a groupby
+        if isinstance(step, ApplyCall):
+            step = GroupByApplyCall.from_passthrough_call(step)
+        elif isinstance(step, PassThroughCall):
+            if step.func == "filter":
+                step = GroupByFilterCall.from_passthrough_call(step)
+            elif step.func == "transform":
+                step = GroupByTransformCall.from_passthrough_call(step)
+            elif step.func in GroupByAggCall.agg_funcs:
+                step = GroupByAggCall.from_passthrough_call(step)
 
     if isinstance(val, util.DataFrameGroupBy):
         return GroupbyResult(step, fragment, args, val)
