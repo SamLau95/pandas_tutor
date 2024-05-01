@@ -381,7 +381,18 @@ def mark_for_groupby_transform(
     after_val = after.val
     arrows = diff_rows(before_val, after_val, only_if_diff=False)
 
-    return [*arrows]
+    # draw rectangles for columns that are kept when columns undergo
+    # transformation are not specified
+    rectangles = []
+    # check that before and after are not series (when no column is
+    # specified before transform, after will be a DataFrame even when
+    # only one column is kept)
+    if len(before_val.shape) > 1 and len(after_val.shape) > 1:
+        if len(before_val.columns) != len(after_val.columns):
+            rectangles = make_usings(
+                after_val.columns, select="column", anchor="lhs"
+            )
+    return [*rectangles, *arrows]
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
