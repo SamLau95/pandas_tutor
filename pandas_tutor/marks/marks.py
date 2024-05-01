@@ -58,6 +58,7 @@ from pandas_tutor.parse_nodes import (
     EvalError,
     GetCall,
     GroupByCall,
+    GroupByApplyCall,
     GroupByFilterCall,
     GroupByTransformCall,
     HeadCall,
@@ -121,6 +122,8 @@ def make_marks(
         return mark_for_groupby(step, before, after)
     elif isinstance(step, GroupByAggCall):
         return mark_for_agg(step, before, after)
+    elif isinstance(step, GroupByApplyCall):
+        return mark_for_groupby_apply(step, before, after)
     elif isinstance(step, GroupByFilterCall):
         return mark_for_groupby_filter(step, before, after)
     elif isinstance(step, GroupByTransformCall):
@@ -337,6 +340,36 @@ def mark_for_agg(
             )
 
     return row_outlines
+
+
+# df.groupby('col').apply(lambda x: x['col'].sum())
+def mark_for_groupby_apply(
+    step: GroupByApplyCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
+        return []
+    if not isinstance(after, (DFResult, SeriesResult)):
+        return []
+    before_val = ungroup(before.val)
+    after_val = after.val
+
+    # Check for multi-index, and make mark by directly comparing the index
+    if isinstance(after_val.index, pd.MultiIndex):
+        ...
+    # Check for single index
+    elif isinstance(after_val.index, pd.Index):
+        # Check if the index has name associated with it because groupby apply
+        # can be indexed by the unique groups each group having one row if so
+        # make mark from all instance of the group on the LHS to the unique
+        # group names on the RHS
+        if not isinstance(after_val.index.name, type(None)):
+            ...
+        # All other edge cases, such as positional index, draw arrows based on
+        # one to one mapping from LHS to RHS
+        else:
+            ...
+
+    return []
 
 
 # df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
