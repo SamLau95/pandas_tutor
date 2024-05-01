@@ -15,4 +15,4 @@ Poodle,non-sporting,11.95,medium,8
 
 dogs = pd.read_csv(io.StringIO(csv))
 
-dogs.groupby("size").transform(lambda s: s.mean())
+dogs.groupby("size")[["longevity", "temp"]].transform(lambda s: s.mean())
