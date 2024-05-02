@@ -401,6 +401,7 @@ def mark_for_reset_index(
         for level in levels
     ]
 
+
 # dogs.set_index('price')
 def mark_for_set_index(
     step: SetIndexCall, before: EvalResult, after: EvalResult
@@ -579,9 +580,7 @@ def mark_for_pivot(
         # pull new col labels from row data
         appended = tuple(row[columns])
         for old_col in values:
-            new_col = (
-                (old_col, *appended) if not will_drop_values else appended
-            )
+            new_col = (old_col, *appended) if not will_drop_values else appended
             left = CellPos("lhs", old_row, old_col)
             right = CellPos("rhs", new_row, new_col)
             pairs.append((left, right))

@@ -23,6 +23,8 @@ from .diagram import (
 
 from pandas_tutor import util
 
+from typing import List
+
 from pandas_tutor.parse_nodes import (
     GroupByAggCall,
     ApplyCall,
@@ -82,8 +84,8 @@ def reduce_memory(before: t.Any, after: t.Any, step: ChainStep):
         ...  # TODO: handle passthrough
     elif isinstance(step, GetCall):
         before_imp, after_imp = reduce_for_get(before, after, step)
-    # elif isinstance(step, SortValuesCall):
-    #     before_imp, after_imp = reduce_for_sort_values(before, after, step)
+    elif isinstance(step, SortValuesCall):
+        before_imp, after_imp = reduce_for_sort_values(before, after, step)
     # elif isinstance(step, DropCall):
     #     before_imp, after_imp = reduce_for_drop(before, after, step)
     # elif isinstance(step, RenameCall):
@@ -166,9 +168,8 @@ def final_filter(val: t.Any, limit: np.array) -> t.Any:
         return val.iloc[limit[0]]
     elif isinstance(val, pd.Index):
         return None  # val[bool_index]
-    elif isinstance(
-        val, util.DataFrameGroupBy
-    ):  # might be wrong, I'm thinking val.obj[bool_index]
+    elif isinstance(val, util.DataFrameGroupBy):
+        # might be wrong, I'm thinking val.obj[bool_index]
         return None  # val.filter(bool_index)
     elif isinstance(val, util.SeriesGroupBy):  # might be wrong
         return None  # val.filter(bool_index)
@@ -218,10 +219,13 @@ def initialize_matrix(val: t.Any) -> ImportanceMatrix:
 
 
 def improve_priority(matrix: np.array, improve_pos: np.array) -> None:
+    # This could be a class function for ImportanceMatrix
     matrix[improve_pos] += 1
 
 
-def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
+def get_position(
+    obj: t.Union[pd.DataFrame, pd.Series], vals: List[str], index: bool
+):
     if isinstance(obj, pd.DataFrame):
         if index:
             return [obj.index.get_loc(val) for val in vals]
@@ -229,7 +233,7 @@ def get_position(obj: t.Union[pd.DataFrame, pd.Series], vals, index: bool):
     return [obj.index.get_loc(val) for val in vals]
 
 
-def priority_pos(imp_matrix: ImportanceMatrix) -> list[int]:
+def priority_pos(imp_matrix: ImportanceMatrix) -> List[int]:
     positions = []
     for dim in dataclasses.astuple(imp_matrix):
         if dim is not None:
@@ -259,8 +263,7 @@ def reduce_for_get(
     Return an importance score for each row
 
     """
-    # initialize importance metrics
-    # the metric is going be an nested array of len 2
+    # initialize importance matrix
     before_matrix = initialize_matrix(before)
     after_matrix = initialize_matrix(after)
 
@@ -289,9 +292,47 @@ def reduce_for_get(
     return before_matrix, after_matrix
 
 
-# def reduce_for_sort_values(
-#     before: t.Any, after: t.Any, step: GetCall
-# ) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]: ...
+# df.sort_values('Name')
+def reduce_for_sort_values(
+    before: t.Any, after: t.Any, step: GetCall
+) -> t.Tuple[ImportanceMatrix, ImportanceMatrix]:
+
+    # Handle error
+    if not (
+        isinstance(before, (pd.DataFrame, pd.Series))
+        and isinstance(after, (pd.DataFrame, pd.Series))
+    ):
+        return [], []  # TODO: handle error
+
+    # Initialize importance matrices
+    before_matrix = initialize_matrix(before)
+    after_matrix = initialize_matrix(after)
+
+    sort_by = (
+        eval(step.label_expr)
+        if isinstance(step.label_expr, str)
+        else step.label_expr
+    )
+    if isinstance(sort_by, str):
+        sort_by = [sort_by]
+
+    # Handle columns of DataFrames
+    if isinstance(before, pd.DataFrame) and isinstance(after, pd.DataFrame):
+        improve_priority(
+            before_matrix.cols, get_position(before, sort_by, False)
+        )
+        improve_priority(after_matrix.cols, get_position(after, sort_by, False))
+
+    # prioritize rows of dataframes in before and after
+    rows_to_grab = MAX_ROWS - HEAD_COUNTS - TAIL_COUNTS
+    from_top = rows_to_grab // 2
+    from_bottom = rows_to_grab - from_top
+
+    top_bottom = after[:from_top].index.append(after[-from_bottom:].index)
+    improve_priority(before_matrix.rows, get_position(before, top_bottom, True))
+    improve_priority(after_matrix.rows, get_position(after, top_bottom, True))
+
+    return before_matrix, after_matrix
 
 
 # def reduce_for_drop(
