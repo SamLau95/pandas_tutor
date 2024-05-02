@@ -25,6 +25,7 @@ from .diagram import (
     GroupData,
     ImageSpec,
     Index,
+    Mark,
     PrevRHS,
     RuntimeErrorInChain,
     RuntimeErrorInSetup,
@@ -51,16 +52,16 @@ def serialize(results: List[EvalResult]) -> Explanation:
         return []
 
     # stop if results use too much memory
-    total_mem_used = sum(util.mem_used(result.val) for result in results)
-    if total_mem_used > util.MEM_LIMIT:
-        result = results[-1]
-        return [
-            RuntimeErrorInChain(
-                code_step=result.step.code,
-                message=util.too_much_mem_msg(total_mem_used),
-                fragment=result.fragment,
-            )
-        ]
+    # total_mem_used = sum(util.mem_used(result.val) for result in results)
+    # if total_mem_used > util.MEM_LIMIT:
+    #     result = results[-1]
+    #     return [
+    #         RuntimeErrorInChain(
+    #             code_step=result.step.code,
+    #             message=util.too_much_mem_msg(total_mem_used),
+    #             fragment=result.fragment,
+    #         )
+    #     ]
 
     if len(results) == 1:
         # happens when user inputs `df` without a function call, or when
@@ -94,6 +95,9 @@ def serialize_pair(
     step = after.step
 
     marks = make_marks(step, before, after)
+
+    before, after = reduce_val(marks, before, after)
+    breakpoint()
 
     lhs: Union[DataSpec, PrevRHS] = (
         serialize_step_val(before)
@@ -219,3 +223,44 @@ def serialize_scalar(val: Any) -> ScalarSpec:
 
 def pairs(seq: List[T]) -> List[Tuple[T, T]]:
     return [(seq[i], seq[i + 1]) for i in range(len(seq) - 1)]
+
+
+def reduce_val(
+    step: List[Mark], before: EvalResult, after: EvalResult
+) -> Tuple[EvalResult, EvalResult]:
+    """
+    reduce the before and after EvalResults to simpler forms if possible
+    """
+
+    def top_bottom(val: Any, slice: int = 50) -> Any:
+        # Edits val in-place
+        if isinstance(val, (pd.DataFrame, pd.Series)):
+            val = (
+                pd.concat([val.head(slice), val.tail(slice)])
+                if len(val) > 2 * slice
+                else val
+            )
+            val = (
+                pd.concat([val.iloc[:, :slice], val.iloc[:, -slice:]], axis=1)
+                if isinstance(val, pd.DataFrame)
+                and len(val.columns) > 2 * slice
+                else val
+            )
+            return val
+        elif isinstance(val, pd.Index):
+            return (
+                pd.Index(val[:slice].tolist() + val[-slice:].tolist())
+                if len(val) > 2 * slice
+                else val
+            )
+        elif isinstance(val, (util.DataFrameGroupBy, util.SeriesGroupBy)):
+            val.obj = top_bottom(val.obj, slice)
+            return val
+        else:
+            return NotImplementedError(
+                f"Type {type(val)} not implemented in assess_small"
+            )
+
+    before.val = top_bottom(before.val)
+    after.val = top_bottom(after.val)
+    return before, after
