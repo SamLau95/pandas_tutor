@@ -1,0 +1,442 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs.groupby(\"size\").apply(lambda x: x[\"longevity\"] + 1)\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "dogs.groupby(\"size\").apply(lambda x: x[\"longevity\"] + 1)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 20
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "type",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              "Labrador",
+              "sporting",
+              12.04,
+              "medium"
+            ],
+            [
+              "German",
+              "herding",
+              9.73,
+              "large"
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3,
+              "small"
+            ],
+            [
+              "Golden",
+              "sporting",
+              12.04,
+              "medium"
+            ],
+            [
+              "Yorkshire",
+              "toy",
+              12.6,
+              "small"
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29,
+              "medium"
+            ],
+            [
+              "Boxer",
+              "working",
+              8.81,
+              "medium"
+            ],
+            [
+              "Poodle",
+              "non-sporting",
+              11.95,
+              "medium"
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "type",
+              "longevity",
+              "size"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              "Labrador",
+              "sporting",
+              12.04,
+              "medium"
+            ],
+            [
+              "German",
+              "herding",
+              9.73,
+              "large"
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3,
+              "small"
+            ],
+            [
+              "Golden",
+              "sporting",
+              12.04,
+              "medium"
+            ],
+            [
+              "Yorkshire",
+              "toy",
+              12.6,
+              "small"
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29,
+              "medium"
+            ],
+            [
+              "Boxer",
+              "working",
+              8.81,
+              "medium"
+            ],
+            [
+              "Poodle",
+              "non-sporting",
+              11.95,
+              "medium"
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "size"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium"
+                ],
+                "labels": [
+                  0,
+                  3,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByApplyCall",
+      "code_step": "dogs.groupby(\"size\").apply(lambda x: x[\"longevity\"] + 1)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 20
+        },
+        "end": {
+          "line": 0,
+          "ch": 56
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "large",
+              1
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "medium",
+              0
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "medium",
+              3
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 5
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "medium",
+              5
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "medium",
+              6
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "medium",
+              7
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "small",
+              2
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "small",
+              4
+            ]
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "Series",
+          "index": {
+            "names": [
+              "size",
+              null
+            ],
+            "labels": [
+              [
+                "large",
+                1
+              ],
+              [
+                "medium",
+                0
+              ],
+              [
+                "medium",
+                3
+              ],
+              [
+                "medium",
+                5
+              ],
+              [
+                "medium",
+                6
+              ],
+              [
+                "medium",
+                7
+              ],
+              [
+                "small",
+                2
+              ],
+              [
+                "small",
+                4
+              ]
+            ]
+          },
+          "data": [
+            10.73,
+            13.04,
+            13.04,
+            7.29,
+            9.81,
+            12.95,
+            13.3,
+            13.6
+          ]
+        }
+      }
+    }
+  ]
+}

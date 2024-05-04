@@ -350,10 +350,12 @@ def mark_for_groupby_apply(
         return []
     if not isinstance(after, (DFResult, SeriesResult)):
         return []
+
     before_val = ungroup(before.val)
     after_val = after.val
 
     arrows = []
+    breakpoint()
     # Check for multi-index, and make mark by directly comparing the index
     if isinstance(after_val.index, pd.MultiIndex):
         # find number indices that exist in RHS
@@ -376,8 +378,6 @@ def mark_for_groupby_apply(
         else:
             # All other edge cases, such as positional index, draw arrows based
             # on one to one mapping from LHS to RHS
-            before_val = ungroup(before.val)
-            after_val = after.val
             arrows = diff_rows(before_val, after_val, only_if_diff=False)
             return [*arrows]
 
