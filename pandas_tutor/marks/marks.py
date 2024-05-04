@@ -353,21 +353,33 @@ def mark_for_groupby_apply(
     before_val = ungroup(before.val)
     after_val = after.val
 
+    arrows = []
     # Check for multi-index, and make mark by directly comparing the index
     if isinstance(after_val.index, pd.MultiIndex):
-        ...
+        # find number indices that exist in RHS
+        matches = [multi_idx[1] for multi_idx in after_val.index]
+        # draw arrows for each pair of number index and MultiIndex from
+        # LHS to RHS
+        arrows = [
+            Map(from_=lhs("row", label[0]), to=rhs("row", label[1]))
+            for label in list(zip(matches, after_val.index))
+        ]
+        return [*arrows]
     # Check for single index
     elif isinstance(after_val.index, pd.Index):
-        # Check if the index has name associated with it because groupby apply
-        # can be indexed by the unique groups each group having one row if so
-        # make mark from all instance of the group on the LHS to the unique
-        # group names on the RHS
         if not isinstance(after_val.index.name, type(None)):
-            ...
-        # All other edge cases, such as positional index, draw arrows based on
-        # one to one mapping from LHS to RHS
+            # Check if the index has name associated with it because groupby
+            # apply can be indexed by the unique groups each group having one
+            # row if so we can reuse how we handle groupby agg
+            return mark_for_agg(step, before, after)
+
         else:
-            ...
+            # All other edge cases, such as positional index, draw arrows based
+            # on one to one mapping from LHS to RHS
+            before_val = ungroup(before.val)
+            after_val = after.val
+            arrows = diff_rows(before_val, after_val, only_if_diff=False)
+            return [*arrows]
 
     return []
 
