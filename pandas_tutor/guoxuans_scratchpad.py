@@ -16,6 +16,8 @@ from pandas_tutor.parse_nodes import Call, SortValuesCall  # type: ignore
 from .parse import parse, test_logger, test_parser
 from .run import run
 from .__main__ import make_tutor_spec, make_tutor_spec_py
+from .serialize import serialize
+from .diagram import OutputSpec
 
 prettyprinter.install_extras(include=["dataclasses", "python", "numpy"])
 
@@ -28,7 +30,7 @@ shorten_df = True
 
 file_to_read = "parse_golden/groupby_filter"
 # file_to_read = "e2e_golden/groupby_filter_01"
-file_to_read = "e2e_golden/apply_df_rows"
+file_to_read = "e2e_golden/largeData_groupby"
 
 
 def p(obj):
@@ -53,8 +55,10 @@ if __name__ == "__main__":
     #         rhs['data'] = len(rhs['data'])
 
     root = parse(code)
-    p(root)
-
+    eval_results = run(root)
+    explanation = serialize(eval_results)
+    spec = OutputSpec(code=code, explanation=explanation)
+    p(spec)
     # p(run(root))
     # spec = make_tutor_spec_py(code)
     # p(spec)
