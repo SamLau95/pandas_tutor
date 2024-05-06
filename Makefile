@@ -14,6 +14,9 @@ test: ## Runs tests
 sam: ## Runs what sam wants
 	@$(sam_cmd)
 
+guoxuan:
+	python -m pandas_tutor.guoxuans_scratchpad
+
 chris:
 	python -m pandas_tutor.chris_scratchpad
 
