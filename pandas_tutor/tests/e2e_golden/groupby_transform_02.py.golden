@@ -255,141 +255,153 @@
       },
       "marks": [
         {
-          "type": "using",
-          "pos": {
+          "type": "map",
+          "from": {
             "type": "axis",
             "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 5
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 5
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 6
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 7
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
             "select": "column",
             "label": "longevity"
           }
         },
         {
-          "type": "using",
-          "pos": {
+          "type": "map",
+          "from": {
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
             "label": "temp"
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 0
           },
           "to": {
             "type": "axis",
             "anchor": "rhs",
-            "select": "row",
-            "label": 0
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 1
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 1
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 2
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 2
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 3
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 3
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 4
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 4
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 5
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 5
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 6
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 6
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 7
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 7
+            "select": "column",
+            "label": "temp"
           }
         }
       ],

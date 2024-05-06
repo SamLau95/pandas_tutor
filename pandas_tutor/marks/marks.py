@@ -379,20 +379,18 @@ def mark_for_groupby_transform(
 
     before_val = ungroup(before.val)
     after_val = after.val
-    arrows = diff_rows(before_val, after_val, only_if_diff=False)
+    row_arrows = diff_rows(before_val, after_val, only_if_diff=False)
 
-    # draw rectangles for columns that are kept when columns undergo
-    # transformation are not specified
-    rectangles = []
-    # check that before and after are not series (when no column is
-    # specified before transform, after will be a DataFrame even when
-    # only one column is kept)
-    if len(before_val.shape) > 1 and len(after_val.shape) > 1:
-        if len(before_val.columns) != len(after_val.columns):
-            rectangles = make_usings(
-                after_val.columns, select="column", anchor="lhs"
-            )
-    return [*rectangles, *arrows]
+    # transform() will by default try to run on all columns of LHS, then
+    # implicitly drop the columns that weren't able to be transformed. we'll
+    # draw arrows when at least one column is dropped so this is more apparent.
+    col_arrows = (
+        diff_cols(before_val, after_val)
+        if util.is_dataframe(before_val) and util.is_dataframe(after_val)
+        else []
+    )
+
+    return [*row_arrows, *col_arrows]
 
 
 # dogs.reset_index(level=[1, 2], drop=True)
