@@ -161,11 +161,13 @@ def make_axis(value: str) -> Axis:
     return (
         "columns"
         if value == "1" or "columns" in value
-        else "index"
-        if value == "0" or "index" in value
-        # index is the default for most pandas methods so we'll just fall
-        # back to that...maybe we should raise an error in this case instead
-        else "index"
+        else (
+            "index"
+            if value == "0" or "index" in value
+            # index is the default for most pandas methods so we'll just fall
+            # back to that...maybe we should raise an error in this case instead
+            else "index"
+        )
     )
 
 
