@@ -213,7 +213,7 @@ def pairs(seq: List[T]) -> List[Tuple[T, T]]:
 
 
 def reduce_val(
-    step: List[Mark], before: EvalResult, after: EvalResult
+    mark: List[Mark], before: EvalResult, after: EvalResult
 ) -> Tuple[EvalResult, EvalResult]:
     """
     reduce the before and after EvalResults to simpler forms if possible
@@ -241,7 +241,9 @@ def reduce_val(
                 else val
             )
         elif isinstance(val, (util.DataFrameGroupBy, util.SeriesGroupBy)):
-            val.obj = top_bottom(val.obj, slice)
+            temp_df = top_bottom(val.obj, slice)
+            # This might have some errors if the groupby keys are weird
+            val = temp_df.groupby(val.keys)
             return val
         else:
             return NotImplementedError(
