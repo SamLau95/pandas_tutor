@@ -64,6 +64,9 @@ def serialize_single(result: EvalResult) -> Explanation:
         return [SyntaxErrorOutput.from_parse_syntax_error(result.step)]
     elif isinstance(result, RuntimeErrorResult):
         return [RuntimeErrorInSetup.from_runtime_error_result(result)]
+
+    result = reduce_val(None, result, None)[0]
+
     return [
         Diagram(
             type=result.step.type_,
@@ -250,6 +253,8 @@ def reduce_val(
                 f"Type {type(val)} not implemented in assess_small"
             )
 
-    before.val = top_bottom(before.val)
-    after.val = top_bottom(after.val)
+    if before is not None:
+        before.val = top_bottom(before.val)
+    if after is not None:
+        after.val = top_bottom(after.val)
     return before, after
