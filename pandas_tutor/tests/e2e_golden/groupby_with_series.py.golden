@@ -216,7 +216,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "pm.groupby(months).mean()",
       "fragment": {
         "start": {

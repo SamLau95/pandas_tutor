@@ -27,7 +27,7 @@ from pandas_tutor import util
 from pandas_tutor.util import CodePosition, CodeRange
 
 from .parse_nodes import (
-    AggCall,
+    GroupByAggCall,
     ApplyCall,
     AssignCall,
     Axis,
@@ -38,6 +38,7 @@ from .parse_nodes import (
     DropCall,
     GetCall,
     GroupByCall,
+    GroupByFilterCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -346,8 +347,8 @@ class ChainParser(ParserBase):
             last = self._chain[-1]
             if isinstance(last, GroupByCall):
                 func_name: str = cst_node.func.attr.value
-                if func_name in AggCall.agg_funcs:
-                    node = self.make_call_node(AggCall, cst_node)
+                if func_name in GroupByAggCall.agg_funcs:
+                    node = self.make_call_node(GroupByAggCall, cst_node)
                     self._append(node)
                     return
         # TODO: handle transforming functions like `.transform`
@@ -609,7 +610,9 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    def make_call_node(self, cls: t.Type[T], cst_node: cst.Call, **kwargs) -> T:
+    def make_call_node(
+        self, cls: t.Type[T], cst_node: cst.Call, **kwargs
+    ) -> T:
         """
         for calls in chain like df.apply(), the location of the call is the
         dot + everything after

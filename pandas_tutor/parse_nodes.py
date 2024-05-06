@@ -1,6 +1,7 @@
 """
 node objects that parse.py creates
 """
+
 from __future__ import annotations
 
 import dataclasses
@@ -207,17 +208,22 @@ class GroupByCall(Call):
 
 
 @dataclasses.dataclass
-class AggCall(Call):
+class GroupByAggCall(Call):
     """
-    catch-all for any function that happens after a groupby. note: some
-    functions on groupby objects are transforms, not aggregations, e.g.
+    catch-all for any aggregation function that happens after a groupby. note:
+    some functions on groupby objects are transforms, not aggregations, e.g.
     .transform(), .apply(), .cumcount(), etc. and shouldn't be parsed into an
     AggCall
 
-    g = df.groupby('region')
-    g.agg('mean')
-    g.mean()
-    g.std()
+    the tricky thing about agg calls (and filter, transform, etc.) is that these
+    methods exist on both dataframe and dataframegroupby objects. that means
+    that at parse time, we don't know if we're dealing with e.g. the dataframe
+    mean() method or the groupby mean() method. to handle this, we need to
+    create PassThroughCalls for these methods, and then in run.py, we'll call
+    cls.from_passthrough_call to convert the PassThroughCalls into the correct
+    type.
+
+    g = df.groupby('region') g.agg('mean') g.mean() g.std()
     """
 
     # don't match the actual "agg()" call since we have a special case in the
@@ -226,6 +232,33 @@ class AggCall(Call):
 
     # exhaustive list of aggregation functions from GroupBy objects
     agg_funcs = ["agg", "aggregate", *pd_agg_funcs]
+
+    @classmethod
+    def from_passthrough_call(cls, call: PassThroughCall):
+        return cls(code=call.code, location=call.location)
+
+
+@dataclasses.dataclass
+class GroupByFilterCall(Call):
+    """
+    like GroupByAggCall, we can only correctly detect these during runtime
+    analysis, so we'll create these run.py, not parse.py
+
+    g = dogs.groupby('size')
+    g.filter(lambda df: df.shape[0] > 2)
+    g.filter(lambda df: df.shape[0] > 2, dropna=True)
+    g['weight'].filter(lambda x: x.mean() > 30, dropna=False)
+    """
+
+    # don't match the actual "filter()" call since we'll create these during
+    # runtime analysis
+    fn_name = "FILTER"
+
+    # since we can't properly parse groupby + filter calls in parse.py, we won't
+    # be able to parse out the dropna argument either. however, we can still
+    # make a reasonable visualization without this argument, so we'll skip it
+    # for now.
+    # dropna_expr: Optional[RawCode] = evals_into("dropna")
 
     @classmethod
     def from_passthrough_call(cls, call: PassThroughCall):

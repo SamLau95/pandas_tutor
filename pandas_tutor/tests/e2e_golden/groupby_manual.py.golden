@@ -139,7 +139,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "dogs.groupby(['sam', 'sam', 'pg']).mean()",
       "fragment": {
         "start": {

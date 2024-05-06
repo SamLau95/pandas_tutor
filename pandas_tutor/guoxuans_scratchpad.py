@@ -1,5 +1,5 @@
 """
-just for myself
+just for guoxuan
 """
 
 # type: ignore
@@ -28,6 +28,7 @@ shorten_df = True
 
 file_to_read = "parse_golden/groupby_filter"
 # file_to_read = "e2e_golden/groupby_filter_01"
+file_to_read = "e2e_golden/apply_df_rows"
 
 
 def p(obj):

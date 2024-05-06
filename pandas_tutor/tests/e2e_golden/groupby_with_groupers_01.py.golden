@@ -289,7 +289,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "df.groupby([pd.Grouper(level=1), \"A\"]).mean()",
       "fragment": {
         "start": {

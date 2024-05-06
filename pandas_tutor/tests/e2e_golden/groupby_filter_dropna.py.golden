@@ -1,17 +1,17 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs\n .groupby(['grooming', 'kids'])\n .max()\n)\n",
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\ndogs = dogs[[\"breed\", \"size\", \"longevity\"]].sort_values(\"size\")\n\ndogs.groupby(\"size\").filter(lambda df: df.shape[0] > 2, dropna=False)\n",
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "(dogs\n .groupby(['grooming', 'kids'])\n .max()\n)",
+      "code_step": "dogs.groupby(\"size\").filter(lambda df: df.shape[0] > 2, dropna=False)",
       "fragment": {
         "start": {
-          "line": 1,
-          "ch": 1
+          "line": 0,
+          "ch": 4
         },
         "end": {
-          "line": 1,
-          "ch": 31
+          "line": 0,
+          "ch": 20
         }
       },
       "marks": [
@@ -21,16 +21,7 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "column",
-            "label": "grooming"
-          }
-        },
-        {
-          "type": "using",
-          "pos": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "column",
-            "label": "kids"
+            "label": "size"
           }
         }
       ],
@@ -43,10 +34,8 @@
             ],
             "labels": [
               "breed",
-              "grooming",
-              "food_cost",
-              "kids",
-              "size"
+              "size",
+              "longevity"
             ]
           },
           "index": {
@@ -54,64 +43,56 @@
               null
             ],
             "labels": [
-              0,
               1,
-              2,
+              0,
               3,
-              4,
               5,
-              6
+              6,
+              7,
+              2,
+              4
             ]
           },
           "data": [
             [
-              "Labrador Retriever",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
+              "German",
+              "large",
+              9.73
             ],
             [
-              "German Shepherd",
-              "weekly",
-              466.0,
+              "Labrador",
               "medium",
-              "large"
+              12.04
             ],
             [
-              "Beagle",
-              "daily",
-              324.0,
-              "high",
-              "small"
-            ],
-            [
-              "Golden Retriever",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
-            ],
-            [
-              "Yorkshire Terrier",
-              "daily",
-              324.0,
-              "low",
-              "small"
+              "Golden",
+              "medium",
+              12.04
             ],
             [
               "Bulldog",
-              "weekly",
-              466.0,
               "medium",
-              "medium"
+              6.29
             ],
             [
               "Boxer",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
+              "medium",
+              8.81
+            ],
+            [
+              "Poodle",
+              "medium",
+              11.95
+            ],
+            [
+              "Beagle",
+              "small",
+              12.3
+            ],
+            [
+              "Yorkshire",
+              "small",
+              12.6
             ]
           ]
         },
@@ -123,10 +104,8 @@
             ],
             "labels": [
               "breed",
-              "grooming",
-              "food_cost",
-              "kids",
-              "size"
+              "size",
+              "longevity"
             ]
           },
           "index": {
@@ -134,109 +113,90 @@
               null
             ],
             "labels": [
-              0,
               1,
-              2,
+              0,
               3,
-              4,
               5,
-              6
+              6,
+              7,
+              2,
+              4
             ]
           },
           "data": [
             [
-              "Labrador Retriever",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
+              "German",
+              "large",
+              9.73
             ],
             [
-              "German Shepherd",
-              "weekly",
-              466.0,
+              "Labrador",
               "medium",
-              "large"
+              12.04
             ],
             [
-              "Beagle",
-              "daily",
-              324.0,
-              "high",
-              "small"
-            ],
-            [
-              "Golden Retriever",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
-            ],
-            [
-              "Yorkshire Terrier",
-              "daily",
-              324.0,
-              "low",
-              "small"
+              "Golden",
+              "medium",
+              12.04
             ],
             [
               "Bulldog",
-              "weekly",
-              466.0,
               "medium",
-              "medium"
+              6.29
             ],
             [
               "Boxer",
-              "weekly",
-              466.0,
-              "high",
-              "medium"
+              "medium",
+              8.81
+            ],
+            [
+              "Poodle",
+              "medium",
+              11.95
+            ],
+            [
+              "Beagle",
+              "small",
+              12.3
+            ],
+            [
+              "Yorkshire",
+              "small",
+              12.6
             ]
           ],
           "group_data": {
             "columns": [
-              "grooming",
-              "kids"
+              "size"
             ],
             "groups": [
               {
                 "name": [
-                  "daily",
-                  "high"
+                  "large"
                 ],
                 "labels": [
-                  2
+                  1
                 ]
               },
               {
                 "name": [
-                  "daily",
-                  "low"
-                ],
-                "labels": [
-                  4
-                ]
-              },
-              {
-                "name": [
-                  "weekly",
-                  "high"
+                  "medium"
                 ],
                 "labels": [
                   0,
                   3,
-                  6
+                  5,
+                  6,
+                  7
                 ]
               },
               {
                 "name": [
-                  "weekly",
-                  "medium"
+                  "small"
                 ],
                 "labels": [
-                  1,
-                  5
+                  2,
+                  4
                 ]
               }
             ]
@@ -245,16 +205,16 @@
       }
     },
     {
-      "type": "GroupByAggCall",
-      "code_step": "(dogs\n .groupby(['grooming', 'kids'])\n .max()\n)",
+      "type": "GroupByFilterCall",
+      "code_step": "dogs.groupby(\"size\").filter(lambda df: df.shape[0] > 2, dropna=False)",
       "fragment": {
         "start": {
-          "line": 2,
-          "ch": 1
+          "line": 0,
+          "ch": 20
         },
         "end": {
-          "line": 2,
-          "ch": 7
+          "line": 0,
+          "ch": 69
         }
       },
       "marks": [
@@ -264,34 +224,13 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "row",
-            "label": 2
+            "label": 1
           },
           "to": {
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": [
-              "daily",
-              "high"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 4
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": [
-              "daily",
-              "low"
-            ]
+            "label": 1
           }
         },
         {
@@ -306,10 +245,7 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": [
-              "weekly",
-              "high"
-            ]
+            "label": 0
           }
         },
         {
@@ -324,46 +260,7 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": [
-              "weekly",
-              "high"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 6
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": [
-              "weekly",
-              "high"
-            ]
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 1
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": [
-              "weekly",
-              "medium"
-            ]
+            "label": 3
           }
         },
         {
@@ -378,10 +275,94 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": [
-              "weekly",
-              "medium"
-            ]
+            "label": 5
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 6
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 7
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "drop",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
           }
         }
       ],
@@ -395,54 +376,65 @@
             ],
             "labels": [
               "breed",
-              "food_cost",
-              "size"
+              "size",
+              "longevity"
             ]
           },
           "index": {
             "names": [
-              "grooming",
-              "kids"
+              null
             ],
             "labels": [
-              [
-                "daily",
-                "high"
-              ],
-              [
-                "daily",
-                "low"
-              ],
-              [
-                "weekly",
-                "high"
-              ],
-              [
-                "weekly",
-                "medium"
-              ]
+              1,
+              0,
+              3,
+              5,
+              6,
+              7,
+              2,
+              4
             ]
           },
           "data": [
             [
-              "Beagle",
-              324.0,
-              "small"
+              null,
+              null,
+              null
             ],
             [
-              "Yorkshire Terrier",
-              324.0,
-              "small"
+              "Labrador",
+              "medium",
+              12.04
             ],
             [
-              "Labrador Retriever",
-              466.0,
-              "medium"
+              "Golden",
+              "medium",
+              12.04
             ],
             [
-              "German Shepherd",
-              466.0,
-              "medium"
+              "Bulldog",
+              "medium",
+              6.29
+            ],
+            [
+              "Boxer",
+              "medium",
+              8.81
+            ],
+            [
+              "Poodle",
+              "medium",
+              11.95
+            ],
+            [
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null
             ]
           ]
         }

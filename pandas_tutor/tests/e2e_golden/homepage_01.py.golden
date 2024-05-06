@@ -1430,7 +1430,7 @@
       }
     },
     {
-      "type": "AggCall",
+      "type": "GroupByAggCall",
       "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group').median()\n)",
       "fragment": {
         "start": {
