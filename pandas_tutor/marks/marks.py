@@ -346,39 +346,54 @@ def mark_for_agg(
 def mark_for_groupby_apply(
     step: GroupByApplyCall, before: EvalResult, after: EvalResult
 ) -> List[Mark]:
+    #
     if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
         return []
     if not isinstance(after, (DFResult, SeriesResult)):
         return []
 
-    before_val = ungroup(before.val)
+    groups = util.get_groups(before.val)
     after_val = after.val
-
-    arrows = []
     if isinstance(after_val.index, pd.MultiIndex):
         # find number indices that exist in RHS
         matches = [multi_idx[-1] for multi_idx in after_val.index]
         # draw arrows for each pair of number index and MultiIndex from
         # LHS to RHS
-        arrows = [
-            Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
-            for label in list(zip(matches, after_val.index))
-        ]
-        return [*arrows]
+
+        # Check to draw arrows on positional index or groups when groupby
+        # multiple columns
+        if not isinstance(after_val.index.names[-1], type(None)):
+            return mark_for_agg(step, before, after)
+        else:
+            arrows = [
+                Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
+                for label in list(zip(matches, after_val.index))
+            ]
+            return [*arrows]
     # Check for single index
     elif isinstance(after_val.index, pd.Index):
         if not isinstance(after_val.index.name, type(None)):
+            # TODO: does not consider cases where we are grouping by groupers
+            # and custom functions
+
             # Check if the index has name associated with it because groupby
-            # apply can be indexed by the unique groups each group having one
-            # row if so we can reuse how we handle groupby agg
+            # apply can be indexed by the unique groups, each group having one
+            # row, if so, we can reuse how we handle groupby agg
+
             return mark_for_agg(step, before, after)
 
         else:
-            breakpoint()
-            # All other edge cases, such as positional index, draw arrows based
-            # on one to one mapping from LHS to RHS
-            arrows = diff_rows(before_val, after_val, only_if_diff=False)
-            return [*arrows]
+            # cases such as positional index, draw arrows based
+            # on one to one mapping from LHS to RHS using same logic as
+            # transform
+
+            # current implementation contain flaws in drawing the wrong arrows
+            # when after.val.index "looks" like a positional index but are
+            # actually group names. We want to avoid providing wrong
+            # information, so we will not draw arrows in this case.
+            if set(groups.keys()) == set(after.val.index):
+                return []
+            return mark_for_groupby_transform(step, before, after)
 
 
 # df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
