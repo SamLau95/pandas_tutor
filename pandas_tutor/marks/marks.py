@@ -355,15 +355,13 @@ def mark_for_groupby_apply(
     after_val = after.val
 
     arrows = []
-    breakpoint()
-    # Check for multi-index, and make mark by directly comparing the index
     if isinstance(after_val.index, pd.MultiIndex):
         # find number indices that exist in RHS
-        matches = [multi_idx[1] for multi_idx in after_val.index]
+        matches = [multi_idx[-1] for multi_idx in after_val.index]
         # draw arrows for each pair of number index and MultiIndex from
         # LHS to RHS
         arrows = [
-            Map(from_=lhs("row", label[0]), to=rhs("row", label[1]))
+            Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
             for label in list(zip(matches, after_val.index))
         ]
         return [*arrows]
@@ -376,12 +374,11 @@ def mark_for_groupby_apply(
             return mark_for_agg(step, before, after)
 
         else:
+            breakpoint()
             # All other edge cases, such as positional index, draw arrows based
             # on one to one mapping from LHS to RHS
             arrows = diff_rows(before_val, after_val, only_if_diff=False)
             return [*arrows]
-
-    return []
 
 
 # df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
