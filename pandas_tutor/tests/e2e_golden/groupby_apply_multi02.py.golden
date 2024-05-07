@@ -1,0 +1,464 @@
+{
+  "code": "import pandas as pd\n\ndata = {\n    \"Category\": [\"A\", \"A\", \"B\", \"B\", \"A\", \"B\", \"A\", \"B\"],\n    \"Subcategory\": [\"X\", \"Y\", \"X\", \"Y\", \"X\", \"X\", \"Y\", \"Y\"],\n    \"Value1\": [10, 20, 30, 40, 50, 60, 70, 80],\n    \"Value2\": [100, 200, 300, 400, 500, 600, 700, 800],\n}\n\ndf = pd.DataFrame(data)\n\ndf.groupby([\"Category\", \"Subcategory\"]).apply(lambda x: x.mean())\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "df.groupby([\"Category\", \"Subcategory\"]).apply(lambda x: x.mean())",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 39
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Category"
+          }
+        },
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "Subcategory"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Category",
+              "Subcategory",
+              "Value1",
+              "Value2"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              "A",
+              "X",
+              10,
+              100
+            ],
+            [
+              "A",
+              "Y",
+              20,
+              200
+            ],
+            [
+              "B",
+              "X",
+              30,
+              300
+            ],
+            [
+              "B",
+              "Y",
+              40,
+              400
+            ],
+            [
+              "A",
+              "X",
+              50,
+              500
+            ],
+            [
+              "B",
+              "X",
+              60,
+              600
+            ],
+            [
+              "A",
+              "Y",
+              70,
+              700
+            ],
+            [
+              "B",
+              "Y",
+              80,
+              800
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Category",
+              "Subcategory",
+              "Value1",
+              "Value2"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              "A",
+              "X",
+              10,
+              100
+            ],
+            [
+              "A",
+              "Y",
+              20,
+              200
+            ],
+            [
+              "B",
+              "X",
+              30,
+              300
+            ],
+            [
+              "B",
+              "Y",
+              40,
+              400
+            ],
+            [
+              "A",
+              "X",
+              50,
+              500
+            ],
+            [
+              "B",
+              "X",
+              60,
+              600
+            ],
+            [
+              "A",
+              "Y",
+              70,
+              700
+            ],
+            [
+              "B",
+              "Y",
+              80,
+              800
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "Category",
+              "Subcategory"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "A",
+                  "X"
+                ],
+                "labels": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "name": [
+                  "A",
+                  "Y"
+                ],
+                "labels": [
+                  1,
+                  6
+                ]
+              },
+              {
+                "name": [
+                  "B",
+                  "X"
+                ],
+                "labels": [
+                  2,
+                  5
+                ]
+              },
+              {
+                "name": [
+                  "B",
+                  "Y"
+                ],
+                "labels": [
+                  3,
+                  7
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByApplyCall",
+      "code_step": "df.groupby([\"Category\", \"Subcategory\"]).apply(lambda x: x.mean())",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 39
+        },
+        "end": {
+          "line": 0,
+          "ch": 65
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "A",
+              "X"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "A",
+              "X"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "A",
+              "Y"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "A",
+              "Y"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "B",
+              "X"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 5
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "B",
+              "X"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "B",
+              "Y"
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "B",
+              "Y"
+            ]
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Value1",
+              "Value2"
+            ]
+          },
+          "index": {
+            "names": [
+              "Category",
+              "Subcategory"
+            ],
+            "labels": [
+              [
+                "A",
+                "X"
+              ],
+              [
+                "A",
+                "Y"
+              ],
+              [
+                "B",
+                "X"
+              ],
+              [
+                "B",
+                "Y"
+              ]
+            ]
+          },
+          "data": [
+            [
+              30.0,
+              300.0
+            ],
+            [
+              45.0,
+              450.0
+            ],
+            [
+              45.0,
+              450.0
+            ],
+            [
+              60.0,
+              600.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
