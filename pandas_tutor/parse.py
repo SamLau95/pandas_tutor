@@ -39,6 +39,7 @@ from .parse_nodes import (
     GetCall,
     GroupByCall,
     GroupByFilterCall,
+    GroupByTransformCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -610,9 +611,7 @@ class ChainParser(ParserBase):
         )
         self._append(node)
 
-    def make_call_node(
-        self, cls: t.Type[T], cst_node: cst.Call, **kwargs
-    ) -> T:
+    def make_call_node(self, cls: t.Type[T], cst_node: cst.Call, **kwargs) -> T:
         """
         for calls in chain like df.apply(), the location of the call is the
         dot + everything after

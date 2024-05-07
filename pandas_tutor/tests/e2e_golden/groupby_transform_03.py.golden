@@ -1,0 +1,590 @@
+{
+  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,type,longevity,size,temp\nLabrador,sporting,12.04,medium,1\nGerman,herding,9.73,large,2\nBeagle,hound,12.3,small,3\nGolden,sporting,12.04,medium,4\nYorkshire,toy,12.6,small,5\nBulldog,non-sporting,6.29,medium,6\nBoxer,working,8.81,medium,7\nPoodle,non-sporting,11.95,medium,8\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs.groupby(\"size\")[[\"longevity\", \"temp\"]].transform(lambda s: s.mean())\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "dogs.groupby(\"size\")[[\"longevity\", \"temp\"]].transform(lambda s: s.mean())",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 4
+        },
+        "end": {
+          "line": 0,
+          "ch": 20
+        }
+      },
+      "marks": [
+        {
+          "type": "using",
+          "pos": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "size"
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "type",
+              "longevity",
+              "size",
+              "temp"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              "Labrador",
+              "sporting",
+              12.04,
+              "medium",
+              1
+            ],
+            [
+              "German",
+              "herding",
+              9.73,
+              "large",
+              2
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3,
+              "small",
+              3
+            ],
+            [
+              "Golden",
+              "sporting",
+              12.04,
+              "medium",
+              4
+            ],
+            [
+              "Yorkshire",
+              "toy",
+              12.6,
+              "small",
+              5
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29,
+              "medium",
+              6
+            ],
+            [
+              "Boxer",
+              "working",
+              8.81,
+              "medium",
+              7
+            ],
+            [
+              "Poodle",
+              "non-sporting",
+              11.95,
+              "medium",
+              8
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "breed",
+              "type",
+              "longevity",
+              "size",
+              "temp"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              "Labrador",
+              "sporting",
+              12.04,
+              "medium",
+              1
+            ],
+            [
+              "German",
+              "herding",
+              9.73,
+              "large",
+              2
+            ],
+            [
+              "Beagle",
+              "hound",
+              12.3,
+              "small",
+              3
+            ],
+            [
+              "Golden",
+              "sporting",
+              12.04,
+              "medium",
+              4
+            ],
+            [
+              "Yorkshire",
+              "toy",
+              12.6,
+              "small",
+              5
+            ],
+            [
+              "Bulldog",
+              "non-sporting",
+              6.29,
+              "medium",
+              6
+            ],
+            [
+              "Boxer",
+              "working",
+              8.81,
+              "medium",
+              7
+            ],
+            [
+              "Poodle",
+              "non-sporting",
+              11.95,
+              "medium",
+              8
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "size"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium"
+                ],
+                "labels": [
+                  0,
+                  3,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "Subscript",
+      "code_step": "dogs.groupby(\"size\")[[\"longevity\", \"temp\"]].transform(lambda s: s.mean())",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 20
+        },
+        "end": {
+          "line": 0,
+          "ch": 43
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "longevity"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "temp"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "temp"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "longevity",
+              "temp"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              12.04,
+              1.0
+            ],
+            [
+              9.73,
+              2.0
+            ],
+            [
+              12.3,
+              3.0
+            ],
+            [
+              12.04,
+              4.0
+            ],
+            [
+              12.6,
+              5.0
+            ],
+            [
+              6.29,
+              6.0
+            ],
+            [
+              8.81,
+              7.0
+            ],
+            [
+              11.95,
+              8.0
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "size"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium"
+                ],
+                "labels": [
+                  0,
+                  3,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByTransformCall",
+      "code_step": "dogs.groupby(\"size\")[[\"longevity\", \"temp\"]].transform(lambda s: s.mean())",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 43
+        },
+        "end": {
+          "line": 0,
+          "ch": 73
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 5
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 5
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 6
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 6
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 7
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 7
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "longevity",
+              "temp"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              10.225999999999999,
+              5.2
+            ],
+            [
+              9.73,
+              2.0
+            ],
+            [
+              12.45,
+              4.0
+            ],
+            [
+              10.225999999999999,
+              5.2
+            ],
+            [
+              12.45,
+              4.0
+            ],
+            [
+              10.225999999999999,
+              5.2
+            ],
+            [
+              10.225999999999999,
+              5.2
+            ],
+            [
+              10.225999999999999,
+              5.2
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -59,6 +59,7 @@ from pandas_tutor.parse_nodes import (
     GetCall,
     GroupByCall,
     GroupByFilterCall,
+    GroupByTransformCall,
     HeadCall,
     JoinCall,
     MeltCall,
@@ -122,6 +123,8 @@ def make_marks(
         return mark_for_agg(step, before, after)
     elif isinstance(step, GroupByFilterCall):
         return mark_for_groupby_filter(step, before, after)
+    elif isinstance(step, GroupByTransformCall):
+        return mark_for_groupby_transform(step, before, after)
     elif isinstance(step, ResetIndexCall):
         return mark_for_reset_index(step, before, after)
     elif isinstance(step, SetIndexCall):
@@ -363,6 +366,31 @@ def mark_for_groupby_filter(
     rows_to_drop = before_label - after_label
     crossouts = make_drops(rows_to_drop, "row")
     return [*arrows, *crossouts]
+
+
+# dogs.groupby("size").transform(lambda s: s.mean())
+def mark_for_groupby_transform(
+    step: GroupByTransformCall, before: EvalResult, after: EvalResult
+) -> List[Mark]:
+    if not isinstance(before, (GroupbyResult, SeriesGroupbyResult)):
+        return []
+    if not isinstance(after, (DFResult, SeriesResult)):
+        return []
+
+    before_val = ungroup(before.val)
+    after_val = after.val
+    row_arrows = diff_rows(before_val, after_val, only_if_diff=False)
+
+    # transform() will by default try to run on all columns of LHS, then
+    # implicitly drop the columns that weren't able to be transformed. we'll
+    # draw arrows when at least one column is dropped so this is more apparent.
+    col_arrows = (
+        diff_cols(before_val, after_val)
+        if util.is_dataframe(before_val) and util.is_dataframe(after_val)
+        else []
+    )
+
+    return [*row_arrows, *col_arrows]
 
 
 # dogs.reset_index(level=[1, 2], drop=True)

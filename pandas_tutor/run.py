@@ -22,6 +22,7 @@ from .parse_nodes import (
     CodeRange,
     EvalError,
     GroupByFilterCall,
+    GroupByTransformCall,
     ParseResult,
     ParseSyntaxError,
     PassThroughCall,
@@ -123,9 +124,7 @@ def run_code(root: ParseResult, ipython_shell=None) -> t.List[EvalResult]:
     # grab user local vars from ipython shell if possible, otherwise initialize
     # a new globals dict
     user_globals = (
-        setup_user_globals()
-        if ipython_shell is None
-        else ipython_shell.user_ns
+        setup_user_globals() if ipython_shell is None else ipython_shell.user_ns
     )
 
     for stmt in setup_stmts:
@@ -211,6 +210,8 @@ def make_result(
     ):
         if step.func == "filter":
             step = GroupByFilterCall.from_passthrough_call(step)
+        elif step.func == "transform":
+            step = GroupByTransformCall.from_passthrough_call(step)
         elif step.func in GroupByAggCall.agg_funcs:
             step = GroupByAggCall.from_passthrough_call(step)
 
@@ -239,9 +240,7 @@ def setup_user_globals():
 
     user_globals = {}
 
-    user_globals.update(
-        {"__name__": "__main__", "__builtins__": user_builtins}
-    )
+    user_globals.update({"__name__": "__main__", "__builtins__": user_builtins})
 
     return user_globals
 
