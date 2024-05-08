@@ -243,10 +243,14 @@ def reduce_val(
                 if len(val) > 2 * slice
                 else val
             )
-        elif isinstance(val, (util.DataFrameGroupBy, util.SeriesGroupBy)):
+        elif isinstance(val, util.DataFrameGroupBy):
             temp_df = top_bottom(val.obj, slice)
             # This might have some errors if the groupby keys are weird
+            val.keys = [val.keys] if isinstance(val.keys, str) else val.keys
             val = temp_df.groupby(val.keys)
+            return val
+        elif isinstance(val, util.SeriesGroupBy):
+            val.obj = top_bottom(val.obj, slice)
             return val
         else:
             return NotImplementedError(
