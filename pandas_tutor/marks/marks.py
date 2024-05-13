@@ -362,7 +362,7 @@ def mark_for_groupby_apply(
 
         # Check to draw arrows on positional index or groups when groupby
         # multiple columns
-        if not isinstance(after_val.index.names[-1], type(None)):
+        if after_val.index.names[-1] is not None:
             return mark_for_agg(step, before, after)
         else:
             arrows = [
