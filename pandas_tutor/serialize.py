@@ -245,6 +245,7 @@ def reduce_val(
             )
         elif isinstance(val, util.DataFrameGroupBy):
             temp_df = top_bottom(val.obj, slice)
+            # Shrink temp_df if there's a slice subscript, uses private attribute so pray it doesn't change
             if isinstance(val._selection, list):
                 temp_df = temp_df[val._selection]
             # This might have some errors if the groupby keys are weird
