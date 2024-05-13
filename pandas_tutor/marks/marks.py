@@ -369,7 +369,7 @@ def mark_for_groupby_apply(
                 Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
                 for label in list(zip(matches, after_val.index))
             ]
-            return [*arrows]
+            return arrows
     # Check for single index
     elif isinstance(after_val.index, pd.Index):
         if not isinstance(after_val.index.name, type(None)):
