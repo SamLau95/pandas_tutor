@@ -223,7 +223,7 @@ def reduce_val(
     reduce the before and after EvalResults to simpler forms if possible
     """
 
-    def top_bottom(val: Any, slice: int = 50) -> Any:
+    def top_bottom(val: Any, slice: int = 25) -> Any:
         # Edits val in-place
         if isinstance(val, (pd.DataFrame, pd.Series)):
             val = (
@@ -245,10 +245,13 @@ def reduce_val(
                 else val
             )
         elif isinstance(val, util.DataFrameGroupBy):
-            temp_df = top_bottom(val.obj, slice)
-            # This might have some errors if the groupby keys are weird
-            grouper = val.grouper
-            val = temp_df.groupby(grouper)
+            # having issue with reducing the DataFrameGroupBy vals
+
+            # temp_df = top_bottom(val.obj, slice)
+            # # This might have some errors if the groupby keys are weird
+            # grouper = val.grouper
+            # val = temp_df.groupby(grouper)
+            return val
         elif isinstance(val, util.SeriesGroupBy):
             val.obj = top_bottom(val.obj, slice)
 
