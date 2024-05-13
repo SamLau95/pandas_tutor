@@ -394,6 +394,8 @@ def mark_for_groupby_apply(
             if set(groups.keys()) == set(after.val.index):
                 return []
             return mark_for_groupby_transform(step, before, after)
+    else:
+        return []
 
 
 # df.groupby(['col']).filter(lambda x: x['col'].sum() > 10)
