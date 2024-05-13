@@ -87,6 +87,7 @@ def serialize_pair(
 
     marks = make_marks(step, before, after)
 
+    breakpoint()
     before, after = reduce_val(marks, before, after)
 
     lhs: Union[DataSpec, PrevRHS] = (
@@ -246,8 +247,9 @@ def reduce_val(
         elif isinstance(val, util.DataFrameGroupBy):
             temp_df = top_bottom(val.obj, slice)
             # This might have some errors if the groupby keys are weird
-            val.keys = [val.keys] if isinstance(val.keys, str) else val.keys
-            val = temp_df.groupby(val.keys)
+            # val.keys = [val.keys] if isinstance(val.keys, str) else val.keys
+            grouper = val.grouper
+            val = temp_df.groupby(grouper)
             return val
         elif isinstance(val, util.SeriesGroupBy):
             val.obj = top_bottom(val.obj, slice)
