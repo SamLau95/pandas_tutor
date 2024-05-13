@@ -222,7 +222,7 @@ def reduce_val(
     reduce the before and after EvalResults to simpler forms if possible
     """
 
-    def top_bottom(val: Any, slice: int = 50) -> Any:
+    def top_bottom(val: Any, slice: int = 25) -> Any:
         # Edits val in-place
         if isinstance(val, (pd.DataFrame, pd.Series)):
             val = (
