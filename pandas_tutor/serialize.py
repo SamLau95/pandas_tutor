@@ -87,7 +87,6 @@ def serialize_pair(
 
     marks = make_marks(step, before, after)
 
-    breakpoint()
     before, after = reduce_val(marks, before, after)
 
     lhs: Union[DataSpec, PrevRHS] = (
