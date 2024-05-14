@@ -65,7 +65,8 @@ def serialize_single(result: EvalResult) -> Explanation:
     elif isinstance(result, RuntimeErrorResult):
         return [RuntimeErrorInSetup.from_runtime_error_result(result)]
 
-    result = reduce_val(None, result, None)[0]
+    # HACK: special case for single val, updating this depends on truncating logic
+    result = truncate_val(None, result, None)[0]
 
     return [
         Diagram(
@@ -87,7 +88,7 @@ def serialize_pair(
 
     marks = make_marks(step, before, after)
 
-    before, after = reduce_val(marks, before, after)
+    before, after = truncate_val(marks, before, after)
 
     lhs: Union[DataSpec, PrevRHS] = (
         serialize_step_val(before)
@@ -215,49 +216,55 @@ def pairs(seq: List[T]) -> List[Tuple[T, T]]:
     return [(seq[i], seq[i + 1]) for i in range(len(seq) - 1)]
 
 
-def reduce_val(
+def truncate_val(
     mark: List[Mark], before: EvalResult, after: EvalResult
 ) -> Tuple[EvalResult, EvalResult]:
     """
     reduce the before and after EvalResults to simpler forms if possible
     """
 
-    def top_bottom(val: Any, slice: int = 25) -> Any:
-        # Edits val in-place
-        if isinstance(val, (pd.DataFrame, pd.Series)):
-            val = (
-                pd.concat([val.head(slice), val.tail(slice)])
-                if len(val) > 2 * slice
-                else val
-            )
-            val = (
-                pd.concat([val.iloc[:, :slice], val.iloc[:, -slice:]], axis=1)
-                if isinstance(val, pd.DataFrame)
-                and len(val.columns) > 2 * slice
-                else val
-            )
-            return val
-        elif isinstance(val, pd.Index):
-            val = (
-                pd.Index(val[:slice].tolist() + val[-slice:].tolist())
-                if len(val) > 2 * slice
-                else val
-            )
-        elif isinstance(val, util.DataFrameGroupBy):
-            temp_df = top_bottom(val.obj, slice)
-            # Shrink temp_df if there's a slice subscript, uses private attribute so pray it doesn't change
-            if isinstance(val._selection, list):
-                temp_df = temp_df[val._selection]
-            # This might have some errors if the groupby keys are weird
-            grouper = val.grouper
-            val = temp_df.groupby(grouper)
-        elif isinstance(val, util.SeriesGroupBy):
-            val.obj = top_bottom(val.obj, slice)
-
-        return val
-
     if before is not None:
         before.val = top_bottom(before.val)
     if after is not None:
         after.val = top_bottom(after.val)
     return before, after
+
+
+def top_bottom(val: Any, max_rows: int = 50) -> Any:
+    head_tail = max_rows // 2
+    # Edits val in-place
+    if isinstance(val, (pd.DataFrame, pd.Series)):
+        val = (
+            pd.concat([val.head(head_tail), val.tail(head_tail)])
+            if len(val) > max_rows
+            else val
+        )
+        val = (
+            pd.concat(
+                [val.iloc[:, :head_tail], val.iloc[:, -head_tail:]], axis=1
+            )
+            if isinstance(val, pd.DataFrame) and len(val.columns) > max_rows
+            else val
+        )
+    elif isinstance(val, pd.Index):
+        val = (
+            pd.Index(val[:head_tail].tolist() + val[-head_tail:].tolist())
+            if len(val) > max_rows
+            else val
+        )
+    elif isinstance(val, util.DataFrameGroupBy):
+        # groupby objects contain lots of data across many attributes,
+        # so we need to recreate the object after reducing it
+        temp_df = top_bottom(val.obj, max_rows)
+
+        # dogs.groupby("size")[["breed", "price"]]
+        # groupby after slicing for df isn't stored in groupby.obj, only stored in groupby._selection
+        if isinstance(val._selection, list):
+            temp_df = temp_df[val._selection]
+
+        # recreates groupby object with reduced data
+        val = temp_df.groupby(val.grouper)
+    elif isinstance(val, util.SeriesGroupBy):
+        val.obj = top_bottom(val.obj, max_rows)
+
+    return val
