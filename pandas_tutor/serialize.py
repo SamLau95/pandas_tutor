@@ -51,6 +51,18 @@ def serialize(results: List[EvalResult]) -> Explanation:
     if len(results) == 0:
         return []
 
+    # stop if results use too much memory
+    total_mem_used = sum(util.mem_used(result.val) for result in results)
+    if total_mem_used > util.MEM_LIMIT:
+        result = results[-1]
+        return [
+            RuntimeErrorInChain(
+                code_step=result.step.code,
+                message=util.too_much_mem_msg(total_mem_used),
+                fragment=result.fragment,
+            )
+        ]
+
     if len(results) == 1:
         # happens when user inputs `df` without a function call, or when
         # error happens in setup code
