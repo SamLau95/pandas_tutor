@@ -355,52 +355,59 @@ def mark_for_groupby_apply(
     groups = util.get_groups(before.val)
     after_val = after.val
     if isinstance(after_val.index, pd.MultiIndex):
+        # index of RHS is MultiIndex
+
         # find number indices that exist in RHS
         matches = [multi_idx[-1] for multi_idx in after_val.index]
-        # draw arrows for each pair of number index and MultiIndex from
-        # LHS to RHS
 
-        # Check to draw arrows on positional index or groups when groupby
-        # multiple columns
         if after_val.index.names[-1] is not None:
-            # TODO: test case
+            # Check to draw arrows on positional index or groups when
+            # groupby multiple columns
+
+            # ./tests/e2e_golden/groupby_apply_multi01.py
+            # dogs.groupby(["size", "breed"]).apply(lambda x: x["longevity"] + 1)
             return mark_for_agg(step, before, after)  # type: ignore
         else:
-            # TODO: test case
+            # ./tests/e2e_golden/groupby_apply_multi02.py
+            # df.groupby(["Category", "Subcategory"]).apply(lambda x: x.mean())
             arrows: List[Mark] = [
                 Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
                 for label in list(zip(matches, after_val.index))
             ]
             return arrows
-    # Check for single index
     elif isinstance(after_val.index, pd.Index):
+        # index of RHS is single index
+
+        # TODO: does not consider cases where we are grouping by groupers
+        # and custom functions
+
         if not isinstance(after_val.index.name, type(None)):
-            # TODO: test case
+            # Check if the index has name associated with it, which
+            # means each group has one row and we can reuse
+            # mark_for_agg()
 
-            # TODO: does not consider cases where we are grouping by groupers
-            # and custom functions
-
-            # Check if the index has name associated with it because groupby
-            # apply can be indexed by the unique groups, each group having one
-            # row, if so, we can reuse how we handle groupby agg
-
+            # ./tests/e2e_golden/groupby_apply_group_name.py
+            # dogs.groupby("size").apply(lambda x: x["longevity"].mean())
             return mark_for_agg(step, before, after)  # type: ignore
 
         else:
-            # cases such as positional index, draw arrows based
-            # on one to one mapping from LHS to RHS using same logic as
-            # transform
+            # index doesn't have name, e.g. positional index, draw
+            # arrows using mark_for_groupby_transform
 
-            # current implementation contain flaws in drawing the wrong arrows
-            # when after.val.index "looks" like a positional index but are
-            # actually group names. We want to avoid providing wrong
-            # information, so we will not draw arrows in this case.
             if set(groups.keys()) == set(after.val.index):
-                # TODO: test case
+                # TODO: current implementation contains a flaw: it
+                # produces wrong marks when RHS index "looks" like
+                # positional index but is group names. To avoid
+                # providing wrong information, we do not provide marks.
+
+                # ./tests/e2e_golden/groupby_apply_edge.py
                 return []
-            # TODO: test case
+
+            # ./tests/e2e_golden/groupby_apply_index.py
+            # dogs.groupby("size")["longevity"].apply(lambda x: x + 1)
             return mark_for_groupby_transform(step, before, after)  # type: ignore
     else:
+        # should never be reached
         return []
 
 
