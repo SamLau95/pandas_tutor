@@ -363,8 +363,10 @@ def mark_for_groupby_apply(
         # Check to draw arrows on positional index or groups when groupby
         # multiple columns
         if after_val.index.names[-1] is not None:
+            # TODO: test case
             return mark_for_agg(step, before, after)  # type: ignore
         else:
+            # TODO: test case
             arrows: List[Mark] = [
                 Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
                 for label in list(zip(matches, after_val.index))
@@ -373,6 +375,8 @@ def mark_for_groupby_apply(
     # Check for single index
     elif isinstance(after_val.index, pd.Index):
         if not isinstance(after_val.index.name, type(None)):
+            # TODO: test case
+
             # TODO: does not consider cases where we are grouping by groupers
             # and custom functions
 
@@ -392,7 +396,9 @@ def mark_for_groupby_apply(
             # actually group names. We want to avoid providing wrong
             # information, so we will not draw arrows in this case.
             if set(groups.keys()) == set(after.val.index):
+                # TODO: test case
                 return []
+            # TODO: test case
             return mark_for_groupby_transform(step, before, after)  # type: ignore
     else:
         return []
