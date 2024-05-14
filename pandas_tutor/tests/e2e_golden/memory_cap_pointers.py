@@ -6,8 +6,8 @@ class MyStr:
         self.val = val
 
 
-# this uses about 2.5 MB
-# but, sys.getsizeof() only returns ~120 KB
-hello = [MyStr('hello world') for _ in range(15_000)]
+# this uses about 115 MB
+# but, sys.getsizeof() only returns ~120 KB (updated 5/13/2024, don't know how big sys.getsizeof() thinks it is)
+hello = [MyStr("hello world") for _ in range(750_000)]
 
 hello[:5]
