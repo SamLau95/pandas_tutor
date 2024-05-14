@@ -1,5 +1,5 @@
 {
-  "code": "# tests that pointers still trigger memory cap\n\n\nclass MyStr:\n    def __init__(self, val):\n        self.val = val\n\n\n# this uses about 250 MB\n# but, sys.getsizeof() only returns ~120 KB (updated 5/13/2024, don't know how big sys.getsizeof() thinks it is)\nhello = [MyStr(\"hello world\") for _ in range(750_000)]\n\nhello[:5]\n",
+  "code": "# tests that pointers still trigger memory cap\n\n\nclass MyStr:\n    def __init__(self, val):\n        self.val = val\n\n\n# this uses about 115 MB\n# but, sys.getsizeof() only returns ~120 KB (updated 5/13/2024, don't know how big sys.getsizeof() thinks it is)\nhello = [MyStr(\"hello world\") for _ in range(750_000)]\n\nhello[:5]\n",
   "explanation": [
     {
       "type": "RuntimeErrorInChain",
