@@ -366,7 +366,6 @@ def mark_for_groupby_apply(
     groups = util.get_groups(before.val)
     after_val = after.val
     if isinstance(after_val.index, pd.MultiIndex):
-        matches = [multi_idx[-1] for multi_idx in after_val.index]
 
         # [1]
         if after_val.index.names[-1] is not None:
@@ -377,6 +376,7 @@ def mark_for_groupby_apply(
         else:
             # ./tests/e2e_golden/groupby_apply_multi02.py
             # df.groupby(["Category", "Subcategory"]).apply(lambda x: x.mean())
+            matches = [multi_idx[-1] for multi_idx in after_val.index]
             arrows: List[Mark] = [
                 Map(from_=lhs("row", label[0]), to=rhs("row", label[-1]))
                 for label in list(zip(matches, after_val.index))
