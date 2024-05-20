@@ -387,7 +387,7 @@ def mark_for_groupby_apply(
         # TODO: does not consider cases where we are grouping by groupers
         # and custom functions
 
-        if type(after_val.index.name) is not type(None):
+        if after_val.index.name is not None:
             # Check if the index has name associated with it, which
             # means each group has one row and we can reuse
             # mark_for_agg()
