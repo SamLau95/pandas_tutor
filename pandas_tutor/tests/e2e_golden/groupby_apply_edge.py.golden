@@ -1,0 +1,225 @@
+{
+  "code": "import pandas as pd\n\n# when after index look like positional index, but it is actually group names.\n# Use this test case to make sure we are not providing the wrong information\n# TODO: rewrite the golden file once groupers and custom function groupby are\n# implemented\ndata = {\"Group\": [\"A\", \"B\", \"C\", \"D\", \"E\"], \"Value\": [4, 3, 2, 1, 0]}\n\n# Creating DataFrame\ndf = pd.DataFrame(data)\n\n\ndef single_group(value):\n    return value + 1\n\n\ndf.groupby(single_group).apply(lambda x: x.iloc[0])\n",
+  "explanation": [
+    {
+      "type": "GroupByCall",
+      "code_step": "df.groupby(single_group).apply(lambda x: x.iloc[0])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 2
+        },
+        "end": {
+          "line": 0,
+          "ch": 24
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Group",
+              "Value"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "data": [
+            [
+              "A",
+              4
+            ],
+            [
+              "B",
+              3
+            ],
+            [
+              "C",
+              2
+            ],
+            [
+              "D",
+              1
+            ],
+            [
+              "E",
+              0
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Group",
+              "Value"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "data": [
+            [
+              "A",
+              4
+            ],
+            [
+              "B",
+              3
+            ],
+            [
+              "C",
+              2
+            ],
+            [
+              "D",
+              1
+            ],
+            [
+              "E",
+              0
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              null
+            ],
+            "groups": [
+              {
+                "name": [
+                  1
+                ],
+                "labels": [
+                  0
+                ]
+              },
+              {
+                "name": [
+                  2
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  3
+                ],
+                "labels": [
+                  2
+                ]
+              },
+              {
+                "name": [
+                  4
+                ],
+                "labels": [
+                  3
+                ]
+              },
+              {
+                "name": [
+                  5
+                ],
+                "labels": [
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByApplyCall",
+      "code_step": "df.groupby(single_group).apply(lambda x: x.iloc[0])",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 24
+        },
+        "end": {
+          "line": 0,
+          "ch": 51
+        }
+      },
+      "marks": [],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "Group",
+              "Value"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "data": [
+            [
+              "A",
+              4
+            ],
+            [
+              "B",
+              3
+            ],
+            [
+              "C",
+              2
+            ],
+            [
+              "D",
+              1
+            ],
+            [
+              "E",
+              0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
