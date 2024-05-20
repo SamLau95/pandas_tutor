@@ -34,6 +34,7 @@ from .diagram import (
     SeriesSpec,
     SyntaxErrorOutput,
     UnhandledData,
+    Using,
 )
 from .marks import make_marks
 from .run import (
@@ -229,7 +230,7 @@ def pairs(seq: List[T]) -> List[Tuple[T, T]]:
 
 
 def truncate_vals(
-    mark: List[Mark], before: EvalResult, after: EvalResult
+    marks: List[Mark], before: EvalResult, after: EvalResult
 ) -> Tuple[EvalResult, EvalResult]:
     """
     when we have really big dataframes / series, we'll trim out rows to avoid
@@ -237,11 +238,20 @@ def truncate_vals(
 
     NOTE: this method mutates (!) the `before` and `after` objects.
     """
+    lhs_marks = []
+    rhs_marks = []
+
+    for mark in marks:
+        if isinstance(mark, Using):
+            if mark.pos.anchor == "rhs":
+                rhs_marks.append(mark)
+            else:
+                lhs_marks.append(mark)
 
     if before is not None:
-        before.val = top_bottom(before.val)
+        before.val = truncate_Using_mark(before.val, lhs_marks)
     if after is not None:
-        after.val = top_bottom(after.val)
+        after.val = truncate_Using_mark(after.val, rhs_marks)
     return before, after
 
 
@@ -289,4 +299,28 @@ def top_bottom(val: Any, max_rows: int = 50) -> Any:
     elif isinstance(val, util.SeriesGroupBy):
         val.obj = top_bottom(val.obj, max_rows)
 
+    return val
+
+
+def truncate_Using_mark(val: Any, cor_marks: list) -> Any:
+
+    if len(cor_marks) == 0:
+        return top_bottom(val)
+
+    imp_index = []
+    imp_column = []
+
+    for mark in cor_marks:
+        if isinstance(mark, Using):
+            if mark.pos.select == "column":
+                imp_column.append(mark.pos.label)
+            else:
+                imp_index.append(mark.pos.label)
+
+    if isinstance(val, pd.DataFrame):
+        if len(imp_index) == 0:
+            imp_index = val.index
+        if len(imp_column) == 0:
+            imp_column = val.columns
+        val = val.loc[imp_index, imp_column]
     return val

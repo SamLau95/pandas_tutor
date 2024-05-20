@@ -30,7 +30,7 @@ shorten_df = True
 
 file_to_read = "parse_golden/groupby_filter"
 # file_to_read = "e2e_golden/groupby_filter_01"
-file_to_read = "e2e_golden/largeData_groupby"
+file_to_read = "e2e_golden/assign_multi"
 
 
 def p(obj):
