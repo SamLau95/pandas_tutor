@@ -386,7 +386,6 @@ def mark_for_groupby_apply(
     elif isinstance(after_val.index, pd.Index):
         # TODO: does not consider cases where we are grouping by groupers
         # and custom functions
-        breakpoint()
 
         if type(after_val.index.name) is not type(None):
             # Check if the index has name associated with it, which
