@@ -78,7 +78,7 @@ def serialize_single(result: EvalResult) -> Explanation:
         return [RuntimeErrorInSetup.from_runtime_error_result(result)]
 
     # HACK: special case for single val, updating this depends on truncating logic
-    result = truncate_val(None, result, None)[0]
+    result = truncate_vals(None, result, None)[0]
 
     return [
         Diagram(
