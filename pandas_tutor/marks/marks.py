@@ -365,15 +365,15 @@ def mark_for_groupby_apply(
 
     groups = util.get_groups(before.val)
     after_val = after.val
-    # [1]
     if isinstance(after_val.index, pd.MultiIndex):
         matches = [multi_idx[-1] for multi_idx in after_val.index]
 
-        # [2]
+        # [1]
         if after_val.index.names[-1] is not None:
             # ./tests/e2e_golden/groupby_apply_multi01.py
             # dogs.groupby(["size", "breed"]).apply(lambda x: x["longevity"] + 1)
             return mark_for_agg(step, before, after)  # type: ignore
+        # [2]
         else:
             # ./tests/e2e_golden/groupby_apply_multi02.py
             # df.groupby(["Category", "Subcategory"]).apply(lambda x: x.mean())
@@ -388,7 +388,7 @@ def mark_for_groupby_apply(
         # and custom functions
         breakpoint()
 
-        if after_val.index.name is type(None):
+        if type(after_val.index.name) is not type(None):
             # Check if the index has name associated with it, which
             # means each group has one row and we can reuse
             # mark_for_agg()
