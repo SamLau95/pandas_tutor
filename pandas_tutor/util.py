@@ -1,6 +1,7 @@
 """
 utilities
 """
+
 from __future__ import annotations
 
 import base64
@@ -107,18 +108,15 @@ def tuplify(obj: Any) -> Tuple:
 
 
 @overload
-def unwrap(obj: Tuple[T]) -> Union[Tuple[T], T]:
-    ...
+def unwrap(obj: Tuple[T]) -> Union[Tuple[T], T]: ...
 
 
 @overload
-def unwrap(obj: List[T]) -> Union[List[T], T]:
-    ...
+def unwrap(obj: List[T]) -> Union[List[T], T]: ...
 
 
 @overload
-def unwrap(obj: Label) -> Label:
-    ...
+def unwrap(obj: Label) -> Label: ...
 
 
 def unwrap(obj):
@@ -229,8 +227,7 @@ def positions_to_labels(
     df: HasIndex,
     slicer: Slicer = "iloc",
     axis: Axis = "index",
-) -> Label:
-    ...
+) -> Label: ...
 
 
 @overload
@@ -239,8 +236,7 @@ def positions_to_labels(  # noqa: F811
     df: HasIndex,
     slicer: Slicer = "iloc",
     axis: Axis = "index",
-) -> List[Label]:
-    ...
+) -> List[Label]: ...
 
 
 def positions_to_labels(  # noqa: F811
@@ -414,15 +410,13 @@ def push_level(from_: Label, to: Label, levels: List[int]) -> LabelPair:
 
 
 @overload
-def ungroup(obj: Union[SeriesGroupBy, pd.Series]) -> pd.Series:
-    ...
+def ungroup(obj: Union[SeriesGroupBy, pd.Series]) -> pd.Series: ...
 
 
 @overload
 def ungroup(  # type: ignore # noqa: F811
     obj: Union[DataFrameGroupBy, pd.DataFrame]  # noqa: F811
-) -> pd.DataFrame:
-    ...
+) -> pd.DataFrame: ...
 
 
 def ungroup(obj):  # noqa: F811
@@ -569,7 +563,7 @@ def mem_used(obj: Any) -> float:
 
 KB = 2**10
 MB = 2**20
-MEM_LIMIT = 1 * MB
+MEM_LIMIT = 100 * MB
 
 
 def mem_as_str(mem: float) -> str:

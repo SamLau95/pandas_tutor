@@ -2,9 +2,8 @@
   "code": "import pandas as pd\nimport numpy as np\n\n# this uses about 1.5 MB\nbig = pd.DataFrame({'numbers': np.arange(200_000)})\n\nbig.head()\n",
   "explanation": [
     {
-      "type": "RuntimeErrorInChain",
+      "type": "HeadCall",
       "code_step": "big.head()",
-      "message": "Your total data uses 1.53 MB of memory, which exceeds the maximum of 1.00 MB that this tool supports.",
       "fragment": {
         "start": {
           "line": 0,
@@ -13,6 +12,345 @@
         "end": {
           "line": 0,
           "ch": 10
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 0
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 0
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 1
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 1
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 2
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 3
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 3
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": 4
+          }
+        }
+      ],
+      "data": {
+        "lhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "numbers"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              199975,
+              199976,
+              199977,
+              199978,
+              199979,
+              199980,
+              199981,
+              199982,
+              199983,
+              199984,
+              199985,
+              199986,
+              199987,
+              199988,
+              199989,
+              199990,
+              199991,
+              199992,
+              199993,
+              199994,
+              199995,
+              199996,
+              199997,
+              199998,
+              199999
+            ]
+          },
+          "data": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ],
+            [
+              5
+            ],
+            [
+              6
+            ],
+            [
+              7
+            ],
+            [
+              8
+            ],
+            [
+              9
+            ],
+            [
+              10
+            ],
+            [
+              11
+            ],
+            [
+              12
+            ],
+            [
+              13
+            ],
+            [
+              14
+            ],
+            [
+              15
+            ],
+            [
+              16
+            ],
+            [
+              17
+            ],
+            [
+              18
+            ],
+            [
+              19
+            ],
+            [
+              20
+            ],
+            [
+              21
+            ],
+            [
+              22
+            ],
+            [
+              23
+            ],
+            [
+              24
+            ],
+            [
+              199975
+            ],
+            [
+              199976
+            ],
+            [
+              199977
+            ],
+            [
+              199978
+            ],
+            [
+              199979
+            ],
+            [
+              199980
+            ],
+            [
+              199981
+            ],
+            [
+              199982
+            ],
+            [
+              199983
+            ],
+            [
+              199984
+            ],
+            [
+              199985
+            ],
+            [
+              199986
+            ],
+            [
+              199987
+            ],
+            [
+              199988
+            ],
+            [
+              199989
+            ],
+            [
+              199990
+            ],
+            [
+              199991
+            ],
+            [
+              199992
+            ],
+            [
+              199993
+            ],
+            [
+              199994
+            ],
+            [
+              199995
+            ],
+            [
+              199996
+            ],
+            [
+              199997
+            ],
+            [
+              199998
+            ],
+            [
+              199999
+            ]
+          ]
+        },
+        "rhs": {
+          "type": "DataFrame",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "numbers"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "data": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ]
+          ]
         }
       }
     }

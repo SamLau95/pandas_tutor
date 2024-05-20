@@ -14,6 +14,12 @@ test: ## Runs tests
 sam: ## Runs what sam wants
 	@$(sam_cmd)
 
+guoxuan:
+	python -m pandas_tutor.guoxuans_scratchpad
+
+chris:
+	python -m pandas_tutor.chris_scratchpad
+
 sam_watch: ## Watches what sam wants
 	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) --one-per-batch |\
 		xargs -0 -n 1 -I {} $(MAKE) sam
