@@ -1,2 +1,9 @@
-# Use same packages as install_requires in setup.py
+# This project now uses uv for dependency management.
+# To set up the development environment, use:
+#   uv sync --extra dev
+#
+# Or run the setup script:
+#   ./setup_env.sh
+#
+# For backwards compatibility, you can still use:
 -e .
