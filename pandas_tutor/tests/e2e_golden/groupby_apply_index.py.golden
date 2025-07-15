@@ -339,13 +339,16 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "row",
-            "label": 0
+            "label": 1
           },
           "to": {
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": 0
+            "label": [
+              "large",
+              1
+            ]
           }
         },
         {
@@ -354,28 +357,16 @@
             "type": "axis",
             "anchor": "lhs",
             "select": "row",
-            "label": 1
+            "label": 0
           },
           "to": {
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": 1
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 2
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 2
+            "label": [
+              "medium",
+              0
+            ]
           }
         },
         {
@@ -390,22 +381,10 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": 3
-          }
-        },
-        {
-          "type": "map",
-          "from": {
-            "type": "axis",
-            "anchor": "lhs",
-            "select": "row",
-            "label": 4
-          },
-          "to": {
-            "type": "axis",
-            "anchor": "rhs",
-            "select": "row",
-            "label": 4
+            "label": [
+              "medium",
+              3
+            ]
           }
         },
         {
@@ -420,7 +399,10 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": 5
+            "label": [
+              "medium",
+              5
+            ]
           }
         },
         {
@@ -435,7 +417,10 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": 6
+            "label": [
+              "medium",
+              6
+            ]
           }
         },
         {
@@ -450,7 +435,46 @@
             "type": "axis",
             "anchor": "rhs",
             "select": "row",
-            "label": 7
+            "label": [
+              "medium",
+              7
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 2
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "small",
+              2
+            ]
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "row",
+            "label": 4
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "row",
+            "label": [
+              "small",
+              4
+            ]
           }
         }
       ],
@@ -460,28 +484,53 @@
           "type": "Series",
           "index": {
             "names": [
+              "size",
               null
             ],
             "labels": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7
+              [
+                "large",
+                1
+              ],
+              [
+                "medium",
+                0
+              ],
+              [
+                "medium",
+                3
+              ],
+              [
+                "medium",
+                5
+              ],
+              [
+                "medium",
+                6
+              ],
+              [
+                "medium",
+                7
+              ],
+              [
+                "small",
+                2
+              ],
+              [
+                "small",
+                4
+              ]
             ]
           },
           "data": [
-            13.04,
             10.73,
-            13.3,
             13.04,
-            13.6,
+            13.04,
             7.29,
             9.81,
-            12.95
+            12.95,
+            13.3,
+            13.6
           ]
         }
       }
