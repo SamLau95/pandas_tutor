@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --group ci
+          uv sync --extra ci
 
       - name: Run tests
         run: |
