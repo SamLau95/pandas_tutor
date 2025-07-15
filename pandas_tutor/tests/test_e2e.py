@@ -34,7 +34,7 @@ def make_test_case(test_name):
             # of warnings because of deprecated behavior (e.g. groupby + apply
             # without selecting columns before apply). We want to make sure the
             # warnings don't get reintroduced later as well.
-            warning_msgs = "\n".join([str(w.message) for w in w])
+            warning_msgs = "\n".join([str(w) for w in w])
             self.assertEqual(
                 len(w),
                 0,
