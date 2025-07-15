@@ -4,7 +4,7 @@
     {
       "type": "RuntimeErrorInChain",
       "code_step": "df.loc[\"2013-01-03\":\"2013-01-05\", [\"C\", \"B\"], \"foo\"]",
-      "message": "pandas.core.indexing.IndexingError: Too many indexers\n",
+      "message": "pandas.errors.IndexingError: Too many indexers\n",
       "fragment": {
         "start": {
           "line": 0,
