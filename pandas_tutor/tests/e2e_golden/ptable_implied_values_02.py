@@ -1,6 +1,7 @@
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = """
 A,B,C,D,E
@@ -17,5 +18,5 @@ bar,two,large,7,9
 
 df = pd.read_csv(io.StringIO(csv))
 
-# D and E aggregated; implied by groupby-agg with mean
-df.pivot_table(index="C")
+# implied by groupby-agg with mean
+df.pivot_table(index="C", values=['D', 'E'])

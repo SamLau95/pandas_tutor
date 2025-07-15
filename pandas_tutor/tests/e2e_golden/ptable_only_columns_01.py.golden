@@ -1,9 +1,9 @@
 {
-  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nA,B,C,D,E\nfoo,one,small,1,2\nfoo,one,large,2,4\nfoo,one,large,2,5\nfoo,two,small,3,5\nfoo,two,small,3,6\nbar,one,large,4,6\nbar,one,small,5,8\nbar,two,small,6,9\nbar,two,large,7,9\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# when only columns are passed, D and E get aggregated and transposed into rows\ndf.pivot_table(columns=\"C\")\n",
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport io\n\nimport pandas as pd\n\ncsv = \"\"\"\nA,B,C,D,E\nfoo,one,small,1,2\nfoo,one,large,2,4\nfoo,one,large,2,5\nfoo,two,small,3,5\nfoo,two,small,3,6\nbar,one,large,4,6\nbar,one,small,5,8\nbar,two,small,6,9\nbar,two,large,7,9\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# when only columns are passed, D and E get aggregated and transposed into rows\ndf.pivot_table(columns=\"C\", values=['D', 'E'])\n",
   "explanation": [
     {
       "type": "PivotTableCall",
-      "code_step": "df.pivot_table(columns=\"C\")",
+      "code_step": "df.pivot_table(columns=\"C\", values=['D', 'E'])",
       "fragment": {
         "start": {
           "line": 0,
@@ -11,7 +11,7 @@
         },
         "end": {
           "line": 0,
-          "ch": 27
+          "ch": 46
         }
       },
       "marks": [
