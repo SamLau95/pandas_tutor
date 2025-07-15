@@ -11,6 +11,9 @@ help:
 test: ## Runs tests
 	python -m unittest
 
+lab: ## starts jupyterlab
+	uv run --extra dev --extra sam jupyter lab
+
 sam: ## Runs what sam wants
 	@$(sam_cmd)
 

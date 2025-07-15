@@ -68,6 +68,7 @@ dev = [
     "build",
     "ruff",
     "twine",
+    "jupyterlab",
 ]
 ci = [
     "numpy~=2.0",
@@ -82,6 +83,9 @@ ci = [
     "pytest",
     "wheel",
     "build",
+]
+sam = [
+    "jupyterlab-vim",
 ]
 
 [tool.pyright]
