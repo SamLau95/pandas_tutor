@@ -1,5 +1,6 @@
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = '''
 breed,group,price,longevity,size
@@ -49,5 +50,7 @@ dogs = pd.read_csv(io.StringIO(csv))
 
 (dogs[dogs['size'] == 'small']
  .sort_values('group')
- .groupby('group').median()
+ .groupby('group')
+ [['price', 'longevity']]
+ .median()
 )

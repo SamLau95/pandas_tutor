@@ -1,7 +1,7 @@
-from pathlib import Path
-import unittest
 import json
+import unittest
 from dataclasses import asdict
+from pathlib import Path
 
 from pandas_tutor.parse import parse
 

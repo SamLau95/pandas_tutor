@@ -1,5 +1,6 @@
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = '''
 date,id,pm25aqs,pm25pa
@@ -17,4 +18,4 @@ pm = pd.read_csv(io.StringIO(csv))
 
 months = pm['date'].str[5:7]
 
-pm.groupby(months).mean()
+pm.groupby(months)[['pm25aqs', 'pm25pa']].mean()

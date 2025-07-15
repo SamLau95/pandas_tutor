@@ -136,7 +136,7 @@
                 "type": "axis",
                 "anchor": "lhs2",
                 "select": "row",
-                "label": 0
+                "label": 2
               },
               "to": {
                 "type": "axis",
@@ -151,43 +151,13 @@
                 "type": "axis",
                 "anchor": "lhs",
                 "select": "row",
-                "label": 2
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 2
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs2",
-                "select": "row",
-                "label": 2
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 2
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
                 "label": 3
               },
               "to": {
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 3
+                "label": 2
               }
             },
             {
@@ -202,7 +172,7 @@
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 3
+                "label": 2
               }
             },
             {
@@ -217,7 +187,7 @@
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
-                "label": 4
+                "label": 3
               }
             },
             {
@@ -227,6 +197,36 @@
                 "anchor": "lhs2",
                 "select": "row",
                 "label": 2
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 2
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 4
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 0
               },
               "to": {
                 "type": "axis",
@@ -360,22 +360,22 @@
             ],
             [
               "Karen",
+              "F",
+              325,
+              2020,
+              "Karen"
+            ],
+            [
+              "Karen",
+              "F",
+              325,
+              2020,
+              "Karen"
+            ],
+            [
+              "Karen",
               "M",
               6,
-              2020,
-              "Karen"
-            ],
-            [
-              "Karen",
-              "F",
-              325,
-              2020,
-              "Karen"
-            ],
-            [
-              "Karen",
-              "F",
-              325,
               2020,
               "Karen"
             ]

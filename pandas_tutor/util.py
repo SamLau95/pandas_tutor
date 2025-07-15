@@ -31,10 +31,10 @@ from pandas.core.groupby.generic import DataFrameGroupBy, SeriesGroupBy
 from pandas.core.groupby.groupby import GroupBy
 from pandas.core.reshape.merge import _MergeOperation
 
-from pandas_tutor.__version__ import __version__
-
 # Literal only added in Python 3.8
 from typing_extensions import Literal, TypeGuard
+
+from pandas_tutor.__version__ import __version__
 
 if TYPE_CHECKING:
     from pandas_tutor.diagram import MapSet  # noqa: F401
@@ -415,7 +415,7 @@ def ungroup(obj: Union[SeriesGroupBy, pd.Series]) -> pd.Series: ...
 
 @overload
 def ungroup(  # type: ignore # noqa: F811
-    obj: Union[DataFrameGroupBy, pd.DataFrame]  # noqa: F811
+    obj: Union[DataFrameGroupBy, pd.DataFrame],  # noqa: F811
 ) -> pd.DataFrame: ...
 
 
@@ -437,7 +437,7 @@ def grouping_labels(groupby: GroupBy) -> List[Label]:
     # NOTE: when grouping by unnamed sequences, names will contain None
     # >>> full.groupby([test, test2]).grouper.names
     # [None, None]
-    return groupby.grouper.names
+    return groupby._grouper.names
 
 
 def get_groups(groupby: Union[SeriesGroupBy, DataFrameGroupBy]) -> Groups:

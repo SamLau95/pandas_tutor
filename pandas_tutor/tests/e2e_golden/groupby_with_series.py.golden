@@ -1,9 +1,9 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = '''\ndate,id,pm25aqs,pm25pa\n2018-11-01,CA1,9.4,9.46\n2018-11-04,CA1,11.4,17.24\n2018-11-03,CA2,5.67,7.43\n2018-11-04,CA2,3.46,5.36\n2018-12-01,CA1,6.4,9.28\n2018-12-01,CA2,4.12,8.02\n2018-12-02,CA2,2.38,4.03\n2018-12-03,CA2,6.79,11.96\n'''\n\npm = pd.read_csv(io.StringIO(csv))\n\nmonths = pm['date'].str[5:7]\n\npm.groupby(months).mean()",
+  "code": "import io\n\nimport pandas as pd\n\ncsv = '''\ndate,id,pm25aqs,pm25pa\n2018-11-01,CA1,9.4,9.46\n2018-11-04,CA1,11.4,17.24\n2018-11-03,CA2,5.67,7.43\n2018-11-04,CA2,3.46,5.36\n2018-12-01,CA1,6.4,9.28\n2018-12-01,CA2,4.12,8.02\n2018-12-02,CA2,2.38,4.03\n2018-12-03,CA2,6.79,11.96\n'''\n\npm = pd.read_csv(io.StringIO(csv))\n\nmonths = pm['date'].str[5:7]\n\npm.groupby(months)[['pm25aqs', 'pm25pa']].mean()\n",
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "pm.groupby(months).mean()",
+      "code_step": "pm.groupby(months)[['pm25aqs', 'pm25pa']].mean()",
       "fragment": {
         "start": {
           "line": 0,
@@ -216,8 +216,8 @@
       }
     },
     {
-      "type": "GroupByAggCall",
-      "code_step": "pm.groupby(months).mean()",
+      "type": "Subscript",
+      "code_step": "pm.groupby(months)[['pm25aqs', 'pm25pa']].mean()",
       "fragment": {
         "start": {
           "line": 0,
@@ -225,7 +225,146 @@
         },
         "end": {
           "line": 0,
-          "ch": 25
+          "ch": 41
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "pm25aqs"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "pm25aqs"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "pm25pa"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "pm25pa"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "pm25aqs",
+              "pm25pa"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              9.4,
+              9.46
+            ],
+            [
+              11.4,
+              17.24
+            ],
+            [
+              5.67,
+              7.43
+            ],
+            [
+              3.46,
+              5.36
+            ],
+            [
+              6.4,
+              9.28
+            ],
+            [
+              4.12,
+              8.02
+            ],
+            [
+              2.38,
+              4.03
+            ],
+            [
+              6.79,
+              11.96
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "date"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "11"
+                ],
+                "labels": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "name": [
+                  "12"
+                ],
+                "labels": [
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByAggCall",
+      "code_step": "pm.groupby(months)[['pm25aqs', 'pm25pa']].mean()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 41
+        },
+        "end": {
+          "line": 0,
+          "ch": 48
         }
       },
       "marks": [

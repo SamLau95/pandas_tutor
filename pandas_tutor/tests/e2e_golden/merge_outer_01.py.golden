@@ -66,142 +66,142 @@
                 "type": "axis",
                 "anchor": "rhs",
                 "select": "row",
+                "label": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 1
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 1
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 1
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 2
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 2
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 2
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 3
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs2",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "map_set",
+          "maps": [
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 0
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
+                "label": 4
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "axis",
+                "anchor": "lhs",
+                "select": "row",
+                "label": 4
+              },
+              "to": {
+                "type": "axis",
+                "anchor": "rhs",
+                "select": "row",
                 "label": 5
-              }
-            }
-          ]
-        },
-        {
-          "type": "map_set",
-          "maps": [
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
-                "label": 1
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 2
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs2",
-                "select": "row",
-                "label": 1
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 2
-              }
-            }
-          ]
-        },
-        {
-          "type": "map_set",
-          "maps": [
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
-                "label": 2
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 3
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs2",
-                "select": "row",
-                "label": 0
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 3
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
-                "label": 3
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 4
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs2",
-                "select": "row",
-                "label": 0
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 4
-              }
-            }
-          ]
-        },
-        {
-          "type": "map_set",
-          "maps": [
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
-                "label": 0
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 0
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "axis",
-                "anchor": "lhs",
-                "select": "row",
-                "label": 4
-              },
-              "to": {
-                "type": "axis",
-                "anchor": "rhs",
-                "select": "row",
-                "label": 1
               }
             }
           ]
@@ -332,20 +332,12 @@
           },
           "data": [
             [
-              "Noah",
-              "M",
-              18252.0,
-              2020.0,
               null,
-              null
-            ],
-            [
-              "Noah",
-              "F",
-              305.0,
-              2020.0,
               null,
-              null
+              null,
+              null,
+              "Freya",
+              "mythology"
             ],
             [
               "Julius",
@@ -372,12 +364,20 @@
               "boomer"
             ],
             [
+              "Noah",
+              "M",
+              18252.0,
+              2020.0,
               null,
+              null
+            ],
+            [
+              "Noah",
+              "F",
+              305.0,
+              2020.0,
               null,
-              null,
-              null,
-              "Freya",
-              "mythology"
+              null
             ]
           ]
         }

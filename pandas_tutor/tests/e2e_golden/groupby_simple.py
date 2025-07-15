@@ -1,5 +1,6 @@
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = '''
 breed,grooming,food_cost,kids,size
@@ -16,5 +17,6 @@ dogs = pd.read_csv(io.StringIO(csv))
 
 (dogs
  .groupby('grooming')
+ [['food_cost']]
  .agg('mean')
 )

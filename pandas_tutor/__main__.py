@@ -12,9 +12,8 @@ Options:
     -c --code        # Code as a string (instead of a file)
 """
 
+import argparse
 from pathlib import Path
-
-from docopt import docopt
 
 from .diagram import OutputSpec
 from .parse import parse, parse_as_json, test_logger
@@ -62,24 +61,79 @@ def write_spec_to_file(spec: str, out: Path) -> None:
         f.write(spec)
 
 
-if __name__ == "__main__":
-    doc = __doc__ or ""
-    args = docopt(doc, version="1.0")
+def create_parser():
+    """Create argument parser"""
+    parser = argparse.ArgumentParser(
+        description="runs pandas_tutor backend",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    # Add positional arguments for files
+    parser.add_argument(
+        "files", nargs="*", metavar="FILE", help="Input files to process"
+    )
+
+    # Add optional arguments
+    parser.add_argument(
+        "-c",
+        "--code",
+        metavar="CODE",
+        help="Code as a string (instead of a file)",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        action="store_true",
+        help="Outputs specs to files named {input_file}.golden",
+    )
+    parser.add_argument(
+        "-p",
+        "--parse_only",
+        action="store_true",
+        help="Outputs parsed code rather than full spec",
+    )
+    parser.add_argument(
+        "-l",
+        "--parse_log",
+        action="store_true",
+        help="Outputs parse debug output",
+    )
+
+    parser.add_argument("--version", action="version", version="1.0")
+
+    return parser
+
+
+def main():
+    """Main entry point for the pandas_tutor command"""
+    parser = create_parser()
+    args = parser.parse_args()
+
+    # Validate that either files or code is provided
+    if not args.code and not args.files:
+        parser.error("Must provide either files or --code argument")
 
     spec_fn = (
         test_logger
-        if args["--parse_log"]
-        else parse_as_json if args["--parse_only"] else make_tutor_spec
+        if args.parse_log
+        else parse_as_json
+        if args.parse_only
+        else make_tutor_spec
     )
 
-    if args["--code"]:
-        code = args["CODE"]
-        print(spec_fn(code))
-    if not args["--output"]:
-        for filename in args["FILE"]:
-            print(spec_from_file(filename, spec_fn))  # type: ignore
-    else:
-        for filename in args["FILE"]:
-            spec = spec_from_file(filename, spec_fn)  # type: ignore
-            out_filename = Path(filename + ".golden")
-            write_spec_to_file(spec, out_filename)
+    if args.code:
+        print(spec_fn(args.code))
+
+    if args.files:
+        if not args.output:
+            for filename in args.files:
+                print(spec_from_file(filename, spec_fn))  # type: ignore
+        else:
+            for filename in args.files:
+                spec = spec_from_file(filename, spec_fn)  # type: ignore
+                out_filename = Path(filename + ".golden")
+                write_spec_to_file(spec, out_filename)
+
+
+if __name__ == "__main__":
+    main()

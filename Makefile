@@ -11,14 +11,11 @@ help:
 test: ## Runs tests
 	python -m unittest
 
+lab: ## starts jupyterlab
+	uv run --extra dev --extra sam jupyter lab
+
 sam: ## Runs what sam wants
 	@$(sam_cmd)
-
-guoxuan:
-	python -m pandas_tutor.guoxuans_scratchpad
-
-chris:
-	python -m pandas_tutor.chris_scratchpad
 
 sam_watch: ## Watches what sam wants
 	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) --one-per-batch |\
@@ -41,7 +38,6 @@ clean: ## removes pypi built files
 # pip install --index-url https://test.pypi.org/simple/ --no-deps pandas_tutor
 test_publish: clean build ## uploads wheel to test pypi
 	python -m twine upload --repository testpypi dist/*
-
 
 publish: clean build ## uploads wheel to REAL pypi
 	python -m twine upload dist/*

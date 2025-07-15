@@ -1,6 +1,7 @@
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = """
 A,B,C,D,E
@@ -18,4 +19,4 @@ bar,two,large,7,9
 df = pd.read_csv(io.StringIO(csv))
 
 # D and E kept in columns, and C values become second column level
-df.pivot_table(index="A", columns="C")
+df.pivot_table(index="A", columns="C", values=['D', 'E'])

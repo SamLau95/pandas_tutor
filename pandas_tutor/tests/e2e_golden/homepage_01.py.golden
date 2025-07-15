@@ -1,9 +1,9 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,group,price,longevity,size\nLabrador Retriever,sporting,810.0,12.04,medium\nGerman Shepherd,herding,820.0,9.73,large\nBeagle,hound,288.0,12.3,small\nGolden Retriever,sporting,958.0,12.04,medium\nYorkshire Terrier,toy,1057.0,12.6,small\nBulldog,non-sporting,2680.0,6.29,medium\nBoxer,working,700.0,8.81,medium\nPoodle,non-sporting,900.0,11.95,medium\nDachshund,hound,423.0,12.63,small\nRottweiler,working,1118.0,9.11,large\nShih Tzu,toy,583.0,13.2,small\nMiniature Schnauzer,terrier,715.0,11.81,small\nDoberman Pinscher,working,790.0,10.33,large\nChihuahua,toy,588.0,16.5,small\nGerman Shorthaired Pointer,sporting,545.0,11.46,large\nSiberian Husky,working,650.0,12.58,medium\nPomeranian,toy,670.0,9.67,small\nFrench Bulldog,non-sporting,1900.0,9.0,medium\nGreat Dane,working,1040.0,6.96,large\nShetland Sheepdog,herding,465.0,12.53,small\nCavalier King Charles Spaniel,toy,1017.0,11.29,small\nBoston Terrier,non-sporting,690.0,10.92,medium\nMaltese,toy,650.0,12.25,small\nAustralian Shepherd,herding,565.0,12.28,medium\nPembroke Welsh Corgi,herding,587.0,12.25,small\nPug,toy,469.0,11.0,medium\nCocker Spaniel,sporting,465.0,12.5,small\nMastiff,working,900.0,6.5,large\nEnglish Springer Spaniel,sporting,615.0,12.54,medium\nBrittany,sporting,618.0,12.92,medium\nBernese Mountain Dog,working,1320.0,7.56,large\nWest Highland White Terrier,terrier,538.0,12.8,small\nPapillon,toy,740.0,13.0,small\nBichon Frise,non-sporting,693.0,12.21,small\nBullmastiff,working,980.0,7.57,large\nBasset Hound,hound,490.0,11.43,small\nNewfoundland,working,1178.0,9.32,large\nRhodesian Ridgeback,hound,995.0,9.1,large\nBorder Collie,herding,623.0,12.52,medium\nChesapeake Bay Retriever,sporting,522.0,9.48,large\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group').median()\n)",
+  "code": "import io\n\nimport pandas as pd\n\ncsv = '''\nbreed,group,price,longevity,size\nLabrador Retriever,sporting,810.0,12.04,medium\nGerman Shepherd,herding,820.0,9.73,large\nBeagle,hound,288.0,12.3,small\nGolden Retriever,sporting,958.0,12.04,medium\nYorkshire Terrier,toy,1057.0,12.6,small\nBulldog,non-sporting,2680.0,6.29,medium\nBoxer,working,700.0,8.81,medium\nPoodle,non-sporting,900.0,11.95,medium\nDachshund,hound,423.0,12.63,small\nRottweiler,working,1118.0,9.11,large\nShih Tzu,toy,583.0,13.2,small\nMiniature Schnauzer,terrier,715.0,11.81,small\nDoberman Pinscher,working,790.0,10.33,large\nChihuahua,toy,588.0,16.5,small\nGerman Shorthaired Pointer,sporting,545.0,11.46,large\nSiberian Husky,working,650.0,12.58,medium\nPomeranian,toy,670.0,9.67,small\nFrench Bulldog,non-sporting,1900.0,9.0,medium\nGreat Dane,working,1040.0,6.96,large\nShetland Sheepdog,herding,465.0,12.53,small\nCavalier King Charles Spaniel,toy,1017.0,11.29,small\nBoston Terrier,non-sporting,690.0,10.92,medium\nMaltese,toy,650.0,12.25,small\nAustralian Shepherd,herding,565.0,12.28,medium\nPembroke Welsh Corgi,herding,587.0,12.25,small\nPug,toy,469.0,11.0,medium\nCocker Spaniel,sporting,465.0,12.5,small\nMastiff,working,900.0,6.5,large\nEnglish Springer Spaniel,sporting,615.0,12.54,medium\nBrittany,sporting,618.0,12.92,medium\nBernese Mountain Dog,working,1320.0,7.56,large\nWest Highland White Terrier,terrier,538.0,12.8,small\nPapillon,toy,740.0,13.0,small\nBichon Frise,non-sporting,693.0,12.21,small\nBullmastiff,working,980.0,7.57,large\nBasset Hound,hound,490.0,11.43,small\nNewfoundland,working,1178.0,9.32,large\nRhodesian Ridgeback,hound,995.0,9.1,large\nBorder Collie,herding,623.0,12.52,medium\nChesapeake Bay Retriever,sporting,522.0,9.48,large\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group')\n [['price', 'longevity']]\n .median()\n)\n",
   "explanation": [
     {
       "type": "Subscript",
-      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group').median()\n)",
+      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group')\n [['price', 'longevity']]\n .median()\n)",
       "fragment": {
         "start": {
           "line": 0,
@@ -766,7 +766,7 @@
     },
     {
       "type": "SortValuesCall",
-      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group').median()\n)",
+      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group')\n [['price', 'longevity']]\n .median()\n)",
       "fragment": {
         "start": {
           "line": 1,
@@ -1186,7 +1186,7 @@
     },
     {
       "type": "GroupByCall",
-      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group').median()\n)",
+      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group')\n [['price', 'longevity']]\n .median()\n)",
       "fragment": {
         "start": {
           "line": 2,
@@ -1430,16 +1430,231 @@
       }
     },
     {
-      "type": "GroupByAggCall",
-      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group').median()\n)",
+      "type": "Subscript",
+      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group')\n [['price', 'longevity']]\n .median()\n)",
       "fragment": {
         "start": {
-          "line": 2,
-          "ch": 18
+          "line": 3,
+          "ch": 1
         },
         "end": {
-          "line": 2,
-          "ch": 27
+          "line": 3,
+          "ch": 25
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "price"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "price"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "longevity"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "price",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              19,
+              24,
+              2,
+              8,
+              35,
+              33,
+              26,
+              11,
+              31,
+              4,
+              10,
+              13,
+              16,
+              20,
+              22,
+              32
+            ]
+          },
+          "data": [
+            [
+              465.0,
+              12.53
+            ],
+            [
+              587.0,
+              12.25
+            ],
+            [
+              288.0,
+              12.3
+            ],
+            [
+              423.0,
+              12.63
+            ],
+            [
+              490.0,
+              11.43
+            ],
+            [
+              693.0,
+              12.21
+            ],
+            [
+              465.0,
+              12.5
+            ],
+            [
+              715.0,
+              11.81
+            ],
+            [
+              538.0,
+              12.8
+            ],
+            [
+              1057.0,
+              12.6
+            ],
+            [
+              583.0,
+              13.2
+            ],
+            [
+              588.0,
+              16.5
+            ],
+            [
+              670.0,
+              9.67
+            ],
+            [
+              1017.0,
+              11.29
+            ],
+            [
+              650.0,
+              12.25
+            ],
+            [
+              740.0,
+              13.0
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "group"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "herding"
+                ],
+                "labels": [
+                  19,
+                  24
+                ]
+              },
+              {
+                "name": [
+                  "hound"
+                ],
+                "labels": [
+                  2,
+                  8,
+                  35
+                ]
+              },
+              {
+                "name": [
+                  "non-sporting"
+                ],
+                "labels": [
+                  33
+                ]
+              },
+              {
+                "name": [
+                  "sporting"
+                ],
+                "labels": [
+                  26
+                ]
+              },
+              {
+                "name": [
+                  "terrier"
+                ],
+                "labels": [
+                  11,
+                  31
+                ]
+              },
+              {
+                "name": [
+                  "toy"
+                ],
+                "labels": [
+                  4,
+                  10,
+                  13,
+                  16,
+                  20,
+                  22,
+                  32
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByAggCall",
+      "code_step": "(dogs[dogs['size'] == 'small']\n .sort_values('group')\n .groupby('group')\n [['price', 'longevity']]\n .median()\n)",
+      "fragment": {
+        "start": {
+          "line": 4,
+          "ch": 1
+        },
+        "end": {
+          "line": 4,
+          "ch": 10
         }
       },
       "marks": [

@@ -1,5 +1,6 @@
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = '''
 breed,group,price,longevity,size
@@ -11,4 +12,4 @@ Beagle,hound,288.0,12.3,small
 dogs = pd.read_csv(io.StringIO(csv))
 
 # tests for manually input groups
-dogs.groupby(['sam', 'sam', 'pg']).mean()
+dogs.groupby(['sam', 'sam', 'pg'])[['price', 'longevity']].mean()

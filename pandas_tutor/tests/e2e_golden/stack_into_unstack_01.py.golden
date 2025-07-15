@@ -1,17 +1,17 @@
 {
-  "code": "# https://github.com/SamLau95/pandas_tutor/issues/86\n# adapted from Thinking in Pandas\nimport pandas as pd\n\nrestaurants = pd.MultiIndex.from_tuples(\n    ((\"Diner\", (4, 2)), (\"Pandas\", (5, 4))),\n    names=[\"restaurant\", \"location\"],\n)\ninspections = pd.MultiIndex.from_tuples(\n    ((0, \"score\"), (0, \"date\"), (1, \"score\"), (1, \"date\")),\n    names=[\"inspection\", None],\n)\n\nrestaurant_inspections = pd.DataFrame(\n    [[90, \"02/18\", 100, \"05/18\"], [55, \"04/18\", 76, \"01/18\"]],\n    index=restaurants,\n    columns=inspections,\n)\n\nrestaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()\n",
+  "code": "# https://github.com/SamLau95/pandas_tutor/issues/86\n# adapted from Thinking in Pandas\nimport pandas as pd\n\nrestaurants = pd.MultiIndex.from_tuples(\n    ((\"Diner\", (4, 2)), (\"Pandas\", (5, 4))),\n    names=[\"restaurant\", \"location\"],\n)\ninspections = pd.MultiIndex.from_tuples(\n    ((0, \"score\"), (0, \"date\"), (1, \"score\"), (1, \"date\")),\n    names=[\"inspection\", None],\n)\n\nrestaurant_inspections = pd.DataFrame(\n    [[90, \"02/18\", 100, \"05/18\"], [55, \"04/18\", 76, \"01/18\"]],\n    index=restaurants,\n    columns=inspections,\n)\n\n(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)\n",
   "explanation": [
     {
       "type": "StackCall",
-      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "code_step": "(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 22
+          "line": 1,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 30
+          "line": 1,
+          "ch": 26
         }
       },
       "marks": [
@@ -395,7 +395,7 @@
                   4,
                   2
                 ],
-                "date"
+                "score"
               ],
               [
                 "Diner",
@@ -403,14 +403,6 @@
                   4,
                   2
                 ],
-                "score"
-              ],
-              [
-                "Pandas",
-                [
-                  5,
-                  4
-                ],
                 "date"
               ],
               [
@@ -420,25 +412,33 @@
                   4
                 ],
                 "score"
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date"
               ]
             ]
           },
           "data": [
             [
-              "02/18",
-              "05/18"
-            ],
-            [
               90,
               100
             ],
             [
-              "04/18",
-              "01/18"
+              "02/18",
+              "05/18"
             ],
             [
               55,
               76
+            ],
+            [
+              "04/18",
+              "01/18"
             ]
           ]
         }
@@ -446,15 +446,15 @@
     },
     {
       "type": "StackCall",
-      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "code_step": "(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 30
+          "line": 2,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 38
+          "line": 2,
+          "ch": 26
         }
       },
       "marks": [
@@ -770,24 +770,6 @@
                   4,
                   2
                 ],
-                "date",
-                0
-              ],
-              [
-                "Diner",
-                [
-                  4,
-                  2
-                ],
-                "date",
-                1
-              ],
-              [
-                "Diner",
-                [
-                  4,
-                  2
-                ],
                 "score",
                 0
               ],
@@ -801,19 +783,19 @@
                 1
               ],
               [
-                "Pandas",
+                "Diner",
                 [
-                  5,
-                  4
+                  4,
+                  2
                 ],
                 "date",
                 0
               ],
               [
-                "Pandas",
+                "Diner",
                 [
-                  5,
-                  4
+                  4,
+                  2
                 ],
                 "date",
                 1
@@ -834,34 +816,52 @@
                   4
                 ],
                 "score",
+                1
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date",
+                0
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date",
                 1
               ]
             ]
           },
           "data": [
-            "02/18",
-            "05/18",
             90,
             100,
-            "04/18",
-            "01/18",
+            "02/18",
+            "05/18",
             55,
-            76
+            76,
+            "04/18",
+            "01/18"
           ]
         }
       }
     },
     {
       "type": "UnstackCall",
-      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "code_step": "(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 38
+          "line": 3,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 48
+          "line": 3,
+          "ch": 11
         }
       },
       "marks": [
@@ -912,66 +912,6 @@
                     4,
                     2
                   ],
-                  "date",
-                  0
-                ],
-                "column": "pandas.Series"
-              },
-              "to": {
-                "type": "cell",
-                "anchor": "rhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ],
-                  "date"
-                ],
-                "column": 0
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "cell",
-                "anchor": "lhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ],
-                  "date",
-                  1
-                ],
-                "column": "pandas.Series"
-              },
-              "to": {
-                "type": "cell",
-                "anchor": "rhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ],
-                  "date"
-                ],
-                "column": 1
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "cell",
-                "anchor": "lhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ],
                   "score",
                   0
                 ],
@@ -1027,10 +967,10 @@
                 "type": "cell",
                 "anchor": "lhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ],
                   "date",
                   0
@@ -1041,10 +981,10 @@
                 "type": "cell",
                 "anchor": "rhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ],
                   "date"
                 ],
@@ -1057,10 +997,10 @@
                 "type": "cell",
                 "anchor": "lhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ],
                   "date",
                   1
@@ -1071,10 +1011,10 @@
                 "type": "cell",
                 "anchor": "rhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ],
                   "date"
                 ],
@@ -1137,6 +1077,66 @@
                     4
                   ],
                   "score"
+                ],
+                "column": 1
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ],
+                  "date",
+                  0
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ],
+                  "date"
+                ],
+                "column": 0
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ],
+                  "date",
+                  1
+                ],
+                "column": "pandas.Series"
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ],
+                  "date"
                 ],
                 "column": 1
               }
@@ -1170,7 +1170,7 @@
                   4,
                   2
                 ],
-                "date"
+                "score"
               ],
               [
                 "Diner",
@@ -1178,14 +1178,6 @@
                   4,
                   2
                 ],
-                "score"
-              ],
-              [
-                "Pandas",
-                [
-                  5,
-                  4
-                ],
                 "date"
               ],
               [
@@ -1195,25 +1187,33 @@
                   4
                 ],
                 "score"
+              ],
+              [
+                "Pandas",
+                [
+                  5,
+                  4
+                ],
+                "date"
               ]
             ]
           },
           "data": [
             [
-              "02/18",
-              "05/18"
-            ],
-            [
               90,
               100
             ],
             [
-              "04/18",
-              "01/18"
+              "02/18",
+              "05/18"
             ],
             [
               55,
               76
+            ],
+            [
+              "04/18",
+              "01/18"
             ]
           ]
         }
@@ -1221,15 +1221,15 @@
     },
     {
       "type": "UnstackCall",
-      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "code_step": "(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 48
+          "line": 4,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 58
+          "line": 4,
+          "ch": 11
         }
       },
       "marks": [
@@ -1280,37 +1280,6 @@
                     4,
                     2
                   ],
-                  "date"
-                ],
-                "column": 0
-              },
-              "to": {
-                "type": "cell",
-                "anchor": "rhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ]
-                ],
-                "column": [
-                  0,
-                  "date"
-                ]
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "cell",
-                "anchor": "lhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ],
                   "score"
                 ],
                 "column": 0
@@ -1337,10 +1306,10 @@
                 "type": "cell",
                 "anchor": "lhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ],
                   "date"
                 ],
@@ -1350,10 +1319,10 @@
                 "type": "cell",
                 "anchor": "rhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ]
                 ],
                 "column": [
@@ -1390,6 +1359,37 @@
                 "column": [
                   0,
                   "score"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ],
+                  "date"
+                ],
+                "column": 0
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ]
+                ],
+                "column": [
+                  0,
+                  "date"
                 ]
               }
             }
@@ -1409,37 +1409,6 @@
                     4,
                     2
                   ],
-                  "date"
-                ],
-                "column": 1
-              },
-              "to": {
-                "type": "cell",
-                "anchor": "rhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ]
-                ],
-                "column": [
-                  1,
-                  "date"
-                ]
-              }
-            },
-            {
-              "type": "map",
-              "from": {
-                "type": "cell",
-                "anchor": "lhs",
-                "row": [
-                  "Diner",
-                  [
-                    4,
-                    2
-                  ],
                   "score"
                 ],
                 "column": 1
@@ -1466,10 +1435,10 @@
                 "type": "cell",
                 "anchor": "lhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ],
                   "date"
                 ],
@@ -1479,10 +1448,10 @@
                 "type": "cell",
                 "anchor": "rhs",
                 "row": [
-                  "Pandas",
+                  "Diner",
                   [
-                    5,
-                    4
+                    4,
+                    2
                   ]
                 ],
                 "column": [
@@ -1519,6 +1488,37 @@
                 "column": [
                   1,
                   "score"
+                ]
+              }
+            },
+            {
+              "type": "map",
+              "from": {
+                "type": "cell",
+                "anchor": "lhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ],
+                  "date"
+                ],
+                "column": 1
+              },
+              "to": {
+                "type": "cell",
+                "anchor": "rhs",
+                "row": [
+                  "Pandas",
+                  [
+                    5,
+                    4
+                  ]
+                ],
+                "column": [
+                  1,
+                  "date"
                 ]
               }
             }
@@ -1537,19 +1537,19 @@
             "labels": [
               [
                 0,
-                "date"
+                "score"
               ],
               [
                 0,
-                "score"
-              ],
-              [
-                1,
                 "date"
               ],
               [
                 1,
                 "score"
+              ],
+              [
+                1,
+                "date"
               ]
             ]
           },
@@ -1577,16 +1577,16 @@
           },
           "data": [
             [
-              "02/18",
               90,
-              "05/18",
-              100
+              "02/18",
+              100,
+              "05/18"
             ],
             [
-              "04/18",
               55,
-              "01/18",
-              76
+              "04/18",
+              76,
+              "01/18"
             ]
           ]
         }
@@ -1594,15 +1594,15 @@
     },
     {
       "type": "UnstackCall",
-      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "code_step": "(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 58
+          "line": 5,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 68
+          "line": 5,
+          "ch": 11
         }
       },
       "marks": [
@@ -1921,22 +1921,6 @@
             "labels": [
               [
                 0,
-                "date",
-                [
-                  4,
-                  2
-                ]
-              ],
-              [
-                0,
-                "date",
-                [
-                  5,
-                  4
-                ]
-              ],
-              [
-                0,
                 "score",
                 [
                   4,
@@ -1952,7 +1936,7 @@
                 ]
               ],
               [
-                1,
+                0,
                 "date",
                 [
                   4,
@@ -1960,7 +1944,7 @@
                 ]
               ],
               [
-                1,
+                0,
                 "date",
                 [
                   5,
@@ -1978,6 +1962,22 @@
               [
                 1,
                 "score",
+                [
+                  5,
+                  4
+                ]
+              ],
+              [
+                1,
+                "date",
+                [
+                  4,
+                  2
+                ]
+              ],
+              [
+                1,
+                "date",
                 [
                   5,
                   4
@@ -1996,24 +1996,24 @@
           },
           "data": [
             [
-              "02/18",
-              null,
               90,
               null,
-              "05/18",
+              "02/18",
               null,
               100,
+              null,
+              "05/18",
               null
             ],
             [
               null,
-              "04/18",
-              null,
               55,
               null,
-              "01/18",
+              "04/18",
               null,
-              76
+              76,
+              null,
+              "01/18"
             ]
           ]
         }
@@ -2021,15 +2021,15 @@
     },
     {
       "type": "UnstackCall",
-      "code_step": "restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()",
+      "code_step": "(restaurant_inspections\n .stack(future_stack=True)\n .stack(future_stack=True)\n .unstack()\n .unstack()\n .unstack()\n .unstack()\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 68
+          "line": 6,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 78
+          "line": 6,
+          "ch": 11
         }
       },
       "marks": [],
@@ -2047,42 +2047,6 @@
             "labels": [
               [
                 0,
-                "date",
-                [
-                  4,
-                  2
-                ],
-                "Diner"
-              ],
-              [
-                0,
-                "date",
-                [
-                  4,
-                  2
-                ],
-                "Pandas"
-              ],
-              [
-                0,
-                "date",
-                [
-                  5,
-                  4
-                ],
-                "Diner"
-              ],
-              [
-                0,
-                "date",
-                [
-                  5,
-                  4
-                ],
-                "Pandas"
-              ],
-              [
-                0,
                 "score",
                 [
                   4,
@@ -2118,7 +2082,7 @@
                 "Pandas"
               ],
               [
-                1,
+                0,
                 "date",
                 [
                   4,
@@ -2127,7 +2091,7 @@
                 "Diner"
               ],
               [
-                1,
+                0,
                 "date",
                 [
                   4,
@@ -2136,7 +2100,7 @@
                 "Pandas"
               ],
               [
-                1,
+                0,
                 "date",
                 [
                   5,
@@ -2145,7 +2109,7 @@
                 "Diner"
               ],
               [
-                1,
+                0,
                 "date",
                 [
                   5,
@@ -2183,6 +2147,42 @@
               [
                 1,
                 "score",
+                [
+                  5,
+                  4
+                ],
+                "Pandas"
+              ],
+              [
+                1,
+                "date",
+                [
+                  4,
+                  2
+                ],
+                "Diner"
+              ],
+              [
+                1,
+                "date",
+                [
+                  4,
+                  2
+                ],
+                "Pandas"
+              ],
+              [
+                1,
+                "date",
+                [
+                  5,
+                  4
+                ],
+                "Diner"
+              ],
+              [
+                1,
+                "date",
                 [
                   5,
                   4
@@ -2192,22 +2192,22 @@
             ]
           },
           "data": [
-            "02/18",
-            null,
-            null,
-            "04/18",
             90,
             null,
             null,
             55,
-            "05/18",
+            "02/18",
             null,
             null,
-            "01/18",
+            "04/18",
             100,
             null,
             null,
-            76
+            76,
+            "05/18",
+            null,
+            null,
+            "01/18"
           ]
         }
       }

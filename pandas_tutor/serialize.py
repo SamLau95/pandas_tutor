@@ -15,8 +15,8 @@ from . import util
 from .diagram import (
     DataPair,
     DataSpec,
-    DFSpec,
     DataTwoLHS,
+    DFSpec,
     Diagram,
     ErrorOutput,
     Explanation,
@@ -78,7 +78,7 @@ def serialize_single(result: EvalResult) -> Explanation:
         return [RuntimeErrorInSetup.from_runtime_error_result(result)]
 
     # HACK: special case for single val, updating this depends on truncating logic
-    result = truncate_vals(None, result, None)[0]
+    # result = truncate_vals(None, result, None)[0]
 
     return [
         Diagram(
@@ -100,7 +100,7 @@ def serialize_pair(
 
     marks = make_marks(step, before, after)
 
-    before, after = truncate_vals(marks, before, after)
+    # before, after = truncate_vals(marks, before, after)
 
     lhs: Union[DataSpec, PrevRHS] = (
         serialize_step_val(before)
@@ -115,7 +115,9 @@ def serialize_pair(
         lhs2 = (
             after.args["right"]
             if "right" in after.args
-            else after.args["other"] if "other" in after.args else None
+            else after.args["other"]
+            if "other" in after.args
+            else None
         )
         data = DataTwoLHS(
             lhs=lhs,

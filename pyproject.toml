@@ -1,6 +1,51 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pandas_tutor"
+dynamic = ["version"]
+description = "A visualizer for pandas code"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Sam Lau", email = "lau@ucsd.edu"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "pandas~=2.0",
+    "mypy-extensions==0.4.3",
+    "typing-extensions>=4.1,<5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/SamLau95/pandas_tutor"
+Repository = "https://github.com/SamLau95/pandas_tutor"
+Issues = "https://github.com/SamLau95/pandas_tutor/issues"
+
+[project.scripts]
+pandas_tutor = "pandas_tutor.__main__:main"
+
+[tool.setuptools]
+packages = ["pandas_tutor"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.golden"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pandas_tutor.__version__.__version__"}
 
 [tool.black]
 line-length = 80
@@ -8,9 +53,51 @@ extend-exclude = '''
 /pandas_tutor/tests/.*\.py
 '''
 
+[project.optional-dependencies]
+dev = [
+    "numpy~=2.0",
+    "pandas~=2.0",
+    "libcst==0.3.21",
+    "simplejson==3.17.5",
+    "types-simplejson==3.17.1",
+    "mypy==0.910",
+    "pympler==0.9",
+    "babypandas==0.1.6",
+    "prettyprinter==0.18.0",
+    "wheel",
+    "build",
+    "ruff",
+    "twine",
+    "jupyterlab",
+]
+ci = [
+    "numpy~=2.0",
+    "pandas~=2.0",
+    "libcst==0.3.21",
+    "simplejson==3.17.5",
+    "types-simplejson==3.17.1",
+    "mypy==0.910",
+    "pympler==0.9",
+    "babypandas==0.1.6",
+    "prettyprinter==0.18.0",
+    "pytest",
+    "wheel",
+    "build",
+]
+sam = [
+    "jupyterlab-vim",
+]
+
 [tool.pyright]
 include = ["pandas_tutor"]
 exclude = [
     "**/__pycache__",
     "pandas_tutor/tests/**/*.py"
+]
+
+[tool.ruff]
+extend-exclude = [
+    "pandas_tutor/tests/parse_golden",
+    # "pandas_tutor/tests/e2e_golden",
+    "pandas_tutor/tests/pg_wreck_it",
 ]
