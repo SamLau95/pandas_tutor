@@ -1,9 +1,9 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs\n .groupby('grooming')\n .agg('mean')\n)\n",
+  "code": "import io\n\nimport pandas as pd\n\ncsv = '''\nbreed,grooming,food_cost,kids,size\nLabrador Retriever,weekly,466.0,high,medium\nGerman Shepherd,weekly,466.0,medium,large\nBeagle,daily,324.0,high,small\nGolden Retriever,weekly,466.0,high,medium\nYorkshire Terrier,daily,324.0,low,small\nBulldog,weekly,466.0,medium,medium\nBoxer,weekly,466.0,high,medium\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs\n .groupby('grooming')\n [['food_cost']]\n .agg('mean')\n)\n",
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "(dogs\n .groupby('grooming')\n .agg('mean')\n)",
+      "code_step": "(dogs\n .groupby('grooming')\n [['food_cost']]\n .agg('mean')\n)",
       "fragment": {
         "start": {
           "line": 1,
@@ -217,8 +217,8 @@
       }
     },
     {
-      "type": "GroupByAggCall",
-      "code_step": "(dogs\n .groupby('grooming')\n .agg('mean')\n)",
+      "type": "Subscript",
+      "code_step": "(dogs\n .groupby('grooming')\n [['food_cost']]\n .agg('mean')\n)",
       "fragment": {
         "start": {
           "line": 2,
@@ -226,6 +226,116 @@
         },
         "end": {
           "line": 2,
+          "ch": 16
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "food_cost"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "food_cost"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "food_cost"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "data": [
+            [
+              466.0
+            ],
+            [
+              466.0
+            ],
+            [
+              324.0
+            ],
+            [
+              466.0
+            ],
+            [
+              324.0
+            ],
+            [
+              466.0
+            ],
+            [
+              466.0
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "grooming"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "daily"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              },
+              {
+                "name": [
+                  "weekly"
+                ],
+                "labels": [
+                  0,
+                  1,
+                  3,
+                  5,
+                  6
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByAggCall",
+      "code_step": "(dogs\n .groupby('grooming')\n [['food_cost']]\n .agg('mean')\n)",
+      "fragment": {
+        "start": {
+          "line": 3,
+          "ch": 1
+        },
+        "end": {
+          "line": 3,
           "ch": 13
         }
       },

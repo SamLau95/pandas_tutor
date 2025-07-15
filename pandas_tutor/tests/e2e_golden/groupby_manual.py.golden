@@ -1,9 +1,9 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = '''\nbreed,group,price,longevity,size\nLabrador Retriever,sporting,810.0,12.04,medium\nGerman Shepherd,herding,820.0,9.73,large\nBeagle,hound,288.0,12.3,small\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n# tests for manually input groups\ndogs.groupby(['sam', 'sam', 'pg']).mean()\n",
+  "code": "import io\n\nimport pandas as pd\n\ncsv = '''\nbreed,group,price,longevity,size\nLabrador Retriever,sporting,810.0,12.04,medium\nGerman Shepherd,herding,820.0,9.73,large\nBeagle,hound,288.0,12.3,small\n'''\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n# tests for manually input groups\ndogs.groupby(['sam', 'sam', 'pg'])[['price', 'longevity']].mean()\n",
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "dogs.groupby(['sam', 'sam', 'pg']).mean()",
+      "code_step": "dogs.groupby(['sam', 'sam', 'pg'])[['price', 'longevity']].mean()",
       "fragment": {
         "start": {
           "line": 0,
@@ -139,8 +139,8 @@
       }
     },
     {
-      "type": "GroupByAggCall",
-      "code_step": "dogs.groupby(['sam', 'sam', 'pg']).mean()",
+      "type": "Subscript",
+      "code_step": "dogs.groupby(['sam', 'sam', 'pg'])[['price', 'longevity']].mean()",
       "fragment": {
         "start": {
           "line": 0,
@@ -148,7 +148,116 @@
         },
         "end": {
           "line": 0,
-          "ch": 41
+          "ch": 58
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "price"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "price"
+          }
+        },
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "longevity"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "price",
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2
+            ]
+          },
+          "data": [
+            [
+              810.0,
+              12.04
+            ],
+            [
+              820.0,
+              9.73
+            ],
+            [
+              288.0,
+              12.3
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              null
+            ],
+            "groups": [
+              {
+                "name": [
+                  "pg"
+                ],
+                "labels": [
+                  2
+                ]
+              },
+              {
+                "name": [
+                  "sam"
+                ],
+                "labels": [
+                  0,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByAggCall",
+      "code_step": "dogs.groupby(['sam', 'sam', 'pg'])[['price', 'longevity']].mean()",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 58
+        },
+        "end": {
+          "line": 0,
+          "ch": 65
         }
       },
       "marks": [
