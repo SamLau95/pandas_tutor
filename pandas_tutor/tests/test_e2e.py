@@ -1,6 +1,7 @@
 import os
-from pathlib import Path
 import unittest
+import warnings
+from pathlib import Path
 
 from pandas_tutor.__main__ import make_tutor_spec
 
@@ -21,12 +22,19 @@ def make_test_case(test_name):
 
         code = in_file.read_text()
 
-        # we'll just compare JSON strings here since we only apply special
-        # encoding rules (e.g. NaN to None) after converting to JSON.
-        res = make_tutor_spec(code)
-        golden_res = golden_file.read_text().strip()
+        with warnings.catch_warnings(record=True) as w:
+            # we'll just compare JSON strings here since we only apply special
+            # encoding rules (e.g. NaN to None) after converting to JSON.
+            res = make_tutor_spec(code)
+            golden_res = golden_file.read_text().strip()
 
-        self.assertEqual(res, golden_res)
+            self.assertEqual(res, golden_res)
+
+            # When we upgraded from pandas 1.3 to pandas 2.3, there were a bunch
+            # of warnings because of deprecated behavior (e.g. groupby + apply
+            # without selecting columns before apply). We want to make sure the
+            # warnings don't get reintroduced later as well.
+            self.assertEqual(len(w), 0)
 
     return test
 

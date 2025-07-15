@@ -1,9 +1,9 @@
 {
-  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.stack.html\nimport pandas as pd\n\nmulticol2 = pd.MultiIndex.from_tuples([('weight', 'kg'),\n                                       ('height', 'm')])\ndf_multi_level_cols2 = pd.DataFrame([[1.0, 2.0], [3.0, 4.0]],\n                                    index=['cat', 'dog'],\n                                    columns=multicol2)\n\ndf_multi_level_cols2.stack([0, 1])",
+  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.stack.html\nimport pandas as pd\n\nmulticol2 = pd.MultiIndex.from_tuples([('weight', 'kg'),\n                                       ('height', 'm')])\ndf_multi_level_cols2 = pd.DataFrame([[1.0, 2.0], [3.0, 4.0]],\n                                    index=['cat', 'dog'],\n                                    columns=multicol2)\n\ndf_multi_level_cols2.stack([0, 1], future_stack=True)\n",
   "explanation": [
     {
       "type": "StackCall",
-      "code_step": "df_multi_level_cols2.stack([0, 1])",
+      "code_step": "df_multi_level_cols2.stack([0, 1], future_stack=True)",
       "fragment": {
         "start": {
           "line": 0,
@@ -11,7 +11,7 @@
         },
         "end": {
           "line": 0,
-          "ch": 34
+          "ch": 53
         }
       },
       "marks": [
@@ -230,16 +230,11 @@
             "labels": [
               [
                 "cat",
-                "height",
-                "m"
+                "weight",
+                "kg"
               ],
               [
                 "cat",
-                "weight",
-                "kg"
-              ],
-              [
-                "dog",
                 "height",
                 "m"
               ],
@@ -247,14 +242,19 @@
                 "dog",
                 "weight",
                 "kg"
+              ],
+              [
+                "dog",
+                "height",
+                "m"
               ]
             ]
           },
           "data": [
-            2.0,
             1.0,
-            4.0,
-            3.0
+            2.0,
+            3.0,
+            4.0
           ]
         }
       }

@@ -1,9 +1,9 @@
 {
-  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport numpy as np\nimport pandas as pd\nimport io\n\ncsv = \"\"\"\nA,B,C,D,E\nfoo,one,small,1,2\nfoo,one,large,2,4\nfoo,one,large,2,5\nfoo,two,small,3,5\nfoo,two,small,3,6\nbar,one,large,4,6\nbar,one,small,5,8\nbar,two,small,6,9\nbar,two,large,7,9\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# multi-agg, unsupported\ndf.pivot_table(\n    values=[\"D\", \"E\"],\n    index=[\"A\", \"C\"],\n    aggfunc={\"D\": np.mean, \"E\": [min, max, np.mean]},\n)\n",
+  "code": "# https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects\nimport io\n\nimport numpy as np\nimport pandas as pd\n\ncsv = \"\"\"\nA,B,C,D,E\nfoo,one,small,1,2\nfoo,one,large,2,4\nfoo,one,large,2,5\nfoo,two,small,3,5\nfoo,two,small,3,6\nbar,one,large,4,6\nbar,one,small,5,8\nbar,two,small,6,9\nbar,two,large,7,9\n\"\"\"\n\ndf = pd.read_csv(io.StringIO(csv))\n\n# multi-agg, unsupported\ndf.pivot_table(\n    values=[\"D\", \"E\"],\n    index=[\"A\", \"C\"],\n    aggfunc={\"D\": 'mean', \"E\": ['min', 'max', 'mean']},\n)\n",
   "explanation": [
     {
       "type": "PivotTableCall",
-      "code_step": "df.pivot_table(\n    values=[\"D\", \"E\"],\n    index=[\"A\", \"C\"],\n    aggfunc={\"D\": np.mean, \"E\": [min, max, np.mean]},\n)",
+      "code_step": "df.pivot_table(\n    values=[\"D\", \"E\"],\n    index=[\"A\", \"C\"],\n    aggfunc={\"D\": 'mean', \"E\": ['min', 'max', 'mean']},\n)",
       "fragment": {
         "start": {
           "line": 0,

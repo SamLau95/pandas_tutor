@@ -1,5 +1,6 @@
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = """
 breed,type,longevity,size
@@ -15,4 +16,4 @@ Poodle,non-sporting,11.95,medium
 
 dogs = pd.read_csv(io.StringIO(csv))
 
-dogs.groupby("size").apply(lambda x: x["longevity"].mean())
+dogs.groupby("size")[['longevity']].apply(lambda x: x["longevity"].mean())

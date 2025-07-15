@@ -17,4 +17,11 @@ restaurant_inspections = pd.DataFrame(
     columns=inspections,
 )
 
-restaurant_inspections.stack().stack().unstack().unstack().unstack().unstack()
+(restaurant_inspections
+ .stack(future_stack=True)
+ .stack(future_stack=True)
+ .unstack()
+ .unstack()
+ .unstack()
+ .unstack()
+)

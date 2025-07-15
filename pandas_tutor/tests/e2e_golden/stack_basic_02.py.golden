@@ -1,9 +1,9 @@
 {
-  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.stack.html\nimport pandas as pd\nmulticol1 = pd.MultiIndex.from_tuples([('weight', 'kg'),\n                                       ('weight', 'pounds')])\ndf_multi_level_cols1 = pd.DataFrame([[1, 2], [2, 4]],\n                                    index=['cat', 'dog'],\n                                    columns=multicol1)\ndf_multi_level_cols1.stack()",
+  "code": "# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.stack.html\nimport pandas as pd\n\nmulticol1 = pd.MultiIndex.from_tuples([('weight', 'kg'),\n                                       ('weight', 'pounds')])\ndf_multi_level_cols1 = pd.DataFrame([[1, 2], [2, 4]],\n                                    index=['cat', 'dog'],\n                                    columns=multicol1)\n# future_stack=True stops a FutureWarning because pandas will change the\n# behavior of stack in v3.0.\ndf_multi_level_cols1.stack(future_stack=True)\n",
   "explanation": [
     {
       "type": "StackCall",
-      "code_step": "df_multi_level_cols1.stack()",
+      "code_step": "df_multi_level_cols1.stack(future_stack=True)",
       "fragment": {
         "start": {
           "line": 0,
@@ -11,7 +11,7 @@
         },
         "end": {
           "line": 0,
-          "ch": 28
+          "ch": 45
         }
       },
       "marks": [

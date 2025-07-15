@@ -1,7 +1,8 @@
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html#reshaping-by-pivoting-dataframe-objects
+import io
+
 import numpy as np
 import pandas as pd
-import io
 
 csv = """
 A,B,C,D,E
@@ -20,5 +21,5 @@ df = pd.read_csv(io.StringIO(csv))
 
 # different aggfuncs per column
 df.pivot_table(values=['D', 'E'], index=['A', 'C'],
-               aggfunc={'D': np.mean,
-                        'E': np.max})
+               aggfunc={'D': 'mean',
+                        'E': 'max'})

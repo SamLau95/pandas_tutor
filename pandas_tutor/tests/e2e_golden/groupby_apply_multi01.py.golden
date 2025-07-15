@@ -1,17 +1,17 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs.groupby([\"size\", \"breed\"]).apply(lambda x: x[\"longevity\"] + 1)\n",
+  "code": "import io\n\nimport pandas as pd\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\n(dogs\n .groupby([\"size\", \"breed\"])\n [['longevity']]\n .apply(lambda x: x[\"longevity\"] + 1)\n)\n",
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "dogs.groupby([\"size\", \"breed\"]).apply(lambda x: x[\"longevity\"] + 1)",
+      "code_step": "(dogs\n .groupby([\"size\", \"breed\"])\n [['longevity']]\n .apply(lambda x: x[\"longevity\"] + 1)\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 4
+          "line": 1,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 31
+          "line": 1,
+          "ch": 28
         }
       },
       "marks": [
@@ -276,16 +276,182 @@
       }
     },
     {
-      "type": "GroupByApplyCall",
-      "code_step": "dogs.groupby([\"size\", \"breed\"]).apply(lambda x: x[\"longevity\"] + 1)",
+      "type": "Subscript",
+      "code_step": "(dogs\n .groupby([\"size\", \"breed\"])\n [['longevity']]\n .apply(lambda x: x[\"longevity\"] + 1)\n)",
       "fragment": {
         "start": {
-          "line": 0,
-          "ch": 31
+          "line": 2,
+          "ch": 1
         },
         "end": {
-          "line": 0,
-          "ch": 67
+          "line": 2,
+          "ch": 16
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "longevity"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              12.04
+            ],
+            [
+              9.73
+            ],
+            [
+              12.3
+            ],
+            [
+              12.04
+            ],
+            [
+              12.6
+            ],
+            [
+              6.29
+            ],
+            [
+              8.81
+            ],
+            [
+              11.95
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "size",
+              "breed"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large",
+                  "German"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium",
+                  "Boxer"
+                ],
+                "labels": [
+                  6
+                ]
+              },
+              {
+                "name": [
+                  "medium",
+                  "Bulldog"
+                ],
+                "labels": [
+                  5
+                ]
+              },
+              {
+                "name": [
+                  "medium",
+                  "Golden"
+                ],
+                "labels": [
+                  3
+                ]
+              },
+              {
+                "name": [
+                  "medium",
+                  "Labrador"
+                ],
+                "labels": [
+                  0
+                ]
+              },
+              {
+                "name": [
+                  "medium",
+                  "Poodle"
+                ],
+                "labels": [
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small",
+                  "Beagle"
+                ],
+                "labels": [
+                  2
+                ]
+              },
+              {
+                "name": [
+                  "small",
+                  "Yorkshire"
+                ],
+                "labels": [
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByApplyCall",
+      "code_step": "(dogs\n .groupby([\"size\", \"breed\"])\n [['longevity']]\n .apply(lambda x: x[\"longevity\"] + 1)\n)",
+      "fragment": {
+        "start": {
+          "line": 3,
+          "ch": 1
+        },
+        "end": {
+          "line": 3,
+          "ch": 37
         }
       },
       "marks": [

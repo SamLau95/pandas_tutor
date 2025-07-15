@@ -1,9 +1,9 @@
 {
-  "code": "import pandas as pd\nimport io\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs.groupby(\"size\").apply(lambda x: x[\"longevity\"] + 1)\n",
+  "code": "import io\n\nimport pandas as pd\n\ncsv = \"\"\"\nbreed,type,longevity,size\nLabrador,sporting,12.04,medium\nGerman,herding,9.73,large\nBeagle,hound,12.3,small\nGolden,sporting,12.04,medium\nYorkshire,toy,12.6,small\nBulldog,non-sporting,6.29,medium\nBoxer,working,8.81,medium\nPoodle,non-sporting,11.95,medium\n\"\"\"\n\ndogs = pd.read_csv(io.StringIO(csv))\n\ndogs.groupby(\"size\")[['longevity']].apply(lambda x: x[\"longevity\"] + 1)\n",
   "explanation": [
     {
       "type": "GroupByCall",
-      "code_step": "dogs.groupby(\"size\").apply(lambda x: x[\"longevity\"] + 1)",
+      "code_step": "dogs.groupby(\"size\")[['longevity']].apply(lambda x: x[\"longevity\"] + 1)",
       "fragment": {
         "start": {
           "line": 0,
@@ -223,8 +223,8 @@
       }
     },
     {
-      "type": "GroupByApplyCall",
-      "code_step": "dogs.groupby(\"size\").apply(lambda x: x[\"longevity\"] + 1)",
+      "type": "Subscript",
+      "code_step": "dogs.groupby(\"size\")[['longevity']].apply(lambda x: x[\"longevity\"] + 1)",
       "fragment": {
         "start": {
           "line": 0,
@@ -232,7 +232,129 @@
         },
         "end": {
           "line": 0,
-          "ch": 56
+          "ch": 35
+        }
+      },
+      "marks": [
+        {
+          "type": "map",
+          "from": {
+            "type": "axis",
+            "anchor": "lhs",
+            "select": "column",
+            "label": "longevity"
+          },
+          "to": {
+            "type": "axis",
+            "anchor": "rhs",
+            "select": "column",
+            "label": "longevity"
+          }
+        }
+      ],
+      "data": {
+        "lhs": "prev_rhs",
+        "rhs": {
+          "type": "DataFrameGroupBy",
+          "columns": {
+            "names": [
+              null
+            ],
+            "labels": [
+              "longevity"
+            ]
+          },
+          "index": {
+            "names": [
+              null
+            ],
+            "labels": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          "data": [
+            [
+              12.04
+            ],
+            [
+              9.73
+            ],
+            [
+              12.3
+            ],
+            [
+              12.04
+            ],
+            [
+              12.6
+            ],
+            [
+              6.29
+            ],
+            [
+              8.81
+            ],
+            [
+              11.95
+            ]
+          ],
+          "group_data": {
+            "columns": [
+              "size"
+            ],
+            "groups": [
+              {
+                "name": [
+                  "large"
+                ],
+                "labels": [
+                  1
+                ]
+              },
+              {
+                "name": [
+                  "medium"
+                ],
+                "labels": [
+                  0,
+                  3,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "name": [
+                  "small"
+                ],
+                "labels": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "GroupByApplyCall",
+      "code_step": "dogs.groupby(\"size\")[['longevity']].apply(lambda x: x[\"longevity\"] + 1)",
+      "fragment": {
+        "start": {
+          "line": 0,
+          "ch": 35
+        },
+        "end": {
+          "line": 0,
+          "ch": 71
         }
       },
       "marks": [

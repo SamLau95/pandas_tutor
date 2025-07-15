@@ -7,4 +7,4 @@ df_multi_level_cols2 = pd.DataFrame([[1.0, 2.0], [3.0, 4.0]],
                                     index=['cat', 'dog'],
                                     columns=multicol2)
 
-df_multi_level_cols2.stack([0, 1])
+df_multi_level_cols2.stack([0, 1], future_stack=True)

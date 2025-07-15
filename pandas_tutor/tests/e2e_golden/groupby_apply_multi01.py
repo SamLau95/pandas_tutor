@@ -1,5 +1,6 @@
-import pandas as pd
 import io
+
+import pandas as pd
 
 csv = """
 breed,type,longevity,size
@@ -15,4 +16,8 @@ Poodle,non-sporting,11.95,medium
 
 dogs = pd.read_csv(io.StringIO(csv))
 
-dogs.groupby(["size", "breed"]).apply(lambda x: x["longevity"] + 1)
+(dogs
+ .groupby(["size", "breed"])
+ [['longevity']]
+ .apply(lambda x: x["longevity"] + 1)
+)
