@@ -34,7 +34,12 @@ def make_test_case(test_name):
             # of warnings because of deprecated behavior (e.g. groupby + apply
             # without selecting columns before apply). We want to make sure the
             # warnings don't get reintroduced later as well.
-            self.assertEqual(len(w), 0)
+            warning_msgs = "\n".join(w)
+            self.assertEqual(
+                len(w),
+                0,
+                f"Expected no warnings but got: {warning_msgs}",
+            )
 
     return test
 

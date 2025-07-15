@@ -98,6 +98,6 @@ exclude = [
 [tool.ruff]
 extend-exclude = [
     "pandas_tutor/tests/parse_golden",
-    "pandas_tutor/tests/e2e_golden",
+    # "pandas_tutor/tests/e2e_golden",
     "pandas_tutor/tests/pg_wreck_it",
 ]
