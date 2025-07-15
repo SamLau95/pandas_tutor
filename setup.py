@@ -17,7 +17,7 @@ version = Path("pandas_tutor/__version__.py").read_text().split('"')[1]
 # These packages are installed during pip install.
 # Only packages that AREN'T bundled inline need to be listed here.
 install_requires = [
-    "pandas>=1.3,<2.0",
+    "pandas>=1.3",
     "mypy-extensions==0.4.3",
     "typing-extensions>=4.1,<5.0",
 ]

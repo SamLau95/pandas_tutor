@@ -2,11 +2,12 @@
 # etc.
 -r requirements.txt
 
+# pin numpy version for CI
+numpy==1.24.4
+
 # pin pandas version for CI
 pandas==1.3.1
 
-# pin numpy version for CI
-numpy==1.24.4
 
 # These packages are required for pandas_tutor to run but we bundle them
 # directly into the library inline
@@ -30,3 +31,6 @@ build
 
 # nice-to-have packages for development
 black==24.3.0
+
+# Uploading packages to PyPI
+twine
