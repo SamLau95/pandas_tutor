@@ -14,12 +14,6 @@ test: ## Runs tests
 sam: ## Runs what sam wants
 	@$(sam_cmd)
 
-guoxuan:
-	python -m pandas_tutor.guoxuans_scratchpad
-
-chris:
-	python -m pandas_tutor.chris_scratchpad
-
 sam_watch: ## Watches what sam wants
 	fswatch -0 $(WATCH_EXCLUDE) $(CONTENT) --one-per-batch |\
 		xargs -0 -n 1 -I {} $(MAKE) sam
@@ -41,7 +35,6 @@ clean: ## removes pypi built files
 # pip install --index-url https://test.pypi.org/simple/ --no-deps pandas_tutor
 test_publish: clean build ## uploads wheel to test pypi
 	python -m twine upload --repository testpypi dist/*
-
 
 publish: clean build ## uploads wheel to REAL pypi
 	python -m twine upload dist/*
