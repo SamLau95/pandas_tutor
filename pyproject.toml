@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "pandas_tutor"
@@ -37,15 +37,16 @@ Issues = "https://github.com/SamLau95/pandas_tutor/issues"
 [project.scripts]
 pandas_tutor = "pandas_tutor.__main__:main"
 
-[tool.setuptools]
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
 packages = ["pandas_tutor"]
-include-package-data = true
 
-[tool.setuptools.package-data]
-"*" = ["*.golden"]
-
-[tool.setuptools.dynamic]
-version = {attr = "pandas_tutor.__version__.__version__"}
+[tool.hatch.build.targets.sdist]
+include = [
+    "/pandas_tutor",
+]
 
 [tool.black]
 line-length = 80
@@ -98,6 +99,13 @@ exclude = [
 [tool.ruff]
 extend-exclude = [
     "pandas_tutor/tests/parse_golden",
-    # "pandas_tutor/tests/e2e_golden",
+    "pandas_tutor/tests/e2e_golden",
     "pandas_tutor/tests/pg_wreck_it",
 ]
+
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true

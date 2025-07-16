@@ -29,7 +29,7 @@ watch: ## reruns typecheck and tests on file change
 		xargs -0 -n 1 -I {} sh -c "echo {} && $(MAKE) typecheck test"
 
 build: ## makes wheel for pypi
-	python -m build
+	uv build
 
 clean: ## removes pypi built files
 	rm -rf build/ dist/
@@ -37,10 +37,10 @@ clean: ## removes pypi built files
 # to install package from test pypi:
 # pip install --index-url https://test.pypi.org/simple/ --no-deps pandas_tutor
 test_publish: clean build ## uploads wheel to test pypi
-	python -m twine upload --repository testpypi dist/*
+	uv publish --index testpypi
 
 publish: clean build ## uploads wheel to REAL pypi
-	python -m twine upload dist/*
+	uv publish
 
 # requires 'pip install wheel' in your current python environment
 pyodide_build:

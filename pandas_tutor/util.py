@@ -34,7 +34,13 @@ from pandas.core.reshape.merge import _MergeOperation
 # Literal only added in Python 3.8
 from typing_extensions import Literal, TypeGuard
 
-from pandas_tutor.__version__ import __version__
+try:
+    from importlib.metadata import version
+except ImportError:
+    # For Python < 3.8 compatibility
+    from importlib_metadata import version
+
+__version__ = version("pandas_tutor")
 
 if TYPE_CHECKING:
     from pandas_tutor.diagram import MapSet  # noqa: F401
