@@ -2,14 +2,11 @@ name: Publish Package
 
 on:
   push:
-    branches:
-      - master # Trigger on every push to master (publish to TestPyPI)
     tags:
-      - 'v*' # Trigger on version tags (publish to PyPI)
+      - 'v*' # Trigger on version tags
 
 jobs:
   test-publish:
-    if: github.ref_type == 'branch' && github.ref_name == 'master'
     runs-on: ubuntu-latest
 
     permissions:
@@ -42,7 +39,6 @@ jobs:
           verbose: true
 
   prod-publish:
-    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: publish to pypi
 
