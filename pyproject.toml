@@ -27,6 +27,9 @@ dependencies = [
     "pandas~=2.0",
     "mypy-extensions==0.4.3",
     "typing-extensions>=4.1,<5.0",
+    "libcst==0.3.21",
+    "simplejson==3.17.5",
+    "pympler==0.9",
 ]
 
 [project.urls]
@@ -58,11 +61,8 @@ extend-exclude = '''
 dev = [
     "numpy~=2.0",
     "pandas~=2.0",
-    "libcst==0.3.21",
-    "simplejson==3.17.5",
     "types-simplejson==3.17.1",
     "mypy==0.910",
-    "pympler==0.9",
     "babypandas==0.1.6",
     "prettyprinter==0.18.0",
     "wheel",
@@ -70,15 +70,13 @@ dev = [
     "ruff",
     "twine",
     "jupyterlab",
+    "ty>=0.0.1a14",
 ]
 ci = [
     "numpy~=2.0",
     "pandas~=2.0",
-    "libcst==0.3.21",
-    "simplejson==3.17.5",
     "types-simplejson==3.17.1",
     "mypy==0.910",
-    "pympler==0.9",
     "babypandas==0.1.6",
     "prettyprinter==0.18.0",
     "pytest",
